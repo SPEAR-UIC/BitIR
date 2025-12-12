@@ -1,0 +1,37 @@
+#!/bin/bash
+#PBS -N matrix_rotate_golden
+#PBS -q debug
+#PBS -l select=1:ncpus=8:ngpus=1:mem=16gb
+#PBS -l walltime=00:30:00
+#PBS -o matrix_rotate_golden.out
+#PBS -e matrix_rotate_golden.err
+
+set -euo pipefail
+
+# Load environment modules if the command exists on this system.
+if command -v module &> /dev/null; then
+  module load cmake cuda || true
+fi
+
+cd "$PBS_O_WORKDIR"
+
+REPO_DIR="$PBS_O_WORKDIR"
+BUILD_DIR="${BUILD_DIR:-$REPO_DIR/build}"
+BIN_DIR="$BUILD_DIR/bin"
+
+# Configure and build only the matrix-rotate CUDA benchmark.
+cmake -S "$REPO_DIR" -B "$BUILD_DIR" \
+  -DHECBENCH_BENCHMARKS=matrix-rotate-cuda \
+  -DCMAKE_BUILD_TYPE=Release
+cmake --build "$BUILD_DIR" --target matrix-rotate-cuda
+
+MATRIX_SIZE="${MATRIX_SIZE:-8192}"
+REPEAT="${REPEAT:-10}"
+OUTPUT_DIR="${OUTPUT_DIR:-$REPO_DIR/results}"
+mkdir -p "$OUTPUT_DIR"
+
+DUMP_FILE="${DUMP_FILE:-$OUTPUT_DIR/matrix_rotate_golden_${MATRIX_SIZE}_${REPEAT}.bin}"
+RUN_LOG="${RUN_LOG:-$OUTPUT_DIR/matrix_rotate_golden_${MATRIX_SIZE}_${REPEAT}.txt}"
+
+echo "Launching matrix-rotate golden run with size=${MATRIX_SIZE}, repeat=${REPEAT}"
+"$BIN_DIR/matrix-rotate-cuda" "$MATRIX_SIZE" "$REPEAT" "$DUMP_FILE" | tee "$RUN_LOG"
