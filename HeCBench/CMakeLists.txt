@@ -22,12 +22,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Build options - which programming models to enable
 option(HECBENCH_ENABLE_CUDA "Enable CUDA benchmarks" ON)
-option(HECBENCH_ENABLE_HIP "Enable HIP benchmarks" ON)
+option(HECBENCH_ENABLE_HIP "Enable HIP benchmarks" OFF)
 option(HECBENCH_ENABLE_SYCL "Enable SYCL benchmarks" ON)
 option(HECBENCH_ENABLE_OPENMP "Enable OpenMP benchmarks" ON)
 
 # Architecture options
-set(HECBENCH_CUDA_ARCH "sm_80" CACHE STRING "CUDA architecture (e.g., sm_60, sm_70, sm_80, sm_90)")
+set(HECBENCH_CUDA_ARCH "70" CACHE STRING "CUDA architecture (e.g., 70, 80, 90 or sm_70)")
 set(HECBENCH_HIP_ARCH "gfx90a" CACHE STRING "HIP architecture (e.g., gfx908, gfx90a, gfx942)")
 
 # Build configuration
@@ -41,8 +41,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 if(HECBENCH_ENABLE_CUDA)
     enable_language(CUDA)
     find_package(CUDAToolkit REQUIRED)
-    message(STATUS "CUDA enabled - Architecture: ${HECBENCH_CUDA_ARCH}")
-    set(CMAKE_CUDA_ARCHITECTURES ${HECBENCH_CUDA_ARCH})
+    if(HECBENCH_CUDA_ARCH MATCHES "^sm_([0-9]+)$")
+        set(_hecbench_cuda_arch ${CMAKE_MATCH_1})
+    else()
+        set(_hecbench_cuda_arch ${HECBENCH_CUDA_ARCH})
+    endif()
+    message(STATUS "CUDA enabled - Architecture: ${_hecbench_cuda_arch}")
+    set(CMAKE_CUDA_ARCHITECTURES ${_hecbench_cuda_arch})
 endif()
 
 if(HECBENCH_ENABLE_HIP)

@@ -1,29 +1,58 @@
 #!/bin/bash
+#PBS -A UIC-HPC
 #PBS -N matrix_rotate_golden
 #PBS -q debug
 #PBS -l select=1:ncpus=8:ngpus=1:mem=16gb
+#PBS -l filesystems=home:eagle
 #PBS -l walltime=00:30:00
-#PBS -o matrix_rotate_golden.out
-#PBS -e matrix_rotate_golden.err
+#PBS -o OUT_matrix_rotate_golden.out
+#PBS -e ERROR_matrix_rotate_golden.err
 
 set -euo pipefail
 
-# Load environment modules if the command exists on this system.
+module use /soft/modulefiles
+module load spack-pe-base cmake
+
+# cmake -S $HOME/GPU_FI/HeCBench \
+#       -B $HOME/GPU_FI/HeCBench/build \
+#       -DHECBENCH_BENCHMARKS=matrix-rotate-cuda \
+#       -DHECBENCH_ENABLE_HIP=OFF \
+#       -DCMAKE_BUILD_TYPE=Release
+# cmake --build $HOME/GPU_FI/HeCBench/build --target matrix-rotate-cuda
+
+# Load requested modules (space-separated list) if module cmd exists.
 if command -v module &> /dev/null; then
-  module load cmake cuda || true
+  for m in ${MODULE_LIST:-cuda}; do
+    module load "$m"
+  done
 fi
 
 cd "$PBS_O_WORKDIR"
 
 REPO_DIR="$PBS_O_WORKDIR"
 BUILD_DIR="${BUILD_DIR:-$REPO_DIR/build}"
-BIN_DIR="$BUILD_DIR/bin"
+BINARY_PATH="${BINARY_PATH:-$BUILD_DIR/bin/cuda/matrix-rotate}"
 
-# Configure and build only the matrix-rotate CUDA benchmark.
-cmake -S "$REPO_DIR" -B "$BUILD_DIR" \
-  -DHECBENCH_BENCHMARKS=matrix-rotate-cuda \
-  -DCMAKE_BUILD_TYPE=Release
-cmake --build "$BUILD_DIR" --target matrix-rotate-cuda
+# Ensure CUDA runtime libraries are available when running on compute nodes
+if command -v nvcc &> /dev/null; then
+  CUDA_HOME="${CUDA_HOME:-$(dirname "$(dirname "$(command -v nvcc)")")}"
+elif [[ -n "${CUDATOOLKIT_ROOT:-}" ]]; then
+  CUDA_HOME="$CUDATOOLKIT_ROOT"
+fi
+if [[ -n "${CUDA_HOME:-}" ]]; then
+  for candidate in "$CUDA_HOME/lib64" "$CUDA_HOME/lib" "$CUDA_HOME/lib64/stubs"; do
+    if [[ -d "$candidate" ]]; then
+      LD_LIBRARY_PATH="$candidate:${LD_LIBRARY_PATH:-}"
+    fi
+  done
+  export LD_LIBRARY_PATH
+fi
+
+if [[ ! -x "$BINARY_PATH" ]]; then
+  echo "Error: matrix-rotate-cuda binary not found at $BINARY_PATH"
+  echo "Please build the benchmark on the login node before submitting this job."
+  exit 1
+fi
 
 MATRIX_SIZE="${MATRIX_SIZE:-8192}"
 REPEAT="${REPEAT:-10}"
@@ -34,4 +63,4 @@ DUMP_FILE="${DUMP_FILE:-$OUTPUT_DIR/matrix_rotate_golden_${MATRIX_SIZE}_${REPEAT
 RUN_LOG="${RUN_LOG:-$OUTPUT_DIR/matrix_rotate_golden_${MATRIX_SIZE}_${REPEAT}.txt}"
 
 echo "Launching matrix-rotate golden run with size=${MATRIX_SIZE}, repeat=${REPEAT}"
-"$BIN_DIR/matrix-rotate-cuda" "$MATRIX_SIZE" "$REPEAT" "$DUMP_FILE" | tee "$RUN_LOG"
+"$BINARY_PATH" "$MATRIX_SIZE" "$REPEAT" "$DUMP_FILE" | tee "$RUN_LOG"
