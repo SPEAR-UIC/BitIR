@@ -151,6 +151,7 @@ __global__ void pathfinder (
 
 int main(int argc, char** argv)
 {
+  const char* dump_path = nullptr;
   // Program variables.
   int   rows, cols;
   int*  data;
@@ -164,9 +165,16 @@ int main(int argc, char** argv)
     rows = atoi(argv[2]);
     pyramid_height = atoi(argv[3]);
   }
+  else if (argc == 5)
+  {
+    cols = atoi(argv[1]);
+    rows = atoi(argv[2]);
+    pyramid_height = atoi(argv[3]);
+    dump_path = argv[4];
+  }
   else
   {
-    printf("Usage: %s <column length> <row length> <pyramid_height>\n", argv[0]);
+    printf("Usage: %s <column length> <row length> <pyramid_height> [dump file]\n", argv[0]);
     exit(0);
   }
 
@@ -275,6 +283,22 @@ int main(int argc, char** argv)
     printf("%d ", result[i]);
   printf("\n");
 #endif
+
+  if (dump_path) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("pathfinder dump");
+    } else {
+      fwrite(&cols, sizeof(int), 1, fp);
+      size_t written = fwrite(result, sizeof(int), cols, fp);
+      fclose(fp);
+      if (written != static_cast<size_t>(cols)) {
+        fprintf(stderr, "pathfinder: incomplete dump (%zu of %d values)\n", written, cols);
+      } else {
+        printf("pathfinder snapshot written to %s\n", dump_path);
+      }
+    }
+  }
 
   // Memory cleanup here.
   delete[] data;

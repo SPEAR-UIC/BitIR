@@ -16,6 +16,7 @@
 
 
 #include <iostream>
+#include <cstdio>
 #include <stdlib.h>
 #include <string.h>
 #include <chrono>
@@ -65,12 +66,13 @@ void SoAKernel(const ApplesOnTrees *__restrict__ applesOnTrees,
 
 int main(int argc, char * argv[])
 {
-  if (argc != 2) {
-    printf("Usage: %s <repeat>\n", argv[0]);
+  if (argc < 2 || argc > 3) {
+    printf("Usage: %s <repeat> [dump file]\n", argv[0]);
     return 1;
   }
   
   const int iterations = atoi(argv[1]); // Number of iterations for kernel execution
+  const char* dump_path = argc == 3 ? argv[2] : nullptr;
   const int treeSize = TREE_SIZE;
   const int treeNumber = TREE_NUM;
   bool fail = false;
@@ -152,7 +154,7 @@ int main(int argc, char * argv[])
     std::cout << "FAIL\n";
   else
     std::cout << "PASS\n";
-
+  
   //initialize soa data
   for (int i = 0; i < treeNumber; i++)
     for(int j = 0; j < treeSize; j++)
@@ -187,6 +189,24 @@ int main(int argc, char * argv[])
     std::cout << "FAIL\n";
   else
     std::cout << "PASS\n";
+  
+  if (dump_path) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      std::perror("layout dump");
+    } else {
+      uint32_t count = treeNumber;
+      fwrite(&count, sizeof(uint32_t), 1, fp);
+      size_t written = fwrite(deviceResult, sizeof(int), treeNumber, fp);
+      fclose(fp);
+      if (written != static_cast<size_t>(treeNumber)) {
+        std::cerr << "layout: incomplete dump (" << written << " of "
+                  << treeNumber << " values)\n";
+      } else {
+        std::cout << "layout snapshot written to " << dump_path << std::endl;
+      }
+    }
+  }
   
   cudaFree(inputBuffer);
   cudaFree(outputBuffer);

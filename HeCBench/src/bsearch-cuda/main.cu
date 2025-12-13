@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <chrono>
 #include <iostream>
+#include <vector>
+#include <cstdio>
 #include <cuda.h>
 
 #ifndef Real_t 
@@ -222,13 +224,14 @@ void verify(Real_t *a, Real_t *z, size_t *r, size_t aSize, size_t zSize, std::st
 
 int main(int argc, char* argv[])
 {
-  if (argc != 3) {
-    std::cout << "Usage ./main <number of elements> <repeat>\n";
+  if (argc < 3 || argc > 4) {
+    std::cout << "Usage ./main <number of elements> <repeat> [dump file]\n";
     return 1;
   }
 
   size_t numElem = atol(argv[1]);
   uint repeat = atoi(argv[2]);
+  const char* dump_path = argc == 4 ? argv[3] : nullptr;
 
   srand(2);
   size_t aSize = numElem;
@@ -257,33 +260,42 @@ int main(int argc, char* argv[])
   cudaMemcpy(d_a, a, sizeof(Real_t)*aSize, cudaMemcpyHostToDevice);
   cudaMemcpy(d_z, z, sizeof(Real_t)*zSize, cudaMemcpyHostToDevice);
 
-  bs(aSize, zSize, d_a, d_z, d_r, N, repeat);
+  std::vector<size_t> host_bs(zSize), host_bs2(zSize), host_bs3(zSize), host_bs4(zSize);
 
-#ifdef DEBUG
-  cudaMemcpy(r, d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
-  verify(a, z, r, aSize, zSize, "bs");
-#endif
+  bs(aSize, zSize, d_a, d_z, d_r, N, repeat);
+  cudaMemcpy(host_bs.data(), d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
 
   bs2(aSize, zSize, d_a, d_z, d_r, N, repeat);
-
-#ifdef DEBUG
-  cudaMemcpy(r, d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
-  verify(a, z, r, aSize, zSize, "bs2");
-#endif
+  cudaMemcpy(host_bs2.data(), d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
 
   bs3(aSize, zSize, d_a, d_z, d_r, N, repeat);
-
-#ifdef DEBUG
-  cudaMemcpy(r, d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
-  verify(a, z, r, aSize, zSize, "bs3");
-#endif
+  cudaMemcpy(host_bs3.data(), d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
 
   bs4(aSize, zSize, d_a, d_z, d_r, N, repeat);
+  cudaMemcpy(host_bs4.data(), d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
 
 #ifdef DEBUG
-  cudaMemcpy(r, d_r, sizeof(size_t)*zSize, cudaMemcpyDeviceToHost);
-  verify(a, z, r, aSize, zSize, "bs4");
+  verify(a, z, host_bs.data(), aSize, zSize, "bs");
+  verify(a, z, host_bs2.data(), aSize, zSize, "bs2");
+  verify(a, z, host_bs3.data(), aSize, zSize, "bs3");
+  verify(a, z, host_bs4.data(), aSize, zSize, "bs4");
 #endif
+
+  if (dump_path) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("bsearch dump");
+    } else {
+      uint64_t total = zSize;
+      fwrite(&total, sizeof(uint64_t), 1, fp);
+      fwrite(host_bs.data(), sizeof(size_t), zSize, fp);
+      fwrite(host_bs2.data(), sizeof(size_t), zSize, fp);
+      fwrite(host_bs3.data(), sizeof(size_t), zSize, fp);
+      fwrite(host_bs4.data(), sizeof(size_t), zSize, fp);
+      fclose(fp);
+      std::cout << "bsearch snapshot written to " << dump_path << std::endl;
+    }
+  }
 
   cudaFree(d_a);
   cudaFree(d_z);

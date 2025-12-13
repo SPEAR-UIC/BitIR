@@ -4,6 +4,7 @@
 #include <string.h>
 #include <chrono>
 #include <cuda.h>
+#include <cstdint>
 
 static void CheckError( cudaError_t err, const char *file, int line ) {
   if (err != cudaSuccess) {
@@ -35,7 +36,7 @@ __global__ void wiAtomicOnGlobalMem(T* result, int size)
 }
 
 template <typename T>
-void atomicCost (int length, int size, int repeat)
+void atomicCost (int length, int size, int repeat, FILE* dump, const char* label)
 {
   printf("\n\n");
   printf("Each thread sums up %d elements\n", size);
@@ -86,6 +87,16 @@ void atomicCost (int length, int size, int repeat)
   int diff = memcmp(result_wi, result_wo, result_size);
   printf("%s\n", diff ? "FAIL" : "PASS");
 
+  if (dump && label) {
+    uint32_t label_len = static_cast<uint32_t>(strlen(label));
+    fwrite(&label_len, sizeof(uint32_t), 1, dump);
+    fwrite(label, sizeof(char), label_len, dump);
+    uint64_t count = static_cast<uint64_t>(num_threads);
+    fwrite(&count, sizeof(uint64_t), 1, dump);
+    fwrite(result_wi, sizeof(T), num_threads, dump);
+    fwrite(result_wo, sizeof(T), num_threads, dump);
+  }
+
   free(result_wi);
   free(result_wo);
   cudaFree(d_result_wi);
@@ -94,25 +105,38 @@ void atomicCost (int length, int size, int repeat)
 
 int main(int argc, char* argv[])
 {
-  if (argc != 3) {
-    printf("Usage: %s <N> <repeat>\n", argv[0]);
+  if (argc < 3 || argc > 4) {
+    printf("Usage: %s <N> <repeat> [dump file]\n", argv[0]);
     printf("N: the number of elements to sum per thread (1 - 16)\n");
     return 1;
   }
   const int nelems = atoi(argv[1]);
   const int repeat = atoi(argv[2]);
+  const char* dump_path = argc == 4 ? argv[3] : nullptr;
+  FILE* dump = nullptr;
+  if (dump_path) {
+    dump = fopen(dump_path, "wb");
+    if (!dump) {
+      perror("atomicCost dump");
+    }
+  }
 
   const int length = 922521600;
   assert(length % BLOCK_SIZE == 0);
 
   printf("\nFP64 atomic add\n");
-  atomicCost<double>(length, nelems, repeat);
+  atomicCost<double>(length, nelems, repeat, dump, "fp64");
 
   printf("\nINT32 atomic add\n");
-  atomicCost<int>(length, nelems, repeat);
+  atomicCost<int>(length, nelems, repeat, dump, "int32");
 
   printf("\nFP32 atomic add\n");
-  atomicCost<float>(length, nelems, repeat);
+  atomicCost<float>(length, nelems, repeat, dump, "fp32");
+
+  if (dump) {
+    fclose(dump);
+    printf("atomicCost snapshot written to %s\n", dump_path);
+  }
 
   return 0;
 }
