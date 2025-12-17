@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Inject LLFI's nvcc interposition layer before invoking the real compiler.
+export CICC_MODIFY_OPT_MODULE=1
+
+LLFI_PRELOAD="@LLFI_PRELOAD@"
+LLFI_PREV_LAUNCHER="@LLFI_PREV_LAUNCHER@"
+
+if [[ -n "${LD_PRELOAD:-}" ]]; then
+    export LD_PRELOAD="${LLFI_PRELOAD}:${LD_PRELOAD}"
+else
+    export LD_PRELOAD="${LLFI_PRELOAD}"
+fi
+
+if [[ -n "${LLFI_PREV_LAUNCHER}" ]]; then
+    IFS=';' read -r -a _llfi_prev_launcher_array <<< "${LLFI_PREV_LAUNCHER}"
+    exec "${_llfi_prev_launcher_array[@]}" "$@"
+else
+    exec "$@"
+fi

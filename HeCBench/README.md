@@ -147,6 +147,62 @@ Each benchmark falls into a single category. While such classification is not ac
     And it also has options to pick the CUDA SM version or HIP architecture and a
     few other parameters. Type `./autohecbench.py` to see all the options.
 
+# LLFI-GPU integration
+HeCBench can optionally build CUDA benchmarks with the [LLFI-GPU](https://github.com/UofU-CER/LLFI-GPU) fault-injection toolchain. Instrumentation is disabled by default so that the standard build continues to produce the original golden results.
+
+> **Note:** Before running any LLFI-enabled builds, regenerate LLFI's nvcc interposers for the CUDA version installed on your system: `cd LLFI-GPU && ./scripts/rebuild_interposers.sh`. The script downloads LLVM 3.0 headers (if needed) and recompiles `bamboo_lib/(profiling|injection)_lib/lib{cicc,nvcc}.so` so they work with modern CUDA releases.
+
+## Configure via CMake
+To manually configure a build with LLFI-GPU instrumentation enabled:
+```
+cmake -S . -B build/llfi \
+  -DHECBENCH_ENABLE_CUDA=ON \
+  -DHECBENCH_LLFI_GPU=ON \
+  -DHECBENCH_LLFI_GPU_ROOT=/path/to/LLFI-GPU \
+  -DHECBENCH_LLFI_MODE=profiling
+cmake --build build/llfi --target jacobi-cuda
+```
+Switch `HECBENCH_LLFI_MODE` between `profiling` and `injection` depending on the experiment you are running. The regular CUDA build is untouched because the LLFI configuration lives in its own CMake build directory.
+
+## One-stop helper script
+The new `tools/llfi_runner.py` script automates most of the workflow:
+
+1. **Profiling run** (produces `bamboo.profile.txt` and baseline output in a timestamped results directory):
+    ```
+    python3 tools/llfi_runner.py \
+      --llfi-root ../LLFI-GPU \
+      profile --benchmark jacobi -- --problem-size 1024
+    ```
+    Results go under `results/llfi/jacobi/` without altering any existing golden outputs.
+
+2. **Injection campaign** (reuses the profiling data to launch multiple random injections):
+    ```
+    python3 tools/llfi_runner.py \
+      --llfi-root ../LLFI-GPU \
+      inject --benchmark jacobi \
+      --profile results/llfi/jacobi/profiling-20240202-120000/bamboo.profile.txt \
+      --trials 10 -- --problem-size 1024
+    ```
+    Each run is isolated inside its own folder (`results/llfi/jacobi/injection-*/run_XXX`) with metadata, stdout/stderr logs, and any LLFI runtime logs.
+
+Use `--cmake-arg -DHECBENCH_CUDA_ARCH=sm_80` or `--cuda-arch sm_90` to override architectures, and pass benchmark arguments after `--`. Run `python3 tools/llfi_runner.py --help` for a complete reference.
+
+## Matrix-rotate exhaustive sweep
+For matrix-rotate specifically, `tools/matrix_rotate_llfi_sweep.py` can profile the benchmark, enumerate every injectable site observed, run an injection at each site, and classify the outcome as MASKED/SDC/FAILURE by comparing the dumped matrix against the golden binary from `Polaris_Golden_Outputs`. Run it directly for ad-hoc experiments:
+```
+python3 tools/matrix_rotate_llfi_sweep.py \
+  --llfi-root ../LLFI-GPU \
+  --golden Polaris_Golden_Outputs/matrix-rotate_8192_10.bin \
+  --size 8192 --repeat 10 --cuda-arch sm_80
+```
+
+For large sweeps on Polaris, submit `matrix_rotate_llfi_sweep.pbs`:
+```
+qsub matrix_rotate_llfi_sweep.pbs \
+  -v MATRIX_SIZE=8192,MATRIX_REPEAT=10,CUDA_ARCH=sm_80
+```
+Override `OUTPUT_ROOT`, `LLFI_ROOT`, or `MAX_SITES` (for partial sweeps) in the `qsub -v` list as needed. The PBS job produces a timestamped directory under `results/llfi/matrix-rotate/` containing the bamboo profile, logs for each injection run, and `report.csv` summarizing the observed outcomes.
+
 # Dataset
 For Rodinia benchmarks, please download the dataset at http://lava.cs.virginia.edu/Rodinia/download.htm  
 For other benchmarks, datasets are either included with the benchmarks or could be downloaded through the links described in the README files.

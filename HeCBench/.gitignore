@@ -13,6 +13,10 @@ dpct_output
 */main
 main
 *.tmp
+**/bamboo_fi/
+**/bamboo.profile.txt
+**/opt_bamboo_before.ll
+**/opt_bamboo_after.ll
 
 # Exclude text files except CMake and documentation
 *.txt

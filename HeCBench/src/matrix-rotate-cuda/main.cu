@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
   const int n = atoi(argv[1]);
   const int repeat = atoi(argv[2]);
   const char *dump_path = argc == 4 ? argv[3] : nullptr;
+  const bool force_dump = std::getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
 
   float *serial_res = (float*) aligned_alloc(1024, n*n*sizeof(float));
   float *parallel_res = (float*) aligned_alloc(1024, n*n*sizeof(float));
@@ -101,7 +102,7 @@ int main(int argc, char** argv) {
 
   printf("%s\n", ok ? "PASS" : "FAIL");
 
-  if (dump_path && ok) {
+  if (dump_path && (ok || force_dump)) {
     FILE *fp = fopen(dump_path, "wb");
     if (!fp) {
       fprintf(stderr, "Failed to open dump file %s\n", dump_path);

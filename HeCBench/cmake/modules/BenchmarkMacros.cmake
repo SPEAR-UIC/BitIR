@@ -113,6 +113,18 @@ function(add_hecbench_benchmark)
             CUDA_SEPARABLE_COMPILATION ON
         )
         target_link_libraries(${TARGET_NAME} PRIVATE CUDA::cudart)
+        if(HECBENCH_LLFI_ENABLED)
+            # Ensure LLFI runtime support objects are part of every CUDA benchmark
+            set_source_files_properties(${HECBENCH_LLFI_RUNTIME_SRC} ${HECBENCH_LLFI_SUPPORT_SRC} PROPERTIES LANGUAGE CUDA)
+            target_sources(${TARGET_NAME} PRIVATE
+                ${HECBENCH_LLFI_RUNTIME_SRC}
+                ${HECBENCH_LLFI_SUPPORT_SRC}
+            )
+            target_compile_definitions(${TARGET_NAME} PRIVATE ${HECBENCH_LLFI_DEFINE})
+            target_compile_options(${TARGET_NAME} PRIVATE
+                $<$<COMPILE_LANGUAGE:CUDA>:-g;-G;-lineinfo;-Xptxas;-O0;-rdc=true>
+            )
+        endif()
 
     elseif(BENCH_MODEL_LOWER STREQUAL "hip")
         # HIP configuration
