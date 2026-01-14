@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/merkle-sycl.dir/bench_merkle_tree.cpp.o" "CMakeFiles/merkle-sycl.dir/ff_p.cpp.o" "CMakeFiles/merkle-sycl.dir/main.cpp.o" "CMakeFiles/merkle-sycl.dir/merkle_tree.cpp.o" "CMakeFiles/merkle-sycl.dir/rescue_prime.cpp.o" -o ../../bin/sycl/merkle

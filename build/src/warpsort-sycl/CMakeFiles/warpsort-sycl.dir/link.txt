@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/warpsort-sycl.dir/main.cpp.o" "CMakeFiles/warpsort-sycl.dir/warpsort.cpp.o" -o ../../bin/sycl/warpsort

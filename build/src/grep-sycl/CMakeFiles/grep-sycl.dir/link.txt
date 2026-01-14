@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/grep-sycl.dir/main.cpp.o" "CMakeFiles/grep-sycl.dir/nfautil.cpp.o" "CMakeFiles/grep-sycl.dir/pnfa.cpp.o" "CMakeFiles/grep-sycl.dir/putil.cpp.o" "CMakeFiles/grep-sycl.dir/regex.cpp.o" -o ../../bin/sycl/grep

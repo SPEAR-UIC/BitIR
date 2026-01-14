@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/kmc-cuda.dir/main.cpp.o" "CMakeFiles/kmc-cuda.dir/svm.cpp.o" -o ../../bin/cuda/kmc  -Wl,-rpath,/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/cuda/12.9/targets/x86_64-linux/lib /opt/nvidia/hpc_sdk/Linux_x86_64/25.5/cuda/12.9/targets/x86_64-linux/lib/libcudart.so -ldl /usr/lib64/librt.a

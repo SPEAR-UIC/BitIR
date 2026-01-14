@@ -194,14 +194,22 @@ def sweep_injections(
     injection_entries: List[Dict[str, int]],
     output_root: Path,
     max_sites: Optional[int],
+    site_offset: int = 0,
+    site_count: Optional[int] = None,
 ) -> None:
     injection_root = output_root / "injection_runs"
     injection_root.mkdir(parents=True, exist_ok=True)
     report_path = output_root / "report.csv"
-    total_sites = sum(entry["instCount"] for entry in injection_entries)
+    global_total = sum(entry["instCount"] for entry in injection_entries)
+    if site_offset < 0:
+        raise ValueError("site_offset must be >= 0")
+    if site_offset > global_total:
+        raise ValueError(f"site_offset {site_offset} exceeds total sites {global_total}")
+    remaining = global_total - site_offset
+    planned_sites = remaining if site_count is None else min(site_count, remaining)
     if max_sites is not None:
-        total_sites = min(total_sites, max_sites)
-    log(f"Planning to execute {total_sites} injection runs")
+        planned_sites = min(planned_sites, max_sites)
+    log(f"Planning to execute {planned_sites} injection runs (offset={site_offset}, total={global_total})")
     with report_path.open("w", newline="", encoding="utf-8") as csvfile:
         fieldnames = [
             "index",
@@ -218,10 +226,11 @@ def sweep_injections(
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         site_iter = iter_injection_sites(injection_entries)
-        for idx in range(1, total_sites + 1):
-            try:
-                site = next(site_iter)
-            except StopIteration:
+        for _ in range(site_offset):
+            next(site_iter, None)
+        for idx in range(1, planned_sites + 1):
+            site = next(site_iter, None)
+            if site is None:
                 break
             run_dir = injection_root / f"run_{idx:06d}"
             if run_dir.exists():
@@ -230,7 +239,7 @@ def sweep_injections(
             config_path = run_dir / "bamboo_fi" / "bamboo.fi.config.txt"
             config_line = f"{site['threadIndex']} {site['instIndex']} {site['dynamicKernelIndex']} {site['staticKernelIndex']}"
             config_path.write_text(config_line + "\n", encoding="utf-8")
-            log(f"[{idx}/{total_sites}] Injecting thread={site['threadIndex']} dynamic={site['dynamicKernelIndex']} static={site['staticKernelIndex']} inst={site['instIndex']}")
+            log(f"[{idx}/{planned_sites}] Injecting thread={site['threadIndex']} dynamic={site['dynamicKernelIndex']} static={site['staticKernelIndex']} inst={site['instIndex']}")
             dump_path = run_dir / "matrix_dump.bin"
             env = {"HECBENCH_LLFI_FORCE_DUMP": "1"}
             status, _, _ = run_binary(
@@ -294,8 +303,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", help="Directory for all sweep artifacts")
     parser.add_argument("--profile-build-dir", help="Custom CMake build directory for profiling binaries")
     parser.add_argument("--inject-build-dir", help="Custom CMake build directory for injection binaries")
+    parser.add_argument("--profile-path", help="Reuse an existing bamboo.profile.txt (skips profiling run)")
+    parser.add_argument("--injection-binary", help="Path to a prebuilt injection binary (skips injection build)")
+    parser.add_argument("--profile-only", action="store_true", help="Stop after generating the profiling data")
+    parser.add_argument("--inject-only", action="store_true", help="Run injections using an existing profile")
     parser.add_argument("--cmake-arg", action="append", default=[], help="Additional -D arguments forwarded to CMake")
     parser.add_argument("--max-sites", type=int, help="Optional limit on injection sites (useful for testing)")
+    parser.add_argument("--site-offset", type=int, default=0, help="Skip this many injection sites before starting")
+    parser.add_argument("--site-count", type=int, help="Limit injections to this many sites after the offset")
     return parser.parse_args()
 
 
@@ -314,23 +329,56 @@ def main() -> int:
     injection_build_dir = Path(args.inject_build_dir) if args.inject_build_dir else (REPO_ROOT / "build" / "llfi-matrix-rotate-inject")
     target = "matrix-rotate-cuda"
 
-    log("Configuring profiling build")
-    configure_build("profiling", profile_build_dir, llfi_root, args.cuda_arch, args.cmake_arg)
-    build_target(profile_build_dir, target)
-    profiling_binary = profile_build_dir / "bin" / "cuda" / "matrix-rotate"
-    if not profiling_binary.exists():
-        raise FileNotFoundError(f"Profiling binary not found: {profiling_binary}")
+    profile_path = None
+    if args.profile_path:
+        profile_path = Path(args.profile_path).resolve()
+        if not profile_path.exists():
+            raise FileNotFoundError(f"Profile path not found: {profile_path}")
+    if not args.inject_only and profile_path is None:
+        log("Configuring profiling build")
+        configure_build("profiling", profile_build_dir, llfi_root, args.cuda_arch, args.cmake_arg)
+        build_target(profile_build_dir, target)
+        profiling_binary = profile_build_dir / "bin" / "cuda" / "matrix-rotate"
+        if not profiling_binary.exists():
+            raise FileNotFoundError(f"Profiling binary not found: {profiling_binary}")
 
-    log("Running LLFI profiling pass")
-    profile_dir = output_root / "profile_run"
-    profile_path = run_profiling_pass(profiling_binary, args.size, args.repeat, profile_dir)
+        log("Running LLFI profiling pass")
+        profile_dir = output_root / "profile_run"
+        profile_path = run_profiling_pass(profiling_binary, args.size, args.repeat, profile_dir)
+        if args.profile_only:
+            summary = {
+                "benchmark": "matrix-rotate",
+                "size": args.size,
+                "repeat": args.repeat,
+                "golden": str(golden_path),
+                "output_root": str(output_root),
+                "profile_build_dir": str(profile_build_dir),
+                "llfi_root": str(llfi_root),
+                "cuda_arch": args.cuda_arch,
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "profile_path": str(profile_path),
+            }
+            summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+            log(f"Profiling only. Summary stored at {summary_path}")
+            return 0
+    if profile_path is None:
+        raise RuntimeError("Profile path is required for injection-only runs")
 
-    log("Configuring injection build")
-    configure_build("injection", injection_build_dir, llfi_root, args.cuda_arch, args.cmake_arg)
-    build_target(injection_build_dir, target)
-    injection_binary = injection_build_dir / "bin" / "cuda" / "matrix-rotate"
-    if not injection_binary.exists():
-        raise FileNotFoundError(f"Injection binary not found: {injection_binary}")
+    if args.profile_only:
+        raise RuntimeError("--profile-only requires profiling run (omit --profile-path)")
+
+    injection_binary = None
+    if args.injection_binary:
+        injection_binary = Path(args.injection_binary).resolve()
+        if not injection_binary.exists():
+            raise FileNotFoundError(f"Injection binary not found: {injection_binary}")
+    if injection_binary is None:
+        log("Configuring injection build")
+        configure_build("injection", injection_build_dir, llfi_root, args.cuda_arch, args.cmake_arg)
+        build_target(injection_build_dir, target)
+        injection_binary = injection_build_dir / "bin" / "cuda" / "matrix-rotate"
+        if not injection_binary.exists():
+            raise FileNotFoundError(f"Injection binary not found: {injection_binary}")
 
     log(f"Parsing bamboo profile at {profile_path}")
     injection_entries = parse_profile(profile_path)
@@ -344,6 +392,8 @@ def main() -> int:
         injection_entries,
         output_root,
         args.max_sites,
+        site_offset=args.site_offset,
+        site_count=args.site_count,
     )
 
     summary = {
@@ -358,6 +408,10 @@ def main() -> int:
         "cuda_arch": args.cuda_arch,
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "max_sites": args.max_sites,
+        "profile_path": str(profile_path),
+        "injection_binary": str(injection_binary),
+        "site_offset": args.site_offset,
+        "site_count": args.site_count,
     }
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     log(f"Sweep complete. Summary stored at {summary_path}")

@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/ced-sycl.dir/kernel_reference.cpp.o" "CMakeFiles/ced-sycl.dir/main.cpp.o" -o ../../bin/sycl/ced

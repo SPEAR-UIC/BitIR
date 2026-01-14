@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/opticalFlow-sycl.dir/flowGold.cpp.o" "CMakeFiles/opticalFlow-sycl.dir/flowSYCL.cpp.o" "CMakeFiles/opticalFlow-sycl.dir/main.cpp.o" -o ../../bin/sycl/opticalFlow

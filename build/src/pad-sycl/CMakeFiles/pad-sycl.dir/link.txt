@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/pad-sycl.dir/host_task.cpp.o" "CMakeFiles/pad-sycl.dir/kernel.cpp.o" "CMakeFiles/pad-sycl.dir/main.cpp.o" -o ../../bin/sycl/pad

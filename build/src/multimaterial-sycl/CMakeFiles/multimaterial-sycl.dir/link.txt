@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/multimaterial-sycl.dir/compact.cpp.o" "CMakeFiles/multimaterial-sycl.dir/full_matrix.cpp.o" "CMakeFiles/multimaterial-sycl.dir/multimat.cpp.o" -o ../../bin/sycl/multimaterial

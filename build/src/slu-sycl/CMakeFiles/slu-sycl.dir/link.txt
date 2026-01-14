@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/slu-sycl.dir/numeric.cpp.o" -o ../../bin/sycl/slu

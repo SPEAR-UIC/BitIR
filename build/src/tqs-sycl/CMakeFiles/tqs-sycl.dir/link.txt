@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/tqs-sycl.dir/host_task.cpp.o" "CMakeFiles/tqs-sycl.dir/kernel.cpp.o" "CMakeFiles/tqs-sycl.dir/main.cpp.o" -o ../../bin/sycl/tqs

@@ -60,6 +60,24 @@ int main(int argc, char** argv) {
   const int repeat = atoi(argv[2]);
   const char *dump_path = argc == 4 ? argv[3] : nullptr;
   const bool force_dump = std::getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
+  const bool gpu_debug = std::getenv("HECBENCH_GPU_DEBUG") != nullptr;
+
+  if (gpu_debug) {
+    int device_count = 0;
+    cudaError_t err = cudaGetDeviceCount(&device_count);
+    fprintf(stderr, "[gpu-debug] cudaGetDeviceCount=%d err=%s\n",
+            device_count, cudaGetErrorString(err));
+    int device = -1;
+    err = cudaGetDevice(&device);
+    fprintf(stderr, "[gpu-debug] cudaGetDevice=%d err=%s\n",
+            device, cudaGetErrorString(err));
+    if (device >= 0) {
+      cudaDeviceProp prop{};
+      err = cudaGetDeviceProperties(&prop, device);
+      fprintf(stderr, "[gpu-debug] device=%d name=%s cc=%d.%d err=%s\n",
+              device, prop.name, prop.major, prop.minor, cudaGetErrorString(err));
+    }
+  }
 
   float *serial_res = (float*) aligned_alloc(1024, n*n*sizeof(float));
   float *parallel_res = (float*) aligned_alloc(1024, n*n*sizeof(float));
@@ -81,9 +99,16 @@ int main(int argc, char** argv) {
   
   for (int i = 0; i < repeat; i++) {
     rotate_matrix_parallel<<<(n/2+255)/256, 256>>>(d_parallel_res, n);
+    if (gpu_debug) {
+      cudaError_t launch_err = cudaPeekAtLastError();
+      fprintf(stderr, "[gpu-debug] kernel launch err=%s\n", cudaGetErrorString(launch_err));
+    }
   }
 
-  cudaDeviceSynchronize();
+  cudaError_t sync_err = cudaDeviceSynchronize();
+  if (gpu_debug) {
+    fprintf(stderr, "[gpu-debug] cudaDeviceSynchronize err=%s\n", cudaGetErrorString(sync_err));
+  }
   auto end = std::chrono::steady_clock::now();
   auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
   printf("Average kernel execution time: %f (s)\n", (time * 1e-9f) / repeat);

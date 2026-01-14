@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/keccaktreehash-sycl.dir/KeccakF.cpp.o" "CMakeFiles/keccaktreehash-sycl.dir/KeccakTreeCPU.cpp.o" "CMakeFiles/keccaktreehash-sycl.dir/KeccakTreeGPU.cpp.o" "CMakeFiles/keccaktreehash-sycl.dir/Test.cpp.o" "CMakeFiles/keccaktreehash-sycl.dir/main.cpp.o" -o ../../bin/sycl/keccaktreehash

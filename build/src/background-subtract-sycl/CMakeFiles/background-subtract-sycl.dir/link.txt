@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/background-subtract-sycl.dir/main.cpp.o" -o ../../bin/sycl/background-subtract

@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/hmm-sycl.dir/HiddenMarkovModel.cpp.o" "CMakeFiles/hmm-sycl.dir/ViterbiCPU.cpp.o" "CMakeFiles/hmm-sycl.dir/ViterbiGPU.cpp.o" -o ../../bin/sycl/hmm

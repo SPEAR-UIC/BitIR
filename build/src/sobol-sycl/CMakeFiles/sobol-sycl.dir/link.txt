@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/sobol-sycl.dir/sobol.cpp.o" "CMakeFiles/sobol-sycl.dir/sobol_gold.cpp.o" "CMakeFiles/sobol-sycl.dir/sobol_gpu.cpp.o" "CMakeFiles/sobol-sycl.dir/sobol_primitives.cpp.o" -o ../../bin/sycl/sobol

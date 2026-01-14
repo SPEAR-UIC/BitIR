@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/compute-score-sycl.dir/main.cpp.o" "CMakeFiles/compute-score-sycl.dir/options.cpp.o" -o ../../bin/sycl/compute-score

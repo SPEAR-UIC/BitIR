@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/morphology-omp.dir/main.cpp.o" "CMakeFiles/morphology-omp.dir/morphology.cpp.o" -o ../../bin/omp/morphology

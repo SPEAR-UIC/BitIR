@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/aes-sycl.dir/kernels.cpp.o" "CMakeFiles/aes-sycl.dir/main.cpp.o" "CMakeFiles/aes-sycl.dir/reference.cpp.o" "CMakeFiles/aes-sycl.dir/utils.cpp.o" -o ../../bin/sycl/aes

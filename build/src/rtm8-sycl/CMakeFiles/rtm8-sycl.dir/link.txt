@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/rtm8-sycl.dir/rtm8.cpp.o" -o ../../bin/sycl/rtm8

@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/convolution3D-sycl.dir/conv3d_s4.cpp.o" "CMakeFiles/convolution3D-sycl.dir/main.cpp.o" -o ../../bin/sycl/convolution3D

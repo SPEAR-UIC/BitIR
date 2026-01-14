@@ -1,0 +1,12 @@
+file(REMOVE_RECURSE
+  "../../bin/cuda/michalewicz"
+  "../../bin/cuda/michalewicz.pdb"
+  "CMakeFiles/michalewicz-cuda.dir/cmake_device_link.o"
+  "CMakeFiles/michalewicz-cuda.dir/main.cu.o"
+  "CMakeFiles/michalewicz-cuda.dir/main.cu.o.d"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CUDA)
+  include(CMakeFiles/michalewicz-cuda.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

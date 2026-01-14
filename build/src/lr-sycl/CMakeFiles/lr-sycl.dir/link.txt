@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/lr-sycl.dir/linear_iter.cpp.o" "CMakeFiles/lr-sycl.dir/linear_par.cpp.o" "CMakeFiles/lr-sycl.dir/main.cpp.o" -o ../../bin/sycl/lr

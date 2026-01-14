@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/metropolis-sycl.dir/heap.cpp.o" "CMakeFiles/metropolis-sycl.dir/main.cpp.o" "CMakeFiles/metropolis-sycl.dir/utils.cpp.o" -o ../../bin/sycl/metropolis

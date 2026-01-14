@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/haccmk-sycl.dir/haccmk.cpp.o" -o ../../bin/sycl/haccmk

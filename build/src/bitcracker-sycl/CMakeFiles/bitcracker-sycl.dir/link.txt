@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/bitcracker-sycl.dir/attack.cpp.o" "CMakeFiles/bitcracker-sycl.dir/main.cpp.o" "CMakeFiles/bitcracker-sycl.dir/utils.cpp.o" "CMakeFiles/bitcracker-sycl.dir/w_blocks.cpp.o" -o ../../bin/sycl/bitcracker

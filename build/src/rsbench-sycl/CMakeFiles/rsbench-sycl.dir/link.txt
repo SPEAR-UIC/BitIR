@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/rsbench-sycl.dir/init.cpp.o" "CMakeFiles/rsbench-sycl.dir/io.cpp.o" "CMakeFiles/rsbench-sycl.dir/main.cpp.o" "CMakeFiles/rsbench-sycl.dir/material.cpp.o" "CMakeFiles/rsbench-sycl.dir/simulation.cpp.o" "CMakeFiles/rsbench-sycl.dir/utils.cpp.o" -o ../../bin/sycl/rsbench

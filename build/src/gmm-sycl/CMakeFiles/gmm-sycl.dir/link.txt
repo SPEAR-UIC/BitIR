@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/gmm-sycl.dir/cluster.cpp.o" "CMakeFiles/gmm-sycl.dir/gaussian_kernel.cpp.o" "CMakeFiles/gmm-sycl.dir/main.cpp.o" "CMakeFiles/gmm-sycl.dir/readData.cpp.o" -o ../../bin/sycl/gmm

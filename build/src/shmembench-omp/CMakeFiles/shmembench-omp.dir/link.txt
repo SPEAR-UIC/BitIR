@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/shmembench-omp.dir/main.cpp.o" "CMakeFiles/shmembench-omp.dir/shmem_kernels.cpp.o" -o ../../bin/omp/shmembench

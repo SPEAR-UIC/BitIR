@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/cc "CMakeFiles/hybridsort-omp.dir/bucketsort.c.o" "CMakeFiles/hybridsort-omp.dir/hybridsort.c.o" "CMakeFiles/hybridsort-omp.dir/mergesort.c.o" -o ../../bin/omp/hybridsort

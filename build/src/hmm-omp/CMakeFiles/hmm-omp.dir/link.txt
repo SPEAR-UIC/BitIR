@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/hmm-omp.dir/HiddenMarkovModel.cpp.o" "CMakeFiles/hmm-omp.dir/ViterbiCPU.cpp.o" "CMakeFiles/hmm-omp.dir/ViterbiGPU.cpp.o" -o ../../bin/omp/hmm

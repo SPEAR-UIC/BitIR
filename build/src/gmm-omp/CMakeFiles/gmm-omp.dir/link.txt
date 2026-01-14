@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/gmm-omp.dir/cluster.cpp.o" "CMakeFiles/gmm-omp.dir/gaussian_kernel.cpp.o" "CMakeFiles/gmm-omp.dir/main.cpp.o" "CMakeFiles/gmm-omp.dir/readData.cpp.o" -o ../../bin/omp/gmm

@@ -1,0 +1,84 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N llfi_rebuild
+#PBS -q debug
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=00:20:00
+#PBS -o OUT_llfi_rebuild.out
+#PBS -e ERROR_llfi_rebuild.err
+
+set -euo pipefail
+
+if command -v module &> /dev/null; then
+  module use /soft/modulefiles
+  module purge
+  module load spack-pe-base cmake
+  if [[ -n "${MODULE_LIST:-}" ]]; then
+    for m in ${MODULE_LIST}; do
+      module load "$m"
+    done
+  fi
+fi
+
+cd "$PBS_O_WORKDIR"
+
+# CUDA runtime discovery (copied from target_golden_outputs.pbs)
+: "${DEFAULT_CUDA_HOME:=/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/cuda}"
+if [[ -z "${CUDA_HOME:-}" ]]; then
+  if [[ -d "$DEFAULT_CUDA_HOME" ]]; then
+    CUDA_HOME="$DEFAULT_CUDA_HOME"
+  elif [[ -d "/opt/nvidia/hpc_sdk/Linux_x86_64/24.11/cuda/12.6" ]]; then
+    CUDA_HOME="/opt/nvidia/hpc_sdk/Linux_x86_64/24.11/cuda/12.6"
+  elif [[ -d "/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/cuda" ]]; then
+    CUDA_HOME="/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/cuda"
+  elif command -v nvcc &> /dev/null; then
+    CUDA_HOME="$(dirname "$(dirname "$(command -v nvcc)")")"
+  elif [[ -n "${CUDATOOLKIT_ROOT:-}" ]]; then
+    CUDA_HOME="$CUDATOOLKIT_ROOT"
+  else
+    for candidate in \
+      /opt/nvidia/hpc_sdk/Linux_x86_64/latest/cuda \
+      /usr/local/cuda; do
+      if [[ -d "$candidate" ]]; then
+        CUDA_HOME="$candidate"
+        break
+      fi
+    done
+  fi
+fi
+
+if [[ -z "${CUDA_HOME:-}" ]]; then
+  echo "CUDA_HOME not set and CUDA installation could not be detected."
+  exit 1
+fi
+
+export CUDA_HOME
+export NVVM_INCLUDE_DIR="${CUDA_HOME}/nvvm/include"
+
+if [[ ! -d "${NVVM_INCLUDE_DIR}" ]]; then
+  echo "NVVM include directory not found at ${NVVM_INCLUDE_DIR}."
+  echo "Set CUDA_HOME or NVVM_INCLUDE_DIR to a CUDA install with nvvm/include."
+  exit 1
+fi
+
+for candidate in "$CUDA_HOME/bin" "$CUDA_HOME/lib64" "$CUDA_HOME/lib" "$CUDA_HOME/lib64/stubs"; do
+  if [[ "$candidate" == *"/bin" ]]; then
+    if [[ -d "$candidate" ]]; then
+      PATH="$candidate:${PATH:-}"
+    fi
+  else
+    if [[ -d "$candidate" ]]; then
+      LD_LIBRARY_PATH="$candidate:${LD_LIBRARY_PATH:-}"
+    fi
+  fi
+done
+export PATH
+export LD_LIBRARY_PATH
+
+export MAKEFLAGS=-j1
+
+cd /home/mdunlavy/GPU_FI/LLFI-GPU
+./scripts/rebuild_interposers.sh
+
+ls -l bamboo_lib/profiling_lib/libnvcc.so bamboo_lib/injection_lib/libnvcc.so

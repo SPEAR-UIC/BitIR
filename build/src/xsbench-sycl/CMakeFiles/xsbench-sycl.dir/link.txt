@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/xsbench-sycl.dir/Simulation.cpp.o" -o ../../bin/sycl/xsbench

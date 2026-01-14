@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/hwt1d-sycl.dir/kernel.cpp.o" "CMakeFiles/hwt1d-sycl.dir/main.cpp.o" "CMakeFiles/hwt1d-sycl.dir/reference.cpp.o" -o ../../bin/sycl/hwt1d

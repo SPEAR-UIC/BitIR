@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/bm3d-sycl.dir/blockmatching.cpp.o" "CMakeFiles/bm3d-sycl.dir/dct8x8.cpp.o" "CMakeFiles/bm3d-sycl.dir/filtering.cpp.o" "CMakeFiles/bm3d-sycl.dir/main.cpp.o" -o ../../bin/sycl/bm3d

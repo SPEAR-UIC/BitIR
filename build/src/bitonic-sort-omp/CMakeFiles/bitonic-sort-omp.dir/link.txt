@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/bitonic-sort-omp.dir/main.cpp.o" -o ../../bin/omp/bitonic-sort

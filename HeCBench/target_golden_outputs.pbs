@@ -14,7 +14,7 @@ if command -v module &> /dev/null; then
   module use /soft/modulefiles
   module purge
   module load spack-pe-base cmake
-  for m in ${MODULE_LIST:-cuda/12.6}; do
+  for m in ${MODULE_LIST:-cudatoolkit-standalone/11.8.0}; do
     module load "$m"
   done
 fi
@@ -22,9 +22,10 @@ fi
 cd "$PBS_O_WORKDIR"
 
 REPO_DIR="$PBS_O_WORKDIR"
-BUILD_DIR="${BUILD_DIR:-$REPO_DIR/build}"
+BUILD_DIR="${BUILD_DIR:-$REPO_DIR/HeCBench/build-cuda118}"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$REPO_DIR/Polaris_Golden_Outputs}"
 mkdir -p "$OUTPUT_ROOT"
+export HECBENCH_GPU_DEBUG="${HECBENCH_GPU_DEBUG:-1}"
 
 timestamp() {
   date +"%Y-%m-%d %H:%M:%S"
@@ -43,8 +44,44 @@ append_summary() {
   echo "[$(timestamp)] $1" >> "$SUMMARY_FILE"
 }
 
+GPU_MONITOR_PID=""
+GPU_PID_MARK=""
+
+start_gpu_monitor() {
+  local log="$1"
+  local target_pid="${2:-}"
+  local pid_mark="${3:-}"
+  if ! command -v nvidia-smi &> /dev/null; then
+    return
+  fi
+  (
+    while true; do
+      echo "[gpu-monitor] $(timestamp)"
+      nvidia-smi --query-compute-apps=pid,process_name,gpu_uuid,used_gpu_memory --format=csv || true
+      nvidia-smi --query-gpu=timestamp,uuid,utilization.gpu,utilization.memory,memory.used --format=csv || true
+      nvidia-smi pmon -c 1 || true
+      nvidia-smi dmon -s u -d 0.1 -c 10 || true
+      if [[ -n "$target_pid" && -n "$pid_mark" ]]; then
+        if nvidia-smi --query-compute-apps=pid --format=csv,noheader 2>/dev/null | grep -q "^${target_pid}$"; then
+          touch "$pid_mark"
+        fi
+      fi
+      sleep 0.2
+    done
+  ) >> "$log" &
+  GPU_MONITOR_PID=$!
+}
+
+stop_gpu_monitor() {
+  if [[ -n "${GPU_MONITOR_PID}" ]]; then
+    kill "${GPU_MONITOR_PID}" 2>/dev/null || true
+    wait "${GPU_MONITOR_PID}" 2>/dev/null || true
+    GPU_MONITOR_PID=""
+  fi
+}
+
 # CUDA runtime discovery
-: "${DEFAULT_CUDA_HOME:=/opt/nvidia/hpc_sdk/Linux_x86_64/24.11/cuda/12.6}"
+: "${DEFAULT_CUDA_HOME:=/soft/compilers/cudatoolkit/cuda-11.8.0}"
 if [[ -z "${CUDA_HOME:-}" ]]; then
   if [[ -d "$DEFAULT_CUDA_HOME" ]]; then
     CUDA_HOME="$DEFAULT_CUDA_HOME"
@@ -80,8 +117,12 @@ if [[ -n "${CUDA_HOME:-}" ]]; then
   done
   export PATH
   export LD_LIBRARY_PATH
+  export CUDA_DEVICE_ORDER="${CUDA_DEVICE_ORDER:-PCI_BUS_ID}"
+  export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
   echo "PATH=$PATH"
   echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+  echo "CUDA_DEVICE_ORDER=$CUDA_DEVICE_ORDER"
+  echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
   append_summary "CUDA runtime: $CUDA_HOME"
 else
   echo "Warning: CUDA_HOME not set and CUDA installation could not be detected."
@@ -102,13 +143,23 @@ run_benchmark() {
   shift 2
   local log="$OUTPUT_ROOT/${name}.log"
   local err="$OUTPUT_ROOT/${name}.err"
+  local pid_mark="$OUTPUT_ROOT/.${name}.gpu_pid_seen"
   rm -f "$log" "$err"
+  rm -f "$pid_mark"
   ensure_binary "$name" "$bin"
   echo "[$(timestamp)] Running ${name}: $bin $*" | tee "$log"
+  echo "[env] HECBENCH_GPU_DEBUG=${HECBENCH_GPU_DEBUG:-}" | tee -a "$log"
   set +e
-  "$bin" "$@" > >(tee -a "$log") 2> >(tee -a "$err" >&2)
+  "$bin" "$@" > >(tee -a "$log") 2> >(tee -a "$err" >&2) &
+  local bench_pid=$!
+  start_gpu_monitor "$log" "$bench_pid" "$pid_mark"
+  wait "$bench_pid"
   local status=$?
   set -e
+  stop_gpu_monitor
+  if [[ ! -f "$pid_mark" ]]; then
+    echo "[$(timestamp)] WARNING: GPU process PID $bench_pid not observed by nvidia-smi." | tee -a "$log"
+  fi
   if [[ $status -ne 0 ]]; then
     echo "[$(timestamp)] ${name} FAILED (status $status). See $log / $err" | tee -a "$log"
     append_summary "${name}: FAILED"

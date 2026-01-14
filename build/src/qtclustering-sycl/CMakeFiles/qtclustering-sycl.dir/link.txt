@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/qtclustering-sycl.dir/Option.cpp.o" "CMakeFiles/qtclustering-sycl.dir/OptionParser.cpp.o" "CMakeFiles/qtclustering-sycl.dir/QTC.cpp.o" "CMakeFiles/qtclustering-sycl.dir/comm.cpp.o" "CMakeFiles/qtclustering-sycl.dir/libdata.cpp.o" "CMakeFiles/qtclustering-sycl.dir/main.cpp.o" -o ../../bin/sycl/qtclustering

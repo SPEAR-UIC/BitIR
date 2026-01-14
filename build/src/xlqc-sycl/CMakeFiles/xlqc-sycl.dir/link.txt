@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/xlqc-sycl.dir/cuda_rys_dp.cpp.o" "CMakeFiles/xlqc-sycl.dir/cuda_rys_sp.cpp.o" "CMakeFiles/xlqc-sycl.dir/main.cpp.o" -o ../../bin/sycl/xlqc

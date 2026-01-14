@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/eigenvalue-sycl.dir/kernels.cpp.o" "CMakeFiles/eigenvalue-sycl.dir/main.cpp.o" "CMakeFiles/eigenvalue-sycl.dir/reference.cpp.o" "CMakeFiles/eigenvalue-sycl.dir/utils.cpp.o" -o ../../bin/sycl/eigenvalue

@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/minibude-omp.dir/kernel.cpp.o" "CMakeFiles/minibude-omp.dir/main.cpp.o" -o ../../bin/omp/minibude

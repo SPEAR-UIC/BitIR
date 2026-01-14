@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/cc -fsycl "CMakeFiles/kmeans-sycl.dir/cluster.c.o" "CMakeFiles/kmeans-sycl.dir/getopt.c.o" "CMakeFiles/kmeans-sycl.dir/kmeans.c.o" "CMakeFiles/kmeans-sycl.dir/read_input.c.o" "CMakeFiles/kmeans-sycl.dir/rmse.c.o" -o ../../bin/sycl/kmeans

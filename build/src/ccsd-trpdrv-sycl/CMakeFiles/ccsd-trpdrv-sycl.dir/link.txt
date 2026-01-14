@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/ccsd-trpdrv-sycl.dir/ccsd_tengy.cpp.o" "CMakeFiles/ccsd-trpdrv-sycl.dir/ccsd_trpdrv.cpp.o" "CMakeFiles/ccsd-trpdrv-sycl.dir/main.cpp.o" -o ../../bin/sycl/ccsd-trpdrv

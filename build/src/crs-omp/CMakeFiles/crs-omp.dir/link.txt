@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/crs-omp.dir/kernels.cpp.o" "CMakeFiles/crs-omp.dir/main.cpp.o" "CMakeFiles/crs-omp.dir/utils.cpp.o" -o ../../bin/omp/crs

@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/loopback-sycl.dir/kernels.cpp.o" "CMakeFiles/loopback-sycl.dir/main.cpp.o" -o ../../bin/sycl/loopback

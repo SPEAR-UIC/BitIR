@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/cc -fsycl "CMakeFiles/b+tree-sycl.dir/main.c.o" -o ../../bin/sycl/b+tree

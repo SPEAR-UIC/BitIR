@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/svd3x3-sycl.dir/kernels.cpp.o" "CMakeFiles/svd3x3-sycl.dir/main.cpp.o" -o ../../bin/sycl/svd3x3

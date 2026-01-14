@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/mmcsf-sycl.dir/kernels.cpp.o" "CMakeFiles/mmcsf-sycl.dir/main.cpp.o" "CMakeFiles/mmcsf-sycl.dir/mttkrp_cpu.cpp.o" -o ../../bin/sycl/mmcsf

@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/lanczos-omp.dir/lanczos.cpp.o" "CMakeFiles/lanczos-omp.dir/main.cpp.o" -o ../../bin/omp/lanczos

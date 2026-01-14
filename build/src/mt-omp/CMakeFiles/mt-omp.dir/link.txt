@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/mt-omp.dir/MT.cpp.o" "CMakeFiles/mt-omp.dir/MT_gold.cpp.o" "CMakeFiles/mt-omp.dir/genmtrand.cpp.o" -o ../../bin/omp/mt

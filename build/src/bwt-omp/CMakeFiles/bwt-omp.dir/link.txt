@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/bwt-omp.dir/bwt.cpp.o" -o ../../bin/omp/bwt

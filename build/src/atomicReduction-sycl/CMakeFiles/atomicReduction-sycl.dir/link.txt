@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/atomicReduction-sycl.dir/reduction.cpp.o" -o ../../bin/sycl/atomicReduction

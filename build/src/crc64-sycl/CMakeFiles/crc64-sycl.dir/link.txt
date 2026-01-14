@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/crc64-sycl.dir/CRC64.cpp.o" "CMakeFiles/crc64-sycl.dir/CRC64Test.cpp.o" -o ../../bin/sycl/crc64

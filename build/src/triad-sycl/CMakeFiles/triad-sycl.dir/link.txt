@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/triad-sycl.dir/Option.cpp.o" "CMakeFiles/triad-sycl.dir/OptionParser.cpp.o" "CMakeFiles/triad-sycl.dir/Timer.cpp.o" "CMakeFiles/triad-sycl.dir/main.cpp.o" "CMakeFiles/triad-sycl.dir/triad.cpp.o" "CMakeFiles/triad-sycl.dir/triad2.cpp.o" -o ../../bin/sycl/triad

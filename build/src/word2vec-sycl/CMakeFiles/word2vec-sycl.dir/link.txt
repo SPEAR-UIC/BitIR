@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/word2vec-sycl.dir/cbow.cpp.o" "CMakeFiles/word2vec-sycl.dir/word2vec.cpp.o" -o ../../bin/sycl/word2vec

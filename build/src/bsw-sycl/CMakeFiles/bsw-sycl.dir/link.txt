@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/bsw-sycl.dir/driver.cpp.o" "CMakeFiles/bsw-sycl.dir/kernel.cpp.o" "CMakeFiles/bsw-sycl.dir/main.cpp.o" "CMakeFiles/bsw-sycl.dir/utils.cpp.o" -o ../../bin/sycl/bsw

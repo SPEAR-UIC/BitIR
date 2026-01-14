@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/backprop-omp.dir/backprop.cpp.o" "CMakeFiles/backprop-omp.dir/facetrain.cpp.o" "CMakeFiles/backprop-omp.dir/imagenet.cpp.o" "CMakeFiles/backprop-omp.dir/main.cpp.o" -o ../../bin/omp/backprop

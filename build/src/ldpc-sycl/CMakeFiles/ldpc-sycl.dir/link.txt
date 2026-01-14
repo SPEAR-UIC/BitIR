@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/ldpc-sycl.dir/cpu.cpp.o" "CMakeFiles/ldpc-sycl.dir/kernel.cpp.o" "CMakeFiles/ldpc-sycl.dir/main.cpp.o" -o ../../bin/sycl/ldpc

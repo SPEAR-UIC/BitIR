@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/extend2-sycl.dir/main.cpp.o" "CMakeFiles/extend2-sycl.dir/read_data.cpp.o" -o ../../bin/sycl/extend2

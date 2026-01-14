@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/bfs-omp.dir/bfs.cpp.o" -o ../../bin/omp/bfs

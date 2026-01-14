@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/grep-omp.dir/main.cpp.o" "CMakeFiles/grep-omp.dir/nfautil.cpp.o" "CMakeFiles/grep-omp.dir/pnfa.cpp.o" "CMakeFiles/grep-omp.dir/putil.cpp.o" "CMakeFiles/grep-omp.dir/regex.cpp.o" -o ../../bin/omp/grep

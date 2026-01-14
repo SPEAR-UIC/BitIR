@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/pingpong-sycl.dir/main-ccl.cpp.o" "CMakeFiles/pingpong-sycl.dir/main-mpi.cpp.o" -o ../../bin/sycl/pingpong

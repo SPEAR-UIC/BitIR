@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/amgmk-sycl.dir/csr_matrix.cpp.o" "CMakeFiles/amgmk-sycl.dir/csr_matvec.cpp.o" "CMakeFiles/amgmk-sycl.dir/hypre_error.cpp.o" "CMakeFiles/amgmk-sycl.dir/hypre_memory.cpp.o" "CMakeFiles/amgmk-sycl.dir/laplace.cpp.o" "CMakeFiles/amgmk-sycl.dir/main.cpp.o" "CMakeFiles/amgmk-sycl.dir/vector.cpp.o" -o ../../bin/sycl/amgmk

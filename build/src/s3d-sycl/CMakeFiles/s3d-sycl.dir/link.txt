@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/s3d-sycl.dir/Option.cpp.o" "CMakeFiles/s3d-sycl.dir/OptionParser.cpp.o" "CMakeFiles/s3d-sycl.dir/S3D.cpp.o" "CMakeFiles/s3d-sycl.dir/main.cpp.o" -o ../../bin/sycl/s3d

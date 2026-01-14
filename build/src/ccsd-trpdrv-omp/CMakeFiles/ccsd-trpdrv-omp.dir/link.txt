@@ -1,0 +1,1 @@
+/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/ccsd-trpdrv-omp.dir/ccsd_tengy.cpp.o" "CMakeFiles/ccsd-trpdrv-omp.dir/ccsd_trpdrv.cpp.o" "CMakeFiles/ccsd-trpdrv-omp.dir/main.cpp.o" -o ../../bin/omp/ccsd-trpdrv

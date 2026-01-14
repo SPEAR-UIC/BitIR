@@ -1,0 +1,1 @@
+-I/home/mdunlavy/GPU_FI/HeCBench/src/include -I"/home/mdunlavy/GPU_FI/HeCBench/src/ans-cuda/include" -I"/home/mdunlavy/GPU_FI/HeCBench/src/ans-cuda"
