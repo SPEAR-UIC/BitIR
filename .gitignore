@@ -1,6 +1,3 @@
 HeCBench/build/*
-LLFI-GPU/third_party/
-LLFI-GPU/bamboo_lib/src/profile/libcicc.so
-LLFI-GPU/bamboo_lib/src/profile/libnvcc.so
-LLFI-GPU/bamboo_lib/src/inject/libcicc.so
-LLFI-GPU/bamboo_lib/src/inject/libnvcc.so
+*.bin
+
