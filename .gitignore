@@ -1,3 +1,8 @@
 HeCBench/build/*
 *.bin
-
+HeCBench/results/llvm17_inject/
+HeCBench/results/llvm17_inject/**
+HeCBench/tools/llvm17_inject/libllfi_inject.so
+OUT_*.out
+ERROR_*.err
+old_outputs/

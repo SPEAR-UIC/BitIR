@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N dense_embedding
+#PBS -q prod
+#PBS -l select=40:ncpus=1:ngpus=4:mem=16gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=06:00:00
+#PBS -o OUT_dense-embedding_llvm17_inject.out
+#PBS -e ERROR_dense-embedding_llvm17_inject.err
+
+set -euo pipefail
+
+export BENCH="${BENCH:-dense-embedding}"
+export COMPARE_MODE="${COMPARE_MODE:-exact}"
+
+bash "${PBS_O_WORKDIR}/HeCBench/llvm17_inject_bench_sweep.pbs"

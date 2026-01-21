@@ -1,12 +1,12 @@
 #!/bin/bash
 #PBS -A UIC-HPC
-#PBS -N llfi_inject_matrix_rotate
+#PBS -N matrix_rotate
 #PBS -q debug
 #PBS -l select=1:ncpus=1:ngpus=1:mem=32gb
 #PBS -l filesystems=home:eagle
 #PBS -l walltime=00:05:00
-#PBS -o OUT_llfi_inject_matrix_rotate.out
-#PBS -e ERROR_llfi_inject_test.err
+#PBS -o OUT_matrix_rotate_llvm17_inject.out
+#PBS -e ERROR_matrix_rotate_llvm17_inject.err
 
 set -euo pipefail
 

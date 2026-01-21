@@ -93,6 +93,7 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
           IRBuilder<> B(insertPt);
           Value *orig = &I;
           Value *flipVal = nullptr;
+          SmallVector<Instruction *, 4> newInsts;
 
           if (I.getType()->isIntegerTy()) {
             IntegerType *Ty = cast<IntegerType>(I.getType());
@@ -102,7 +103,9 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
               bit = width - 1;
             APInt maskVal = APInt::getOneBitSet(width, bit);
             Value *mask = ConstantInt::get(Ty, maskVal);
-            flipVal = B.CreateXor(orig, mask, "llfi_flip");
+            auto *xorInst = cast<Instruction>(B.CreateXor(orig, mask, "llfi_flip"));
+            newInsts.push_back(xorInst);
+            flipVal = xorInst;
           } else if (I.getType()->isFloatingPointTy()) {
             Type *FTy = I.getType();
             unsigned width = FTy->getPrimitiveSizeInBits();
@@ -112,11 +115,15 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
             if (bit >= width)
               bit = width - 1;
             IntegerType *ITy = IntegerType::get(M.getContext(), width);
-            Value *asInt = B.CreateBitCast(orig, ITy, "llfi_f2i");
+            auto *asInt = cast<Instruction>(B.CreateBitCast(orig, ITy, "llfi_f2i"));
             APInt maskVal = APInt::getOneBitSet(width, bit);
             Value *mask = ConstantInt::get(ITy, maskVal);
-            Value *xored = B.CreateXor(asInt, mask, "llfi_fx");
-            flipVal = B.CreateBitCast(xored, FTy, "llfi_i2f");
+            auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "llfi_fx"));
+            auto *flipInst = cast<Instruction>(B.CreateBitCast(xored, FTy, "llfi_i2f"));
+            newInsts.push_back(asInt);
+            newInsts.push_back(xored);
+            newInsts.push_back(flipInst);
+            flipVal = flipInst;
           }
 
           if (!flipVal)
@@ -127,8 +134,17 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
             uses.push_back(&U);
           for (Use *U : uses) {
             Instruction *userI = dyn_cast<Instruction>(U->getUser());
-            if (userI && (userI == flipVal || userI->isIdenticalTo(cast<Instruction>(flipVal))))
-              continue;
+            if (userI) {
+              bool skip = false;
+              for (Instruction *inst : newInsts) {
+                if (userI == inst) {
+                  skip = true;
+                  break;
+                }
+              }
+              if (skip)
+                continue;
+            }
             U->set(flipVal);
           }
 

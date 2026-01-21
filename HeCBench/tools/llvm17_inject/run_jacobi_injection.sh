@@ -17,8 +17,6 @@ CUDA_ARCH="${CUDA_ARCH:-sm_80}"
 
 SITE_ID="${SITE_ID:-1}"
 BIT_INDEX="${BIT_INDEX:-0}"
-MATRIX_SIZE="${MATRIX_SIZE:-8192}"
-MATRIX_REPEAT="${MATRIX_REPEAT:-10}"
 ABS_TOL="${ABS_TOL:-0.0}"
 REL_TOL="${REL_TOL:-0.0}"
 BASELINE="${BASELINE:-0}"
@@ -29,21 +27,21 @@ if [[ ! -f "${PLUGIN}" ]]; then
   exit 1
 fi
 
-OUT_DIR="${OUT_DIR:-${REPO_ROOT}/HeCBench/build/llvm17-inject-matrix-rotate}"
-BIN_PATH="${OUT_DIR}/matrix-rotate"
-RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/HeCBench/results/llvm17_inject/matrix-rotate}"
+OUT_DIR="${OUT_DIR:-${REPO_ROOT}/HeCBench/build/llvm17-inject-jacobi}"
+BIN_PATH="${OUT_DIR}/jacobi"
+RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/HeCBench/results/llvm17_inject/jacobi}"
 mkdir -p "${OUT_DIR}" "${RESULTS_DIR}"
 
-SRC="${REPO_ROOT}/HeCBench/src/matrix-rotate-cuda/main.cu"
-BENCH_DIR="${REPO_ROOT}/HeCBench/src/matrix-rotate-cuda"
-GOLDEN="${GOLDEN:-${REPO_ROOT}/Polaris_Golden_Outputs/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}.bin}"
-RUN_DUMP_TMP="${OUT_DIR}/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}_site${SITE_ID}_bit${BIT_INDEX}.bin"
-RUN_DUMP_FINAL="${RESULTS_DIR}/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}_site${SITE_ID}_bit${BIT_INDEX}.bin"
+SRC="${REPO_ROOT}/HeCBench/src/jacobi-cuda/main.cu"
+BENCH_DIR="${REPO_ROOT}/HeCBench/src/jacobi-cuda"
+GOLDEN="${GOLDEN:-${REPO_ROOT}/Polaris_Golden_Outputs/jacobi.bin}"
+RUN_DUMP_TMP="${OUT_DIR}/jacobi_site${SITE_ID}_bit${BIT_INDEX}.bin"
+RUN_DUMP_FINAL="${RESULTS_DIR}/jacobi_site${SITE_ID}_bit${BIT_INDEX}.bin"
 RUN_OUT="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}.out"
 RUN_ERR="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}.err"
 CSV="${CSV:-${RESULTS_DIR}/summary.csv}"
 COMPARE_TOOL="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_matrix_dump.py"
-BASELINE_PATH="${BASELINE_PATH:-${RESULTS_DIR}/baseline_matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}.bin}"
+BASELINE_PATH="${BASELINE_PATH:-${RESULTS_DIR}/baseline_jacobi.bin}"
 
 IR_LL="${OUT_DIR}/device.ll"
 IR_BC="${OUT_DIR}/device.bc"
@@ -66,6 +64,7 @@ if [[ "${BASELINE}" -eq 0 ]]; then
 else
   echo "[inject] baseline_mode=1 path=${BASELINE_PATH}"
 fi
+
 if [[ ! -f "${COMPARE_TOOL}" ]]; then
   echo "Missing compare tool: ${COMPARE_TOOL}"
   exit 1
@@ -111,8 +110,6 @@ else
   exit 1
 fi
 
-CUDA_INCLUDE_FLAG=(-Xclang -fcuda-include-gpubinary -Xclang "${FATBIN_FILE}")
-
 rm -f "${BIN_PATH}"
 echo "[inject] using -Xclang -fcuda-include-gpubinary -Xclang ${FATBIN_FILE}"
 
@@ -120,7 +117,7 @@ ${CLANG} -x cuda \
   --cuda-host-only \
   --cuda-gpu-arch="${CUDA_ARCH}" \
   --cuda-path="${CUDA_HOME}" \
-  "${CUDA_INCLUDE_FLAG[@]}" \
+  -Xclang -fcuda-include-gpubinary -Xclang "${FATBIN_FILE}" \
   -O0 -g \
   -D__STRICT_ANSI__ \
   -D_GLIBCXX_USE_FLOAT128=0 \
@@ -141,7 +138,7 @@ if ! readelf -S "${BIN_PATH}" | grep -E -q "nv.*fatbin|nv.*cubin|\\.nv"; then
 fi
 
 set +e
-HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${MATRIX_SIZE}" "${MATRIX_REPEAT}" "${RUN_DUMP_TMP}" >"${RUN_OUT}" 2>"${RUN_ERR}"
+HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_DUMP_TMP}" >"${RUN_OUT}" 2>"${RUN_ERR}"
 status=$?
 set -e
 

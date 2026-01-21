@@ -1,0 +1,293 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v module &> /dev/null; then
+  module use /soft/modulefiles || true
+  module load llvm/release-17.0.0 || true
+fi
+
+REPO_ROOT="${REPO_ROOT:-$(pwd)}"
+CLANG="${CLANG:-/soft/compilers/llvm/release-17.0.6/bin/clang++}"
+OPT_BIN="${OPT_BIN:-/soft/compilers/llvm/release-17.0.6/bin/opt}"
+LLVM_AS="${LLVM_AS:-/soft/compilers/llvm/release-17.0.6/bin/llvm-as}"
+LLC_BIN="${LLC_BIN:-/soft/compilers/llvm/release-17.0.6/bin/llc}"
+
+CUDA_HOME="${CUDA_HOME:-/soft/compilers/cudatoolkit/cuda-11.8.0}"
+CUDA_ARCH="${CUDA_ARCH:-sm_80}"
+
+BENCH="${BENCH:-}"
+SITE_ID="${SITE_ID:-1}"
+BIT_INDEX="${BIT_INDEX:-0}"
+ABS_TOL="${ABS_TOL:-0.0}"
+REL_TOL="${REL_TOL:-0.0}"
+BASELINE="${BASELINE:-0}"
+COMPARE_MODE="${COMPARE_MODE:-exact}"
+
+if [[ -z "${BENCH}" ]]; then
+  echo "BENCH is required"
+  exit 1
+fi
+
+PLUGIN="${PLUGIN:-${REPO_ROOT}/HeCBench/tools/llvm17_inject/libllfi_inject.so}"
+if [[ ! -f "${PLUGIN}" ]]; then
+  echo "Missing plugin: ${PLUGIN}"
+  exit 1
+fi
+
+OUT_DIR="${OUT_DIR:-${REPO_ROOT}/HeCBench/build/llvm17-inject-${BENCH}}"
+BIN_PATH="${OUT_DIR}/${BENCH}"
+RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}}"
+mkdir -p "${OUT_DIR}" "${RESULTS_DIR}"
+
+case "${BENCH}" in
+  matrix-rotate)
+    SRC_DIR="HeCBench/src/matrix-rotate-cuda"
+    RUN_ARGS=("${MATRIX_SIZE:-8192}" "${MATRIX_REPEAT:-10}")
+    GOLDEN_NAME="matrix-rotate_${MATRIX_SIZE:-8192}_${MATRIX_REPEAT:-10}.bin"
+    ;;
+  jacobi)
+    SRC_DIR="HeCBench/src/jacobi-cuda"
+    RUN_ARGS=()
+    GOLDEN_NAME="jacobi.bin"
+    ;;
+  layout)
+    SRC_DIR="HeCBench/src/layout-cuda"
+    RUN_ARGS=("${LAYOUT_REPEAT:-20}")
+    GOLDEN_NAME="layout.bin"
+    ;;
+  atomicCost)
+    SRC_DIR="HeCBench/src/atomicCost-cuda"
+    RUN_ARGS=("${ATOMIC_NELEMS:-16}" "${ATOMIC_REPEAT:-5}")
+    GOLDEN_NAME="atomicCost.bin"
+    ;;
+  dense-embedding)
+    SRC_DIR="HeCBench/src/dense-embedding-cuda"
+    RUN_ARGS=("${DENSE_ROWS:-5000}" "${DENSE_BATCH:-64}" "${DENSE_REPEAT:-5}")
+    GOLDEN_NAME="dense-embedding.bin"
+    ;;
+  pathfinder)
+    SRC_DIR="HeCBench/src/pathfinder-cuda"
+    RUN_ARGS=("${PATHFINDER_COLS:-1000}" "${PATHFINDER_ROWS:-1000}" "${PATHFINDER_PYRAMID:-100}")
+    GOLDEN_NAME="pathfinder.bin"
+    ;;
+  bsearch)
+    SRC_DIR="HeCBench/src/bsearch-cuda"
+    RUN_ARGS=("${BSEARCH_ELEMENTS:-16777216}" "${BSEARCH_REPEAT:-10}")
+    GOLDEN_NAME="bsearch.bin"
+    ;;
+  entropy)
+    SRC_DIR="HeCBench/src/entropy-cuda"
+    RUN_ARGS=("${ENTROPY_WIDTH:-4096}" "${ENTROPY_HEIGHT:-4096}" "${ENTROPY_REPEAT:-5}")
+    GOLDEN_NAME="entropy.bin"
+    ;;
+  colorwheel)
+    SRC_DIR="HeCBench/src/colorwheel-cuda"
+    RUN_ARGS=("${COLORWHEEL_RANGE:-1.0}" "${COLORWHEEL_SIZE:-4096}" "${COLORWHEEL_REPEAT:-5}")
+    GOLDEN_NAME="colorwheel.bin"
+    ;;
+  randomAccess)
+    SRC_DIR="HeCBench/src/randomAccess-cuda"
+    RUN_ARGS=("${RANDOMACCESS_REPEAT:-3}")
+    GOLDEN_NAME="randomAccess.bin"
+    ;;
+  *)
+    echo "Unknown BENCH: ${BENCH}"
+    exit 1
+    ;;
+esac
+
+SRC="${REPO_ROOT}/${SRC_DIR}/main.cu"
+BENCH_DIR="${REPO_ROOT}/${SRC_DIR}"
+GOLDEN="${GOLDEN:-${REPO_ROOT}/Polaris_Golden_Outputs/${GOLDEN_NAME}}"
+RUN_DUMP_TMP="${OUT_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}.bin"
+RUN_DUMP_FINAL="${RESULTS_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}.bin"
+RUN_OUT="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}.out"
+RUN_ERR="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}.err"
+CSV="${CSV:-${RESULTS_DIR}/summary.csv}"
+COMPARE_FLOAT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_matrix_dump.py"
+COMPARE_EXACT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_binary_exact.py"
+BASELINE_PATH="${BASELINE_PATH:-${RESULTS_DIR}/baseline_${BENCH}.bin}"
+BASELINE_DIR="${BASELINE_DIR:-${RESULTS_DIR}/baseline}"
+BASELINE_OUT="${BASELINE_DIR}/baseline.out"
+BASELINE_ERR="${BASELINE_DIR}/baseline.err"
+BASELINE_META="${BASELINE_DIR}/baseline_meta.txt"
+
+IR_LL="${OUT_DIR}/device.ll"
+IR_BC="${OUT_DIR}/device.bc"
+IR_INJ_BC="${OUT_DIR}/device.injected.bc"
+IR_INJ_LL="${OUT_DIR}/device.injected.ll"
+PTX_FILE="${OUT_DIR}/device.injected.ptx"
+FATBIN_FILE="${OUT_DIR}/device.injected.fatbin"
+
+if [[ "${BASELINE}" -eq 0 ]]; then
+  if [[ ! -f "${GOLDEN}" ]]; then
+    echo "Golden file not found: ${GOLDEN}"
+    exit 1
+  fi
+  echo "[inject] golden=${GOLDEN}"
+  SKIP_EXISTING="${SKIP_EXISTING:-1}"
+  if [[ "${SKIP_EXISTING}" -eq 1 && -f "${RUN_OUT}" && -f "${RUN_ERR}" ]]; then
+    echo "[inject] skip existing site=${SITE_ID} bit=${BIT_INDEX}"
+    exit 0
+  fi
+else
+  echo "[inject] baseline_mode=1 path=${BASELINE_PATH}"
+  if [[ ! -f "${GOLDEN}" ]]; then
+    echo "Golden file not found: ${GOLDEN}"
+    exit 1
+  fi
+  mkdir -p "${BASELINE_DIR}"
+fi
+
+COMPARE_TOOL="${COMPARE_EXACT}"
+if [[ "${COMPARE_MODE}" == "float" ]]; then
+  COMPARE_TOOL="${COMPARE_FLOAT}"
+fi
+if [[ ! -f "${COMPARE_TOOL}" ]]; then
+  echo "Missing compare tool: ${COMPARE_TOOL}"
+  exit 1
+fi
+
+export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
+
+${CLANG} -x cuda \
+  --cuda-device-only \
+  --cuda-gpu-arch="${CUDA_ARCH}" \
+  --cuda-path="${CUDA_HOME}" \
+  -Xclang -emit-llvm \
+  -S -O0 -g \
+  -D__STRICT_ANSI__ \
+  -D_GLIBCXX_USE_FLOAT128=0 \
+  -nostdinc++ \
+  -isystem /usr/include/c++/7 \
+  -isystem /usr/include/c++/7/x86_64-suse-linux \
+  -isystem /usr/include/c++/7/backward \
+  -isystem /usr/lib64/gcc/x86_64-suse-linux/7/include \
+  -I "${BENCH_DIR}" \
+  -I "${REPO_ROOT}/HeCBench/src" \
+  "${SRC}" -o "${IR_LL}"
+
+${LLVM_AS} "${IR_LL}" -o "${IR_BC}"
+
+if [[ "${BASELINE}" -eq 1 ]]; then
+  IR_FOR_PTX="${IR_BC}"
+else
+  ${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
+    -passes=llfi-inject \
+    -llfi-site="${SITE_ID}" \
+    -llfi-bit="${BIT_INDEX}" \
+    -llfi-int-float-only=1 \
+    "${IR_BC}" -o "${IR_INJ_BC}"
+  ${OPT_BIN} -S "${IR_INJ_BC}" -o "${IR_INJ_LL}"
+  IR_FOR_PTX="${IR_INJ_BC}"
+fi
+
+${LLC_BIN} -march=nvptx64 -mcpu="${CUDA_ARCH}" -o "${PTX_FILE}" "${IR_FOR_PTX}"
+
+NVCC_BIN="${CUDA_HOME}/bin/nvcc"
+if [[ -x "${NVCC_BIN}" ]]; then
+  "${NVCC_BIN}" --fatbin -arch="${CUDA_ARCH}" "${PTX_FILE}" -o "${FATBIN_FILE}"
+else
+  echo "Error: nvcc not found at ${NVCC_BIN}"
+  exit 1
+fi
+
+rm -f "${BIN_PATH}"
+echo "[inject] using -Xclang -fcuda-include-gpubinary -Xclang ${FATBIN_FILE}"
+
+${CLANG} -x cuda \
+  --cuda-host-only \
+  --cuda-gpu-arch="${CUDA_ARCH}" \
+  --cuda-path="${CUDA_HOME}" \
+  -Xclang -fcuda-include-gpubinary -Xclang "${FATBIN_FILE}" \
+  -O0 -g \
+  -D__STRICT_ANSI__ \
+  -D_GLIBCXX_USE_FLOAT128=0 \
+  -nostdinc++ \
+  -isystem /usr/include/c++/7 \
+  -isystem /usr/include/c++/7/x86_64-suse-linux \
+  -isystem /usr/include/c++/7/backward \
+  -isystem /usr/lib64/gcc/x86_64-suse-linux/7/include \
+  -I "${BENCH_DIR}" \
+  -I "${REPO_ROOT}/HeCBench/src" \
+  "${SRC}" \
+  -L"${CUDA_HOME}/lib64" -lcudart \
+  -o "${BIN_PATH}"
+
+if ! readelf -S "${BIN_PATH}" | grep -E -q "nv.*fatbin|nv.*cubin|\\.nv"; then
+  echo "[inject] error: no CUDA fatbin/cubin section found in ${BIN_PATH}"
+  exit 1
+fi
+
+set +e
+if [[ "${BASELINE}" -eq 1 ]]; then
+  HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${BASELINE_OUT}" 2>"${BASELINE_ERR}"
+  status=$?
+else
+  HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${RUN_OUT}" 2>"${RUN_ERR}"
+  status=$?
+fi
+set -e
+
+result="FAILURE"
+dump_path=""
+if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
+  if [[ "${BASELINE}" -eq 1 ]]; then
+    cp -f "${RUN_DUMP_TMP}" "${BASELINE_PATH}"
+    if [[ "${COMPARE_MODE}" == "float" ]]; then
+      python3 "${COMPARE_TOOL}" "${GOLDEN}" "${BASELINE_PATH}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}" >>"${BASELINE_OUT}" 2>>"${BASELINE_ERR}"
+    else
+      python3 "${COMPARE_TOOL}" "${GOLDEN}" "${BASELINE_PATH}" >>"${BASELINE_OUT}" 2>>"${BASELINE_ERR}"
+    fi
+    if [[ $? -eq 0 ]]; then
+      result="BASELINE"
+    else
+      result="BASELINE_MISMATCH"
+      echo "[baseline] compare_failed golden=${GOLDEN}" >>"${BASELINE_ERR}"
+    fi
+    dump_path="${BASELINE_PATH}"
+    {
+      echo "bench=${BENCH}"
+      echo "golden=${GOLDEN}"
+      echo "baseline=${BASELINE_PATH}"
+      echo "status=${status}"
+      echo "result=${result}"
+    } >"${BASELINE_META}"
+  else
+    if [[ "${COMPARE_MODE}" == "float" ]]; then
+      python3 "${COMPARE_TOOL}" "${GOLDEN}" "${RUN_DUMP_TMP}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}" >>"${RUN_OUT}" 2>>"${RUN_ERR}"
+    else
+      python3 "${COMPARE_TOOL}" "${GOLDEN}" "${RUN_DUMP_TMP}" >>"${RUN_OUT}" 2>>"${RUN_ERR}"
+    fi
+    if [[ $? -eq 0 ]]; then
+      result="MASKED"
+    else
+      result="SDC"
+    fi
+  fi
+else
+  : # failure is recorded via per-site stderr/stdout
+fi
+
+KEEP_DUMPS="${KEEP_DUMPS:-0}"
+if [[ -f "${RUN_DUMP_TMP}" ]]; then
+  if [[ "${BASELINE}" -eq 1 ]]; then
+    rm -f "${RUN_DUMP_TMP}"
+  elif [[ "${KEEP_DUMPS}" -eq 1 ]]; then
+    mv -f "${RUN_DUMP_TMP}" "${RUN_DUMP_FINAL}"
+    dump_path="${RUN_DUMP_FINAL}"
+  else
+    rm -f "${RUN_DUMP_TMP}"
+  fi
+fi
+
+if [[ ! -f "${CSV}" ]]; then
+  echo "site_id,bit_index,result,exit_code,stdout,stderr,dump" > "${CSV}"
+fi
+if [[ "${BASELINE}" -eq 1 ]]; then
+  echo "0,0,${result},${status},${BASELINE_OUT},${BASELINE_ERR},${dump_path}" >> "${CSV}"
+else
+  echo "${SITE_ID},${BIT_INDEX},${result},${status},${RUN_OUT},${RUN_ERR},${dump_path}" >> "${CSV}"
+fi
+
+echo "Result: ${result} (exit ${status})"
