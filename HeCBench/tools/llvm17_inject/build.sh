@@ -11,8 +11,8 @@ SRC_DIR="${SRC_DIR:-${SCRIPT_DIR}}"
 
 ${CLANGXX} -std=c++17 -fPIC -shared \
   -I "${LLVM_ROOT}/include" \
-  "$SRC_DIR/llfi_inject_pass.cpp" \
+  "$SRC_DIR/fi_inject_pass.cpp" \
   "$(${LLVM_CONFIG} --cxxflags --ldflags --system-libs --libs core)" \
-  -o "$OUT_DIR/libllfi_inject.so"
+  -o "$OUT_DIR/libfi_inject.so"
 
-echo "Built $OUT_DIR/libllfi_inject.so"
+echo "Built $OUT_DIR/libfi_inject.so"

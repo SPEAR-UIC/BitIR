@@ -11,17 +11,20 @@
 
 using namespace llvm;
 
-static cl::opt<int> LlfiSite("llfi-site", cl::desc("Injection site ID (1-based)"), cl::init(-1));
-static cl::opt<int> LlfiBit("llfi-bit", cl::desc("Bit index to flip (0-based)"), cl::init(0));
-static cl::opt<bool> LlfiOnlyIntFloat("llfi-int-float-only", cl::desc("Restrict to int/float types"), cl::init(true));
-static cl::opt<std::string> LlfiTarget("llfi-target",
+static cl::opt<int> FiSite("fi-site", cl::desc("Injection site ID (1-based)"), cl::init(-1));
+static cl::opt<int> FiBit("fi-bit", cl::desc("Bit index to flip (0-based)"), cl::init(0));
+static cl::opt<bool> FiOnlyIntFloat("fi-int-float-only", cl::desc("Restrict to int/float types"), cl::init(true));
+static cl::opt<std::string> FiTarget("fi-target",
                                        cl::desc("Injection target: result|operand|pointer"),
                                        cl::init("result"));
-static cl::opt<std::string> LlfiDumpSites("llfi-dump-sites", cl::desc("Write injection site list CSV"), cl::init(""));
+static cl::opt<std::string> FiDumpSites("fi-dump-sites", cl::desc("Write injection site list CSV"), cl::init(""));
+static cl::opt<bool> FiIncludeConstants("fi-include-constants",
+                                        cl::desc("Include constant operands when targeting operands/pointers"),
+                                        cl::init(false));
 
 namespace {
 
-struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
+struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
   static std::string typeKind(Type *Ty) {
     if (Ty->isIntegerTy())
       return "int";
@@ -47,31 +50,31 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
       return PreservedAnalyses::all();
     }
 
-    bool doDump = !LlfiDumpSites.empty();
+    bool doDump = !FiDumpSites.empty();
     std::ofstream dump;
     if (doDump) {
       bool writeHeader = true;
-      std::ifstream check(LlfiDumpSites);
+      std::ifstream check(FiDumpSites);
       if (check.good()) {
         char c;
         if (check.get(c)) {
           writeHeader = false;
         }
       }
-      dump.open(LlfiDumpSites, std::ios::app);
+      dump.open(FiDumpSites, std::ios::app);
       if (!dump.is_open()) {
         return PreservedAnalyses::none();
       }
       if (writeHeader) {
-        dump << "site_id,opcode,type_kind,bitwidth\n";
+        dump << "site_id,opcode,type_kind,bitwidth,operand_index\n";
       }
     }
 
     int curId = 0;
     const DataLayout &DL = M.getDataLayout();
-    bool targetResult = LlfiTarget == "result";
-    bool targetOperand = LlfiTarget == "operand";
-    bool targetPointer = LlfiTarget == "pointer";
+    bool targetResult = FiTarget == "result";
+    bool targetOperand = FiTarget == "operand";
+    bool targetPointer = FiTarget == "pointer";
     for (Function &F : M) {
       if (F.isDeclaration())
         continue;
@@ -89,8 +92,8 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
               continue;
             if (I.isTerminator())
               continue;
-            if (LlfiOnlyIntFloat && !(I.getType()->isIntegerTy() || I.getType()->isFloatingPointTy()))
-              continue;
+          if (FiOnlyIntFloat && !(I.getType()->isIntegerTy() || I.getType()->isFloatingPointTy()))
+            continue;
 
             curId++;
             if (doDump) {
@@ -98,8 +101,8 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
               unsigned width = typeBitWidth(I.getType(), DL);
               dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << ",-1\n";
             }
-            if (curId != LlfiSite || LlfiSite < 1)
-              continue;
+          if (curId != FiSite || FiSite < 1)
+            continue;
 
             Instruction *insertPt = I.getNextNode();
             if (!insertPt) {
@@ -117,12 +120,12 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
             if (I.getType()->isIntegerTy()) {
               IntegerType *Ty = cast<IntegerType>(I.getType());
               unsigned width = Ty->getBitWidth();
-              unsigned bit = (LlfiBit < 0) ? 0 : (unsigned)LlfiBit;
+            unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
               if (bit >= width)
                 bit = width - 1;
               APInt maskVal = APInt::getOneBitSet(width, bit);
               Value *mask = ConstantInt::get(Ty, maskVal);
-              auto *xorInst = cast<Instruction>(B.CreateXor(orig, mask, "llfi_flip"));
+              auto *xorInst = cast<Instruction>(B.CreateXor(orig, mask, "fi_flip"));
               newInsts.push_back(xorInst);
               flipVal = xorInst;
             } else if (I.getType()->isFloatingPointTy()) {
@@ -130,33 +133,33 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
               unsigned width = FTy->getPrimitiveSizeInBits();
               if (width == 0)
                 return PreservedAnalyses::none();
-              unsigned bit = (LlfiBit < 0) ? 0 : (unsigned)LlfiBit;
+            unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
               if (bit >= width)
                 bit = width - 1;
               IntegerType *ITy = IntegerType::get(M.getContext(), width);
-              auto *asInt = cast<Instruction>(B.CreateBitCast(orig, ITy, "llfi_f2i"));
+              auto *asInt = cast<Instruction>(B.CreateBitCast(orig, ITy, "fi_f2i"));
               APInt maskVal = APInt::getOneBitSet(width, bit);
               Value *mask = ConstantInt::get(ITy, maskVal);
-              auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "llfi_fx"));
-              auto *flipInst = cast<Instruction>(B.CreateBitCast(xored, FTy, "llfi_i2f"));
+              auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "fi_fx"));
+              auto *flipInst = cast<Instruction>(B.CreateBitCast(xored, FTy, "fi_i2f"));
               newInsts.push_back(asInt);
               newInsts.push_back(xored);
               newInsts.push_back(flipInst);
               flipVal = flipInst;
-            } else if (!LlfiOnlyIntFloat && I.getType()->isPointerTy()) {
-              Type *PTy = I.getType();
-              unsigned width = typeBitWidth(PTy, DL);
-              if (width == 0)
-                return PreservedAnalyses::none();
-              unsigned bit = (LlfiBit < 0) ? 0 : (unsigned)LlfiBit;
-              if (bit >= width)
-                bit = width - 1;
+          } else if (!FiOnlyIntFloat && I.getType()->isPointerTy()) {
+            Type *PTy = I.getType();
+            unsigned width = typeBitWidth(PTy, DL);
+            if (width == 0)
+              return PreservedAnalyses::none();
+            unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+            if (bit >= width)
+              bit = width - 1;
               IntegerType *ITy = IntegerType::get(M.getContext(), width);
-              auto *asInt = cast<Instruction>(B.CreatePtrToInt(orig, ITy, "llfi_p2i"));
+              auto *asInt = cast<Instruction>(B.CreatePtrToInt(orig, ITy, "fi_p2i"));
               APInt maskVal = APInt::getOneBitSet(width, bit);
               Value *mask = ConstantInt::get(ITy, maskVal);
-              auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "llfi_px"));
-              auto *flipInst = cast<Instruction>(B.CreateIntToPtr(xored, PTy, "llfi_i2p"));
+              auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "fi_px"));
+              auto *flipInst = cast<Instruction>(B.CreateIntToPtr(xored, PTy, "fi_i2p"));
               newInsts.push_back(asInt);
               newInsts.push_back(xored);
               newInsts.push_back(flipInst);
@@ -195,12 +198,12 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
               Value *Op = I.getOperand(opIdx);
               if (!Op)
                 continue;
-              if (isa<Constant>(Op))
+              if (!FiIncludeConstants && isa<Constant>(Op))
                 continue;
               Type *Ty = Op->getType();
               if (targetPointer && !Ty->isPointerTy())
                 continue;
-              if (!targetPointer && LlfiOnlyIntFloat &&
+              if (!targetPointer && FiOnlyIntFloat &&
                   !(Ty->isIntegerTy() || Ty->isFloatingPointTy()))
                 continue;
 
@@ -210,7 +213,7 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
                 unsigned width = typeBitWidth(Ty, DL);
                 dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << "," << opIdx << "\n";
               }
-              if (curId != LlfiSite || LlfiSite < 1)
+              if (curId != FiSite || FiSite < 1)
                 continue;
 
               Instruction *insertPt = &I;
@@ -221,38 +224,38 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
               if (Ty->isIntegerTy()) {
                 IntegerType *ITy = cast<IntegerType>(Ty);
                 unsigned width = ITy->getBitWidth();
-                unsigned bit = (LlfiBit < 0) ? 0 : (unsigned)LlfiBit;
+                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
                 if (bit >= width)
                   bit = width - 1;
                 APInt maskVal = APInt::getOneBitSet(width, bit);
                 Value *mask = ConstantInt::get(ITy, maskVal);
-                flipVal = B.CreateXor(orig, mask, "llfi_op_xor");
+                flipVal = B.CreateXor(orig, mask, "fi_op_xor");
               } else if (Ty->isFloatingPointTy()) {
                 unsigned width = Ty->getPrimitiveSizeInBits();
                 if (width == 0)
                   return PreservedAnalyses::none();
-                unsigned bit = (LlfiBit < 0) ? 0 : (unsigned)LlfiBit;
+                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
                 if (bit >= width)
                   bit = width - 1;
                 IntegerType *ITy = IntegerType::get(M.getContext(), width);
-                auto *asInt = B.CreateBitCast(orig, ITy, "llfi_op_f2i");
+                auto *asInt = B.CreateBitCast(orig, ITy, "fi_op_f2i");
                 APInt maskVal = APInt::getOneBitSet(width, bit);
                 Value *mask = ConstantInt::get(ITy, maskVal);
-                auto *xored = B.CreateXor(asInt, mask, "llfi_op_fx");
-                flipVal = B.CreateBitCast(xored, Ty, "llfi_op_i2f");
+                auto *xored = B.CreateXor(asInt, mask, "fi_op_fx");
+                flipVal = B.CreateBitCast(xored, Ty, "fi_op_i2f");
               } else if (Ty->isPointerTy()) {
                 unsigned width = typeBitWidth(Ty, DL);
                 if (width == 0)
                   return PreservedAnalyses::none();
-                unsigned bit = (LlfiBit < 0) ? 0 : (unsigned)LlfiBit;
+                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
                 if (bit >= width)
                   bit = width - 1;
                 IntegerType *ITy = IntegerType::get(M.getContext(), width);
-                auto *asInt = B.CreatePtrToInt(orig, ITy, "llfi_op_p2i");
+                auto *asInt = B.CreatePtrToInt(orig, ITy, "fi_op_p2i");
                 APInt maskVal = APInt::getOneBitSet(width, bit);
                 Value *mask = ConstantInt::get(ITy, maskVal);
-                auto *xored = B.CreateXor(asInt, mask, "llfi_op_px");
-                flipVal = B.CreateIntToPtr(xored, Ty, "llfi_op_i2p");
+                auto *xored = B.CreateXor(asInt, mask, "fi_op_px");
+                flipVal = B.CreateIntToPtr(xored, Ty, "fi_op_i2p");
               }
 
               if (!flipVal)
@@ -273,13 +276,13 @@ struct LlfiInjectPass : public PassInfoMixin<LlfiInjectPass> {
 
 extern "C" LLVM_ATTRIBUTE_WEAK PassPluginLibraryInfo llvmGetPassPluginInfo() {
   return {
-      LLVM_PLUGIN_API_VERSION, "llfi-inject", LLVM_VERSION_STRING,
+      LLVM_PLUGIN_API_VERSION, "fi-inject", LLVM_VERSION_STRING,
       [](PassBuilder &PB) {
         PB.registerPipelineParsingCallback(
             [](StringRef Name, ModulePassManager &MPM,
                ArrayRef<PassBuilder::PipelineElement>) {
-              if (Name == "llfi-inject") {
-                MPM.addPass(LlfiInjectPass());
+              if (Name == "fi-inject") {
+                MPM.addPass(FiInjectPass());
                 return true;
               }
               return false;

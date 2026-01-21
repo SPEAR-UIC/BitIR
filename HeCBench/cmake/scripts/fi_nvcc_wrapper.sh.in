@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Inject FI's nvcc interposition layer before invoking the real compiler.
+# Allow PBS/job scripts to override how the cicc interposer modifies IR.
+export CICC_MODIFY_OPT_MODULE="${CICC_MODIFY_OPT_MODULE:-1}"
+export CICC_MODIFY_UNOPT_MODULE="${CICC_MODIFY_UNOPT_MODULE:-0}"
+
+FI_PRELOAD="@FI_PRELOAD@"
+FI_PREV_LAUNCHER="@FI_PREV_LAUNCHER@"
+
+if [[ -n "${FI_PRELOAD}" ]]; then
+    _fi_preload_first="${FI_PRELOAD%%:*}"
+    _fi_preload_dir="$(dirname "${_fi_preload_first}")"
+    if [[ -f "${_fi_preload_dir}/libcicc.so" && ! -f "./libcicc.so" ]]; then
+        cp -f "${_fi_preload_dir}/libcicc.so" ./libcicc.so
+    fi
+fi
+
+FI_PRELOAD_NVCC="${FI_PRELOAD%%:*}"
+
+echo "[fi-nvcc-wrapper] pwd=$(pwd)" >&2
+if [[ -f "./libcicc.so" ]]; then
+    ls -l ./libcicc.so >&2
+else
+    echo "[fi-nvcc-wrapper] libcicc.so not found in pwd" >&2
+fi
+env | grep -E '^(CICC_|FI_|CUDA_|CUDAToolkit_ROOT=|CMAKE_CUDA_COMPILER=)' >&2 || true
+
+if [[ -n "${LD_PRELOAD:-}" ]]; then
+    export LD_PRELOAD="${FI_PRELOAD_NVCC}:${LD_PRELOAD}"
+else
+    export LD_PRELOAD="${FI_PRELOAD_NVCC}"
+fi
+
+if [[ -n "${FI_PREV_LAUNCHER}" ]]; then
+    IFS=';' read -r -a _fi_prev_launcher_array <<< "${FI_PREV_LAUNCHER}"
+    if command -v timeout &> /dev/null && [[ -n "${NVCC_TIMEOUT_SECONDS:-}" ]]; then
+        exec timeout --preserve-status "${NVCC_TIMEOUT_SECONDS}" "${_fi_prev_launcher_array[@]}" "$@"
+    else
+        exec "${_fi_prev_launcher_array[@]}" "$@"
+    fi
+else
+    if command -v timeout &> /dev/null && [[ -n "${NVCC_TIMEOUT_SECONDS:-}" ]]; then
+        exec timeout --preserve-status "${NVCC_TIMEOUT_SECONDS}" "$@"
+    else
+        exec "$@"
+    fi
+fi

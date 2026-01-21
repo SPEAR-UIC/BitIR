@@ -1,12 +1,12 @@
 #!/bin/bash
 #PBS -A UIC-HPC
-#PBS -N llfi_rebuild
+#PBS -N fi_rebuild
 #PBS -q debug
 #PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
 #PBS -l filesystems=home:eagle
 #PBS -l walltime=00:20:00
-#PBS -o OUT_llfi_rebuild.out
-#PBS -e ERROR_llfi_rebuild.err
+#PBS -o OUT_fi_rebuild.out
+#PBS -e ERROR_fi_rebuild.err
 
 set -euo pipefail
 
@@ -78,7 +78,7 @@ export LD_LIBRARY_PATH
 
 export MAKEFLAGS=-j1
 
-cd /home/mdunlavy/GPU_FI/LLFI-GPU
+cd /home/mdunlavy/GPU_FI/FI-GPU
 ./scripts/rebuild_interposers.sh
 
 ls -l bamboo_lib/profiling_lib/libnvcc.so bamboo_lib/injection_lib/libnvcc.so

@@ -21,7 +21,7 @@ BIT_INDEX="${BIT_INDEX:-0}"
 BENCH_DIR="${REPO_ROOT}/HeCBench/src/${BENCH}-cuda"
 SRC="${BENCH_DIR}/main.cu"
 OUT_DIR="${REPO_ROOT}/HeCBench/build/llvm17-inject-${BENCH}"
-PLUGIN="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libllfi_inject.so"
+PLUGIN="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libfi_inject.so"
 
 if [[ ! -f "${PLUGIN}" ]]; then
   echo "Missing plugin: ${PLUGIN}"
@@ -55,9 +55,9 @@ ${CLANG} -x cuda \
 ${LLVM_AS} "${IR_LL}" -o "${IR_BC}"
 
 ${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
-  -passes=llfi-inject \
-  -llfi-site="${SITE_ID}" \
-  -llfi-bit="${BIT_INDEX}" \
+  -passes=fi-inject \
+  -fi-site="${SITE_ID}" \
+  -fi-bit="${BIT_INDEX}" \
   "${IR_BC}" -o "${IR_INJ_BC}"
 
 ${OPT_BIN} -S "${IR_INJ_BC}" -o "${IR_INJ_LL}"

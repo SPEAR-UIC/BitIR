@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-End-to-end LLFI-GPU exhaustive injection sweep for the matrix-rotate benchmark.
+End-to-end FI-GPU exhaustive injection sweep for the matrix-rotate benchmark.
 
 The workflow:
- 1. Configure and build LLFI-enabled profiling and injection binaries.
+ 1. Configure and build FI-enabled profiling and injection binaries.
  2. Run a profiling pass to capture bamboo.profile.txt.
  3. Enumerate every injectable instruction instance observed in the profile.
  4. For each instance, run the injection binary once, force it to dump the
@@ -30,7 +30,7 @@ from typing import Dict, Iterable, Iterator, List, Optional, Tuple
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_LLFI_ROOT = REPO_ROOT.parent / "LLFI-GPU"
+DEFAULT_FI_ROOT = REPO_ROOT.parent / "FI-GPU"
 
 
 def log(msg: str) -> None:
@@ -44,7 +44,7 @@ def run_cmd(cmd: List[str], cwd: Optional[Path] = None, env: Optional[Dict[str, 
     subprocess.run(cmd, check=True, cwd=cwd, env=env)
 
 
-def configure_build(mode: str, build_dir: Path, llfi_root: Path, cuda_arch: Optional[str], extra_args: List[str]) -> None:
+def configure_build(mode: str, build_dir: Path, fi_root: Path, cuda_arch: Optional[str], extra_args: List[str]) -> None:
     build_dir.mkdir(parents=True, exist_ok=True)
     cmd = [
         "cmake",
@@ -57,9 +57,9 @@ def configure_build(mode: str, build_dir: Path, llfi_root: Path, cuda_arch: Opti
         "-DHECBENCH_ENABLE_SYCL=OFF",
         "-DHECBENCH_ENABLE_OPENMP=OFF",
         "-DHECBENCH_BUILD_ALL_BENCHMARKS=OFF",
-        "-DHECBENCH_LLFI_GPU=ON",
-        f"-DHECBENCH_LLFI_GPU_ROOT={llfi_root}",
-        f"-DHECBENCH_LLFI_MODE={mode}",
+        "-DHECBENCH_FI_GPU=ON",
+        f"-DHECBENCH_FI_GPU_ROOT={fi_root}",
+        f"-DHECBENCH_FI_MODE={mode}",
     ]
     if cuda_arch:
         cmd.append(f"-DHECBENCH_CUDA_ARCH={cuda_arch}")
@@ -178,7 +178,7 @@ def classify_outcome(
         return "FAILURE", f"non-zero exit status {status}"
     err_dir = run_dir / "bamboo_fi" / "err_output"
     if err_dir.exists() and any(err_dir.iterdir()):
-        return "FAILURE", "LLFI runtime error logs present"
+        return "FAILURE", "FI runtime error logs present"
     if not dump_path.exists():
         return "FAILURE", "matrix dump missing"
     if files_match(dump_path, golden_path):
@@ -241,7 +241,7 @@ def sweep_injections(
             config_path.write_text(config_line + "\n", encoding="utf-8")
             log(f"[{idx}/{planned_sites}] Injecting thread={site['threadIndex']} dynamic={site['dynamicKernelIndex']} static={site['staticKernelIndex']} inst={site['instIndex']}")
             dump_path = run_dir / "matrix_dump.bin"
-            env = {"HECBENCH_LLFI_FORCE_DUMP": "1"}
+            env = {"HECBENCH_FI_FORCE_DUMP": "1"}
             status, _, _ = run_binary(
                 binary,
                 [str(size), str(repeat), str(dump_path)],
@@ -277,7 +277,7 @@ def run_profiling_pass(
     if output_dir.exists():
         shutil.rmtree(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    env = {"HECBENCH_LLFI_FORCE_DUMP": "1"}
+    env = {"HECBENCH_FI_FORCE_DUMP": "1"}
     dump_path = output_dir / "matrix_dump.bin"
     status, _, _ = run_binary(
         binary,
@@ -294,8 +294,8 @@ def run_profiling_pass(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Matrix-rotate LLFI exhaustive injection sweep")
-    parser.add_argument("--llfi-root", default=DEFAULT_LLFI_ROOT, help="Path to the LLFI-GPU checkout")
+    parser = argparse.ArgumentParser(description="Matrix-rotate FI exhaustive injection sweep")
+    parser.add_argument("--fi-root", default=DEFAULT_FI_ROOT, help="Path to the FI-GPU checkout")
     parser.add_argument("--cuda-arch", help="CUDA architecture to target (e.g., sm_80)")
     parser.add_argument("--size", type=int, default=8192, help="Matrix dimension (n)")
     parser.add_argument("--repeat", type=int, default=10, help="Number of rotation iterations")
@@ -316,17 +316,17 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    llfi_root = Path(args.llfi_root).resolve()
-    if not llfi_root.exists():
-        raise FileNotFoundError(f"LLFI-GPU root not found: {llfi_root}")
+    fi_root = Path(args.fi_root).resolve()
+    if not fi_root.exists():
+        raise FileNotFoundError(f"FI-GPU root not found: {fi_root}")
     golden_path = Path(args.golden).resolve()
     ensure_golden_exists(golden_path)
-    output_root = Path(args.output_root) if args.output_root else (REPO_ROOT / "results" / "llfi" / "matrix-rotate" / datetime.utcnow().strftime("full_sweep-%Y%m%d-%H%M%S"))
+    output_root = Path(args.output_root) if args.output_root else (REPO_ROOT / "results" / "fi" / "matrix-rotate" / datetime.utcnow().strftime("full_sweep-%Y%m%d-%H%M%S"))
     output_root.mkdir(parents=True, exist_ok=True)
     summary_path = output_root / "sweep_summary.json"
 
-    profile_build_dir = Path(args.profile_build_dir) if args.profile_build_dir else (REPO_ROOT / "build" / "llfi-matrix-rotate-profile")
-    injection_build_dir = Path(args.inject_build_dir) if args.inject_build_dir else (REPO_ROOT / "build" / "llfi-matrix-rotate-inject")
+    profile_build_dir = Path(args.profile_build_dir) if args.profile_build_dir else (REPO_ROOT / "build" / "fi-matrix-rotate-profile")
+    injection_build_dir = Path(args.inject_build_dir) if args.inject_build_dir else (REPO_ROOT / "build" / "fi-matrix-rotate-inject")
     target = "matrix-rotate-cuda"
 
     profile_path = None
@@ -336,13 +336,13 @@ def main() -> int:
             raise FileNotFoundError(f"Profile path not found: {profile_path}")
     if not args.inject_only and profile_path is None:
         log("Configuring profiling build")
-        configure_build("profiling", profile_build_dir, llfi_root, args.cuda_arch, args.cmake_arg)
+        configure_build("profiling", profile_build_dir, fi_root, args.cuda_arch, args.cmake_arg)
         build_target(profile_build_dir, target)
         profiling_binary = profile_build_dir / "bin" / "cuda" / "matrix-rotate"
         if not profiling_binary.exists():
             raise FileNotFoundError(f"Profiling binary not found: {profiling_binary}")
 
-        log("Running LLFI profiling pass")
+        log("Running FI profiling pass")
         profile_dir = output_root / "profile_run"
         profile_path = run_profiling_pass(profiling_binary, args.size, args.repeat, profile_dir)
         if args.profile_only:
@@ -353,7 +353,7 @@ def main() -> int:
                 "golden": str(golden_path),
                 "output_root": str(output_root),
                 "profile_build_dir": str(profile_build_dir),
-                "llfi_root": str(llfi_root),
+                "fi_root": str(fi_root),
                 "cuda_arch": args.cuda_arch,
                 "timestamp": datetime.utcnow().isoformat() + "Z",
                 "profile_path": str(profile_path),
@@ -374,7 +374,7 @@ def main() -> int:
             raise FileNotFoundError(f"Injection binary not found: {injection_binary}")
     if injection_binary is None:
         log("Configuring injection build")
-        configure_build("injection", injection_build_dir, llfi_root, args.cuda_arch, args.cmake_arg)
+        configure_build("injection", injection_build_dir, fi_root, args.cuda_arch, args.cmake_arg)
         build_target(injection_build_dir, target)
         injection_binary = injection_build_dir / "bin" / "cuda" / "matrix-rotate"
         if not injection_binary.exists():
@@ -404,7 +404,7 @@ def main() -> int:
         "output_root": str(output_root),
         "profile_build_dir": str(profile_build_dir),
         "injection_build_dir": str(injection_build_dir),
-        "llfi_root": str(llfi_root),
+        "fi_root": str(fi_root),
         "cuda_arch": args.cuda_arch,
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "max_sites": args.max_sites,

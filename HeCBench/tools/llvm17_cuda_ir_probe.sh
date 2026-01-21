@@ -31,7 +31,7 @@ fi
 PROBE_DIR="${PROBE_DIR:-$PWD/HeCBench/build/llvm17-probe}"
 mkdir -p "$PROBE_DIR"
 
-cat > "${PROBE_DIR}/llfi_probe.cu" <<'CU'
+cat > "${PROBE_DIR}/fi_probe.cu" <<'CU'
 #define __global__ __attribute__((global))
 #define __host__ __attribute__((host))
 #define __device__ __attribute__((device))
@@ -39,7 +39,7 @@ cat > "${PROBE_DIR}/llfi_probe.cu" <<'CU'
 #define __align__(n) __attribute__((aligned(n)))
 #define __launch_bounds__(t, b) __attribute__((launch_bounds(t, b)))
 
-extern "C" __global__ void llfi_probe() {
+extern "C" __global__ void fi_probe() {
   // intentionally empty to minimize CUDA runtime/header usage
 }
 CU
@@ -62,8 +62,8 @@ echo "[probe] CUDA_ARCH=${CUDA_ARCH}"
 echo "[probe] GCC_TOOLCHAIN=${GCC_TOOLCHAIN}"
 echo "[probe] GCC_CXX_INC=${GCC_CXX_INC}"
 
-IR_LL="${PROBE_DIR}/llfi_probe.ll"
-IR_BC="${PROBE_DIR}/llfi_probe.bc"
+IR_LL="${PROBE_DIR}/fi_probe.ll"
+IR_BC="${PROBE_DIR}/fi_probe.bc"
 
 CLANG_CC1_FLAGS=(
   -triple nvptx64-nvidia-cuda
@@ -76,7 +76,7 @@ CLANG_CC1_FLAGS=(
 
 clang++ -cc1 "${CLANG_CC1_FLAGS[@]}" \
   -o "${IR_LL}" \
-  "${PROBE_DIR}/llfi_probe.cu"
+  "${PROBE_DIR}/fi_probe.cu"
 
 if command -v llvm-as &> /dev/null; then
   llvm-as "${IR_LL}" -o "${IR_BC}"
@@ -91,7 +91,7 @@ fi
 
 echo "[probe] LLVM IR generated: ${IR_LL}"
 echo "[probe] Kernel definition:"
-grep -n "define.*@llfi_probe" "${IR_LL}" || true
+grep -n "define.*@fi_probe" "${IR_LL}" || true
 
 if command -v opt &> /dev/null; then
   echo "[probe] Instruction count:"

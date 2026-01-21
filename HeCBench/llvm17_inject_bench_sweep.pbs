@@ -92,8 +92,8 @@ echo "[env] GPU_COUNT=${GPU_COUNT}"
 
 bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
 
-PLUGIN_SRC="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libllfi_inject.so"
-PLUGIN_COPY="${RESULTS_DIR}/libllfi_inject.${PBS_JOBID:-local}.so"
+PLUGIN_SRC="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libfi_inject.so"
+PLUGIN_COPY="${RESULTS_DIR}/libfi_inject.${PBS_JOBID:-local}.so"
 cp -f "${PLUGIN_SRC}" "${PLUGIN_COPY}"
 export PLUGIN="${PLUGIN_COPY}"
 

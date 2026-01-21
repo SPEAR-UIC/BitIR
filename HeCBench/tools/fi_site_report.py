@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Summarize LLFI-GPU injection sites for a HeCBench benchmark.
+Summarize FI-GPU injection sites for a HeCBench benchmark.
 
 Inputs:
   - bamboo.profile.txt (dynamic per-thread instruction counts)
@@ -267,7 +267,7 @@ def write_static_csv(path: Path, sites: List[StaticSite]) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Report LLFI injection sites for a benchmark.")
+    parser = argparse.ArgumentParser(description="Report FI injection sites for a benchmark.")
     parser.add_argument("--profile", required=True, help="Path to bamboo.profile.txt")
     parser.add_argument("--ir", required=True, help="Path to LLVM IR with bamboo_index metadata")
     parser.add_argument("--output-dir", required=True, help="Directory for reports")

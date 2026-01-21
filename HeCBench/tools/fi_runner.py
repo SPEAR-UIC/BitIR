@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Helper utility for building and running HeCBench CUDA benchmarks with LLFI-GPU.
+Helper utility for building and running HeCBench CUDA benchmarks with FI-GPU.
 
-The script configures a dedicated CMake build that enables LLFI instrumentation,
+The script configures a dedicated CMake build that enables FI instrumentation,
 builds the requested benchmark target, and then orchestrates profiling or
-injection experiments. Results are written under results/llfi/ by default so
+injection experiments. Results are written under results/fi/ by default so
 that existing golden-output infrastructure remains untouched.
 """
 
@@ -22,11 +22,11 @@ from pathlib import Path
 from typing import Dict, List, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RESULTS_ROOT = REPO_ROOT / "results" / "llfi"
+DEFAULT_RESULTS_ROOT = REPO_ROOT / "results" / "fi"
 
 
 def log(msg: str) -> None:
-    print(f"[llfi-runner] {msg}")
+    print(f"[fi-runner] {msg}")
 
 
 def run_cmd(cmd: Sequence[str], cwd: Path | None = None) -> None:
@@ -35,7 +35,7 @@ def run_cmd(cmd: Sequence[str], cwd: Path | None = None) -> None:
     subprocess.run(cmd, check=True, cwd=cwd)
 
 
-def configure_cmake(build_dir: Path, llfi_root: Path, mode: str, cuda_arch: str | None, extra_args: List[str]) -> None:
+def configure_cmake(build_dir: Path, fi_root: Path, mode: str, cuda_arch: str | None, extra_args: List[str]) -> None:
     build_dir.mkdir(parents=True, exist_ok=True)
     cmd = [
         "cmake",
@@ -44,9 +44,9 @@ def configure_cmake(build_dir: Path, llfi_root: Path, mode: str, cuda_arch: str 
         "-B",
         str(build_dir),
         "-DHECBENCH_ENABLE_CUDA=ON",
-        "-DHECBENCH_LLFI_GPU=ON",
-        f"-DHECBENCH_LLFI_GPU_ROOT={llfi_root}",
-        f"-DHECBENCH_LLFI_MODE={mode}",
+        "-DHECBENCH_FI_GPU=ON",
+        f"-DHECBENCH_FI_GPU_ROOT={fi_root}",
+        f"-DHECBENCH_FI_MODE={mode}",
         "-DHECBENCH_BUILD_ALL_BENCHMARKS=OFF",
     ]
     if cuda_arch:
@@ -150,9 +150,9 @@ def group_by_dynamic_kernel(entries: List[Dict[str, int]]) -> Dict[int, List[Dic
 
 
 def handle_profile(args: argparse.Namespace) -> None:
-    build_dir = Path(args.build_dir or (REPO_ROOT / "build" / f"llfi-profile-{args.benchmark}"))
-    llfi_root = Path(args.llfi_root).resolve()
-    configure_cmake(build_dir, llfi_root, "profiling", args.cuda_arch, args.cmake_arg)
+    build_dir = Path(args.build_dir or (REPO_ROOT / "build" / f"fi-profile-{args.benchmark}"))
+    fi_root = Path(args.fi_root).resolve()
+    configure_cmake(build_dir, fi_root, "profiling", args.cuda_arch, args.cmake_arg)
     target = f"{args.benchmark}-cuda"
     build_target(build_dir, target)
 
@@ -176,9 +176,9 @@ def handle_profile(args: argparse.Namespace) -> None:
 
 
 def handle_injection(args: argparse.Namespace) -> None:
-    build_dir = Path(args.build_dir or (REPO_ROOT / "build" / f"llfi-inject-{args.benchmark}"))
-    llfi_root = Path(args.llfi_root).resolve()
-    configure_cmake(build_dir, llfi_root, "injection", args.cuda_arch, args.cmake_arg)
+    build_dir = Path(args.build_dir or (REPO_ROOT / "build" / f"fi-inject-{args.benchmark}"))
+    fi_root = Path(args.fi_root).resolve()
+    configure_cmake(build_dir, fi_root, "injection", args.cuda_arch, args.cmake_arg)
     target = f"{args.benchmark}-cuda"
     build_target(build_dir, target)
     binary = resolve_binary(build_dir, args.benchmark)
@@ -240,10 +240,10 @@ def handle_injection(args: argparse.Namespace) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="HeCBench LLFI-GPU orchestration utility",
+        description="HeCBench FI-GPU orchestration utility",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--llfi-root", required=True, help="Path to the LLFI-GPU repository")
+    parser.add_argument("--fi-root", required=True, help="Path to the FI-GPU repository")
     parser.add_argument("--build-dir", help="Custom CMake build directory")
     parser.add_argument("--cuda-arch", help="CUDA architecture (e.g., sm_80)")
     parser.add_argument(
@@ -266,7 +266,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     profile.set_defaults(func=handle_profile)
 
-    inject = subparsers.add_parser("inject", help="Run LLFI-GPU fault injection experiments")
+    inject = subparsers.add_parser("inject", help="Run FI-GPU fault injection experiments")
     inject.add_argument("--benchmark", required=True, help="Benchmark stem name (e.g., jacobi)")
     inject.add_argument("--profile", required=True, help="Path to bamboo.profile.txt generated from a profiling run")
     inject.add_argument("--trials", type=int, default=30, help="Number of injection experiments to run")

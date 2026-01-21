@@ -24,13 +24,14 @@ BASELINE="${BASELINE:-0}"
 COMPARE_MODE="${COMPARE_MODE:-exact}"
 INJECT_TARGET="${INJECT_TARGET:-result}"
 INT_FLOAT_ONLY="${INT_FLOAT_ONLY:-1}"
+INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS:-0}"
 
 if [[ -z "${BENCH}" ]]; then
   echo "BENCH is required"
   exit 1
 fi
 
-PLUGIN="${PLUGIN:-${REPO_ROOT}/HeCBench/tools/llvm17_inject/libllfi_inject.so}"
+PLUGIN="${PLUGIN:-${REPO_ROOT}/HeCBench/tools/llvm17_inject/libfi_inject.so}"
 if [[ ! -f "${PLUGIN}" ]]; then
   echo "Missing plugin: ${PLUGIN}"
   exit 1
@@ -175,11 +176,12 @@ if [[ "${BASELINE}" -eq 1 ]]; then
   IR_FOR_PTX="${IR_BC}"
 else
 ${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
-  -passes=llfi-inject \
-  -llfi-site="${SITE_ID}" \
-  -llfi-bit="${BIT_INDEX}" \
-  -llfi-target="${INJECT_TARGET}" \
-  -llfi-int-float-only="${INT_FLOAT_ONLY}" \
+  -passes=fi-inject \
+  -fi-site="${SITE_ID}" \
+  -fi-bit="${BIT_INDEX}" \
+  -fi-target="${INJECT_TARGET}" \
+  -fi-int-float-only="${INT_FLOAT_ONLY}" \
+  -fi-include-constants="${INCLUDE_CONSTANTS}" \
   "${IR_BC}" -o "${IR_INJ_BC}"
   ${OPT_BIN} -S "${IR_INJ_BC}" -o "${IR_INJ_LL}"
   IR_FOR_PTX="${IR_INJ_BC}"
@@ -224,10 +226,10 @@ fi
 
 set +e
 if [[ "${BASELINE}" -eq 1 ]]; then
-  HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${BASELINE_OUT}" 2>"${BASELINE_ERR}"
+  HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${BASELINE_OUT}" 2>"${BASELINE_ERR}"
   status=$?
 else
-  HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${RUN_OUT}" 2>"${RUN_ERR}"
+  HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${RUN_OUT}" 2>"${RUN_ERR}"
   status=$?
 fi
 set -e

@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
   const int n = atoi(argv[1]);
   const int repeat = atoi(argv[2]);
   const char *dump_path = argc == 4 ? argv[3] : nullptr;
-  const bool force_dump = std::getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
+  const bool force_dump = std::getenv("HECBENCH_FI_FORCE_DUMP") != nullptr;
   const bool gpu_debug = std::getenv("HECBENCH_GPU_DEBUG") != nullptr;
 
   if (gpu_debug) {

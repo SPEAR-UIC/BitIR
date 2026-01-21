@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--out-dir", default="HeCBench/build/llvm17-inject-jacobi-worklist")
     parser.add_argument("--target", choices=["result", "operand", "pointer"], default="result")
     parser.add_argument("--int-float-only", type=int, choices=[0, 1], default=1)
+    parser.add_argument("--include-constants", type=int, choices=[0, 1], default=0)
     parser.add_argument("--worklist", default="")
     parser.add_argument("--sites", default="")
     args = parser.parse_args()
@@ -65,7 +66,7 @@ def main():
         print(out)
         return code
 
-    plugin = os.path.join(repo_root, "HeCBench/tools/llvm17_inject/libllfi_inject.so")
+    plugin = os.path.join(repo_root, "HeCBench/tools/llvm17_inject/libfi_inject.so")
     suffix = "" if args.target == "result" else f"_{args.target}"
     sites_path = os.path.join(repo_root, args.sites or f"HeCBench/results/llvm17_inject/jacobi/sites{suffix}.csv")
     if os.path.exists(sites_path):
@@ -74,11 +75,12 @@ def main():
     cmd = [
         args.opt,
         "-load-pass-plugin", plugin,
-        "-passes=llfi-inject",
-        "-llfi-site=-1",
-        f"-llfi-target={args.target}",
-        f"-llfi-int-float-only={args.int_float_only}",
-        "-llfi-dump-sites=" + sites_path,
+        "-passes=fi-inject",
+        "-fi-site=-1",
+        f"-fi-target={args.target}",
+        f"-fi-int-float-only={args.int_float_only}",
+        f"-fi-include-constants={args.include_constants}",
+        "-fi-dump-sites=" + sites_path,
         ir_bc,
         "-o", os.path.join(out_dir, "device.dump.bc"),
     ]
