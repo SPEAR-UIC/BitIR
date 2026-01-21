@@ -27,12 +27,15 @@ void rotate_matrix_serial(float *matrix, const int n) {
 }
 
 int main(int argc, char** argv) {
-  if (argc != 3) {
-    printf("Usage: %s <matrix size> <repeat>\n", argv[0]);
+  if (argc < 3 || argc > 4) {
+    printf("Usage: %s <matrix size> <repeat> [dump file]\n", argv[0]);
     return 1;
   }
   const int n = atoi(argv[1]);
   const int repeat = atoi(argv[2]);
+  const char *dump_path = argc == 4 ? argv[3] : nullptr;
+  const bool force_dump = std::getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
+  const bool gpu_debug = std::getenv("HECBENCH_GPU_DEBUG") != nullptr;
 
   float *serial_res = (float*) aligned_alloc(1024, n*n*sizeof(float));
   float *matrix = (float*) aligned_alloc(1024, n*n*sizeof(float));
@@ -50,6 +53,13 @@ int main(int argc, char** argv) {
 #else
   sycl::queue q(sycl::cpu_selector_v, sycl::property::queue::in_order());
 #endif
+
+  if (gpu_debug) {
+    auto dev = q.get_device();
+    std::string name = dev.get_info<sycl::info::device::name>();
+    std::string driver = dev.get_info<sycl::info::device::driver_version>();
+    fprintf(stderr, "[gpu-debug] device=%s driver=%s\n", name.c_str(), driver.c_str());
+  }
 
   float *d_matrix = sycl::malloc_device<float>(n*n, q);
   q.memcpy(d_matrix, matrix, n*n*sizeof(float));
@@ -105,6 +115,23 @@ int main(int argc, char** argv) {
   }
 
   printf("%s\n", ok ? "PASS" : "FAIL");
+
+  if (dump_path && (ok || force_dump)) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      fprintf(stderr, "Failed to open dump file %s\n", dump_path);
+    } else {
+      size_t total = static_cast<size_t>(n) * n;
+      size_t written = fwrite(matrix, sizeof(float), total, fp);
+      fclose(fp);
+      if (written != total) {
+        fprintf(stderr, "Matrix dump incomplete: wrote %zu of %zu elements\n",
+                written, total);
+      } else {
+        printf("Matrix snapshot written to %s\n", dump_path);
+      }
+    }
+  }
 
   free(serial_res);
   free(matrix);

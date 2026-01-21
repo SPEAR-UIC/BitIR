@@ -1,0 +1,109 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N aurora_sycl_golden
+#PBS -q debug
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l filesystems=home
+#PBS -l walltime=01:00:00
+#PBS -o OUT_sycl_golden.out
+#PBS -e ERROR_sycl_golden.err
+
+set -euo pipefail
+
+if command -v module &> /dev/null; then
+  module purge
+  module use /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core 2>/dev/null || true
+  module use /opt/aurora/25.190.0/modulefiles 2>/dev/null || true
+  module load cmake/3.31.8 2>/dev/null || module load cmake 2>/dev/null || true
+  module load ninja/1.12.1 2>/dev/null || module load ninja 2>/dev/null || true
+  module load oneapi/release/2025.2.0 2>/dev/null || \
+  module load oneapi/release/2025.0.5 2>/dev/null || \
+  module load oneapi/release/2024.2.1 2>/dev/null || \
+  module load oneapi/eng-compiler/2024.07.30.002 2>/dev/null || true
+fi
+
+cd "$PBS_O_WORKDIR"
+
+REPO_DIR="$PBS_O_WORKDIR"
+HECBENCH_ROOT="${HECBENCH_ROOT:-${REPO_DIR}/HeCBench}"
+BUILD_DIR="${BUILD_DIR:-${HECBENCH_ROOT}/build/sycl-intel-golden}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-${REPO_DIR}/Aurora_Sycl_Golden_Outputs}"
+POLARIS_GOLDEN="${POLARIS_GOLDEN:-${REPO_DIR}/Polaris_Golden_Outputs}"
+mkdir -p "$OUTPUT_ROOT"
+
+export SYCL_DEVICE_FILTER="${SYCL_DEVICE_FILTER:-level_zero:gpu}"
+export ONEAPI_DEVICE_SELECTOR="${ONEAPI_DEVICE_SELECTOR:-level_zero:gpu}"
+export SYCL_UR_TRACE="${SYCL_UR_TRACE:-2}"
+export ZE_ENABLE_VALIDATION_LAYER="${ZE_ENABLE_VALIDATION_LAYER:-1}"
+export ZE_ENABLE_PARAMETER_VALIDATION="${ZE_ENABLE_PARAMETER_VALIDATION:-1}"
+export ZE_DEBUG="${ZE_DEBUG:-4}"
+export SYCL_CACHE_PERSISTENT="${SYCL_CACHE_PERSISTENT:-1}"
+export HECBENCH_GPU_DEBUG="${HECBENCH_GPU_DEBUG:-1}"
+
+timestamp() {
+  date +"%Y-%m-%d %H:%M:%S"
+}
+
+SUMMARY_FILE="$OUTPUT_ROOT/run_summary.txt"
+{
+  echo "Aurora SYCL golden runs"
+  echo "Repository : $REPO_DIR"
+  echo "Build dir  : $BUILD_DIR"
+  echo "Output dir : $OUTPUT_ROOT"
+  echo "Start time : $(timestamp)"
+} > "$SUMMARY_FILE"
+
+append_summary() {
+  echo "[$(timestamp)] $1" >> "$SUMMARY_FILE"
+}
+
+cmake -S "${HECBENCH_ROOT}" -B "${BUILD_DIR}" -G Ninja \
+  -DHECBENCH_ENABLE_SYCL=ON \
+  -DHECBENCH_ENABLE_CUDA=OFF \
+  -DHECBENCH_ENABLE_HIP=OFF \
+  -DHECBENCH_ENABLE_OPENMP=OFF \
+  -DHECBENCH_SYCL_TARGET=spir64 \
+  -DCMAKE_C_COMPILER=icx \
+  -DCMAKE_CXX_COMPILER=icpx \
+  -DCMAKE_CXX_FLAGS="-DUSE_GPU"
+
+cmake --build "${BUILD_DIR}" --target matrix-rotate-sycl
+
+MATRIX_BIN="${BUILD_DIR}/bin/sycl/matrix-rotate"
+MATRIX_SIZE="${MATRIX_SIZE:-8192}"
+MATRIX_REPEAT="${MATRIX_REPEAT:-10}"
+MATRIX_DUMP="${OUTPUT_ROOT}/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}.bin"
+MATRIX_LOG="${OUTPUT_ROOT}/matrix-rotate.log"
+MATRIX_ERR="${OUTPUT_ROOT}/matrix-rotate.err"
+
+echo "[$(timestamp)] Running matrix-rotate (SYCL): ${MATRIX_BIN} ${MATRIX_SIZE} ${MATRIX_REPEAT} ${MATRIX_DUMP}" | tee "$MATRIX_LOG"
+set +e
+HECBENCH_LLFI_FORCE_DUMP=1 "${MATRIX_BIN}" "${MATRIX_SIZE}" "${MATRIX_REPEAT}" "${MATRIX_DUMP}" \
+  > >(tee -a "$MATRIX_LOG") 2> >(tee -a "$MATRIX_ERR" >&2)
+status=$?
+set -e
+
+if [[ $status -ne 0 ]]; then
+  echo "[$(timestamp)] matrix-rotate FAILED (status $status)" | tee -a "$MATRIX_LOG"
+  append_summary "matrix-rotate: FAILED"
+  exit $status
+fi
+
+if [[ ! -f "${MATRIX_DUMP}" ]]; then
+  echo "[$(timestamp)] matrix-rotate dump missing: ${MATRIX_DUMP}" | tee -a "$MATRIX_LOG"
+  append_summary "matrix-rotate: dump missing"
+  exit 1
+fi
+
+if [[ -f "${POLARIS_GOLDEN}/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}.bin" ]]; then
+  python3 "${HECBENCH_ROOT}/tools/llvm17_inject/compare_matrix_dump.py" \
+    "${POLARIS_GOLDEN}/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}.bin" \
+    "${MATRIX_DUMP}" \
+    > >(tee -a "$MATRIX_LOG") 2> >(tee -a "$MATRIX_ERR" >&2) || true
+  append_summary "matrix-rotate: compared vs Polaris golden"
+else
+  append_summary "matrix-rotate: Polaris golden missing"
+fi
+
+echo "[$(timestamp)] matrix-rotate completed successfully." | tee -a "$MATRIX_LOG"
+append_summary "matrix-rotate: log=$(basename "$MATRIX_LOG")"
