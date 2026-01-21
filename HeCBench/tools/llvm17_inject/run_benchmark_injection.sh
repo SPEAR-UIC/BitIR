@@ -22,6 +22,8 @@ ABS_TOL="${ABS_TOL:-0.0}"
 REL_TOL="${REL_TOL:-0.0}"
 BASELINE="${BASELINE:-0}"
 COMPARE_MODE="${COMPARE_MODE:-exact}"
+INJECT_TARGET="${INJECT_TARGET:-result}"
+INT_FLOAT_ONLY="${INT_FLOAT_ONLY:-1}"
 
 if [[ -z "${BENCH}" ]]; then
   echo "BENCH is required"
@@ -172,12 +174,13 @@ ${LLVM_AS} "${IR_LL}" -o "${IR_BC}"
 if [[ "${BASELINE}" -eq 1 ]]; then
   IR_FOR_PTX="${IR_BC}"
 else
-  ${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
-    -passes=llfi-inject \
-    -llfi-site="${SITE_ID}" \
-    -llfi-bit="${BIT_INDEX}" \
-    -llfi-int-float-only=1 \
-    "${IR_BC}" -o "${IR_INJ_BC}"
+${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
+  -passes=llfi-inject \
+  -llfi-site="${SITE_ID}" \
+  -llfi-bit="${BIT_INDEX}" \
+  -llfi-target="${INJECT_TARGET}" \
+  -llfi-int-float-only="${INT_FLOAT_ONLY}" \
+  "${IR_BC}" -o "${IR_INJ_BC}"
   ${OPT_BIN} -S "${IR_INJ_BC}" -o "${IR_INJ_LL}"
   IR_FOR_PTX="${IR_INJ_BC}"
 fi

@@ -18,8 +18,10 @@ def main():
     parser.add_argument("--cuda-home", default="/soft/compilers/cudatoolkit/cuda-11.8.0")
     parser.add_argument("--cuda-arch", default="sm_80")
     parser.add_argument("--out-dir", default="HeCBench/build/llvm17-inject-jacobi-worklist")
-    parser.add_argument("--worklist", default="HeCBench/results/llvm17_inject/jacobi/worklist.csv")
-    parser.add_argument("--sites", default="HeCBench/results/llvm17_inject/jacobi/sites.csv")
+    parser.add_argument("--target", choices=["result", "operand", "pointer"], default="result")
+    parser.add_argument("--int-float-only", type=int, choices=[0, 1], default=1)
+    parser.add_argument("--worklist", default="")
+    parser.add_argument("--sites", default="")
     args = parser.parse_args()
 
     repo_root = os.getcwd()
@@ -64,7 +66,8 @@ def main():
         return code
 
     plugin = os.path.join(repo_root, "HeCBench/tools/llvm17_inject/libllfi_inject.so")
-    sites_path = os.path.join(repo_root, args.sites)
+    suffix = "" if args.target == "result" else f"_{args.target}"
+    sites_path = os.path.join(repo_root, args.sites or f"HeCBench/results/llvm17_inject/jacobi/sites{suffix}.csv")
     if os.path.exists(sites_path):
         os.remove(sites_path)
 
@@ -73,6 +76,8 @@ def main():
         "-load-pass-plugin", plugin,
         "-passes=llfi-inject",
         "-llfi-site=-1",
+        f"-llfi-target={args.target}",
+        f"-llfi-int-float-only={args.int_float_only}",
         "-llfi-dump-sites=" + sites_path,
         ir_bc,
         "-o", os.path.join(out_dir, "device.dump.bc"),
@@ -82,7 +87,7 @@ def main():
         print(out)
         return code
 
-    worklist_path = os.path.join(repo_root, args.worklist)
+    worklist_path = os.path.join(repo_root, args.worklist or f"HeCBench/results/llvm17_inject/jacobi/worklist{suffix}.csv")
     with open(worklist_path, "w", encoding="utf-8") as wl:
         wl.write("index,site_id,bit_index,bitwidth,type_kind,opcode\n")
         index = 0
@@ -99,7 +104,13 @@ def main():
                 opcode = parts[1]
                 kind = parts[2]
                 bitwidth = int(parts[3]) if parts[3].isdigit() else 0
-                if kind not in ("int", "float") or bitwidth <= 0:
+                if args.target == "pointer":
+                    if kind != "ptr":
+                        continue
+                else:
+                    if args.int_float_only and kind not in ("int", "float"):
+                        continue
+                if bitwidth <= 0:
                     continue
                 for bit in range(bitwidth):
                     index += 1
