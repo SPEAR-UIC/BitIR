@@ -22,6 +22,13 @@ BENCHES = [
 RESULT_RE = re.compile(r"^Result:\s+(\S+)\s+\(exit\s+(-?\d+)\)")
 SITE_RE = re.compile(r"site(\d+)_bit(\d+)\.out$")
 GPU_DEBUG_RE = re.compile(r"^\[gpu-debug\].*err=no error$")
+COMPARE_OK_RE = re.compile(r"^compare_ok$")
+COMPARE_MISMATCH_RE = re.compile(r"^compare_mismatch$")
+COMPARE_EXACT_MISMATCH_RE = re.compile(r"^mismatch$")
+COMPARE_ERR_RE = re.compile(r"^(golden_missing|candidate_missing|size_mismatch|invalid_size|read_mismatch):")
+FAIL_HINT_RE = re.compile(r"(error|failed|segmentation|invalid|exception)", re.IGNORECASE)
+PASS_RE = re.compile(r"^PASS$", re.IGNORECASE)
+FAIL_RE = re.compile(r"^FAIL$", re.IGNORECASE)
 
 
 def is_gpu_debug_only_err(path):
@@ -38,25 +45,61 @@ def is_gpu_debug_only_err(path):
 def parse_result(out_path):
     result = None
     exit_code = ""
+    saw_ok = False
+    saw_mismatch = False
+    saw_compare_err = False
+    saw_fail_hint = False
+    saw_pass = False
+    saw_fail = False
+    saw_any = False
     try:
         with open(out_path, "r", errors="ignore") as fh:
             for line in fh:
                 line = line.strip()
+                if line:
+                    saw_any = True
                 m = RESULT_RE.match(line)
                 if m:
                     result = m.group(1)
                     exit_code = m.group(2)
+                if COMPARE_OK_RE.match(line):
+                    saw_ok = True
+                if COMPARE_MISMATCH_RE.match(line) or COMPARE_EXACT_MISMATCH_RE.match(line) or line.startswith("idx="):
+                    saw_mismatch = True
+                if COMPARE_ERR_RE.match(line):
+                    saw_compare_err = True
+                if FAIL_HINT_RE.search(line):
+                    saw_fail_hint = True
+                if PASS_RE.match(line):
+                    saw_pass = True
+                if FAIL_RE.match(line):
+                    saw_fail = True
     except OSError:
         return "UNKNOWN", ""
-    if not result:
-        return "UNKNOWN", ""
-    return result, exit_code
+    if result:
+        return result, exit_code
+    if saw_ok:
+        return "MASKED", exit_code
+    if saw_mismatch or saw_compare_err:
+        return "SDC", exit_code
+    if saw_fail_hint:
+        return "FAILURE", exit_code
+    if saw_fail:
+        return "SDC", exit_code
+    if saw_pass:
+        return "MASKED", exit_code
+    if not saw_any:
+        return "FAILURE", "empty_out"
+    return "FAILURE", "parse_unknown"
 
 
 def rebuild_for_bench(repo_root, bench):
     results_dir = os.path.join(repo_root, "HeCBench", "results", "llvm17_inject", bench)
     if not os.path.isdir(results_dir):
         return 0, 0
+    review_dir = os.path.join(results_dir, "unknown_review")
+    os.makedirs(review_dir, exist_ok=True)
+    review_paths = []
 
     # Remove GPU-only debug err files.
     removed_err = 0
@@ -81,6 +124,15 @@ def rebuild_for_bench(repo_root, bench):
         err_keep = ""
         if os.path.exists(err_path) and os.path.getsize(err_path) > 0:
             err_keep = err_path
+        if result == "FAILURE" and exit_code in ("parse_unknown", "empty_out"):
+            dst = os.path.join(review_dir, name)
+            try:
+                if not os.path.exists(dst):
+                    with open(out_path, "rb") as src_fh, open(dst, "wb") as dst_fh:
+                        dst_fh.write(src_fh.read())
+                    review_paths.append(dst)
+            except OSError:
+                pass
         rows.append([site, bit, result, exit_code, out_path, err_keep, ""])
 
     rows.sort(key=lambda r: (r[0], r[1]))

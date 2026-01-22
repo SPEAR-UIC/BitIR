@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N fi_inject_matrix_rotate
+#PBS -q small
+#PBS -l select=10:ncpus=1:ngpus=4:mem=32gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=03:00:00
+#PBS -o OUT_matrix_rotate_fi_inject.out
+#PBS -e ERROR_matrix_rotate_fi_inject.err
+
+set -euo pipefail
+
+export BENCH="matrix-rotate"
+exec bash "${PBS_O_WORKDIR:-$(pwd)}/HeCBench/llvm17_inject_bench_sweep.pbs"

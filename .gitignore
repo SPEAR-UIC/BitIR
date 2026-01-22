@@ -6,5 +6,8 @@ HeCBench/tools/llvm17_inject/libfi_inject.so
 OUT_*.out
 ERROR_*.err
 old_outputs/
+Polaris_Golden_Outputs/
+results/
+core.*
 HeCBench/src/logic-resim-cuda/Simulation/toy/NV_NVDLA_partition_o_dc_24x33x55_5x5x55x25_int8_input.vcd
 Aurora_Sycl_Golden_Outputs/

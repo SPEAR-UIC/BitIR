@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -A UIC-HPC
 #PBS -N llvm17_inject_bench_sweep
-#PBS -q debug
-#PBS -l select=1:ncpus=1:ngpus=4:mem=16gb
+#PBS -q medium
+#PBS -l select=25:ncpus=1:ngpus=4:mem=32gb
 #PBS -l filesystems=home:eagle
-#PBS -l walltime=01:00:00
+#PBS -l walltime=06:00:00
 #PBS -o OUT_bench_sweep_llvm17_inject.out
 #PBS -e ERROR_bench_sweep_llvm17_inject.err
 
@@ -19,6 +19,12 @@ if command -v module &> /dev/null; then
 fi
 
 cd "$PBS_O_WORKDIR"
+
+# Reset PBS output files so reruns don't append.
+if [[ -n "${PBS_O_WORKDIR:-}" ]]; then
+  : > "${PBS_O_WORKDIR}/OUT_bench_sweep_llvm17_inject.out"
+  : > "${PBS_O_WORKDIR}/ERROR_bench_sweep_llvm17_inject.err"
+fi
 
 BENCH="${BENCH:-}"
 if [[ -z "${BENCH}" ]]; then
@@ -41,9 +47,10 @@ CLEAN_RUN="${CLEAN_RUN:-0}"
 SKIP_EXISTING="${SKIP_EXISTING:-1}"
 COMPARE_MODE="${COMPARE_MODE:-exact}"
 RUN_BASELINE="${RUN_BASELINE:-1}"
+RESULTS_SUBDIR="${RESULTS_SUBDIR:-llvm17_inject}"
 
-WORKLIST="${WORKLIST:-${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}/worklist.csv}"
-RESULTS_DIR="${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}"
+RESULTS_DIR="${REPO_ROOT}/HeCBench/results/${RESULTS_SUBDIR}/${BENCH}"
+WORKLIST="${WORKLIST:-${RESULTS_DIR}/worklist.csv}"
 BASELINE_FILE="${BASELINE_FILE:-${RESULTS_DIR}/baseline/baseline_${BENCH}.bin}"
 mkdir -p "${RESULTS_DIR}"
 
@@ -55,6 +62,8 @@ echo "[env] ABS_TOL=${ABS_TOL} REL_TOL=${REL_TOL}"
 echo "[env] START_SITE=${START_SITE} CLEAN_RUN=${CLEAN_RUN}"
 echo "[env] SKIP_EXISTING=${SKIP_EXISTING}"
 echo "[env] COMPARE_MODE=${COMPARE_MODE}"
+echo "[env] RESULTS_SUBDIR=${RESULTS_SUBDIR}"
+echo "[env] WORKLIST=${WORKLIST}"
 echo "[env] start=$(date)"
 
 if command -v nvidia-smi &> /dev/null; then
@@ -113,18 +122,7 @@ import os
 bench = os.environ.get("BENCH")
 results_dir = os.environ.get("RESULTS_DIR")
 worklist = os.environ.get("WORKLIST")
-summary = os.path.join(results_dir, "summary.csv")
 missing_path = os.path.join(results_dir, "worklist_missing.csv")
-
-done = set()
-if os.path.exists(summary):
-    with open(summary, newline="") as fh:
-        r = csv.DictReader(fh)
-        for row in r:
-            try:
-                done.add((int(row["site_id"]), int(row["bit_index"])))
-            except Exception:
-                pass
 
 with open(worklist, newline="") as fh, open(missing_path, "w", newline="") as out:
     r = csv.DictReader(fh)
@@ -135,7 +133,8 @@ with open(worklist, newline="") as fh, open(missing_path, "w", newline="") as ou
             key = (int(row["site_id"]), int(row["bit_index"]))
         except Exception:
             continue
-        if key not in done:
+        out_path = os.path.join(results_dir, f"site{key[0]}_bit{key[1]}.out")
+        if (not os.path.exists(out_path)) or os.path.getsize(out_path) == 0:
             w.writerow(row)
 
 print(f"[missing-only] wrote {missing_path}")
