@@ -2,6 +2,8 @@ HeCBench/build/*
 *.bin
 HeCBench/results/llvm17_inject/
 HeCBench/results/llvm17_inject/**
+!HeCBench/results/llvm17_inject/*/worklist*.csv
+!HeCBench/results/llvm17_inject/*/sites_*.csv
 HeCBench/tools/llvm17_inject/libfi_inject.so
 OUT_*.out
 ERROR_*.err
