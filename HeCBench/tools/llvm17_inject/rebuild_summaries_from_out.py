@@ -22,6 +22,7 @@ BENCHES = [
 RESULT_RE = re.compile(r"^Result:\s+(\S+)\s+\(exit\s+(-?\d+)\)")
 SITE_RE = re.compile(r"site(\d+)_bit(\d+)\.out$")
 GPU_DEBUG_RE = re.compile(r"^\[gpu-debug\].*err=no error$")
+TRIVIAL_ERR_RE = re.compile(r".*err=no error.*", re.IGNORECASE)
 COMPARE_OK_RE = re.compile(r"^compare_ok$")
 COMPARE_MISMATCH_RE = re.compile(r"^compare_mismatch$")
 COMPARE_EXACT_MISMATCH_RE = re.compile(r"^mismatch$")
@@ -31,15 +32,15 @@ PASS_RE = re.compile(r"^PASS$", re.IGNORECASE)
 FAIL_RE = re.compile(r"^FAIL$", re.IGNORECASE)
 
 
-def is_gpu_debug_only_err(path):
+def is_trivial_err(path):
     try:
         with open(path, "r", errors="ignore") as fh:
             lines = [ln.strip() for ln in fh if ln.strip()]
     except OSError:
         return False
     if not lines:
-        return False
-    return all(GPU_DEBUG_RE.match(ln) for ln in lines)
+        return True
+    return all(GPU_DEBUG_RE.match(ln) or TRIVIAL_ERR_RE.match(ln) for ln in lines)
 
 
 def parse_result(out_path):
@@ -101,13 +102,13 @@ def rebuild_for_bench(repo_root, bench):
     os.makedirs(review_dir, exist_ok=True)
     review_paths = []
 
-    # Remove GPU-only debug err files.
+    # Remove trivial err files (empty or only "no error" lines).
     removed_err = 0
     for name in os.listdir(results_dir):
         if not name.endswith(".err"):
             continue
         path = os.path.join(results_dir, name)
-        if is_gpu_debug_only_err(path):
+        if is_trivial_err(path):
             os.remove(path)
             removed_err += 1
 

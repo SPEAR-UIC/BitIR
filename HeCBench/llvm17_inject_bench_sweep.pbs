@@ -9,6 +9,7 @@
 #PBS -e ERROR_bench_sweep_llvm17_inject.err
 
 set -euo pipefail
+ulimit -c 0
 
 if command -v module &> /dev/null; then
   module use /soft/modulefiles
@@ -39,6 +40,10 @@ export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
 export CUDA_DEVICE_ORDER="${CUDA_DEVICE_ORDER:-PCI_BUS_ID}"
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-}"
 export HECBENCH_GPU_DEBUG="${HECBENCH_GPU_DEBUG:-0}"
+export CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
+export GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
+export MONITOR_GPU="${MONITOR_GPU:-0}"
+export MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
 
 ABS_TOL="${ABS_TOL:-1e-5}"
 REL_TOL="${REL_TOL:-1e-6}"
@@ -48,11 +53,23 @@ SKIP_EXISTING="${SKIP_EXISTING:-1}"
 COMPARE_MODE="${COMPARE_MODE:-exact}"
 RUN_BASELINE="${RUN_BASELINE:-1}"
 RESULTS_SUBDIR="${RESULTS_SUBDIR:-llvm17_inject}"
+WORKLIST_QUEUE="${WORKLIST_QUEUE:-0}"
 
 RESULTS_DIR="${REPO_ROOT}/HeCBench/results/${RESULTS_SUBDIR}/${BENCH}"
 WORKLIST="${WORKLIST:-${RESULTS_DIR}/worklist.csv}"
 BASELINE_FILE="${BASELINE_FILE:-${RESULTS_DIR}/baseline/baseline_${BENCH}.bin}"
 mkdir -p "${RESULTS_DIR}"
+QUEUE_FILE="${RESULTS_DIR}/work_queue.csv"
+QUEUE_LOCK="${RESULTS_DIR}/work_queue.lock"
+
+PRUNED_SRC="${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}-sycl/worklist_sycl_aligned.csv"
+PRUNED_DST="${RESULTS_DIR}/worklist_pruned.csv"
+if [[ -f "${PRUNED_SRC}" ]]; then
+  if [[ ! -f "${PRUNED_DST}" || "${REBUILD_PRUNED_WORKLIST:-0}" -eq 1 ]]; then
+    cp -f "${PRUNED_SRC}" "${PRUNED_DST}"
+  fi
+  WORKLIST="${WORKLIST_PRUNED:-${PRUNED_DST}}"
+fi
 
 echo "[env] BENCH=${BENCH}"
 echo "[env] REPO_ROOT=${REPO_ROOT}"
@@ -63,8 +80,10 @@ echo "[env] START_SITE=${START_SITE} CLEAN_RUN=${CLEAN_RUN}"
 echo "[env] SKIP_EXISTING=${SKIP_EXISTING}"
 echo "[env] COMPARE_MODE=${COMPARE_MODE}"
 echo "[env] RESULTS_SUBDIR=${RESULTS_SUBDIR}"
+echo "[env] RESULTS_DIR=${RESULTS_DIR}"
 echo "[env] WORKLIST=${WORKLIST}"
 echo "[env] start=$(date)"
+echo "[timing] workers_start=$(date +\"%s\")"
 
 if command -v nvidia-smi &> /dev/null; then
   echo "[env] nvidia-smi -L"
@@ -98,11 +117,18 @@ else
 fi
 export GPU_COUNT
 echo "[env] GPU_COUNT=${GPU_COUNT}"
+MONITOR_GPU="${MONITOR_GPU:-0}"
+MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
+echo "[env] MONITOR_GPU=${MONITOR_GPU} MONITOR_INTERVAL=${MONITOR_INTERVAL}"
 
 bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
 
 PLUGIN_SRC="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libfi_inject.so"
 PLUGIN_COPY="${RESULTS_DIR}/libfi_inject.${PBS_JOBID:-local}.so"
+if [[ ! -f "${PLUGIN_SRC}" ]]; then
+  echo "[error] missing plugin: ${PLUGIN_SRC}"
+  exit 1
+fi
 cp -f "${PLUGIN_SRC}" "${PLUGIN_COPY}"
 export PLUGIN="${PLUGIN_COPY}"
 
@@ -143,6 +169,35 @@ PY
   SKIP_EXISTING=0
 fi
 
+if [[ "${WORKLIST_QUEUE}" -eq 1 ]]; then
+  echo "[queue] building work queue ${QUEUE_FILE}"
+  RESULTS_DIR="${RESULTS_DIR}" WORKLIST="${WORKLIST}" python3 - <<'PY'
+import csv, os
+results_dir = os.environ["RESULTS_DIR"]
+worklist = os.environ["WORKLIST"]
+queue_path = os.path.join(results_dir, "work_queue.csv")
+
+def get_pair(row):
+    site = row.get("site_id") or row.get("site") or row.get("Site")
+    bit = row.get("bit_index") or row.get("bit") or row.get("BIT_INDEX")
+    if site is None or bit is None:
+        return None
+    return int(site), int(bit)
+
+with open(worklist, newline="") as fh, open(queue_path, "w", newline="") as out:
+    r = csv.DictReader(fh)
+    w = csv.writer(out)
+    w.writerow(["site_id", "bit_index"])
+    for row in r:
+        pair = get_pair(row)
+        if pair is None:
+            continue
+        out_path = os.path.join(results_dir, f"site{pair[0]}_bit{pair[1]}.out")
+        if (not os.path.exists(out_path)) or os.path.getsize(out_path) == 0:
+            w.writerow([pair[0], pair[1]])
+PY
+fi
+
 if [[ "${CLEAN_RUN}" -eq 1 ]]; then
   rm -f "${RESULTS_DIR}"/summary_node*_gpu*.csv "${RESULTS_DIR}/summary.csv" "${RESULTS_DIR}/summary_counts.txt" || true
 fi
@@ -159,9 +214,38 @@ if [[ "${WORKER:-0}" -eq 1 ]]; then
   TOTAL_WORKERS=$((NODE_COUNT * GPU_COUNT))
   echo "[worker] task=${TASK_ID} gpus=${GPU_COUNT} total_workers=${TOTAL_WORKERS}"
 
+  pop_next_pair() {
+    python3 - "${QUEUE_FILE}" "${QUEUE_LOCK}" <<'PY'
+import csv, fcntl, os, sys
+queue, lock = sys.argv[1], sys.argv[2]
+if not os.path.exists(queue):
+    print("")
+    raise SystemExit(0)
+with open(lock, "a+") as lf:
+    fcntl.flock(lf, fcntl.LOCK_EX)
+    with open(queue, newline="") as qf:
+        rows = list(csv.reader(qf))
+    if len(rows) <= 1:
+        fcntl.flock(lf, fcntl.LOCK_UN)
+        print("")
+        raise SystemExit(0)
+    header = rows[0]
+    pair = rows[1]
+    rest = rows[2:]
+    with open(queue, "w", newline="") as qf:
+        w = csv.writer(qf)
+        w.writerow(header)
+        for r in rest:
+            w.writerow(r)
+    fcntl.flock(lf, fcntl.LOCK_UN)
+print(",".join(pair))
+PY
+  }
+
   run_worker_gpu() {
     local gpu_id=$1
     local worker_rank=$((TASK_ID * GPU_COUNT + gpu_id))
+    local processed=0
     local out_dir_base
     if [[ -n "${PBS_JOBTMP:-}" && -d "${PBS_JOBTMP}" ]]; then
       out_dir_base="${PBS_JOBTMP}"
@@ -174,6 +258,24 @@ if [[ "${WORKER:-0}" -eq 1 ]]; then
     local csv="${RESULTS_DIR}/summary_node${TASK_ID}_gpu${gpu_id}.csv"
     echo "[worker] rank=${worker_rank} gpu=${gpu_id} out_dir=${out_dir}"
     echo "[heartbeat] $(date +"%Y-%m-%d %H:%M:%S") bench=${BENCH} node=${TASK_ID} gpu=${gpu_id} host=$(hostname) out_dir=${out_dir}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
+
+    local monitor_pid=""
+    if [[ "${MONITOR_GPU}" -eq 1 && "${gpu_id}" -eq 0 && -x "$(command -v nvidia-smi)" ]]; then
+      local monitor_log="${RESULTS_DIR}/gpu_monitor_node${TASK_ID}.csv"
+      if [[ ! -f "${monitor_log}" ]]; then
+        echo "timestamp,host,jobid,index,uuid,util.gpu,util.mem,mem.used" > "${monitor_log}"
+      fi
+      (
+        while true; do
+        nvidia-smi --query-gpu=timestamp,uuid,index,utilization.gpu,utilization.memory,memory.used \
+            --format=csv,noheader | awk -v host="$(hostname)" -v job="${PBS_JOBID:-local}" \
+            '{print $1","host","job","$3","$2","$4","$5","$6}' >> "${monitor_log}"
+          sleep "${MONITOR_INTERVAL}"
+        done
+      ) &
+      monitor_pid=$!
+      echo "[gpu-monitor] node=${TASK_ID} pid=${monitor_pid} log=${monitor_log}"
+    fi
 
     if [[ "${RUN_BASELINE}" -eq 1 && "${TASK_ID}" -eq 0 && "${gpu_id}" -eq 0 && ! -f "${BASELINE_FILE}" ]]; then
       CUDA_VISIBLE_DEVICES="${gpu_id}" \
@@ -191,49 +293,95 @@ if [[ "${WORKER:-0}" -eq 1 ]]; then
       bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
     fi
 
-    while IFS=, read -r idx site bit bitwidth kind opcode; do
-      if [[ "${idx}" == "index" || -z "${idx}" ]]; then
-        continue
-      fi
-      if (( site < START_SITE )); then
-        continue
-      fi
-      if (( (idx - 1) % TOTAL_WORKERS != worker_rank )); then
-        continue
-      fi
-      CUDA_VISIBLE_DEVICES="${gpu_id}" \
-      SITE_ID="${site}" \
-      BIT_INDEX="${bit}" \
-      ABS_TOL="${ABS_TOL}" \
-      REL_TOL="${REL_TOL}" \
-      START_SITE="${START_SITE}" \
-      SKIP_EXISTING="${SKIP_EXISTING}" \
-      OUT_DIR="${out_dir}" \
-      RESULTS_DIR="${RESULTS_DIR}" \
-      CSV="${csv}" \
-      REPO_ROOT="${REPO_ROOT}" \
-      CUDA_HOME="${CUDA_HOME}" \
-      BENCH="${BENCH}" \
-      COMPARE_MODE="${COMPARE_MODE}" \
-      bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
-    done < "${WORKLIST}"
+    if [[ "${WORKLIST_QUEUE}" -eq 1 ]]; then
+      while true; do
+        pair="$(pop_next_pair)"
+        if [[ -z "${pair}" ]]; then
+          break
+        fi
+        IFS=, read -r site bit <<< "${pair}"
+        if [[ -z "${site}" || -z "${bit}" ]]; then
+          continue
+        fi
+        processed=$((processed + 1))
+        CUDA_VISIBLE_DEVICES="${gpu_id}" \
+        SITE_ID="${site}" \
+        BIT_INDEX="${bit}" \
+        ABS_TOL="${ABS_TOL}" \
+        REL_TOL="${REL_TOL}" \
+        START_SITE="${START_SITE}" \
+        SKIP_EXISTING="${SKIP_EXISTING}" \
+        OUT_DIR="${out_dir}" \
+        RESULTS_DIR="${RESULTS_DIR}" \
+        CSV="${csv}" \
+        REPO_ROOT="${REPO_ROOT}" \
+        CUDA_HOME="${CUDA_HOME}" \
+        BENCH="${BENCH}" \
+        COMPARE_MODE="${COMPARE_MODE}" \
+        bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
+      done
+    else
+      while IFS= read -r line; do
+        [[ -z "${line}" ]] && continue
+        idx="$(printf '%s' "${line}" | cut -d, -f1)"
+        site="$(printf '%s' "${line}" | cut -d, -f2)"
+        bit="$(printf '%s' "${line}" | cut -d, -f3)"
+        if [[ "${idx}" == "index" || "${idx}" == "site_id" || -z "${idx}" ]]; then
+          continue
+        fi
+        if [[ ! "${site}" =~ ^[0-9]+$ || ! "${bit}" =~ ^[0-9]+$ ]]; then
+          continue
+        fi
+        if (( site < START_SITE )); then
+          continue
+        fi
+        if (( (idx - 1) % TOTAL_WORKERS != worker_rank )); then
+          continue
+        fi
+        processed=$((processed + 1))
+        CUDA_VISIBLE_DEVICES="${gpu_id}" \
+        SITE_ID="${site}" \
+        BIT_INDEX="${bit}" \
+        ABS_TOL="${ABS_TOL}" \
+        REL_TOL="${REL_TOL}" \
+        START_SITE="${START_SITE}" \
+        SKIP_EXISTING="${SKIP_EXISTING}" \
+        OUT_DIR="${out_dir}" \
+        RESULTS_DIR="${RESULTS_DIR}" \
+        CSV="${csv}" \
+        REPO_ROOT="${REPO_ROOT}" \
+        CUDA_HOME="${CUDA_HOME}" \
+        BENCH="${BENCH}" \
+        COMPARE_MODE="${COMPARE_MODE}" \
+        bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
+      done < "${WORKLIST}"
+    fi
+
+    if [[ "${DEBUG_WORKLIST:-0}" -eq 1 ]]; then
+      echo "[worker] rank=${worker_rank} processed=${processed}" >> "${RESULTS_DIR}/worker_counts.txt"
+    fi
+
+    if [[ -n "${monitor_pid}" ]]; then
+      kill "${monitor_pid}" >/dev/null 2>&1 || true
+    fi
   }
 
   for gpu_id in $(seq 0 $((GPU_COUNT - 1))); do
     run_worker_gpu "${gpu_id}" &
   done
   wait
+  echo "[timing] workers_end=$(date +\"%s\")"
   exit 0
 fi
 
 if command -v pbsdsh &> /dev/null; then
   for i in $(seq 0 $((NODE_COUNT - 1))); do
-    pbsdsh -n "$i" -- bash -lc "WORKER=1 TASK_ID=${i} NODE_COUNT=${NODE_COUNT} GPU_COUNT=${GPU_COUNT} ABS_TOL=${ABS_TOL} REL_TOL=${REL_TOL} CUDA_HOME=${CUDA_HOME} REPO_ROOT=${REPO_ROOT} BENCH=${BENCH} COMPARE_MODE=${COMPARE_MODE} PLUGIN=${PLUGIN} PBS_JOBTMP=${PBS_JOBTMP:-} TMPDIR=${TMPDIR:-} bash ${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs" &
+    pbsdsh -n "$i" -- bash -lc "WORKER=1 TASK_ID=${i} NODE_COUNT=${NODE_COUNT} GPU_COUNT=${GPU_COUNT} ABS_TOL=${ABS_TOL} REL_TOL=${REL_TOL} CUDA_HOME=${CUDA_HOME} REPO_ROOT=${REPO_ROOT} BENCH=${BENCH} COMPARE_MODE=${COMPARE_MODE} RESULTS_SUBDIR=${RESULTS_SUBDIR} WORKLIST=${WORKLIST} WORKLIST_QUEUE=${WORKLIST_QUEUE} PLUGIN=${PLUGIN} PBS_JOBTMP=${PBS_JOBTMP:-} TMPDIR=${TMPDIR:-} bash ${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs" &
   done
   wait
 else
   echo "pbsdsh not available; running single-node worker."
-  WORKER=1 TASK_ID=0 NODE_COUNT=1 GPU_COUNT="${GPU_COUNT}" BENCH="${BENCH}" COMPARE_MODE="${COMPARE_MODE}" PLUGIN="${PLUGIN}" \
+  WORKER=1 TASK_ID=0 NODE_COUNT=1 GPU_COUNT="${GPU_COUNT}" BENCH="${BENCH}" COMPARE_MODE="${COMPARE_MODE}" RESULTS_SUBDIR="${RESULTS_SUBDIR}" WORKLIST="${WORKLIST}" WORKLIST_QUEUE="${WORKLIST_QUEUE}" PLUGIN="${PLUGIN}" \
     bash "${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs"
 fi
 

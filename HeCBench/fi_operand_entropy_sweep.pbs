@@ -1,17 +1,20 @@
 #!/bin/bash
 #PBS -A UIC-HPC
 #PBS -N entropy_fi_operand
-#PBS -q large
-#PBS -l select=100:ncpus=1:ngpus=4:mem=32gb
+#PBS -q prod
+#PBS -l select=10:ncpus=32:ngpus=4:mem=128gb
 #PBS -l filesystems=home:eagle
-#PBS -l walltime=12:00:00
+#PBS -l walltime=03:00:00
 #PBS -o OUT_entropy_fi_operand.out
 #PBS -e ERROR_entropy_fi_operand.err
+#PBS -M mdunl6@uic.edu
+#PBS -m abe
 
 set -euo pipefail
 
 export BENCH="entropy"
 export RESULTS_SUBDIR="fi_inject_operand"
+export WORKLIST_PRUNED="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/fi_inject_operand/entropy/worklist_missing.csv"
 export WORKLIST="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/entropy/worklist_operand.csv"
 export INJECT_TARGET="operand"
 export INCLUDE_CONSTANTS="0"
@@ -19,5 +22,9 @@ export INT_FLOAT_ONLY="1"
 export COMPARE_MODE="exact"
 export START_SITE="${START_SITE:-1}"
 export SKIP_EXISTING="${SKIP_EXISTING:-1}"
+export CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
+export GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
+export MONITOR_GPU="${MONITOR_GPU:-0}"
+export MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
 
 exec bash "${PBS_O_WORKDIR:-$(pwd)}/HeCBench/llvm17_inject_bench_sweep.pbs"

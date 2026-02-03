@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+start_ns=$(date +%s%N)
 
 if command -v module &> /dev/null; then
   module use /soft/modulefiles || true
@@ -25,6 +26,8 @@ COMPARE_MODE="${COMPARE_MODE:-exact}"
 INJECT_TARGET="${INJECT_TARGET:-result}"
 INT_FLOAT_ONLY="${INT_FLOAT_ONLY:-1}"
 INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS:-0}"
+CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
+GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
 
 if [[ -z "${BENCH}" ]]; then
   echo "BENCH is required"
@@ -153,24 +156,32 @@ fi
 
 export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
 
-${CLANG} -x cuda \
-  --cuda-device-only \
-  --cuda-gpu-arch="${CUDA_ARCH}" \
-  --cuda-path="${CUDA_HOME}" \
-  -Xclang -emit-llvm \
-  -S -O0 -g \
-  -D__STRICT_ANSI__ \
-  -D_GLIBCXX_USE_FLOAT128=0 \
-  -nostdinc++ \
-  -isystem /usr/include/c++/7 \
-  -isystem /usr/include/c++/7/x86_64-suse-linux \
-  -isystem /usr/include/c++/7/backward \
-  -isystem /usr/lib64/gcc/x86_64-suse-linux/7/include \
-  -I "${BENCH_DIR}" \
-  -I "${REPO_ROOT}/HeCBench/src" \
-  "${SRC}" -o "${IR_LL}"
+if [[ "${CACHE_DEVICE_IR}" -eq 1 && -f "${IR_BC}" ]]; then
+  if [[ "${SRC}" -nt "${IR_BC}" ]]; then
+    rm -f "${IR_BC}" "${IR_LL}"
+  fi
+fi
 
-${LLVM_AS} "${IR_LL}" -o "${IR_BC}"
+if [[ ! -f "${IR_BC}" ]]; then
+  ${CLANG} -x cuda \
+    --cuda-device-only \
+    --cuda-gpu-arch="${CUDA_ARCH}" \
+    --cuda-path="${CUDA_HOME}" \
+    -Xclang -emit-llvm \
+    -S -O0 -g \
+    -D__STRICT_ANSI__ \
+    -D_GLIBCXX_USE_FLOAT128=0 \
+    -nostdinc++ \
+    -isystem /usr/include/c++/7 \
+    -isystem /usr/include/c++/7/x86_64-suse-linux \
+    -isystem /usr/include/c++/7/backward \
+    -isystem /usr/lib64/gcc/x86_64-suse-linux/7/include \
+    -I "${BENCH_DIR}" \
+    -I "${REPO_ROOT}/HeCBench/src" \
+    "${SRC}" -o "${IR_LL}"
+
+  ${LLVM_AS} "${IR_LL}" -o "${IR_BC}"
+fi
 
 if [[ "${BASELINE}" -eq 1 ]]; then
   IR_FOR_PTX="${IR_BC}"
@@ -183,7 +194,9 @@ ${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
   -fi-int-float-only="${INT_FLOAT_ONLY}" \
   -fi-include-constants="${INCLUDE_CONSTANTS}" \
   "${IR_BC}" -o "${IR_INJ_BC}"
-  ${OPT_BIN} -S "${IR_INJ_BC}" -o "${IR_INJ_LL}"
+  if [[ "${GENERATE_IR_LL}" -eq 1 ]]; then
+    ${OPT_BIN} -S "${IR_INJ_BC}" -o "${IR_INJ_LL}"
+  fi
   IR_FOR_PTX="${IR_INJ_BC}"
 fi
 
@@ -259,12 +272,15 @@ if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
       echo "result=${result}"
     } >"${BASELINE_META}"
   else
+    set +e
     if [[ "${COMPARE_MODE}" == "float" ]]; then
       python3 "${COMPARE_TOOL}" "${GOLDEN}" "${RUN_DUMP_TMP}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}" >>"${RUN_OUT}" 2>>"${RUN_ERR}"
     else
       python3 "${COMPARE_TOOL}" "${GOLDEN}" "${RUN_DUMP_TMP}" >>"${RUN_OUT}" 2>>"${RUN_ERR}"
     fi
-    if [[ $? -eq 0 ]]; then
+    cmp_status=$?
+    set -e
+    if [[ ${cmp_status} -eq 0 ]]; then
       result="MASKED"
     else
       result="SDC"
@@ -296,3 +312,10 @@ else
 fi
 
 echo "Result: ${result} (exit ${status})"
+end_ns=$(date +%s%N)
+dur_ms=$(( (end_ns - start_ns) / 1000000 ))
+if [[ "${BASELINE}" -eq 1 ]]; then
+  echo "timing_ms: ${dur_ms}" >> "${BASELINE_OUT}"
+else
+  echo "timing_ms: ${dur_ms}" >> "${RUN_OUT}"
+fi

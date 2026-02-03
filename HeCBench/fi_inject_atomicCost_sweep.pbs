@@ -2,13 +2,79 @@
 #PBS -A UIC-HPC
 #PBS -N atomicCost_fi_inject
 #PBS -q prod
-#PBS -l select=100:ncpus=1:ngpus=4:mem=32gb
+#PBS -l select=25:ncpus=32:ngpus=4:mem=128gb
 #PBS -l filesystems=home:eagle
-#PBS -l walltime=10:00:00
+#PBS -l walltime=06:00:00
 #PBS -o OUT_atomicCost_fi_inject.out
+#PBS -M mdunl6.edu
+#PBS -m abe
 #PBS -e ERROR_atomicCost_fi_inject.err
 
 set -euo pipefail
 
 export BENCH="atomicCost"
-exec bash "${PBS_O_WORKDIR:-$(pwd)}/HeCBench/llvm17_inject_bench_sweep.pbs"
+export RUN_BASELINE="${RUN_BASELINE:-0}"
+export START_SITE=1
+export SKIP_EXISTING=0
+export CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
+export GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
+export MONITOR_GPU="${MONITOR_GPU:-0}"
+export MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
+
+REPO_ROOT="${PBS_O_WORKDIR:-$(pwd)}"
+RESULTS_DIR="${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}"
+PRUNED="${RESULTS_DIR}/worklist_pruned.csv"
+MISSING="${RESULTS_DIR}/worklist_missing.csv"
+
+LOOP_MAX="${LOOP_MAX:-9999}"
+PASS=0
+
+while (( PASS < LOOP_MAX )); do
+  PASS=$((PASS+1))
+  echo "[atomicCost-loop] pass=${PASS} start=$(date)"
+
+  python3 - <<'PY'
+import csv,glob,os
+root=os.environ.get("RESULTS_DIR")
+pruned=os.environ.get("PRUNED")
+missing=os.environ.get("MISSING")
+done=set()
+for f in glob.glob(os.path.join(root,'summary_node*_gpu*.csv')):
+    with open(f,newline='') as fh:
+        r=csv.DictReader(fh)
+        for row in r:
+            try:
+                done.add((int(row['site_id']),int(row['bit_index'])))
+            except Exception:
+                pass
+rows=[]
+with open(pruned,newline='') as fh:
+    r=csv.DictReader(fh)
+    for row in r:
+        try:
+            pair=(int(row['site_id']),int(row['bit_index']))
+        except Exception:
+            continue
+        if pair not in done:
+            rows.append(row)
+if rows:
+    with open(missing,'w',newline='') as fh:
+        w=csv.DictWriter(fh,fieldnames=rows[0].keys())
+        w.writeheader(); w.writerows(rows)
+    print(f"[atomicCost-loop] missing={len(rows)}")
+else:
+    if os.path.exists(missing):
+        os.remove(missing)
+    print("[atomicCost-loop] missing=0")
+PY
+
+  if [[ ! -s "${MISSING}" ]]; then
+    echo "[atomicCost-loop] all pairs complete, exiting"
+    exit 0
+  fi
+
+  WORKLIST="${MISSING}" \
+  bash "${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs"
+done
+
+echo "[atomicCost-loop] LOOP_MAX reached; exiting"
