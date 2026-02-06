@@ -66,7 +66,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
         return PreservedAnalyses::none();
       }
       if (writeHeader) {
-        dump << "site_id,opcode,type_kind,bitwidth,operand_index\n";
+        dump << "site_id,opcode,type_kind,bitwidth,operand_index,function\n";
       }
     }
 
@@ -99,7 +99,8 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
             if (doDump) {
               std::string kind = typeKind(I.getType());
               unsigned width = typeBitWidth(I.getType(), DL);
-              dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << ",-1\n";
+              dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << ",-1,"
+                   << I.getFunction()->getName().str() << "\n";
             }
           if (curId != FiSite || FiSite < 1)
             continue;
@@ -211,7 +212,8 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
               if (doDump) {
                 std::string kind = typeKind(Ty);
                 unsigned width = typeBitWidth(Ty, DL);
-                dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << "," << opIdx << "\n";
+                dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << "," << opIdx << ","
+                     << I.getFunction()->getName().str() << "\n";
               }
               if (curId != FiSite || FiSite < 1)
                 continue;

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 start_ns=$(date +%s%N)
+now_ns() { date +%s%N; }
 
 if command -v module &> /dev/null; then
   module use /soft/modulefiles || true
@@ -44,6 +45,20 @@ OUT_DIR="${OUT_DIR:-${REPO_ROOT}/HeCBench/build/llvm17-inject-${BENCH}}"
 BIN_PATH="${OUT_DIR}/${BENCH}"
 RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}}"
 mkdir -p "${OUT_DIR}" "${RESULTS_DIR}"
+
+TIMING_CSV="${TIMING_CSV:-${RESULTS_DIR}/timing.csv}"
+TIMING_TMP="${RESULTS_DIR}/timing_site${SITE_ID}_bit${BIT_INDEX}.tmp"
+> "${TIMING_TMP}"
+BUSY_FLAG="${RESULTS_DIR}/gpu_busy.flag"
+log_timing() {
+  local label="$1" start="$2" end="$3"
+  local dur_ms=$(( (end - start) / 1000000 ))
+  echo "timing_${label}_ms: ${dur_ms}" >> "${TIMING_TMP}"
+  if [[ ! -f "${TIMING_CSV}" ]]; then
+    echo "site_id,bit_index,phase,duration_ms" > "${TIMING_CSV}"
+  fi
+  echo "${SITE_ID},${BIT_INDEX},${label},${dur_ms}" >> "${TIMING_CSV}"
+}
 
 case "${BENCH}" in
   matrix-rotate)
@@ -163,6 +178,7 @@ if [[ "${CACHE_DEVICE_IR}" -eq 1 && -f "${IR_BC}" ]]; then
 fi
 
 if [[ ! -f "${IR_BC}" ]]; then
+  t0=$(now_ns)
   ${CLANG} -x cuda \
     --cuda-device-only \
     --cuda-gpu-arch="${CUDA_ARCH}" \
@@ -180,13 +196,18 @@ if [[ ! -f "${IR_BC}" ]]; then
     -I "${REPO_ROOT}/HeCBench/src" \
     "${SRC}" -o "${IR_LL}"
 
+  t1=$(now_ns)
   ${LLVM_AS} "${IR_LL}" -o "${IR_BC}"
+  t2=$(now_ns)
+  log_timing emit_llvm "${t0}" "${t1}"
+  log_timing llvm_as "${t1}" "${t2}"
 fi
 
 if [[ "${BASELINE}" -eq 1 ]]; then
   IR_FOR_PTX="${IR_BC}"
 else
-${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
+  t3=$(now_ns)
+  ${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
   -passes=fi-inject \
   -fi-site="${SITE_ID}" \
   -fi-bit="${BIT_INDEX}" \
@@ -194,17 +215,28 @@ ${OPT_BIN} -load-pass-plugin "${PLUGIN}" \
   -fi-int-float-only="${INT_FLOAT_ONLY}" \
   -fi-include-constants="${INCLUDE_CONSTANTS}" \
   "${IR_BC}" -o "${IR_INJ_BC}"
+  t4=$(now_ns)
+  log_timing inject_pass "${t3}" "${t4}"
   if [[ "${GENERATE_IR_LL}" -eq 1 ]]; then
+    t5=$(now_ns)
     ${OPT_BIN} -S "${IR_INJ_BC}" -o "${IR_INJ_LL}"
+    t6=$(now_ns)
+    log_timing bc_to_ll "${t5}" "${t6}"
   fi
   IR_FOR_PTX="${IR_INJ_BC}"
 fi
 
+ t7=$(now_ns)
 ${LLC_BIN} -march=nvptx64 -mcpu="${CUDA_ARCH}" -o "${PTX_FILE}" "${IR_FOR_PTX}"
+ t8=$(now_ns)
+ log_timing llc_ptx "${t7}" "${t8}"
 
 NVCC_BIN="${CUDA_HOME}/bin/nvcc"
 if [[ -x "${NVCC_BIN}" ]]; then
+  t9=$(now_ns)
   "${NVCC_BIN}" --fatbin -arch="${CUDA_ARCH}" "${PTX_FILE}" -o "${FATBIN_FILE}"
+  t10=$(now_ns)
+  log_timing fatbin "${t9}" "${t10}"
 else
   echo "Error: nvcc not found at ${NVCC_BIN}"
   exit 1
@@ -213,6 +245,7 @@ fi
 rm -f "${BIN_PATH}"
 echo "[inject] using -Xclang -fcuda-include-gpubinary -Xclang ${FATBIN_FILE}"
 
+ t11=$(now_ns)
 ${CLANG} -x cuda \
   --cuda-host-only \
   --cuda-gpu-arch="${CUDA_ARCH}" \
@@ -231,13 +264,16 @@ ${CLANG} -x cuda \
   "${SRC}" \
   -L"${CUDA_HOME}/lib64" -lcudart \
   -o "${BIN_PATH}"
+ t12=$(now_ns)
+ log_timing host_link "${t11}" "${t12}"
 
 if ! readelf -S "${BIN_PATH}" | grep -E -q "nv.*fatbin|nv.*cubin|\\.nv"; then
   echo "[inject] error: no CUDA fatbin/cubin section found in ${BIN_PATH}"
   exit 1
 fi
 
-set +e
+ t13=$(now_ns)
+ set +e
 if [[ "${BASELINE}" -eq 1 ]]; then
   HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${BASELINE_OUT}" 2>"${BASELINE_ERR}"
   status=$?
@@ -246,6 +282,16 @@ else
   status=$?
 fi
 set -e
+ t14=$(now_ns)
+ log_timing run "${t13}" "${t14}"
+
+# Append timing info after run so stdout redirection doesn't clobber it.
+if [[ "${BASELINE}" -eq 1 ]]; then
+  cat "${TIMING_TMP}" >> "${BASELINE_OUT}" 2>/dev/null || true
+else
+  cat "${TIMING_TMP}" >> "${RUN_OUT}" 2>/dev/null || true
+fi
+rm -f "${TIMING_TMP}" || true
 
 result="FAILURE"
 dump_path=""
@@ -288,6 +334,14 @@ if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
   fi
 else
   : # failure is recorded via per-site stderr/stdout
+fi
+
+# Detect GPU busy/unavailable errors and flag for throttling.
+if [[ "${BASELINE}" -eq 0 ]]; then
+  if grep -qi "CUDA-capable device(s) is/are busy or unavailable" "${RUN_OUT}" "${RUN_ERR}" 2>/dev/null; then
+    echo "[gpu] busy/unavailable detected; flagging ${BUSY_FLAG}" >> "${RUN_OUT}"
+    touch "${BUSY_FLAG}"
+  fi
 fi
 
 KEEP_DUMPS="${KEEP_DUMPS:-0}"

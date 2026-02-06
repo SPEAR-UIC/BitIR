@@ -1,0 +1,8 @@
+opcode,kind,count
+add,int,192
+call,int,192
+icmp,int,2
+load,int,512
+mul,int,64
+sext,int,128
+zext,int,256
