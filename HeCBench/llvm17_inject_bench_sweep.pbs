@@ -49,6 +49,15 @@ export CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
 export GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
 export MONITOR_GPU="${MONITOR_GPU:-0}"
 export MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
+export CPU_PER_GPU="${CPU_PER_GPU:-8}"
+
+# Per-GPU CPU parallelism to maximize compile/injection throughput.
+export CMAKE_BUILD_PARALLEL_LEVEL="${CPU_PER_GPU}"
+export MAKEFLAGS="-j${CPU_PER_GPU}"
+export NINJAFLAGS="-j${CPU_PER_GPU}"
+export OMP_NUM_THREADS="${CPU_PER_GPU}"
+export MKL_NUM_THREADS="${CPU_PER_GPU}"
+export OPENBLAS_NUM_THREADS="${CPU_PER_GPU}"
 
 ABS_TOL="${ABS_TOL:-1e-5}"
 REL_TOL="${REL_TOL:-1e-6}"
@@ -64,6 +73,15 @@ MAX_PAIRS="${MAX_PAIRS:-0}"
 PHASE="${PHASE:-}"
 PHASES="${PHASES:-}"
 INJECT_TARGET="${INJECT_TARGET:-result}"
+
+# If PHASE isn't set, infer it from INJECT_TARGET to avoid defaulting to float.
+if [[ -z "${PHASE}" ]]; then
+  case "${INJECT_TARGET}" in
+    operand) PHASE="operand" ;;
+    pointer) PHASE="pointer" ;;
+    *) PHASE="float" ;;
+  esac
+fi
 
 select_phase_defaults() {
   case "${PHASE}" in
@@ -115,12 +133,23 @@ QUEUE_FILE="${RESULTS_DIR}/work_queue.csv"
 QUEUE_LOCK="${RESULTS_DIR}/work_queue.lock"
 
 PRUNED_DST="${RESULTS_DIR}/worklist_pruned.csv"
-if [[ -n "${PRUNED_SRC:-}" && -f "${PRUNED_SRC}" ]]; then
+if [[ -n "${RESULTS_DIR_OVERRIDE:-}" ]]; then
+  RESULTS_DIR="${RESULTS_DIR_OVERRIDE}"
+  mkdir -p "${RESULTS_DIR}"
+  PRUNED_DST="${RESULTS_DIR}/worklist_pruned.csv"
+fi
+
+if [[ -n "${WORKLIST_PRUNED:-}" && -f "${WORKLIST_PRUNED}" ]]; then
+  WORKLIST="${WORKLIST_PRUNED}"
+elif [[ -n "${PRUNED_SRC:-}" && -f "${PRUNED_SRC}" ]]; then
   if [[ ! -f "${PRUNED_DST}" || "${REBUILD_PRUNED_WORKLIST:-0}" -eq 1 ]]; then
     cp -f "${PRUNED_SRC}" "${PRUNED_DST}"
   fi
-  WORKLIST="${WORKLIST_PRUNED:-${PRUNED_DST}}"
+  WORKLIST="${PRUNED_DST}"
 fi
+
+# Always build and use missing-only worklists unless explicitly disabled.
+MISSING_ONLY="${MISSING_ONLY:-1}"
 
 echo "[env] BENCH=${BENCH}"
 echo "[env] REPO_ROOT=${REPO_ROOT}"
@@ -182,13 +211,12 @@ echo "[env] MONITOR_GPU=${MONITOR_GPU} MONITOR_INTERVAL=${MONITOR_INTERVAL}"
 bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
 
 PLUGIN_SRC="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libfi_inject.so"
-PLUGIN_COPY="${RESULTS_DIR}/libfi_inject.${PBS_JOBID:-local}.so"
-if [[ ! -f "${PLUGIN_SRC}" ]]; then
-  echo "[error] missing plugin: ${PLUGIN_SRC}"
+if [[ ! -s "${PLUGIN_SRC}" ]]; then
+  echo "[error] missing or empty plugin: ${PLUGIN_SRC}"
   exit 1
 fi
-cp -f "${PLUGIN_SRC}" "${PLUGIN_COPY}"
-export PLUGIN="${PLUGIN_COPY}"
+# Use the stable plugin path directly to avoid partial copies on shared FS.
+export PLUGIN="${PLUGIN_SRC}"
 
 if [[ ! -s "${WORKLIST}" || "${REBUILD_WORKLIST:-0}" -eq 1 ]]; then
   python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist.py" --bench "${BENCH}"
@@ -228,6 +256,11 @@ PY
   WORKLIST="${RESULTS_DIR}/worklist_missing.csv"
   echo "[missing-only] using ${WORKLIST}"
   SKIP_EXISTING=0
+  missing_count=$(awk 'NR>1' "${WORKLIST}" | wc -l)
+  if [[ "${missing_count}" -eq 0 ]]; then
+    echo "[missing-only] no missing pairs; exiting."
+    exit 0
+  fi
 fi
 
 if [[ "${WORKLIST_QUEUE}" -eq 1 && "${WORKER:-0}" -ne 1 ]]; then

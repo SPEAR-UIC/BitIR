@@ -2,7 +2,7 @@
 #PBS -A UIC-HPC
 #PBS -N jacobi_fi_debug
 #PBS -q debug
-#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l select=1:ncpus=32:ngpus=4:mem=128gb
 #PBS -l filesystems=home:eagle
 #PBS -l walltime=01:00:00
 #PBS -o OUT_jacobi_fi_debug.out
@@ -16,6 +16,7 @@ export BENCH="jacobi"
 export START_SITE="${START_SITE:-1}"
 export SKIP_EXISTING="${SKIP_EXISTING:-1}"
 export COMPARE_MODE="exact"
+export CPU_PER_GPU="8"
 
 # use caching and reduced logging
 export CACHE_DEVICE_IR=1

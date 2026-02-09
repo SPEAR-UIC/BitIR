@@ -2,7 +2,7 @@
 #PBS -A UIC-HPC
 #PBS -N colorwheel_fi_inject
 #PBS -q prod
-#PBS -l select=10:ncpus=32:ngpus=4:mem=128gb
+#PBS -l select=25:ncpus=32:ngpus=4:mem=128gb
 #PBS -l filesystems=home:eagle
 #PBS -l walltime=03:00:00
 #PBS -o OUT_colorwheel_fi_inject.out

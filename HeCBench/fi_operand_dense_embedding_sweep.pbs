@@ -2,7 +2,7 @@
 #PBS -A UIC-HPC
 #PBS -N dense_embedding_fi_operand
 #PBS -q prod
-#PBS -l select=10:ncpus=32:ngpus=4:mem=128gb
+#PBS -l select=24:ncpus=32:ngpus=4:mem=128gb
 #PBS -l filesystems=home:eagle
 #PBS -l walltime=03:00:00
 #PBS -o OUT_dense_embedding_fi_operand.out
@@ -13,8 +13,9 @@
 set -euo pipefail
 
 export BENCH="dense-embedding"
-export RESULTS_SUBDIR="fi_inject_operand"
-export WORKLIST_PRUNED="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/fi_inject_operand/dense-embedding/worklist_missing.csv"
+export RESULTS_SUBDIR="llvm17_inject"
+export RESULTS_DIR_OVERRIDE="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/dense-embedding/operand"
+export WORKLIST_PRUNED="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/dense-embedding-sycl/worklist_operand_sycl_aligned.csv"
 export WORKLIST="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/dense-embedding/worklist_operand.csv"
 export INJECT_TARGET="operand"
 export INCLUDE_CONSTANTS="0"

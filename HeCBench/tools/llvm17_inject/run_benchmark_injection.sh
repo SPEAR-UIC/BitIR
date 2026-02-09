@@ -127,6 +127,7 @@ RUN_ERR="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}.err"
 CSV="${CSV:-${RESULTS_DIR}/summary.csv}"
 COMPARE_FLOAT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_matrix_dump.py"
 COMPARE_EXACT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_binary_exact.py"
+SDC_METRICS="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compute_sdc_metrics.py"
 BASELINE_PATH="${BASELINE_PATH:-${RESULTS_DIR}/baseline_${BENCH}.bin}"
 BASELINE_DIR="${BASELINE_DIR:-${RESULTS_DIR}/baseline}"
 BASELINE_OUT="${BASELINE_DIR}/baseline.out"
@@ -295,6 +296,11 @@ rm -f "${TIMING_TMP}" || true
 
 result="FAILURE"
 dump_path=""
+metric_abs_max=""
+metric_mean_abs=""
+metric_rmse=""
+metric_ham_bits=""
+metric_ham_bytes=""
 if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
   if [[ "${BASELINE}" -eq 1 ]]; then
     cp -f "${RUN_DUMP_TMP}" "${BASELINE_PATH}"
@@ -330,6 +336,26 @@ if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
       result="MASKED"
     else
       result="SDC"
+      if [[ -f "${SDC_METRICS}" ]]; then
+        if [[ "${COMPARE_MODE}" == "float" ]]; then
+          metrics_out=$(python3 "${SDC_METRICS}" "${GOLDEN}" "${RUN_DUMP_TMP}" --mode float 2>/dev/null || true)
+          while IFS= read -r line; do
+            case "${line}" in
+              metric_abs_max=*) metric_abs_max="${line#*=}" ;;
+              metric_mean_abs=*) metric_mean_abs="${line#*=}" ;;
+              metric_rmse=*) metric_rmse="${line#*=}" ;;
+            esac
+          done <<< "${metrics_out}"
+        else
+          metrics_out=$(python3 "${SDC_METRICS}" "${GOLDEN}" "${RUN_DUMP_TMP}" --mode exact 2>/dev/null || true)
+          while IFS= read -r line; do
+            case "${line}" in
+              metric_ham_bits=*) metric_ham_bits="${line#*=}" ;;
+              metric_ham_bytes=*) metric_ham_bytes="${line#*=}" ;;
+            esac
+          done <<< "${metrics_out}"
+        fi
+      fi
     fi
   fi
 else
@@ -357,12 +383,12 @@ if [[ -f "${RUN_DUMP_TMP}" ]]; then
 fi
 
 if [[ ! -f "${CSV}" ]]; then
-  echo "site_id,bit_index,result,exit_code,stdout,stderr,dump" > "${CSV}"
+  echo "site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_ham_bits,metric_ham_bytes" > "${CSV}"
 fi
 if [[ "${BASELINE}" -eq 1 ]]; then
-  echo "0,0,${result},${status},${BASELINE_OUT},${BASELINE_ERR},${dump_path}" >> "${CSV}"
+  echo "0,0,${result},${status},${BASELINE_OUT},${BASELINE_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_ham_bits},${metric_ham_bytes}" >> "${CSV}"
 else
-  echo "${SITE_ID},${BIT_INDEX},${result},${status},${RUN_OUT},${RUN_ERR},${dump_path}" >> "${CSV}"
+  echo "${SITE_ID},${BIT_INDEX},${result},${status},${RUN_OUT},${RUN_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_ham_bits},${metric_ham_bytes}" >> "${CSV}"
 fi
 
 echo "Result: ${result} (exit ${status})"
