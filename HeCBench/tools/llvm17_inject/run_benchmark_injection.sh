@@ -299,8 +299,17 @@ dump_path=""
 metric_abs_max=""
 metric_mean_abs=""
 metric_rmse=""
+metric_max_rel=""
+metric_mean_rel=""
+metric_p95_abs=""
+metric_p99_abs=""
+metric_num_bad=""
+metric_frac_bad=""
+metric_max_ulp=""
+metric_mean_ulp=""
 metric_ham_bits=""
 metric_ham_bytes=""
+metric_size_bytes=""
 if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
   if [[ "${BASELINE}" -eq 1 ]]; then
     cp -f "${RUN_DUMP_TMP}" "${BASELINE_PATH}"
@@ -337,13 +346,23 @@ if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
     else
       result="SDC"
       if [[ -f "${SDC_METRICS}" ]]; then
+        SDC_BAD_THRESH="${SDC_BAD_THRESH:-1e-3}"
         if [[ "${COMPARE_MODE}" == "float" ]]; then
-          metrics_out=$(python3 "${SDC_METRICS}" "${GOLDEN}" "${RUN_DUMP_TMP}" --mode float 2>/dev/null || true)
+          metrics_out=$(python3 "${SDC_METRICS}" "${GOLDEN}" "${RUN_DUMP_TMP}" --mode float --bad-threshold "${SDC_BAD_THRESH}" 2>/dev/null || true)
           while IFS= read -r line; do
             case "${line}" in
               metric_abs_max=*) metric_abs_max="${line#*=}" ;;
               metric_mean_abs=*) metric_mean_abs="${line#*=}" ;;
               metric_rmse=*) metric_rmse="${line#*=}" ;;
+              metric_max_rel=*) metric_max_rel="${line#*=}" ;;
+              metric_mean_rel=*) metric_mean_rel="${line#*=}" ;;
+              metric_p95_abs=*) metric_p95_abs="${line#*=}" ;;
+              metric_p99_abs=*) metric_p99_abs="${line#*=}" ;;
+              metric_num_bad=*) metric_num_bad="${line#*=}" ;;
+              metric_frac_bad=*) metric_frac_bad="${line#*=}" ;;
+              metric_max_ulp=*) metric_max_ulp="${line#*=}" ;;
+              metric_mean_ulp=*) metric_mean_ulp="${line#*=}" ;;
+              metric_size_bytes=*) metric_size_bytes="${line#*=}" ;;
             esac
           done <<< "${metrics_out}"
         else
@@ -352,6 +371,7 @@ if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
             case "${line}" in
               metric_ham_bits=*) metric_ham_bits="${line#*=}" ;;
               metric_ham_bytes=*) metric_ham_bytes="${line#*=}" ;;
+              metric_size_bytes=*) metric_size_bytes="${line#*=}" ;;
             esac
           done <<< "${metrics_out}"
         fi
@@ -383,12 +403,12 @@ if [[ -f "${RUN_DUMP_TMP}" ]]; then
 fi
 
 if [[ ! -f "${CSV}" ]]; then
-  echo "site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_ham_bits,metric_ham_bytes" > "${CSV}"
+  echo "site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes" > "${CSV}"
 fi
 if [[ "${BASELINE}" -eq 1 ]]; then
-  echo "0,0,${result},${status},${BASELINE_OUT},${BASELINE_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_ham_bits},${metric_ham_bytes}" >> "${CSV}"
+  echo "0,0,${result},${status},${BASELINE_OUT},${BASELINE_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_max_rel},${metric_mean_rel},${metric_p95_abs},${metric_p99_abs},${metric_num_bad},${metric_frac_bad},${metric_max_ulp},${metric_mean_ulp},${metric_ham_bits},${metric_ham_bytes},${metric_size_bytes}" >> "${CSV}"
 else
-  echo "${SITE_ID},${BIT_INDEX},${result},${status},${RUN_OUT},${RUN_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_ham_bits},${metric_ham_bytes}" >> "${CSV}"
+  echo "${SITE_ID},${BIT_INDEX},${result},${status},${RUN_OUT},${RUN_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_max_rel},${metric_mean_rel},${metric_p95_abs},${metric_p99_abs},${metric_num_bad},${metric_frac_bad},${metric_max_ulp},${metric_mean_ulp},${metric_ham_bits},${metric_ham_bytes},${metric_size_bytes}" >> "${CSV}"
 fi
 
 echo "Result: ${result} (exit ${status})"

@@ -16,6 +16,40 @@ export BENCH="jacobi"
 export START_SITE="${START_SITE:-1}"
 export SKIP_EXISTING="${SKIP_EXISTING:-1}"
 export COMPARE_MODE="exact"
+export MISSING_ONLY=1
+export RESULTS_SUBDIR="llvm17_inject"
+export RESULTS_DIR_OVERRIDE="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/jacobi/float"
+export WORKLIST_PRUNED="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/jacobi-sycl/worklist_sycl_aligned.csv"
+
+# Build missing-only worklist and exit early if empty.
+python3 - <<'PY'
+import csv, os
+results_dir = os.environ.get("RESULTS_DIR_OVERRIDE")
+worklist = os.environ.get("WORKLIST_PRUNED")
+missing_path = os.path.join(results_dir, "worklist_missing.csv")
+os.makedirs(results_dir, exist_ok=True)
+with open(worklist, newline="") as fh, open(missing_path, "w", newline="") as out:
+    r = csv.DictReader(fh)
+    w = csv.DictWriter(out, fieldnames=list(r.fieldnames))
+    w.writeheader()
+    for row in r:
+        try:
+            site = int(row["site_id"])
+            bit = int(row["bit_index"])
+        except Exception:
+            continue
+        out_path = os.path.join(results_dir, f"site{site}_bit{bit}.out")
+        if (not os.path.exists(out_path)) or os.path.getsize(out_path) == 0:
+            w.writerow(row)
+if sum(1 for _ in open(missing_path)) <= 1:
+    print("[missing-only] no missing pairs; exiting.")
+    raise SystemExit(0)
+print(f"[missing-only] wrote {missing_path}")
+PY
+
+# Use the missing-only list directly.
+export WORKLIST="${RESULTS_DIR_OVERRIDE}/worklist_missing.csv"
+export MISSING_ONLY=0
 export CPU_PER_GPU="8"
 
 # use caching and reduced logging

@@ -1,0 +1,56 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N metrics_direct_debug
+#PBS -q debug
+#PBS -l select=1:ncpus=16:ngpus=1:mem=64gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=00:20:00
+#PBS -o OUT_metrics_direct_debug.out
+#PBS -e ERROR_metrics_direct_debug.err
+#PBS -M mdunl6@uic.edu
+#PBS -m abe
+
+set -euo pipefail
+
+export BENCH="jacobi"
+export COMPARE_MODE="exact"
+export INJECT_TARGET="result"
+export ABS_TOL="1e-5"
+export REL_TOL="1e-6"
+export REPO_ROOT="${PBS_O_WORKDIR:-$(pwd)}"
+export CUDA_HOME="/soft/compilers/cudatoolkit/cuda-11.8.0"
+export RESULTS_DIR="${REPO_ROOT}/HeCBench/results/fi_metrics_direct_v2/jacobi/float"
+export OUT_DIR="${REPO_ROOT}/HeCBench/build/llvm17-inject-${BENCH}"
+mkdir -p "${RESULTS_DIR}"
+
+export WORKLIST="${REPO_ROOT}/HeCBench/results/llvm17_inject/jacobi-sycl/worklist_sycl_aligned.csv"
+export PAIR_LIST="${RESULTS_DIR}/worklist_head5.csv"
+python3 - <<'PY'
+import csv, os
+worklist = os.environ["WORKLIST"]
+pair_list = os.environ["PAIR_LIST"]
+with open(worklist, newline="") as fh, open(pair_list, "w", newline="") as out:
+    r = csv.DictReader(fh)
+    w = csv.DictWriter(out, fieldnames=list(r.fieldnames))
+    w.writeheader()
+    for i, row in enumerate(r):
+        if i >= 5:
+            break
+        w.writerow(row)
+print(f"[metrics-direct] wrote {pair_list}")
+PY
+
+tail -n +2 "${PAIR_LIST}" | while IFS=, read -r site bit _rest; do
+  [[ -z "${site}" || -z "${bit}" ]] && continue
+  CUDA_VISIBLE_DEVICES=0 \
+    SITE_ID="${site}" \
+    BIT_INDEX="${bit}" \
+    RESULTS_DIR="${RESULTS_DIR}" \
+    OUT_DIR="${OUT_DIR}" \
+    REPO_ROOT="${REPO_ROOT}" \
+    CUDA_HOME="${CUDA_HOME}" \
+    BENCH="${BENCH}" \
+    COMPARE_MODE="${COMPARE_MODE}" \
+    INJECT_TARGET="${INJECT_TARGET}" \
+    bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
+done
