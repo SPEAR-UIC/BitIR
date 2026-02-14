@@ -8,7 +8,7 @@
 #PBS -o OUT_dense_embedding_fi_operand.out
 #PBS -e ERROR_dense_embedding_fi_operand.err
 #PBS -M mdunl6@uic.edu
-#PBS -m abe
+#PBS -m n
 
 set -euo pipefail
 
@@ -22,7 +22,7 @@ export INCLUDE_CONSTANTS="0"
 export INT_FLOAT_ONLY="1"
 export COMPARE_MODE="exact"
 export START_SITE="${START_SITE:-1}"
-export SKIP_EXISTING="${SKIP_EXISTING:-1}"
+export SKIP_EXISTING="${SKIP_EXISTING:-0}"
 export CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
 export GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
 export MONITOR_GPU="${MONITOR_GPU:-0}"

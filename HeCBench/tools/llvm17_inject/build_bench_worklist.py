@@ -12,7 +12,10 @@ def run_cmd(cmd):
 
 def bench_config(repo_root, bench):
     src_dir = os.path.join(repo_root, "HeCBench", "src", f"{bench}-cuda")
-    src = os.path.join(src_dir, "main.cu")
+    src_name = "main.cu"
+    if bench == "crc64":
+        src_name = "CRC64.cu"
+    src = os.path.join(src_dir, src_name)
     return src_dir, src
 
 

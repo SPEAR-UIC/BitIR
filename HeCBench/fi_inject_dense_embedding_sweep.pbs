@@ -8,7 +8,7 @@
 #PBS -o OUT_dense_embedding_fi_inject.out
 #PBS -e ERROR_dense_embedding_fi_inject.err
 #PBS -M mdunl6@uic.edu
-#PBS -m abe
+#PBS -m n
 
 set -euo pipefail
 

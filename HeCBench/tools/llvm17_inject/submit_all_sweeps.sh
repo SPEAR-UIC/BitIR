@@ -3,26 +3,26 @@ set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-$(pwd)}"
 PBS_SCRIPT="${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs"
+POLICY_SH="${REPO_ROOT}/HeCBench/tools/llvm17_inject/bench_policy.sh"
 
 if [[ ! -f "${PBS_SCRIPT}" ]]; then
   echo "Missing PBS script: ${PBS_SCRIPT}"
   exit 1
 fi
 
-BENCHES=(
-  matrix-rotate
-  jacobi
-  layout
-  atomicCost
-  dense-embedding
-  pathfinder
-  bsearch
-  entropy
-  colorwheel
-  randomAccess
-)
+if [[ ! -f "${POLICY_SH}" ]]; then
+  echo "Missing benchmark policy: ${POLICY_SH}"
+  exit 1
+fi
+source "${POLICY_SH}"
+
+BENCHES=("${ACTIVE_BENCHES[@]}")
 
 for bench in "${BENCHES[@]}"; do
+  if ! require_bench_active "${bench}"; then
+    echo "[submit] skip blocked bench=${bench}"
+    continue
+  fi
   results_dir="${REPO_ROOT}/HeCBench/results/llvm17_inject/${bench}"
   mkdir -p "${results_dir}"
   last_site=0
@@ -42,6 +42,9 @@ for bench in "${BENCHES[@]}"; do
   case "${bench}" in
     matrix-rotate|jacobi)
       compare_mode="float"
+      ;;
+    crc64)
+      compare_mode="text"
       ;;
   esac
 

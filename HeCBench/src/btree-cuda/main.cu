@@ -49,9 +49,12 @@ int main(int argc, char* argv[]) {
 
   printf("Building the tree with %d keys\n", numKeys);
 
-  // RNG
-  std::random_device rd;
-  std::mt19937 g(rd());
+  // RNG (deterministic by default for reproducible runtime behavior)
+  uint32_t rng_seed = 12345;
+  if (argc > 3)
+    rng_seed = std::atoi(argv[3]);
+  std::mt19937 g(rng_seed);
+  printf("RNG seed: %u\n", rng_seed);
 
   ///		 Build the tree    	  ///
 

@@ -14,9 +14,11 @@ set -euo pipefail
 
 export BENCH="jacobi"
 export START_SITE="${START_SITE:-1}"
-export SKIP_EXISTING="${SKIP_EXISTING:-1}"
+# Missing-only list is rebuilt up front, so skip checks are unnecessary here.
+export SKIP_EXISTING="${SKIP_EXISTING:-0}"
 export COMPARE_MODE="exact"
 export MISSING_ONLY=1
+export WORKLIST_QUEUE=1
 export RESULTS_SUBDIR="llvm17_inject"
 export RESULTS_DIR_OVERRIDE="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/jacobi/float"
 export WORKLIST_PRUNED="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/jacobi-sycl/worklist_sycl_aligned.csv"

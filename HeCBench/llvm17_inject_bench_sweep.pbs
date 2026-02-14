@@ -38,6 +38,19 @@ if [[ -z "${BENCH}" ]]; then
   exit 2
 fi
 
+POLICY_SH="${PBS_O_WORKDIR}/HeCBench/tools/llvm17_inject/bench_policy.sh"
+if [[ -f "${POLICY_SH}" ]]; then
+  source "${POLICY_SH}"
+  if [[ "${ALLOW_NONACTIVE_BENCH:-0}" -ne 1 ]]; then
+    if ! require_bench_active "${BENCH}"; then
+      echo "[bench-policy] refusing to run BENCH=${BENCH}. Set ALLOW_NONACTIVE_BENCH=1 to override."
+      exit 3
+    fi
+  fi
+else
+  echo "[bench-policy] warning: policy file missing at ${POLICY_SH}; continuing without guard"
+fi
+
 REPO_ROOT="${REPO_ROOT:-$PBS_O_WORKDIR}"
 export CUDA_HOME="${CUDA_HOME:-/soft/compilers/cudatoolkit/cuda-11.8.0}"
 export PATH="${CUDA_HOME}/bin:${PATH:-}"
@@ -63,12 +76,12 @@ ABS_TOL="${ABS_TOL:-1e-5}"
 REL_TOL="${REL_TOL:-1e-6}"
 START_SITE="${START_SITE:-1}"
 CLEAN_RUN="${CLEAN_RUN:-0}"
-SKIP_EXISTING="${SKIP_EXISTING:-1}"
+SKIP_EXISTING="${SKIP_EXISTING:-0}"
 COMPARE_MODE="${COMPARE_MODE:-exact}"
 RUN_BASELINE="${RUN_BASELINE:-1}"
 RESULTS_SUBDIR="${RESULTS_SUBDIR:-llvm17_inject}"
 RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE:-llvm17_inject}"
-WORKLIST_QUEUE="${WORKLIST_QUEUE:-0}"
+WORKLIST_QUEUE="${WORKLIST_QUEUE:-1}"
 MAX_PAIRS="${MAX_PAIRS:-0}"
 PHASE="${PHASE:-}"
 PHASES="${PHASES:-}"
@@ -126,7 +139,12 @@ select_phase_defaults
 
 BENCH_RESULTS_ROOT="${REPO_ROOT}/HeCBench/results/${RESULTS_SUBDIR}/${BENCH}"
 RESULTS_DIR="${BENCH_RESULTS_ROOT}/${PHASE_LABEL}"
-WORKLIST="${WORKLIST:-${RESULTS_DIR}/worklist.csv}"
+WORKLIST_DEFAULT="${RESULTS_DIR}/worklist.csv"
+WORKLIST="${WORKLIST:-${WORKLIST_DEFAULT}}"
+WORKLIST_EXPLICIT=0
+if [[ "${WORKLIST}" != "${WORKLIST_DEFAULT}" ]]; then
+  WORKLIST_EXPLICIT=1
+fi
 BASELINE_FILE="${BASELINE_FILE:-${BENCH_RESULTS_ROOT}/baseline/${PHASE_LABEL}_baseline_${BENCH}.bin}"
 mkdir -p "${RESULTS_DIR}" "${BENCH_RESULTS_ROOT}/baseline"
 QUEUE_FILE="${RESULTS_DIR}/work_queue.csv"
@@ -139,17 +157,76 @@ if [[ -n "${RESULTS_DIR_OVERRIDE:-}" ]]; then
   PRUNED_DST="${RESULTS_DIR}/worklist_pruned.csv"
 fi
 
-if [[ -n "${WORKLIST_PRUNED:-}" && -f "${WORKLIST_PRUNED}" ]]; then
-  WORKLIST="${WORKLIST_PRUNED}"
-elif [[ -n "${PRUNED_SRC:-}" && -f "${PRUNED_SRC}" ]]; then
-  if [[ ! -f "${PRUNED_DST}" || "${REBUILD_PRUNED_WORKLIST:-0}" -eq 1 ]]; then
-    cp -f "${PRUNED_SRC}" "${PRUNED_DST}"
+if [[ "${WORKLIST_EXPLICIT}" -eq 0 ]]; then
+  if [[ -n "${WORKLIST_PRUNED:-}" && -f "${WORKLIST_PRUNED}" ]]; then
+    WORKLIST="${WORKLIST_PRUNED}"
+  elif [[ -n "${PRUNED_SRC:-}" && -f "${PRUNED_SRC}" ]]; then
+    if [[ ! -f "${PRUNED_DST}" || "${REBUILD_PRUNED_WORKLIST:-0}" -eq 1 ]]; then
+      cp -f "${PRUNED_SRC}" "${PRUNED_DST}"
+    fi
+    WORKLIST="${PRUNED_DST}"
   fi
-  WORKLIST="${PRUNED_DST}"
 fi
 
 # Always build and use missing-only worklists unless explicitly disabled.
 MISSING_ONLY="${MISSING_ONLY:-1}"
+
+if [[ ! -s "${WORKLIST}" || "${REBUILD_WORKLIST:-0}" -eq 1 ]]; then
+  python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist.py" --bench "${BENCH}"
+fi
+
+if [[ "${MISSING_ONLY:-0}" -eq 1 ]]; then
+  if ls "${RESULTS_DIR}"/summary_node*_gpu*.csv >/dev/null 2>&1; then
+    BENCH="${BENCH}" python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/merge_bench_summaries.py"
+  fi
+  echo "[missing-only] building missing worklist for ${BENCH}"
+  RESULTS_DIR="${RESULTS_DIR}" WORKLIST="${WORKLIST}" BENCH="${BENCH}" python3 - <<'PY'
+import csv
+import io
+import os
+
+bench = os.environ.get("BENCH")
+results_dir = os.environ.get("RESULTS_DIR")
+worklist = os.environ.get("WORKLIST")
+missing_path = os.path.join(results_dir, "worklist_missing.csv")
+
+with open(worklist, "rb") as fh, open(missing_path, "w", newline="") as out:
+    raw = fh.read().replace(b"\x00", b"")
+    r = csv.DictReader(io.StringIO(raw.decode("utf-8", errors="replace")))
+    if not r.fieldnames:
+        raise SystemExit("missing headers in worklist")
+    w = csv.DictWriter(out, fieldnames=list(r.fieldnames))
+    w.writeheader()
+    def out_is_usable(path):
+        if (not os.path.exists(path)) or os.path.getsize(path) == 0:
+            return False
+        with open(path, "rb") as pf:
+            blob = pf.read()
+        if b"\x00" in blob:
+            return False
+        text = blob.decode("utf-8", errors="ignore")
+        return ("Result:" in text) or ("compare_ok" in text) or ("compare_exact" in text) or ("compare_mismatch" in text)
+    for row in r:
+        try:
+            key = (int(row["site_id"]), int(row["bit_index"]))
+        except Exception:
+            continue
+        out_path = os.path.join(results_dir, f"site{key[0]}_bit{key[1]}.out")
+        if not out_is_usable(out_path):
+            w.writerow(row)
+
+print(f"[missing-only] wrote {missing_path}")
+PY
+  WORKLIST="${RESULTS_DIR}/worklist_missing.csv"
+  echo "[missing-only] using ${WORKLIST}"
+  SKIP_EXISTING=0
+  missing_count=$(awk 'NR>1' "${WORKLIST}" | wc -l)
+  echo "[missing-only] count=${missing_count}"
+  if [[ "${missing_count}" -eq 0 ]]; then
+    echo "[missing-only] no missing pairs; exiting."
+    exit 0
+  fi
+fi
 
 echo "[env] BENCH=${BENCH}"
 echo "[env] REPO_ROOT=${REPO_ROOT}"
@@ -218,55 +295,10 @@ fi
 # Use the stable plugin path directly to avoid partial copies on shared FS.
 export PLUGIN="${PLUGIN_SRC}"
 
-if [[ ! -s "${WORKLIST}" || "${REBUILD_WORKLIST:-0}" -eq 1 ]]; then
-  python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist.py" --bench "${BENCH}"
-fi
-
-if [[ "${MISSING_ONLY:-0}" -eq 1 ]]; then
-  if ls "${RESULTS_DIR}"/summary_node*_gpu*.csv >/dev/null 2>&1; then
-    BENCH="${BENCH}" python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/merge_bench_summaries.py"
-  fi
-  echo "[missing-only] building missing worklist for ${BENCH}"
-  RESULTS_DIR="${RESULTS_DIR}" WORKLIST="${WORKLIST}" BENCH="${BENCH}" python3 - <<'PY'
-import csv
-import os
-
-bench = os.environ.get("BENCH")
-results_dir = os.environ.get("RESULTS_DIR")
-worklist = os.environ.get("WORKLIST")
-missing_path = os.path.join(results_dir, "worklist_missing.csv")
-
-with open(worklist, newline="") as fh, open(missing_path, "w", newline="") as out:
-    r = csv.DictReader(fh)
-    if not r.fieldnames:
-        raise SystemExit("missing headers in worklist")
-    w = csv.DictWriter(out, fieldnames=list(r.fieldnames))
-    w.writeheader()
-    for row in r:
-        try:
-            key = (int(row["site_id"]), int(row["bit_index"]))
-        except Exception:
-            continue
-        out_path = os.path.join(results_dir, f"site{key[0]}_bit{key[1]}.out")
-        if (not os.path.exists(out_path)) or os.path.getsize(out_path) == 0:
-            w.writerow(row)
-
-print(f"[missing-only] wrote {missing_path}")
-PY
-  WORKLIST="${RESULTS_DIR}/worklist_missing.csv"
-  echo "[missing-only] using ${WORKLIST}"
-  SKIP_EXISTING=0
-  missing_count=$(awk 'NR>1' "${WORKLIST}" | wc -l)
-  if [[ "${missing_count}" -eq 0 ]]; then
-    echo "[missing-only] no missing pairs; exiting."
-    exit 0
-  fi
-fi
-
 if [[ "${WORKLIST_QUEUE}" -eq 1 && "${WORKER:-0}" -ne 1 ]]; then
   echo "[queue] building work queue ${QUEUE_FILE}"
   RESULTS_DIR="${RESULTS_DIR}" WORKLIST="${WORKLIST}" MAX_PAIRS="${MAX_PAIRS}" python3 - <<'PY'
-import csv, os
+import csv, io, os
 max_pairs = int(os.environ.get("MAX_PAIRS", "0") or "0")
 results_dir = os.environ["RESULTS_DIR"]
 worklist = os.environ["WORKLIST"]
@@ -279,17 +311,27 @@ def get_pair(row):
         return None
     return int(site), int(bit)
 
-with open(worklist, newline="") as fh, open(queue_path, "w", newline="") as out:
-    r = csv.DictReader(fh)
+with open(worklist, "rb") as fh, open(queue_path, "w", newline="") as out:
+    raw = fh.read().replace(b"\x00", b"")
+    r = csv.DictReader(io.StringIO(raw.decode("utf-8", errors="replace")))
     w = csv.writer(out)
     w.writerow(["site_id", "bit_index"])
     count = 0
+    def out_is_usable(path):
+        if (not os.path.exists(path)) or os.path.getsize(path) == 0:
+            return False
+        with open(path, "rb") as pf:
+            blob = pf.read()
+        if b"\x00" in blob:
+            return False
+        text = blob.decode("utf-8", errors="ignore")
+        return ("Result:" in text) or ("compare_ok" in text) or ("compare_exact" in text) or ("compare_mismatch" in text)
     for row in r:
         pair = get_pair(row)
         if pair is None:
             continue
         out_path = os.path.join(results_dir, f"site{pair[0]}_bit{pair[1]}.out")
-        if (not os.path.exists(out_path)) or os.path.getsize(out_path) == 0:
+        if not out_is_usable(out_path):
             w.writerow([pair[0], pair[1]])
             count += 1
             if max_pairs and count >= max_pairs:
@@ -357,29 +399,49 @@ if [[ "${WORKER:-0}" -eq 1 ]]; then
 
   pop_next_pair() {
     python3 - "${QUEUE_FILE}" "${QUEUE_LOCK}" <<'PY'
-import csv, fcntl, os, sys
+import csv, fcntl, io, os, sys, tempfile, time
 queue, lock = sys.argv[1], sys.argv[2]
 if not os.path.exists(queue):
     print("")
     raise SystemExit(0)
+attempts = 5
+pair_out = ""
 with open(lock, "a+") as lf:
-    fcntl.flock(lf, fcntl.LOCK_EX)
-    with open(queue, newline="") as qf:
-        rows = list(csv.reader(qf))
-    if len(rows) <= 1:
-        fcntl.flock(lf, fcntl.LOCK_UN)
-        print("")
-        raise SystemExit(0)
-    header = rows[0]
-    pair = rows[1]
-    rest = rows[2:]
-    with open(queue, "w", newline="") as qf:
-        w = csv.writer(qf)
-        w.writerow(header)
-        for r in rest:
-            w.writerow(r)
-    fcntl.flock(lf, fcntl.LOCK_UN)
-print(",".join(pair))
+    for _ in range(attempts):
+        try:
+            fcntl.flock(lf, fcntl.LOCK_EX)
+            with open(queue, "rb") as qf:
+                raw = qf.read()
+            if b"\x00" in raw:
+                raw = raw.replace(b"\x00", b"")
+            text = raw.decode("utf-8", errors="replace")
+            rows = list(csv.reader(io.StringIO(text)))
+            if len(rows) <= 1:
+                pair_out = ""
+                break
+            header = rows[0]
+            pair = rows[1]
+            rest = rows[2:]
+            d = os.path.dirname(queue) or "."
+            fd, tmp_path = tempfile.mkstemp(prefix=".work_queue.", suffix=".csv", dir=d)
+            try:
+                with os.fdopen(fd, "w", newline="") as qf:
+                    w = csv.writer(qf)
+                    w.writerow(header)
+                    w.writerows(rest)
+                    qf.flush()
+                    os.fsync(qf.fileno())
+                os.replace(tmp_path, queue)
+            finally:
+                if os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
+            pair_out = ",".join(pair)
+            break
+        except Exception:
+            time.sleep(0.05)
+        finally:
+            fcntl.flock(lf, fcntl.LOCK_UN)
+print(pair_out)
 PY
   }
 
@@ -431,6 +493,8 @@ PY
     fi
 
     if [[ "${RUN_BASELINE}" -eq 1 && "${TASK_ID}" -eq 0 && "${gpu_id}" -eq 0 ]]; then
+      # Clear stale baseline mismatch flags from prior jobs before rechecking baseline.
+      rm -f "${RESULTS_DIR}/baseline_mismatch.flag"
       CUDA_VISIBLE_DEVICES="${gpu_id}" \
       BASELINE=1 \
       SITE_ID=0 \
@@ -447,6 +511,7 @@ PY
       bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
       BASELINE_ERR="${RESULTS_DIR}/baseline/baseline.err"
       BASELINE_OUT="${RESULTS_DIR}/baseline/baseline.out"
+      BASELINE_META="${RESULTS_DIR}/baseline/baseline_meta.txt"
       if [[ -s "${BASELINE_ERR}" ]]; then
         if grep -qv "err=no error" "${BASELINE_ERR}"; then
           echo "[baseline] non-empty error log: ${BASELINE_ERR}"
@@ -455,7 +520,14 @@ PY
           echo "[baseline] only trivial gpu-debug lines in ${BASELINE_ERR}"
         fi
       fi
-      if [[ -f "${BASELINE_OUT}" ]] && grep -q "BASELINE_MISMATCH" "${BASELINE_OUT}"; then
+      baseline_result=""
+      if [[ -f "${BASELINE_META}" ]]; then
+        baseline_result="$(awk -F= '$1=="result"{print $2}' "${BASELINE_META}" | tail -n1)"
+      fi
+      if [[ -n "${baseline_result}" && "${baseline_result}" != "BASELINE" ]]; then
+        echo "[baseline] mismatch detected in ${BASELINE_META} result=${baseline_result}"
+        touch "${RESULTS_DIR}/baseline_mismatch.flag"
+      elif [[ -f "${BASELINE_OUT}" ]] && grep -q "BASELINE_MISMATCH" "${BASELINE_OUT}"; then
         echo "[baseline] mismatch detected in ${BASELINE_OUT}"
         touch "${RESULTS_DIR}/baseline_mismatch.flag"
       fi

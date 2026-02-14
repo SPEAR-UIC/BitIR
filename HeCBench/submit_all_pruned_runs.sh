@@ -6,19 +6,15 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RESULTS_ROOT="${REPO_ROOT}/HeCBench/results/llvm17_inject"
+POLICY_SH="${REPO_ROOT}/HeCBench/tools/llvm17_inject/bench_policy.sh"
 
-benches=(
-  atomicCost
-  bsearch
-  colorwheel
-  dense-embedding
-  entropy
-  jacobi
-  layout
-  matrix-rotate
-  pathfinder
-  randomAccess
-)
+if [[ ! -f "${POLICY_SH}" ]]; then
+  echo "[fatal] missing benchmark policy: ${POLICY_SH}"
+  exit 1
+fi
+source "${POLICY_SH}"
+
+benches=("${ACTIVE_BENCHES[@]}")
 
 script_name_for() {
   local bench="$1"
@@ -58,15 +54,27 @@ submit_operand_or_pointer() {
 
 echo "[submit] float/int (pruned)"
 for bench in "${benches[@]}"; do
+  if ! require_bench_active "${bench}"; then
+    echo "[skip] blocked by benchmark policy: ${bench}"
+    continue
+  fi
   submit_float_int "${bench}"
 done
 
 echo "[submit] operand (pruned)"
 for bench in "${benches[@]}"; do
+  if ! require_bench_active "${bench}"; then
+    echo "[skip] blocked by benchmark policy: ${bench}"
+    continue
+  fi
   submit_operand_or_pointer "${bench}" "operand"
 done
 
 echo "[submit] pointer (pruned)"
 for bench in "${benches[@]}"; do
+  if ! require_bench_active "${bench}"; then
+    echo "[skip] blocked by benchmark policy: ${bench}"
+    continue
+  fi
   submit_operand_or_pointer "${bench}" "pointer"
 done

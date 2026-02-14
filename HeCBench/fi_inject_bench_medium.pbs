@@ -8,7 +8,7 @@
 #PBS -o OUT_fi_inject_medium.out
 #PBS -e ERROR_fi_inject_medium.err
 #PBS -M mdunl6@uic.edu
-#PBS -m abe
+#PBS -m n
 
 set -euo pipefail
 

@@ -2,6 +2,9 @@
 set -euo pipefail
 start_ns=$(date +%s%N)
 now_ns() { date +%s%N; }
+# Compatibility shim: if any stale script path still calls `cho`,
+# treat it as `echo` so jobs do not fail.
+cho() { echo "$@"; }
 
 if command -v module &> /dev/null; then
   module use /soft/modulefiles || true
@@ -29,6 +32,7 @@ INT_FLOAT_ONLY="${INT_FLOAT_ONLY:-1}"
 INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS:-0}"
 CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
 GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
+HOST_SOURCES=()
 
 if [[ -z "${BENCH}" ]]; then
   echo "BENCH is required"
@@ -96,6 +100,27 @@ case "${BENCH}" in
     RUN_ARGS=("${BSEARCH_ELEMENTS:-16777216}" "${BSEARCH_REPEAT:-10}")
     GOLDEN_NAME="bsearch.bin"
     ;;
+  match)
+    SRC_DIR="HeCBench/src/match-cuda"
+    SRC_NAME="main.cu"
+    HOST_SOURCES=("main.cu")
+    RUN_ARGS=("${MATCH_REPEAT:-1}")
+    GOLDEN_NAME=""
+    ;;
+  crc64)
+    SRC_DIR="HeCBench/src/crc64-cuda"
+    SRC_NAME="CRC64.cu"
+    HOST_SOURCES=("CRC64.cu" "CRC64Test.cu")
+    RUN_ARGS=("${CRC64_NTESTS:-2}" "${CRC64_SEED:-5}" "${CRC64_MAX_LEN:-65536}")
+    GOLDEN_NAME=""
+    ;;
+  btree)
+    SRC_DIR="HeCBench/src/btree-cuda"
+    SRC_NAME="main.cu"
+    HOST_SOURCES=("main.cu")
+    RUN_ARGS=("${BTREE_NUM_KEYS:-262144}" "${BTREE_NUM_QUERIES:-262144}" "${BTREE_SEED:-12345}")
+    GOLDEN_NAME=""
+    ;;
   entropy)
     SRC_DIR="HeCBench/src/entropy-cuda"
     RUN_ARGS=("${ENTROPY_WIDTH:-4096}" "${ENTROPY_HEIGHT:-4096}" "${ENTROPY_REPEAT:-5}")
@@ -117,8 +142,16 @@ case "${BENCH}" in
     ;;
 esac
 
-SRC="${REPO_ROOT}/${SRC_DIR}/main.cu"
+SRC_NAME="${SRC_NAME:-main.cu}"
+SRC="${REPO_ROOT}/${SRC_DIR}/${SRC_NAME}"
 BENCH_DIR="${REPO_ROOT}/${SRC_DIR}"
+if [[ ${#HOST_SOURCES[@]} -eq 0 ]]; then
+  HOST_SOURCES=("${SRC_NAME}")
+fi
+HOST_SOURCE_PATHS=()
+for host_src in "${HOST_SOURCES[@]}"; do
+  HOST_SOURCE_PATHS+=("${BENCH_DIR}/${host_src}")
+done
 GOLDEN="${GOLDEN:-${REPO_ROOT}/Polaris_Golden_Outputs/${GOLDEN_NAME}}"
 RUN_DUMP_TMP="${OUT_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}.bin"
 RUN_DUMP_FINAL="${RESULTS_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}.bin"
@@ -127,12 +160,18 @@ RUN_ERR="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}.err"
 CSV="${CSV:-${RESULTS_DIR}/summary.csv}"
 COMPARE_FLOAT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_matrix_dump.py"
 COMPARE_EXACT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_binary_exact.py"
+COMPARE_TEXT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_text_signature.py"
 SDC_METRICS="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compute_sdc_metrics.py"
 BASELINE_PATH="${BASELINE_PATH:-${RESULTS_DIR}/baseline_${BENCH}.bin}"
 BASELINE_DIR="${BASELINE_DIR:-${RESULTS_DIR}/baseline}"
 BASELINE_OUT="${BASELINE_DIR}/baseline.out"
 BASELINE_ERR="${BASELINE_DIR}/baseline.err"
 BASELINE_META="${BASELINE_DIR}/baseline_meta.txt"
+BASELINE_STDOUT="${BASELINE_DIR}/baseline.stdout"
+GOLDEN_TEXT="${GOLDEN_TEXT:-${REPO_ROOT}/Polaris_Golden_Outputs/${BENCH}.txt}"
+# Persisting baseline binaries can consume large quota quickly (GB-scale for some benches).
+# Default off; compare still uses the temporary dump produced by the run.
+PERSIST_BASELINE_BIN="${PERSIST_BASELINE_BIN:-0}"
 
 IR_LL="${OUT_DIR}/device.ll"
 IR_BC="${OUT_DIR}/device.bc"
@@ -142,11 +181,13 @@ PTX_FILE="${OUT_DIR}/device.injected.ptx"
 FATBIN_FILE="${OUT_DIR}/device.injected.fatbin"
 
 if [[ "${BASELINE}" -eq 0 ]]; then
-  if [[ ! -f "${GOLDEN}" ]]; then
-    echo "Golden file not found: ${GOLDEN}"
-    exit 1
+  if [[ "${COMPARE_MODE}" != "text" ]]; then
+    if [[ ! -f "${GOLDEN}" ]]; then
+      echo "Golden file not found: ${GOLDEN}"
+      exit 1
+    fi
+    echo "[inject] golden=${GOLDEN}"
   fi
-  echo "[inject] golden=${GOLDEN}"
   SKIP_EXISTING="${SKIP_EXISTING:-1}"
   if [[ "${SKIP_EXISTING}" -eq 1 && -f "${RUN_OUT}" && -f "${RUN_ERR}" ]]; then
     echo "[inject] skip existing site=${SITE_ID} bit=${BIT_INDEX}"
@@ -154,9 +195,16 @@ if [[ "${BASELINE}" -eq 0 ]]; then
   fi
 else
   echo "[inject] baseline_mode=1 path=${BASELINE_PATH}"
-  if [[ ! -f "${GOLDEN}" ]]; then
-    echo "Golden file not found: ${GOLDEN}"
-    exit 1
+  if [[ "${COMPARE_MODE}" == "text" ]]; then
+    if [[ ! -f "${GOLDEN_TEXT}" ]]; then
+      echo "Golden text file not found: ${GOLDEN_TEXT}"
+      exit 1
+    fi
+  else
+    if [[ ! -f "${GOLDEN}" ]]; then
+      echo "Golden file not found: ${GOLDEN}"
+      exit 1
+    fi
   fi
   mkdir -p "${BASELINE_DIR}"
 fi
@@ -164,6 +212,8 @@ fi
 COMPARE_TOOL="${COMPARE_EXACT}"
 if [[ "${COMPARE_MODE}" == "float" ]]; then
   COMPARE_TOOL="${COMPARE_FLOAT}"
+elif [[ "${COMPARE_MODE}" == "text" ]]; then
+  COMPARE_TOOL="${COMPARE_TEXT}"
 fi
 if [[ ! -f "${COMPARE_TOOL}" ]]; then
   echo "Missing compare tool: ${COMPARE_TOOL}"
@@ -262,7 +312,7 @@ ${CLANG} -x cuda \
   -isystem /usr/lib64/gcc/x86_64-suse-linux/7/include \
   -I "${BENCH_DIR}" \
   -I "${REPO_ROOT}/HeCBench/src" \
-  "${SRC}" \
+  "${HOST_SOURCE_PATHS[@]}" \
   -L"${CUDA_HOME}/lib64" -lcudart \
   -o "${BIN_PATH}"
  t12=$(now_ns)
@@ -276,10 +326,18 @@ fi
  t13=$(now_ns)
  set +e
 if [[ "${BASELINE}" -eq 1 ]]; then
-  HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${BASELINE_OUT}" 2>"${BASELINE_ERR}"
+  if [[ "${COMPARE_MODE}" == "text" ]]; then
+    "${BIN_PATH}" "${RUN_ARGS[@]}" >"${BASELINE_OUT}" 2>"${BASELINE_ERR}"
+  else
+    HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${BASELINE_OUT}" 2>"${BASELINE_ERR}"
+  fi
   status=$?
 else
-  HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${RUN_OUT}" 2>"${RUN_ERR}"
+  if [[ "${COMPARE_MODE}" == "text" ]]; then
+    "${BIN_PATH}" "${RUN_ARGS[@]}" >"${RUN_OUT}" 2>"${RUN_ERR}"
+  else
+    HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP_TMP}" >"${RUN_OUT}" 2>"${RUN_ERR}"
+  fi
   status=$?
 fi
 set -e
@@ -293,6 +351,30 @@ else
   cat "${TIMING_TMP}" >> "${RUN_OUT}" 2>/dev/null || true
 fi
 rm -f "${TIMING_TMP}" || true
+
+# Quarantine malformed text outputs so they are not counted as completed pairs.
+if [[ "${BASELINE}" -eq 0 ]]; then
+  has_nul=0
+  if [[ -f "${RUN_OUT}" ]] && python3 -c 'import pathlib,sys; b=pathlib.Path(sys.argv[1]).read_bytes(); raise SystemExit(0 if b"\x00" in b else 1)' "${RUN_OUT}" 2>/dev/null; then
+    has_nul=1
+  fi
+  if [[ -f "${RUN_ERR}" ]] && python3 -c 'import pathlib,sys; b=pathlib.Path(sys.argv[1]).read_bytes(); raise SystemExit(0 if b"\x00" in b else 1)' "${RUN_ERR}" 2>/dev/null; then
+    has_nul=1
+  fi
+  if [[ "${has_nul}" -eq 1 ]]; then
+    quarantine_dir="${RESULTS_DIR}/quarantine_nul"
+    mkdir -p "${quarantine_dir}"
+    ts="$(date +%Y%m%d_%H%M%S)"
+    mv -f "${RUN_OUT}" "${quarantine_dir}/$(basename "${RUN_OUT}").${ts}.bad" 2>/dev/null || true
+    mv -f "${RUN_ERR}" "${quarantine_dir}/$(basename "${RUN_ERR}").${ts}.bad" 2>/dev/null || true
+    {
+      echo "Result: FAILURE (exit nul_output)"
+      echo "[runner] quarantined NUL-corrupted stdout/stderr for site=${SITE_ID} bit=${BIT_INDEX}"
+      echo "[runner] quarantine_dir=${quarantine_dir}"
+    } > "${RUN_OUT}"
+    status=86
+  fi
+fi
 
 result="FAILURE"
 dump_path=""
@@ -310,42 +392,90 @@ metric_mean_ulp=""
 metric_ham_bits=""
 metric_ham_bytes=""
 metric_size_bytes=""
-if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
-  if [[ "${BASELINE}" -eq 1 ]]; then
-    cp -f "${RUN_DUMP_TMP}" "${BASELINE_PATH}"
-    if [[ "${COMPARE_MODE}" == "float" ]]; then
-      python3 "${COMPARE_TOOL}" "${GOLDEN}" "${BASELINE_PATH}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}" >>"${BASELINE_OUT}" 2>>"${BASELINE_ERR}"
-    else
-      python3 "${COMPARE_TOOL}" "${GOLDEN}" "${BASELINE_PATH}" >>"${BASELINE_OUT}" 2>>"${BASELINE_ERR}"
+if [[ "${BASELINE}" -eq 1 ]]; then
+  if [[ ${status} -eq 0 ]]; then
+    if [[ "${COMPARE_MODE}" == "text" ]]; then
+      set +e
+      text_cmp_out=$(python3 "${COMPARE_TOOL}" --bench "${BENCH}" --baseline "${GOLDEN_TEXT}" --candidate "${BASELINE_OUT}" 2>>"${BASELINE_ERR}")
+      text_cmp_status=$?
+      set -e
+      if [[ -n "${text_cmp_out}" ]]; then
+        echo "${text_cmp_out}" >> "${BASELINE_OUT}"
+      fi
+      if [[ ${text_cmp_status} -eq 0 ]]; then
+        result="BASELINE"
+      else
+        result="BASELINE_MISMATCH"
+        echo "[baseline] compare_failed golden_text=${GOLDEN_TEXT}" >>"${BASELINE_ERR}"
+      fi
+      cp -f "${BASELINE_OUT}" "${BASELINE_STDOUT}"
+    elif [[ -f "${RUN_DUMP_TMP}" ]]; then
+      baseline_compare_path="${RUN_DUMP_TMP}"
+      if [[ "${PERSIST_BASELINE_BIN}" -eq 1 ]]; then
+        if cp -f "${RUN_DUMP_TMP}" "${BASELINE_PATH}"; then
+          baseline_compare_path="${BASELINE_PATH}"
+          dump_path="${BASELINE_PATH}"
+        else
+          echo "[baseline] warning: failed to persist baseline to ${BASELINE_PATH}; using temp dump for compare" >>"${BASELINE_ERR}"
+        fi
+      fi
+      if [[ "${COMPARE_MODE}" == "float" ]]; then
+        python3 "${COMPARE_TOOL}" "${GOLDEN}" "${baseline_compare_path}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}" >>"${BASELINE_OUT}" 2>>"${BASELINE_ERR}"
+      else
+        python3 "${COMPARE_TOOL}" "${GOLDEN}" "${baseline_compare_path}" >>"${BASELINE_OUT}" 2>>"${BASELINE_ERR}"
+      fi
+      if [[ $? -eq 0 ]]; then
+        result="BASELINE"
+      else
+        result="BASELINE_MISMATCH"
+        echo "[baseline] compare_failed golden=${GOLDEN}" >>"${BASELINE_ERR}"
+      fi
+      if [[ "${PERSIST_BASELINE_BIN}" -eq 1 && -f "${BASELINE_PATH}" ]]; then
+        dump_path="${BASELINE_PATH}"
+      else
+        dump_path=""
+      fi
     fi
-    if [[ $? -eq 0 ]]; then
-      result="BASELINE"
-    else
-      result="BASELINE_MISMATCH"
-      echo "[baseline] compare_failed golden=${GOLDEN}" >>"${BASELINE_ERR}"
-    fi
-    dump_path="${BASELINE_PATH}"
-    {
-      echo "bench=${BENCH}"
-      echo "golden=${GOLDEN}"
-      echo "baseline=${BASELINE_PATH}"
-      echo "status=${status}"
-      echo "result=${result}"
-    } >"${BASELINE_META}"
-  else
+  fi
+  {
+    echo "bench=${BENCH}"
+    echo "golden=${GOLDEN}"
+    echo "golden_text=${GOLDEN_TEXT}"
+    echo "baseline=${BASELINE_PATH}"
+    echo "baseline_stdout=${BASELINE_STDOUT}"
+    echo "status=${status}"
+    echo "result=${result}"
+  } >"${BASELINE_META}"
+else
+  if [[ ${status} -eq 0 ]]; then
     set +e
-    if [[ "${COMPARE_MODE}" == "float" ]]; then
+    if [[ "${COMPARE_MODE}" == "text" ]]; then
+      text_cmp_out=$(python3 "${COMPARE_TOOL}" --bench "${BENCH}" --baseline "${BASELINE_STDOUT}" --candidate "${RUN_OUT}" 2>>"${RUN_ERR}")
+      cmp_status=$?
+      if [[ -n "${text_cmp_out}" ]]; then
+        echo "${text_cmp_out}" >> "${RUN_OUT}"
+      fi
+      while IFS= read -r line; do
+        case "${line}" in
+          metric_num_bad=*) metric_num_bad="${line#*=}" ;;
+          metric_frac_bad=*) metric_frac_bad="${line#*=}" ;;
+        esac
+      done <<< "${text_cmp_out}"
+    elif [[ "${COMPARE_MODE}" == "float" ]]; then
       python3 "${COMPARE_TOOL}" "${GOLDEN}" "${RUN_DUMP_TMP}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}" >>"${RUN_OUT}" 2>>"${RUN_ERR}"
+      cmp_status=$?
     else
       python3 "${COMPARE_TOOL}" "${GOLDEN}" "${RUN_DUMP_TMP}" >>"${RUN_OUT}" 2>>"${RUN_ERR}"
+      cmp_status=$?
     fi
-    cmp_status=$?
     set -e
     if [[ ${cmp_status} -eq 0 ]]; then
       result="MASKED"
     else
       result="SDC"
-      if [[ -f "${SDC_METRICS}" ]]; then
+      if [[ "${COMPARE_MODE}" == "text" ]]; then
+        :
+      elif [[ -f "${SDC_METRICS}" ]]; then
         SDC_BAD_THRESH="${SDC_BAD_THRESH:-1e-3}"
         if [[ "${COMPARE_MODE}" == "float" ]]; then
           metrics_out=$(python3 "${SDC_METRICS}" "${GOLDEN}" "${RUN_DUMP_TMP}" --mode float --bad-threshold "${SDC_BAD_THRESH}" 2>/dev/null || true)
@@ -365,6 +495,11 @@ if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
               metric_size_bytes=*) metric_size_bytes="${line#*=}" ;;
             esac
           done <<< "${metrics_out}"
+          if [[ -n "${metrics_out}" ]]; then
+            {
+              echo "${metrics_out}"
+            } >> "${RUN_OUT}"
+          fi
         else
           metrics_out=$(python3 "${SDC_METRICS}" "${GOLDEN}" "${RUN_DUMP_TMP}" --mode exact 2>/dev/null || true)
           while IFS= read -r line; do
@@ -374,12 +509,15 @@ if [[ ${status} -eq 0 && -f "${RUN_DUMP_TMP}" ]]; then
               metric_size_bytes=*) metric_size_bytes="${line#*=}" ;;
             esac
           done <<< "${metrics_out}"
+          if [[ -n "${metrics_out}" ]]; then
+            {
+              echo "${metrics_out}"
+            } >> "${RUN_OUT}"
+          fi
         fi
       fi
     fi
   fi
-else
-  : # failure is recorded via per-site stderr/stdout
 fi
 
 # Detect GPU busy/unavailable errors and flag for throttling.
@@ -411,6 +549,11 @@ else
   echo "${SITE_ID},${BIT_INDEX},${result},${status},${RUN_OUT},${RUN_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_max_rel},${metric_mean_rel},${metric_p95_abs},${metric_p99_abs},${metric_num_bad},${metric_frac_bad},${metric_max_ulp},${metric_mean_ulp},${metric_ham_bits},${metric_ham_bytes},${metric_size_bytes}" >> "${CSV}"
 fi
 
+if [[ "${BASELINE}" -eq 1 ]]; then
+  echo "Result: ${result} (exit ${status})" >> "${BASELINE_OUT}"
+else
+  echo "Result: ${result} (exit ${status})" >> "${RUN_OUT}"
+fi
 echo "Result: ${result} (exit ${status})"
 end_ns=$(date +%s%N)
 dur_ms=$(( (end_ns - start_ns) / 1000000 ))

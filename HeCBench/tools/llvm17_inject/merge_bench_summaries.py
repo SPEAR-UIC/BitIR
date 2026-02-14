@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 import csv
 import glob
+import io
 import os
 import sys
 from collections import Counter
+
+
+def read_csv_rows(path):
+    with open(path, "rb") as fh:
+        text = fh.read().replace(b"\x00", b"").decode("utf-8", errors="replace")
+    reader = csv.DictReader(io.StringIO(text))
+    fieldnames = list(reader.fieldnames or [])
+    rows = [row for row in reader if row]
+    return fieldnames, rows
 
 
 def main():
@@ -18,55 +28,59 @@ def main():
     files = sorted(glob.glob(pattern))
     if not files:
         print("no summary_node*_gpu*.csv files found")
-        return 1
+        return 0
 
     summary_path = os.path.join(results_dir, "summary.csv")
     counts_path = os.path.join(results_dir, "summary_counts.txt")
     conflicts_path = os.path.join(results_dir, "summary_conflicts.csv")
 
     key_to_row = {}
+    all_fieldnames = []
+
+    def remember_fields(fieldnames):
+        for name in fieldnames:
+            if name and name not in all_fieldnames:
+                all_fieldnames.append(name)
+
     # Load existing summary to avoid overwriting previously recorded results.
     if os.path.exists(summary_path):
-        with open(summary_path, newline="") as fh:
-            reader = csv.DictReader(fh)
-            for row in reader:
-                site = row.get("site_id")
-                bit = row.get("bit_index")
-                if not site or not bit:
-                    continue
-                key_to_row[(site, bit)] = row
+        fieldnames, rows = read_csv_rows(summary_path)
+        remember_fields(fieldnames)
+        for row in rows:
+            site = row.get("site_id")
+            bit = row.get("bit_index")
+            if not site or not bit:
+                continue
+            key_to_row[(site, bit)] = row
     conflicts = []
     for path in files:
-        with open(path, newline="") as fh:
-            reader = csv.DictReader(fh)
-            for row in reader:
-                if not row:
-                    continue
-                site = row.get("site_id")
-                bit = row.get("bit_index")
-                if not site or not bit:
-                    continue
-                key = (site, bit)
-                if key not in key_to_row:
-                    key_to_row[key] = row
-                    continue
-                if row.get("result") != key_to_row[key].get("result"):
-                    conflicts.append((key_to_row[key], row))
+        fieldnames, rows = read_csv_rows(path)
+        remember_fields(fieldnames)
+        for row in rows:
+            site = row.get("site_id")
+            bit = row.get("bit_index")
+            if not site or not bit:
+                continue
+            key = (site, bit)
+            if key not in key_to_row:
+                key_to_row[key] = row
+                continue
+            if row.get("result") != key_to_row[key].get("result"):
+                conflicts.append((key_to_row[key], row))
+
+    if not all_fieldnames:
+        all_fieldnames = ["site_id", "bit_index", "result", "exit_code", "stdout", "stderr", "dump"]
+    else:
+        for required in ("site_id", "bit_index", "result", "exit_code", "stdout", "stderr", "dump"):
+            if required not in all_fieldnames:
+                all_fieldnames.insert(0, required)
 
     with open(summary_path, "w", newline="") as out:
-        writer = csv.writer(out)
-        writer.writerow(["site_id", "bit_index", "result", "exit_code", "stdout", "stderr", "dump"])
+        writer = csv.DictWriter(out, fieldnames=all_fieldnames, extrasaction="ignore")
+        writer.writeheader()
         for site, bit in sorted(key_to_row.keys(), key=lambda x: (int(x[0]), int(x[1]))):
             row = key_to_row[(site, bit)]
-            writer.writerow([
-                row.get("site_id"),
-                row.get("bit_index"),
-                row.get("result"),
-                row.get("exit_code"),
-                row.get("stdout"),
-                row.get("stderr"),
-                row.get("dump"),
-            ])
+            writer.writerow(row)
 
     if conflicts:
         with open(conflicts_path, "w", newline="") as out:
@@ -105,11 +119,9 @@ def main():
 
     counts = Counter()
     total = 0
-    with open(summary_path, newline="") as fh:
-        reader = csv.DictReader(fh)
-        for row in reader:
-            total += 1
-            counts[row.get("result", "UNKNOWN")] += 1
+    for row in key_to_row.values():
+        total += 1
+        counts[row.get("result", "UNKNOWN")] += 1
 
     with open(counts_path, "w") as out:
         out.write(f"total={total}\n")

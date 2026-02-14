@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N randomAccess_fi_debug
+#PBS -q debug
+#PBS -l select=1:ncpus=32:ngpus=4:mem=128gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=01:00:00
+#PBS -o OUT_randomAccess_fi_debug.out
+#PBS -e ERROR_randomAccess_fi_debug.err
+#PBS -M mdunl6@uic.edu
+#PBS -m abe
+
+set -euo pipefail
+
+export BENCH="randomAccess"
+export RESULTS_SUBDIR_BASE="fi_debug_randomAccess"
+export RESULTS_SUBDIR="fi_debug_randomAccess"
+export WORKLIST_PRUNED="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/randomAccess-sycl/worklist_sycl_aligned.csv"
+export MISSING_ONLY=1
+export CPU_PER_GPU="8"
+export MONITOR_GPU=1
+export MONITOR_INTERVAL=10
+
+exec bash "${PBS_O_WORKDIR:-$(pwd)}/HeCBench/llvm17_inject_bench_sweep.pbs"

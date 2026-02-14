@@ -9,7 +9,6 @@ BENCHES = [
     "matrix-rotate",
     "jacobi",
     "layout",
-    "atomicCost",
     "dense-embedding",
     "pathfinder",
     "bsearch",
@@ -19,17 +18,16 @@ BENCHES = [
 ]
 
 
-RESULT_RE = re.compile(r"^Result:\s+(\S+)\s+\(exit\s+(-?\d+)\)")
+RESULT_RE = re.compile(r"^Result:\s+(\S+)\s+\(exit\s+([^)]+)\)")
 SITE_RE = re.compile(r"site(\d+)_bit(\d+)\.out$")
 GPU_DEBUG_RE = re.compile(r"^\[gpu-debug\].*err=no error$")
 TRIVIAL_ERR_RE = re.compile(r".*err=no error.*", re.IGNORECASE)
 COMPARE_OK_RE = re.compile(r"^compare_ok$")
+COMPARE_EXACT_RE = re.compile(r"^compare_exact$")
 COMPARE_MISMATCH_RE = re.compile(r"^compare_mismatch$")
 COMPARE_EXACT_MISMATCH_RE = re.compile(r"^mismatch$")
 COMPARE_ERR_RE = re.compile(r"^(golden_missing|candidate_missing|size_mismatch|invalid_size|read_mismatch):")
 FAIL_HINT_RE = re.compile(r"(error|failed|segmentation|invalid|exception)", re.IGNORECASE)
-PASS_RE = re.compile(r"^PASS$", re.IGNORECASE)
-FAIL_RE = re.compile(r"^FAIL$", re.IGNORECASE)
 
 
 def is_trivial_err(path):
@@ -43,16 +41,24 @@ def is_trivial_err(path):
     return all(GPU_DEBUG_RE.match(ln) or TRIVIAL_ERR_RE.match(ln) for ln in lines)
 
 
-def parse_result(out_path):
+def parse_result(out_path, err_path=None):
     result = None
     exit_code = ""
     saw_ok = False
     saw_mismatch = False
     saw_compare_err = False
     saw_fail_hint = False
-    saw_pass = False
-    saw_fail = False
     saw_any = False
+    err_nontrivial = False
+    if err_path and os.path.exists(err_path):
+        try:
+            with open(err_path, "r", errors="ignore") as ef:
+                lines = [ln.strip() for ln in ef if ln.strip()]
+            if lines:
+                err_nontrivial = not all("err=no error" in ln.lower() for ln in lines)
+        except OSError:
+            err_nontrivial = False
+
     try:
         with open(out_path, "r", errors="ignore") as fh:
             for line in fh:
@@ -62,7 +68,7 @@ def parse_result(out_path):
                 m = RESULT_RE.match(line)
                 if m:
                     result = m.group(1)
-                    exit_code = m.group(2)
+                    exit_code = m.group(2).strip()
                 if COMPARE_OK_RE.match(line):
                     saw_ok = True
                 if COMPARE_MISMATCH_RE.match(line) or COMPARE_EXACT_MISMATCH_RE.match(line) or line.startswith("idx="):
@@ -71,12 +77,12 @@ def parse_result(out_path):
                     saw_compare_err = True
                 if FAIL_HINT_RE.search(line):
                     saw_fail_hint = True
-                if PASS_RE.match(line):
-                    saw_pass = True
-                if FAIL_RE.match(line):
-                    saw_fail = True
+                if COMPARE_EXACT_RE.match(line):
+                    saw_ok = True
     except OSError:
         return "UNKNOWN", ""
+    if err_nontrivial:
+        return "FAILURE", "stderr_nontrivial"
     if result:
         return result, exit_code
     if saw_ok:
@@ -85,10 +91,6 @@ def parse_result(out_path):
         return "SDC", exit_code
     if saw_fail_hint:
         return "FAILURE", exit_code
-    if saw_fail:
-        return "SDC", exit_code
-    if saw_pass:
-        return "MASKED", exit_code
     if not saw_any:
         return "FAILURE", "empty_out"
     return "FAILURE", "parse_unknown"
@@ -121,7 +123,7 @@ def rebuild_for_bench(repo_root, bench):
         bit = int(m.group(2))
         out_path = os.path.join(results_dir, name)
         err_path = os.path.join(results_dir, f"site{site}_bit{bit}.err")
-        result, exit_code = parse_result(out_path)
+        result, exit_code = parse_result(out_path, err_path)
         err_keep = ""
         if os.path.exists(err_path) and os.path.getsize(err_path) > 0:
             err_keep = err_path
