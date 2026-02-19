@@ -447,7 +447,20 @@ if [[ "${BASELINE}" -eq 1 ]]; then
     echo "result=${result}"
   } >"${BASELINE_META}"
 else
-  if [[ ${status} -eq 0 ]]; then
+  can_compare=0
+  if [[ "${COMPARE_MODE}" == "text" ]]; then
+    if [[ ${status} -eq 0 ]]; then
+      can_compare=1
+    fi
+  else
+    if [[ -f "${RUN_DUMP_TMP}" ]]; then
+      can_compare=1
+    fi
+  fi
+  if [[ ${can_compare} -eq 1 ]]; then
+    if [[ ${status} -ne 0 ]]; then
+      echo "[compare] forcing compare despite nonzero status=${status}" >> "${RUN_OUT}"
+    fi
     set +e
     if [[ "${COMPARE_MODE}" == "text" ]]; then
       text_cmp_out=$(python3 "${COMPARE_TOOL}" --bench "${BENCH}" --baseline "${BASELINE_STDOUT}" --candidate "${RUN_OUT}" 2>>"${RUN_ERR}")
@@ -517,6 +530,8 @@ else
         fi
       fi
     fi
+  elif [[ "${COMPARE_MODE}" != "text" && ! -f "${RUN_DUMP_TMP}" ]]; then
+    echo "[compare] skipped: missing dump ${RUN_DUMP_TMP} status=${status}" >> "${RUN_OUT}"
   fi
 fi
 

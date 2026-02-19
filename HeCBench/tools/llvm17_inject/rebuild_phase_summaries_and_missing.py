@@ -74,7 +74,7 @@ def parse_pair(out_path, err_path):
     exit_code = ""
     m = RESULT_RE.search(out_text)
     if err_nontrivial:
-        outcome = "FAILURE"
+        outcome = "DUE"
         exit_code = "stderr_nontrivial"
     elif m:
         outcome = m.group(1).upper()
@@ -84,12 +84,12 @@ def parse_pair(out_path, err_path):
     elif "compare_mismatch" in out_text or "mismatch" in out_text:
         outcome = "SDC"
     elif FAIL_HINT_RE.search(out_text) or FAIL_HINT_RE.search(err_text):
-        outcome = "FAILURE"
+        outcome = "DUE"
     elif not out_text.strip():
-        outcome = "FAILURE"
+        outcome = "DUE"
         exit_code = "empty_out"
     else:
-        outcome = "FAILURE"
+        outcome = "DUE"
         exit_code = "parse_unknown"
 
     metrics = {k: "" for k in METRIC_KEYS}
@@ -203,7 +203,7 @@ def main():
             with open(counts_path, "w") as f:
                 f.write(f"total={len(rows)}\n")
                 f.write(f"worklist_total={len(wl_pairs)}\n")
-                for k in ("MASKED", "SDC", "FAILURE", "UNKNOWN"):
+                for k in ("MASKED", "SDC", "DUE", "TIMEOUT", "FAILURE", "UNKNOWN"):
                     f.write(f"{k}={counts[k]}\n")
                 f.write(f"PLUGIN_CORRUPT={len(plugin_pairs)}\n")
                 f.write(f"EXTRA_OUTSIDE_WORKLIST={extras_outside_worklist}\n")

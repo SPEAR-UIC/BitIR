@@ -204,12 +204,12 @@ int main (int argc, char** argv) {
   // If we took fewer than max_iters steps and the error is below the tolerance,
   // we succeeded. Otherwise, we failed.
 
-  if (error <= tolerance && num_iters < max_iters) {
+  bool converged = (error <= tolerance && num_iters < max_iters);
+  if (converged) {
     std::cout << "PASS" << std::endl;
   }
   else {
     std::cout << "FAIL" << std::endl;
-    return -1;
   }
 
   if (dump_path) {
@@ -242,5 +242,5 @@ int main (int argc, char** argv) {
   double duration = total_time * 1e-9;
   std::cout << "Total elapsed time: " << std::setprecision(4) << duration << " seconds" << std::endl;
 
-  return 0;
+  return converged ? 0 : -1;
 }

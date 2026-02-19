@@ -2,7 +2,7 @@
 #PBS -A UIC-HPC
 #PBS -N randomAccess_fi_pointer
 #PBS -q prod
-#PBS -l select=24:ncpus=32:ngpus=4:mem=128gb
+#PBS -l select=24:ncpus=4:ngpus=4:mem=128gb
 #PBS -l filesystems=home:eagle
 #PBS -l walltime=03:00:00
 #PBS -o OUT_randomAccess_fi_pointer.out
@@ -15,8 +15,6 @@ set -euo pipefail
 export BENCH="randomAccess"
 export RESULTS_SUBDIR="llvm17_inject"
 export RESULTS_DIR_OVERRIDE="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/randomAccess/pointer"
-export WORKLIST_PRUNED="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/randomAccess-sycl/worklist_pointer_sycl_aligned.csv"
-export WORKLIST="${PBS_O_WORKDIR:-$(pwd)}/HeCBench/results/llvm17_inject/randomAccess/worklist_pointer.csv"
 export INJECT_TARGET="pointer"
 export INCLUDE_CONSTANTS="0"
 export INT_FLOAT_ONLY="1"
@@ -28,5 +26,8 @@ export GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
 export MONITOR_GPU="${MONITOR_GPU:-0}"
 export MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
 export WORKLIST_QUEUE="${WORKLIST_QUEUE:-1}"
+export MISSING_ONLY=1
+export RANDOMACCESS_REPEAT="${RANDOMACCESS_REPEAT:-1}"
+export CPU_PER_GPU="${CPU_PER_GPU:-1}"
 
 exec bash "${PBS_O_WORKDIR:-$(pwd)}/HeCBench/llvm17_inject_bench_sweep.pbs"

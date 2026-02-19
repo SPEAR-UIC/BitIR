@@ -82,7 +82,7 @@ def parse_result(out_path, err_path=None):
     except OSError:
         return "UNKNOWN", ""
     if err_nontrivial:
-        return "FAILURE", "stderr_nontrivial"
+        return "DUE", "stderr_nontrivial"
     if result:
         return result, exit_code
     if saw_ok:
@@ -90,10 +90,10 @@ def parse_result(out_path, err_path=None):
     if saw_mismatch or saw_compare_err:
         return "SDC", exit_code
     if saw_fail_hint:
-        return "FAILURE", exit_code
+        return "DUE", exit_code
     if not saw_any:
-        return "FAILURE", "empty_out"
-    return "FAILURE", "parse_unknown"
+        return "DUE", "empty_out"
+    return "DUE", "parse_unknown"
 
 
 def rebuild_for_bench(repo_root, bench):
@@ -127,7 +127,7 @@ def rebuild_for_bench(repo_root, bench):
         err_keep = ""
         if os.path.exists(err_path) and os.path.getsize(err_path) > 0:
             err_keep = err_path
-        if result == "FAILURE" and exit_code in ("parse_unknown", "empty_out"):
+        if result in ("DUE", "FAILURE") and exit_code in ("parse_unknown", "empty_out"):
             dst = os.path.join(review_dir, name)
             try:
                 if not os.path.exists(dst):
@@ -154,9 +154,9 @@ def rebuild_for_bench(repo_root, bench):
     with open(counts_path, "w") as fh:
         total = sum(counts.values())
         fh.write(f"total={total}\n")
-        for key in ("MASKED", "SDC", "FAILURE", "UNKNOWN"):
+        for key in ("MASKED", "SDC", "DUE", "TIMEOUT", "FAILURE", "UNKNOWN"):
             fh.write(f"{key}={counts.get(key, 0)}\n")
-        others = total - sum(counts.get(k, 0) for k in ("MASKED", "SDC", "FAILURE", "UNKNOWN"))
+        others = total - sum(counts.get(k, 0) for k in ("MASKED", "SDC", "DUE", "TIMEOUT", "FAILURE", "UNKNOWN"))
         fh.write(f"OTHER={others}\n")
 
     conflicts_path = os.path.join(results_dir, "summary_conflicts.csv")
