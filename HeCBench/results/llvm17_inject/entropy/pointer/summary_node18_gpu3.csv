@@ -1,0 +1,10 @@
+site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes
+8,35,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site8_bit35.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site8_bit35.err,,,,,,,,,,,,,,,
+10,17,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site10_bit17.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site10_bit17.err,,,,,,,,,,,,,,,
+18,37,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site18_bit37.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site18_bit37.err,,,,,,,,,,,,,,,
+19,37,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site19_bit37.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site19_bit37.err,,,,,,,,,,,,,,,
+20,51,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site20_bit51.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site20_bit51.err,,,,,,,,,,,,,,,
+24,12,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site24_bit12.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site24_bit12.err,,,,,,,,,,,,,,,
+25,59,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site25_bit59.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site25_bit59.err,,,,,,,,,,,,,,,
+28,45,FAILURE,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site28_bit45.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site28_bit45.err,,,,,,,,,,,,,,,
+8,39,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site8_bit39.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/pointer/site8_bit39.err,,,,,,,,,,,,,,,

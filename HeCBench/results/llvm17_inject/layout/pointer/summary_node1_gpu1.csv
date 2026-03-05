@@ -1,0 +1,10 @@
+site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes
+5,6,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site5_bit6.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site5_bit6.err,,,,,,,,,,,,,,,
+5,31,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site5_bit31.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site5_bit31.err,,,,,,,,,,,,,65536,12272,16388
+6,6,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site6_bit6.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site6_bit6.err,,,,,,,,,,,,,,,
+6,57,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site6_bit57.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site6_bit57.err,,,,,,,,,,,,,65536,12272,16388
+115,57,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site115_bit57.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site115_bit57.err,,,,,,,,,,,,,,,
+117,38,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site117_bit38.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site117_bit38.err,,,,,,,,,,,,,,,
+119,10,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site119_bit10.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site119_bit10.err,,,,,,,,,,,,,,,
+120,46,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site120_bit46.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site120_bit46.err,,,,,,,,,,,,,,,
+124,21,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site124_bit21.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/layout/pointer/site124_bit21.err,,,,,,,,,,,,,,,

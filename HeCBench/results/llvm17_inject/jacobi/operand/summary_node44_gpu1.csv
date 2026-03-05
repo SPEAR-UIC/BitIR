@@ -1,0 +1,10 @@
+site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes
+80,20,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site80_bit20.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site80_bit20.err,,,,,,,,,,,,,,,
+95,8,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site95_bit8.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site95_bit8.err,,,,,,,,,,,,,,,
+127,18,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site127_bit18.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site127_bit18.err,,,,,,,,,,,,,,,
+159,27,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site159_bit27.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site159_bit27.err,,,,,,,,,,,,,,,
+184,23,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site184_bit23.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site184_bit23.err,,,,,,,,,,,,,,,
+186,26,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site186_bit26.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site186_bit26.err,,,,,,,,,,,,,,,
+189,20,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site189_bit20.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site189_bit20.err,,,,,,,,,,,,,,,
+193,24,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site193_bit24.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site193_bit24.err,,,,,,,,,,,,,,,
+196,14,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site196_bit14.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/operand/site196_bit14.err,,,,,,,,,,,,,,,

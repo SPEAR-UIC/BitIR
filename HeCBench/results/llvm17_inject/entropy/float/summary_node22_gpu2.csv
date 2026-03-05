@@ -1,0 +1,6 @@
+site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes
+44,29,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site44_bit29.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site44_bit29.err,,,,,,,,,,,,,,,
+84,17,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site84_bit17.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site84_bit17.err,,,,,,,,,,,,,,,
+108,14,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site108_bit14.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site108_bit14.err,,,,,,,,,,,,,,,
+119,18,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site119_bit18.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site119_bit18.err,,,,,,,,,,,,,,,
+147,9,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site147_bit9.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/entropy/float/site147_bit9.err,,,,,,,,,,,,,,,

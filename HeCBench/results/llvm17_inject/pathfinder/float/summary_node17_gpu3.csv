@@ -1,0 +1,5 @@
+site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes
+5,18,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site5_bit18.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site5_bit18.err,,,,,,,,,,,,,5612,2000,4004
+20,10,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site20_bit10.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site20_bit10.err,,,,,,,,,,,,,5554,2000,4004
+22,28,MASKED,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site22_bit28.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site22_bit28.err,,,,,,,,,,,,,,,
+25,23,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site25_bit23.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/pathfinder/float/site25_bit23.err,,,,,,,,,,,,,3086,1047,4004
