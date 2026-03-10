@@ -1,4 +1,5 @@
 #include "llvm/ADT/APInt.h"
+#include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/InstrTypes.h"
@@ -8,6 +9,8 @@
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/CommandLine.h"
 #include <fstream>
+#include <map>
+#include <string>
 
 using namespace llvm;
 
@@ -18,6 +21,9 @@ static cl::opt<std::string> FiTarget("fi-target",
                                        cl::desc("Injection target: result|operand|pointer"),
                                        cl::init("result"));
 static cl::opt<std::string> FiDumpSites("fi-dump-sites", cl::desc("Write injection site list CSV"), cl::init(""));
+static cl::opt<std::string> FiDumpSitesRich("fi-dump-sites-rich",
+                                            cl::desc("Write rich injection site metadata CSV"),
+                                            cl::init(""));
 static cl::opt<bool> FiIncludeConstants("fi-include-constants",
                                         cl::desc("Include constant operands when targeting operands/pointers"),
                                         cl::init(false));
@@ -25,6 +31,20 @@ static cl::opt<bool> FiIncludeConstants("fi-include-constants",
 namespace {
 
 struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
+  static std::string csvEscape(const std::string &S) {
+    if (S.find_first_of(",\"\n\r") == std::string::npos)
+      return S;
+    std::string Out = "\"";
+    for (char C : S) {
+      if (C == '"')
+        Out += "\"\"";
+      else
+        Out += C;
+    }
+    Out += "\"";
+    return Out;
+  }
+
   static std::string typeKind(Type *Ty) {
     if (Ty->isIntegerTy())
       return "int";
@@ -45,13 +65,41 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
     return 0;
   }
 
+  static std::string sourceFileFor(const Function &F, const Instruction &I) {
+    std::string FileName;
+    std::string DirName;
+    if (const DILocation *Loc = I.getDebugLoc().get()) {
+      if (auto *Scope = dyn_cast<DIScope>(Loc->getScope())) {
+        if (DIFile *File = Scope->getFile()) {
+          FileName = File->getFilename().str();
+          DirName = File->getDirectory().str();
+        }
+      }
+    }
+    if (FileName.empty()) {
+      if (DISubprogram *SP = F.getSubprogram()) {
+        if (DIFile *File = SP->getFile()) {
+          FileName = File->getFilename().str();
+          DirName = File->getDirectory().str();
+        }
+      }
+    }
+    if (FileName.empty())
+      return "";
+    if (DirName.empty())
+      return FileName;
+    return DirName + "/" + FileName;
+  }
+
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &) {
     if (M.getTargetTriple().find("nvptx") == std::string::npos) {
       return PreservedAnalyses::all();
     }
 
     bool doDump = !FiDumpSites.empty();
+    bool doDumpRich = !FiDumpSitesRich.empty();
     std::ofstream dump;
+    std::ofstream dumpRich;
     if (doDump) {
       bool writeHeader = true;
       std::ifstream check(FiDumpSites);
@@ -69,6 +117,24 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
         dump << "site_id,opcode,type_kind,bitwidth,operand_index,function\n";
       }
     }
+    if (doDumpRich) {
+      bool writeHeader = true;
+      std::ifstream check(FiDumpSitesRich);
+      if (check.good()) {
+        char c;
+        if (check.get(c)) {
+          writeHeader = false;
+        }
+      }
+      dumpRich.open(FiDumpSitesRich, std::ios::app);
+      if (!dumpRich.is_open()) {
+        return PreservedAnalyses::none();
+      }
+      if (writeHeader) {
+        dumpRich << "site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,"
+                    "source_column,signature_ordinal,semantic_key\n";
+      }
+    }
 
     int curId = 0;
     const DataLayout &DL = M.getDataLayout();
@@ -78,6 +144,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
     for (Function &F : M) {
       if (F.isDeclaration())
         continue;
+      std::map<std::string, unsigned> signatureOrdinal;
       for (BasicBlock &BB : F) {
         Instruction *insertAfterPhi = nullptr;
         for (Instruction &I : BB) {
@@ -96,11 +163,27 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
             continue;
 
             curId++;
+            std::string kind = typeKind(I.getType());
+            unsigned width = typeBitWidth(I.getType(), DL);
+            std::string siteClass = "base";
+            std::string sourceFile = sourceFileFor(F, I);
+            unsigned sourceLine = I.getDebugLoc() ? I.getDebugLoc().getLine() : 0;
+            unsigned sourceColumn = I.getDebugLoc() ? I.getDebugLoc().getCol() : 0;
+            std::string sigKey = siteClass + "|" + I.getOpcodeName() + "|" + kind + "|" + std::to_string(width) +
+                                 "|-1";
+            unsigned ordinal = ++signatureOrdinal[sigKey];
+            std::string semanticKey =
+                F.getName().str() + "|" + sigKey + "|" + sourceFile + "|" + std::to_string(sourceLine) + "|" +
+                std::to_string(sourceColumn) + "|" + std::to_string(ordinal);
             if (doDump) {
-              std::string kind = typeKind(I.getType());
-              unsigned width = typeBitWidth(I.getType(), DL);
               dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << ",-1,"
                    << I.getFunction()->getName().str() << "\n";
+            }
+            if (doDumpRich) {
+              dumpRich << curId << "," << csvEscape(siteClass) << "," << csvEscape(I.getOpcodeName()) << ","
+                       << csvEscape(kind) << "," << width << ",-1," << csvEscape(I.getFunction()->getName().str())
+                       << "," << csvEscape(sourceFile) << "," << sourceLine << "," << sourceColumn << "," << ordinal
+                       << "," << csvEscape(semanticKey) << "\n";
             }
           if (curId != FiSite || FiSite < 1)
             continue;
@@ -209,11 +292,28 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                 continue;
 
               curId++;
+              std::string kind = typeKind(Ty);
+              unsigned width = typeBitWidth(Ty, DL);
+              std::string siteClass = targetPointer ? "pointer" : "operand";
+              std::string sourceFile = sourceFileFor(F, I);
+              unsigned sourceLine = I.getDebugLoc() ? I.getDebugLoc().getLine() : 0;
+              unsigned sourceColumn = I.getDebugLoc() ? I.getDebugLoc().getCol() : 0;
+              std::string sigKey = siteClass + "|" + I.getOpcodeName() + "|" + kind + "|" + std::to_string(width) +
+                                   "|" + std::to_string(opIdx);
+              unsigned ordinal = ++signatureOrdinal[sigKey];
+              std::string semanticKey =
+                  F.getName().str() + "|" + sigKey + "|" + sourceFile + "|" + std::to_string(sourceLine) + "|" +
+                  std::to_string(sourceColumn) + "|" + std::to_string(ordinal);
               if (doDump) {
-                std::string kind = typeKind(Ty);
-                unsigned width = typeBitWidth(Ty, DL);
                 dump << curId << "," << I.getOpcodeName() << "," << kind << "," << width << "," << opIdx << ","
                      << I.getFunction()->getName().str() << "\n";
+              }
+              if (doDumpRich) {
+                dumpRich << curId << "," << csvEscape(siteClass) << "," << csvEscape(I.getOpcodeName()) << ","
+                         << csvEscape(kind) << "," << width << "," << opIdx << ","
+                         << csvEscape(I.getFunction()->getName().str()) << "," << csvEscape(sourceFile) << ","
+                         << sourceLine << "," << sourceColumn << "," << ordinal << "," << csvEscape(semanticKey)
+                         << "\n";
               }
               if (curId != FiSite || FiSite < 1)
                 continue;

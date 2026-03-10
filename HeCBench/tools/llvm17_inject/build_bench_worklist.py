@@ -10,6 +10,16 @@ def run_cmd(cmd):
     return proc.returncode, out
 
 
+def resolve_results_path(repo_root, results_dir, value, default_name):
+    if not value:
+        return os.path.join(results_dir, default_name)
+    if os.path.isabs(value):
+        return value
+    if value.startswith("HeCBench/"):
+        return os.path.join(repo_root, value)
+    return os.path.join(results_dir, value)
+
+
 def bench_config(repo_root, bench):
     src_dir = os.path.join(repo_root, "HeCBench", "src", f"{bench}-cuda")
     src_name = "main.cu"
@@ -33,6 +43,8 @@ def main():
     parser.add_argument("--include-constants", type=int, choices=[0, 1], default=0)
     parser.add_argument("--worklist", default="")
     parser.add_argument("--sites", default="")
+    parser.add_argument("--sites-rich", default="")
+    parser.add_argument("--metadata-only", action="store_true")
     args = parser.parse_args()
 
     repo_root = os.getcwd()
@@ -81,9 +93,12 @@ def main():
 
     plugin = os.path.join(repo_root, "HeCBench/tools/llvm17_inject/libfi_inject.so")
     suffix = "" if args.target == "result" else f"_{args.target}"
-    sites_path = os.path.join(results_dir, args.sites or f"sites{suffix}.csv")
+    sites_path = resolve_results_path(repo_root, results_dir, args.sites, f"sites{suffix}.csv")
+    sites_rich_path = resolve_results_path(repo_root, results_dir, args.sites_rich, f"sites{suffix}_metadata.csv")
     if os.path.exists(sites_path):
         os.remove(sites_path)
+    if os.path.exists(sites_rich_path):
+        os.remove(sites_rich_path)
 
     cmd = [
         args.opt,
@@ -94,6 +109,7 @@ def main():
         f"-fi-int-float-only={args.int_float_only}",
         f"-fi-include-constants={args.include_constants}",
         "-fi-dump-sites=" + sites_path,
+        "-fi-dump-sites-rich=" + sites_rich_path,
         ir_bc,
         "-o", os.path.join(out_dir, "device.dump.bc"),
     ]
@@ -102,7 +118,11 @@ def main():
         print(out)
         return code
 
-    worklist_path = os.path.join(results_dir, args.worklist or f"worklist{suffix}.csv")
+    if args.metadata_only:
+        print(f"Wrote rich site metadata to {sites_rich_path}")
+        return 0
+
+    worklist_path = resolve_results_path(repo_root, results_dir, args.worklist, f"worklist{suffix}.csv")
     with open(worklist_path, "w", encoding="utf-8") as wl:
         wl.write("index,site_id,bit_index,bitwidth,type_kind,opcode\n")
         index = 0

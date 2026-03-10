@@ -23,6 +23,8 @@ def main():
     parser.add_argument("--include-constants", type=int, choices=[0, 1], default=0)
     parser.add_argument("--worklist", default="")
     parser.add_argument("--sites", default="")
+    parser.add_argument("--sites-rich", default="")
+    parser.add_argument("--metadata-only", action="store_true")
     args = parser.parse_args()
 
     repo_root = os.getcwd()
@@ -69,8 +71,13 @@ def main():
     plugin = os.path.join(repo_root, "HeCBench/tools/llvm17_inject/libfi_inject.so")
     suffix = "" if args.target == "result" else f"_{args.target}"
     sites_path = os.path.join(repo_root, args.sites or f"HeCBench/results/llvm17_inject/jacobi/sites{suffix}.csv")
+    sites_rich_path = os.path.join(
+        repo_root, args.sites_rich or f"HeCBench/results/llvm17_inject/jacobi/sites{suffix}_metadata.csv"
+    )
     if os.path.exists(sites_path):
         os.remove(sites_path)
+    if os.path.exists(sites_rich_path):
+        os.remove(sites_rich_path)
 
     cmd = [
         args.opt,
@@ -81,6 +88,7 @@ def main():
         f"-fi-int-float-only={args.int_float_only}",
         f"-fi-include-constants={args.include_constants}",
         "-fi-dump-sites=" + sites_path,
+        "-fi-dump-sites-rich=" + sites_rich_path,
         ir_bc,
         "-o", os.path.join(out_dir, "device.dump.bc"),
     ]
@@ -88,6 +96,10 @@ def main():
     if code != 0:
         print(out)
         return code
+
+    if args.metadata_only:
+        print(f"Wrote rich site metadata to {sites_rich_path}")
+        return 0
 
     worklist_path = os.path.join(repo_root, args.worklist or f"HeCBench/results/llvm17_inject/jacobi/worklist{suffix}.csv")
     with open(worklist_path, "w", encoding="utf-8") as wl:
