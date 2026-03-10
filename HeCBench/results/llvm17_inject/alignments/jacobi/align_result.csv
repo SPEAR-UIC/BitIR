@@ -106,7 +106,6 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 121,152,exact,fadd,float,32,-1
 122,294,no_bitwidth,call,int,32,-1
 123,165,exact,add,int,32,-1
-125,297,no_bitwidth,call,int,32,-1
 126,170,exact,add,int,32,-1
 128,159,exact,load,float,32,-1
 129,160,exact,fadd,float,32,-1
@@ -120,8 +119,6 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 139,177,exact,add,int,32,-1
 140,70,exact,sext,int,64,-1
 141,172,exact,load,float,32,-1
-142,298,no_bitwidth,call,int,32,-1
-145,299,no_bitwidth,call,int,32,-1
 148,179,exact,load,float,32,-1
 149,180,exact,fsub,float,32,-1
 150,181,exact,load,float,32,-1
@@ -136,13 +133,9 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 159,190,exact,fadd,float,32,-1
 160,92,exact,load,int,32,-1
 161,192,exact,sdiv,int,32,-1
-162,300,no_bitwidth,call,int,32,-1
 163,125,exact,icmp,int,1,-1
 164,195,exact,load,float,32,-1
-165,303,no_bitwidth,call,int,32,-1
-167,304,no_bitwidth,call,int,32,-1
 168,127,exact,icmp,int,1,-1
-169,305,no_bitwidth,call,int,32,-1
 171,202,exact,load,float,32,-1
 172,93,exact,load,int,32,-1
 173,129,exact,icmp,int,1,-1
@@ -153,7 +146,6 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 178,209,exact,fadd,float,32,-1
 179,102,exact,load,int,32,-1
 180,211,exact,sdiv,int,32,-1
-181,306,no_bitwidth,call,int,32,-1
 182,185,exact,icmp,int,1,-1
 183,214,exact,load,float,32,-1
 184,215,exact,call,float,32,-1
@@ -161,7 +153,5 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 186,219,exact,load,float,32,-1
 187,107,exact,load,int,32,-1
 188,109,exact,load,int,32,-1
-191,250,exact,or,int,32,-1
-192,221,exact,call,float,32,-1
 193,224,exact,load,float,32,-1
 194,261,exact,load,float,32,-1

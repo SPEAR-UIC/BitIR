@@ -71,7 +71,6 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 70,76,exact,store,float,32,0
 71,82,exact,store,float,32,0
 72,74,exact,call,float,32,0
-73,75,exact,call,float,32,1
 74,91,exact,store,float,32,0
 75,92,exact,store,float,32,0
 76,77,exact,call,float,32,0

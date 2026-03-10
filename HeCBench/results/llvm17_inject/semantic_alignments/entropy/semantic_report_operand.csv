@@ -1,0 +1,2 @@
+bench,target,ref_sites,matched,unmatched,changed_assignments,reintroduced_sites,stage_exact,stage_drop_source_column,stage_drop_signature_ordinal,stage_nearby_source_line,stage_shape_only
+entropy,operand,169,169,0,0,0,169,0,0,0,0

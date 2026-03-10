@@ -125,7 +125,6 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 152,188,exact,store,float,32,0
 153,189,exact,icmp,int,32,0
 154,190,exact,br,int,1,0
-155,191,exact,call,float,32,1
 156,192,exact,call,int,32,2
 157,193,exact,fadd,float,32,0
 158,194,exact,fadd,float,32,1
@@ -142,7 +141,6 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 171,207,exact,store,float,32,0
 172,208,exact,icmp,int,32,0
 173,209,exact,br,int,1,0
-174,210,exact,call,float,32,1
 175,211,exact,call,int,32,2
 176,212,exact,fadd,float,32,0
 177,213,exact,fadd,float,32,1
@@ -156,9 +154,7 @@ nvidia_site_id,sycl_site_id,match_tier,opcode,type_kind,bitwidth,operand_index
 185,224,exact,store,float,32,0
 186,46,exact,store,int,32,0
 187,197,exact,store,int,32,0
-190,291,exact,or,int,32,0
 191,221,exact,call,int,32,0
-192,226,exact,call,float,32,1
 193,223,exact,call,int,32,2
 194,8,no_operand,call,int,32,3
 195,228,exact,ret,float,32,0
