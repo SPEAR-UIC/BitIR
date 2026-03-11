@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/grrt-omp.dir/kernels.cpp.o" "CMakeFiles/grrt-omp.dir/main.cpp.o" -o ../../bin/omp/grrt

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/d2q9-bgk-sycl.dir/main.cpp.o" -o ../../bin/sycl/d2q9-bgk

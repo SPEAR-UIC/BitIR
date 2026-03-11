@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/secp256k1-sycl.dir/main.cpp.o" -o ../../bin/sycl/secp256k1

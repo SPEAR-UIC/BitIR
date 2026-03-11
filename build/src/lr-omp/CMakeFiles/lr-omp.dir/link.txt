@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/lr-omp.dir/linear_iter.cpp.o" "CMakeFiles/lr-omp.dir/linear_par.cpp.o" "CMakeFiles/lr-omp.dir/main.cpp.o" -o ../../bin/omp/lr

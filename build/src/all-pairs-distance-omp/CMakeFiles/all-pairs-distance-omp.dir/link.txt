@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/all-pairs-distance-omp.dir/main.cpp.o" -o ../../bin/omp/all-pairs-distance

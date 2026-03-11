@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/vmc-omp.dir/vmc.cpp.o" -o ../../bin/omp/vmc

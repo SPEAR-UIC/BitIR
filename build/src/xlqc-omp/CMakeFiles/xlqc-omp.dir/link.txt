@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/xlqc-omp.dir/cuda_rys_dp.cpp.o" "CMakeFiles/xlqc-omp.dir/cuda_rys_sp.cpp.o" "CMakeFiles/xlqc-omp.dir/main.cpp.o" -o ../../bin/omp/xlqc

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/mdh-omp.dir/WKFUtils.cpp.o" "CMakeFiles/mdh-omp.dir/main.cpp.o" -o ../../bin/omp/mdh

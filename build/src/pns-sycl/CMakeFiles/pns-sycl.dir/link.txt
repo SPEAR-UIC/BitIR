@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/pns-sycl.dir/main.cpp.o" "CMakeFiles/pns-sycl.dir/petri_kernel.cpp.o" "CMakeFiles/pns-sycl.dir/rand_gen.cpp.o" -o ../../bin/sycl/pns

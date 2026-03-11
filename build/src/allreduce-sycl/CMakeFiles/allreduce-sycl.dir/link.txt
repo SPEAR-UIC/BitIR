@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/allreduce-sycl.dir/collectives.cpp.o" "CMakeFiles/allreduce-sycl.dir/main.cpp.o" "CMakeFiles/allreduce-sycl.dir/timer.cpp.o" -o ../../bin/sycl/allreduce

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/particle-diffusion-omp.dir/motionsim.cpp.o" -o ../../bin/omp/particle-diffusion

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/medianfilter-sycl.dir/MedianFilter.cpp.o" "CMakeFiles/medianfilter-sycl.dir/main.cpp.o" -o ../../bin/sycl/medianfilter

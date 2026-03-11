@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/su3-sycl.dir/su3_nn_bench.cpp.o" -o ../../bin/sycl/su3

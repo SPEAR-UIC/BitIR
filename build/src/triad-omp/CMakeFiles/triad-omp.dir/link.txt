@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/triad-omp.dir/Option.cpp.o" "CMakeFiles/triad-omp.dir/OptionParser.cpp.o" "CMakeFiles/triad-omp.dir/Timer.cpp.o" "CMakeFiles/triad-omp.dir/main.cpp.o" "CMakeFiles/triad-omp.dir/triad.cpp.o" -o ../../bin/omp/triad

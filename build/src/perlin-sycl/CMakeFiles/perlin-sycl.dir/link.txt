@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/perlin-sycl.dir/main.cpp.o" "CMakeFiles/perlin-sycl.dir/noise.cpp.o" -o ../../bin/sycl/perlin

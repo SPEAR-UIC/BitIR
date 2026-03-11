@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/hexciton-omp.dir/kernels.cpp.o" "CMakeFiles/hexciton-omp.dir/main.cpp.o" "CMakeFiles/hexciton-omp.dir/reference.cpp.o" "CMakeFiles/hexciton-omp.dir/utils.cpp.o" -o ../../bin/omp/hexciton

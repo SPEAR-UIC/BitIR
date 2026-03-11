@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/particles-sycl.dir/bitonicSort.cpp.o" "CMakeFiles/particles-sycl.dir/bitonicSort_kernels.cpp.o" "CMakeFiles/particles-sycl.dir/main.cpp.o" "CMakeFiles/particles-sycl.dir/particles.cpp.o" "CMakeFiles/particles-sycl.dir/particles_kernels.cpp.o" -o ../../bin/sycl/particles

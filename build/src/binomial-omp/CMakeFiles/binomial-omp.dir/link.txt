@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/binomial-omp.dir/kernel.cpp.o" "CMakeFiles/binomial-omp.dir/main.cpp.o" "CMakeFiles/binomial-omp.dir/reference.cpp.o" -o ../../bin/omp/binomial

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/iso2dfd-sycl.dir/iso2dfd.cpp.o" -o ../../bin/sycl/iso2dfd

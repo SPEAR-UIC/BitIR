@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/compute-score-omp.dir/main.cpp.o" "CMakeFiles/compute-score-omp.dir/options.cpp.o" -o ../../bin/omp/compute-score

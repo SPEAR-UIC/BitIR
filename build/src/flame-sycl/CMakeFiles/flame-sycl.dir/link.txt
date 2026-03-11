@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/flame-sycl.dir/iteration.cpp.o" "CMakeFiles/flame-sycl.dir/kernels.cpp.o" "CMakeFiles/flame-sycl.dir/main.cpp.o" "CMakeFiles/flame-sycl.dir/utils.cpp.o" -o ../../bin/sycl/flame

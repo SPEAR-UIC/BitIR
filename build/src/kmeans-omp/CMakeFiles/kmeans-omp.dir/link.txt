@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/cc "CMakeFiles/kmeans-omp.dir/cluster.c.o" "CMakeFiles/kmeans-omp.dir/getopt.c.o" "CMakeFiles/kmeans-omp.dir/kmeans.c.o" "CMakeFiles/kmeans-omp.dir/read_input.c.o" "CMakeFiles/kmeans-omp.dir/rmse.c.o" -o ../../bin/omp/kmeans

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/cc "CMakeFiles/rsbench-omp.dir/init.c.o" "CMakeFiles/rsbench-omp.dir/io.c.o" "CMakeFiles/rsbench-omp.dir/main.c.o" "CMakeFiles/rsbench-omp.dir/material.c.o" "CMakeFiles/rsbench-omp.dir/simulation.c.o" "CMakeFiles/rsbench-omp.dir/utils.c.o" -o ../../bin/omp/rsbench

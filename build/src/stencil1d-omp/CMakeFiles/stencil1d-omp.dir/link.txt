@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/stencil1d-omp.dir/stencil_1d.cpp.o" -o ../../bin/omp/stencil1d

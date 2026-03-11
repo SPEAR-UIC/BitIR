@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/dct8x8-omp.dir/DCT8x8_gold.cpp.o" "CMakeFiles/dct8x8-omp.dir/kernels.cpp.o" "CMakeFiles/dct8x8-omp.dir/main.cpp.o" -o ../../bin/omp/dct8x8

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/lulesh-sycl.dir/lulesh-comm.cc.o" "CMakeFiles/lulesh-sycl.dir/lulesh-init.cc.o" "CMakeFiles/lulesh-sycl.dir/lulesh-util.cc.o" "CMakeFiles/lulesh-sycl.dir/lulesh-viz.cc.o" "CMakeFiles/lulesh-sycl.dir/lulesh.cc.o" -o ../../bin/sycl/lulesh

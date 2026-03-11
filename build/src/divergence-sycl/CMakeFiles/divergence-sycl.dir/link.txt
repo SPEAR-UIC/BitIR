@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/divergence-sycl.dir/divergence.cpp.o" -o ../../bin/sycl/divergence

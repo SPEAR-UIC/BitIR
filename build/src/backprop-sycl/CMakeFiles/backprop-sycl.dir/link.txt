@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/backprop-sycl.dir/backprop.cpp.o" "CMakeFiles/backprop-sycl.dir/facetrain.cpp.o" "CMakeFiles/backprop-sycl.dir/imagenet.cpp.o" "CMakeFiles/backprop-sycl.dir/main.cpp.o" -o ../../bin/sycl/backprop

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/cc -fsycl "CMakeFiles/hybridsort-sycl.dir/bucketsort.c.o" "CMakeFiles/hybridsort-sycl.dir/hybridsort.c.o" "CMakeFiles/hybridsort-sycl.dir/mergesort.c.o" -o ../../bin/sycl/hybridsort

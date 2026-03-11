@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/bonds-sycl.dir/bondsEngine.cpp.o" "CMakeFiles/bonds-sycl.dir/bondsKernelsCpu.cpp.o" "CMakeFiles/bonds-sycl.dir/bondsKernelsGpu.cpp.o" -o ../../bin/sycl/bonds

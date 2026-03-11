@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/mdh-sycl.dir/WKFUtils.cpp.o" "CMakeFiles/mdh-sycl.dir/main.cpp.o" -o ../../bin/sycl/mdh

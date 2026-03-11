@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/nbody-omp.dir/GSimulation.cpp.o" "CMakeFiles/nbody-omp.dir/main.cpp.o" -o ../../bin/omp/nbody

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/split-omp.dir/main.cpp.o" "CMakeFiles/split-omp.dir/verify.cpp.o" -o ../../bin/omp/split

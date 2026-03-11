@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/lid-driven-cavity-sycl.dir/main.cpp.o" "CMakeFiles/lid-driven-cavity-sycl.dir/set.cpp.o" -o ../../bin/sycl/lid-driven-cavity

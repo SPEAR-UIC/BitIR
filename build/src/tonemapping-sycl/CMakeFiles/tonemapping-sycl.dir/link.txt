@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/tonemapping-sycl.dir/kernels.cpp.o" "CMakeFiles/tonemapping-sycl.dir/main.cpp.o" -o ../../bin/sycl/tonemapping

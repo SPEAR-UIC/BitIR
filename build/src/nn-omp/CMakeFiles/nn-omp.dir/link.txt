@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/nn-omp.dir/nearestNeighbor.cpp.o" "CMakeFiles/nn-omp.dir/utils.cpp.o" -o ../../bin/omp/nn

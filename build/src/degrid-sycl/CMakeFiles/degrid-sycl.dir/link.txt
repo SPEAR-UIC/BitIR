@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/degrid-sycl.dir/kernels.cpp.o" "CMakeFiles/degrid-sycl.dir/main.cpp.o" -o ../../bin/sycl/degrid

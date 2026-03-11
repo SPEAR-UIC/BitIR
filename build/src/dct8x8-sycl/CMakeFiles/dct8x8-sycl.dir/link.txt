@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/dct8x8-sycl.dir/DCT8x8_gold.cpp.o" "CMakeFiles/dct8x8-sycl.dir/kernels.cpp.o" "CMakeFiles/dct8x8-sycl.dir/main.cpp.o" -o ../../bin/sycl/dct8x8

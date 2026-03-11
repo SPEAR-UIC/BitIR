@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/metropolis-omp.dir/heap.cpp.o" "CMakeFiles/metropolis-omp.dir/main.cpp.o" "CMakeFiles/metropolis-omp.dir/utils.cpp.o" -o ../../bin/omp/metropolis

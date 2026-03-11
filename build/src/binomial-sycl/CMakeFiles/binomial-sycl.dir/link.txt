@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/binomial-sycl.dir/kernel.cpp.o" "CMakeFiles/binomial-sycl.dir/main.cpp.o" "CMakeFiles/binomial-sycl.dir/reference.cpp.o" -o ../../bin/sycl/binomial

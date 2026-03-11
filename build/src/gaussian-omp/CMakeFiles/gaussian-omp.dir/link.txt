@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/gaussian-omp.dir/gaussianElim.cpp.o" "CMakeFiles/gaussian-omp.dir/utils.cpp.o" -o ../../bin/omp/gaussian

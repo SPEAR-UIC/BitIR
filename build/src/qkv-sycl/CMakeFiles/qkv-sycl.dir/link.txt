@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/qkv-sycl.dir/main.cpp.o" -o ../../bin/sycl/qkv

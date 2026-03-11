@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/split-sycl.dir/main.cpp.o" "CMakeFiles/split-sycl.dir/verify.cpp.o" -o ../../bin/sycl/split

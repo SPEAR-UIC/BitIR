@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/rushlarsen-omp.dir/kernels.cpp.o" "CMakeFiles/rushlarsen-omp.dir/main.cpp.o" "CMakeFiles/rushlarsen-omp.dir/reference.cpp.o" "CMakeFiles/rushlarsen-omp.dir/utils.cpp.o" -o ../../bin/omp/rushlarsen

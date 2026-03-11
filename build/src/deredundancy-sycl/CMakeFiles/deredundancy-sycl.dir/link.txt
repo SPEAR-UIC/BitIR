@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/deredundancy-sycl.dir/kernels.cpp.o" "CMakeFiles/deredundancy-sycl.dir/main.cpp.o" "CMakeFiles/deredundancy-sycl.dir/utils.cpp.o" -o ../../bin/sycl/deredundancy

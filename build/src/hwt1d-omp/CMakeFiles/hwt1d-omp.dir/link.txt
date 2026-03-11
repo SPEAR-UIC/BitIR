@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/hwt1d-omp.dir/main.cpp.o" "CMakeFiles/hwt1d-omp.dir/reference.cpp.o" -o ../../bin/omp/hwt1d

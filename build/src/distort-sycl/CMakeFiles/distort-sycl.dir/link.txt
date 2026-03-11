@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/distort-sycl.dir/distort.cpp.o" "CMakeFiles/distort-sycl.dir/main.cpp.o" -o ../../bin/sycl/distort

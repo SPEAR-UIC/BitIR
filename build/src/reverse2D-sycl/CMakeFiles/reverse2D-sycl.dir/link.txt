@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/reverse2D-sycl.dir/main.cpp.o" -o ../../bin/sycl/reverse2D

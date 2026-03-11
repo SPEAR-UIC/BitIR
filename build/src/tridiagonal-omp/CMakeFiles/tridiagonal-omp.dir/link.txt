@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/tridiagonal-omp.dir/cmd_arg_reader.cpp.o" "CMakeFiles/tridiagonal-omp.dir/cyclic_kernels.cpp.o" "CMakeFiles/tridiagonal-omp.dir/main.cpp.o" "CMakeFiles/tridiagonal-omp.dir/pcr_kernels.cpp.o" "CMakeFiles/tridiagonal-omp.dir/shrUtils.cpp.o" "CMakeFiles/tridiagonal-omp.dir/sweep_kernels.cpp.o" -o ../../bin/omp/tridiagonal

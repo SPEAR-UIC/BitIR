@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/keccaktreehash-omp.dir/KeccakF.cpp.o" "CMakeFiles/keccaktreehash-omp.dir/KeccakTreeCPU.cpp.o" "CMakeFiles/keccaktreehash-omp.dir/KeccakTreeGPU.cpp.o" "CMakeFiles/keccaktreehash-omp.dir/Test.cpp.o" "CMakeFiles/keccaktreehash-omp.dir/main.cpp.o" -o ../../bin/omp/keccaktreehash

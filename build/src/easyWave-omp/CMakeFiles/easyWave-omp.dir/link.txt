@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/easyWave-omp.dir/cOgrd.cpp.o" "CMakeFiles/easyWave-omp.dir/cOkadaEarthquake.cpp.o" "CMakeFiles/easyWave-omp.dir/cOkadaFault.cpp.o" "CMakeFiles/easyWave-omp.dir/cSphere.cpp.o" "CMakeFiles/easyWave-omp.dir/main.cpp.o" "CMakeFiles/easyWave-omp.dir/okada.cpp.o" "CMakeFiles/easyWave-omp.dir/utilits.cpp.o" -o ../../bin/omp/easyWave

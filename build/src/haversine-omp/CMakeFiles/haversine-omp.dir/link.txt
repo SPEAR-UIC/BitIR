@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/haversine-omp.dir/distance.cpp.o" -o ../../bin/omp/haversine

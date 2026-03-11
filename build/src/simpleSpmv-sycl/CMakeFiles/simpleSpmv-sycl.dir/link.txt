@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/simpleSpmv-sycl.dir/kernels.cpp.o" -o ../../bin/sycl/simpleSpmv

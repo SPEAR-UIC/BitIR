@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/wordcount-sycl.dir/main.cpp.o" "CMakeFiles/wordcount-sycl.dir/wc.cpp.o" -o ../../bin/sycl/wordcount

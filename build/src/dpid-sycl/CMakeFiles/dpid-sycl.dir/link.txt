@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/dpid-sycl.dir/kernels.cpp.o" "CMakeFiles/dpid-sycl.dir/main.cpp.o" -o ../../bin/sycl/dpid

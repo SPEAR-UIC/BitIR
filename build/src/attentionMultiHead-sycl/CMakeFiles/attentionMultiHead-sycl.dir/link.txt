@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/attentionMultiHead-sycl.dir/main.cpp.o" -o ../../bin/sycl/attentionMultiHead

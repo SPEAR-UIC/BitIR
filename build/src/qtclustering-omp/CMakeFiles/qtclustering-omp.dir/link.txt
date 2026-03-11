@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/qtclustering-omp.dir/Option.cpp.o" "CMakeFiles/qtclustering-omp.dir/OptionParser.cpp.o" "CMakeFiles/qtclustering-omp.dir/QTC.cpp.o" "CMakeFiles/qtclustering-omp.dir/comm.cpp.o" "CMakeFiles/qtclustering-omp.dir/libdata.cpp.o" "CMakeFiles/qtclustering-omp.dir/main.cpp.o" -o ../../bin/omp/qtclustering

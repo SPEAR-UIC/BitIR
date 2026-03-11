@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/chi2-sycl.dir/chi2.cpp.o" -o ../../bin/sycl/chi2

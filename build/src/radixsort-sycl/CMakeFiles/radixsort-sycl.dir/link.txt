@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/radixsort-sycl.dir/RadixSort.cpp.o" "CMakeFiles/radixsort-sycl.dir/RadixSort_kernels.cpp.o" "CMakeFiles/radixsort-sycl.dir/Scan.cpp.o" "CMakeFiles/radixsort-sycl.dir/Scan_kernels.cpp.o" "CMakeFiles/radixsort-sycl.dir/main.cpp.o" -o ../../bin/sycl/radixsort

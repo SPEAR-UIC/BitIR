@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/crs-sycl.dir/GCRSMatrix.cpp.o" "CMakeFiles/crs-sycl.dir/galois.cpp.o" "CMakeFiles/crs-sycl.dir/jerasure.cpp.o" "CMakeFiles/crs-sycl.dir/kernels.cpp.o" "CMakeFiles/crs-sycl.dir/main.cpp.o" "CMakeFiles/crs-sycl.dir/utils.cpp.o" -o ../../bin/sycl/crs

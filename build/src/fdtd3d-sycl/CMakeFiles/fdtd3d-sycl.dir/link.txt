@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/fdtd3d-sycl.dir/FDTD3dGPU.cpp.o" "CMakeFiles/fdtd3d-sycl.dir/FDTD3dReference.cpp.o" "CMakeFiles/fdtd3d-sycl.dir/cmd_arg_reader.cpp.o" "CMakeFiles/fdtd3d-sycl.dir/main.cpp.o" "CMakeFiles/fdtd3d-sycl.dir/shrUtils.cpp.o" -o ../../bin/sycl/fdtd3d

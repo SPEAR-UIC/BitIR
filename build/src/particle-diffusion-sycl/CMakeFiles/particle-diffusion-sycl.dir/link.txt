@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/particle-diffusion-sycl.dir/motionsim.cpp.o" -o ../../bin/sycl/particle-diffusion

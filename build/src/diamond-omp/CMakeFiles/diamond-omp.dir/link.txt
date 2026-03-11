@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/diamond-omp.dir/masking.cpp.o" -o ../../bin/omp/diamond

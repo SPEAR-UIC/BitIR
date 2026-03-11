@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/lut-gemm-sycl.dir/kernels.cpp.o" "CMakeFiles/lut-gemm-sycl.dir/main.cpp.o" "CMakeFiles/lut-gemm-sycl.dir/nQWeight_fp16.cpp.o" -o ../../bin/sycl/lut-gemm

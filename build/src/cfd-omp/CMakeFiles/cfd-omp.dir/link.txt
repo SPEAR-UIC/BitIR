@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/cfd-omp.dir/euler3d.cpp.o" -o ../../bin/omp/cfd

@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/winograd-sycl.dir/main.cpp.o" "CMakeFiles/winograd-sycl.dir/utils.cpp.o" -o ../../bin/sycl/winograd

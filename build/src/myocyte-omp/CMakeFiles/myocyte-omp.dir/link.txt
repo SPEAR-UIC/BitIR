@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/cc "CMakeFiles/myocyte-omp.dir/main.c.o" -o ../../bin/omp/myocyte

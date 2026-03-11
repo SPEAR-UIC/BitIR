@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/black-scholes-sycl.dir/blackScholesAnalyticEngine.cpp.o" "CMakeFiles/black-scholes-sycl.dir/blackScholesAnalyticEngineKernels.cpp.o" "CMakeFiles/black-scholes-sycl.dir/blackScholesAnalyticEngineKernelsCpu.cpp.o" -o ../../bin/sycl/black-scholes

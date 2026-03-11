@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/tpacf-sycl.dir/ACF_kernel.cpp.o" "CMakeFiles/tpacf-sycl.dir/args.cpp.o" "CMakeFiles/tpacf-sycl.dir/compute.cpp.o" "CMakeFiles/tpacf-sycl.dir/histogram_kernel.cpp.o" "CMakeFiles/tpacf-sycl.dir/main.cpp.o" "CMakeFiles/tpacf-sycl.dir/model_io.cpp.o" -o ../../bin/sycl/tpacf

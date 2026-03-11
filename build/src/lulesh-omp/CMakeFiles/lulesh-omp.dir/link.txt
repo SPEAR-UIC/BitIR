@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/lulesh-omp.dir/lulesh-init.cc.o" "CMakeFiles/lulesh-omp.dir/lulesh-util.cc.o" "CMakeFiles/lulesh-omp.dir/lulesh-viz.cc.o" "CMakeFiles/lulesh-omp.dir/lulesh.cc.o" -o ../../bin/omp/lulesh

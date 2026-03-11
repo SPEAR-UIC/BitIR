@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/pso-sycl.dir/kernel_gpu.cpp.o" -o ../../bin/sycl/pso

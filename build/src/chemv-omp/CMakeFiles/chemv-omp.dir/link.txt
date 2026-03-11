@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/chemv-omp.dir/kernel.cpp.o" "CMakeFiles/chemv-omp.dir/main.cpp.o" -o ../../bin/omp/chemv

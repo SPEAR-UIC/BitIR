@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/fresnel-sycl.dir/cosine.cpp.o" "CMakeFiles/fresnel-sycl.dir/fresnel.cpp.o" "CMakeFiles/fresnel-sycl.dir/main.cpp.o" "CMakeFiles/fresnel-sycl.dir/sine.cpp.o" "CMakeFiles/fresnel-sycl.dir/xchebyshev.cpp.o" -o ../../bin/sycl/fresnel

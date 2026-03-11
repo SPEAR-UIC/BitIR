@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC -fsycl "CMakeFiles/rsc-sycl.dir/main.cpp.o" "CMakeFiles/rsc-sycl.dir/model_eval.cpp.o" -o ../../bin/sycl/rsc

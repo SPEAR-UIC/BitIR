@@ -1,1 +1,0 @@
-/opt/cray/pe/craype/2.7.35/bin/CC "CMakeFiles/multimaterial-omp.dir/compact.cpp.o" "CMakeFiles/multimaterial-omp.dir/full_matrix.cpp.o" "CMakeFiles/multimaterial-omp.dir/multimat.cpp.o" -o ../../bin/omp/multimaterial
