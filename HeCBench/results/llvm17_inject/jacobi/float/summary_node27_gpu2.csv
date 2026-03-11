@@ -1,6 +1,0 @@
-site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes
-44,22,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site44_bit22.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site44_bit22.err,,,,,,,,,,,,,,,
-48,18,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site48_bit18.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site48_bit18.err,,,,,,,,,,,,,,,
-69,1,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site69_bit1.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site69_bit1.err,,,,,,,,,,,,,,,
-95,15,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site95_bit15.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site95_bit15.err,,,,,,,,,,,,,,,
-138,0,FAILURE,255,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site138_bit0.out,/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject/jacobi/float/site138_bit0.err,,,,,,,,,,,,,,,
