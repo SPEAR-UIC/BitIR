@@ -15,6 +15,7 @@
 #include <time.h>
 #include <assert.h>
 #include <iostream>
+#include <limits.h>
 #include <sys/time.h>
 #include <cuda.h>
 
@@ -275,6 +276,53 @@ int main(int argc, char** argv)
   // add a null terminator at the end of the string.
   outputBuffer[16383] = '\0';
 
+  int* reference = new int[cols];
+  int* prev = new int[cols];
+  int* next = new int[cols];
+  for (int i = 0; i < cols; i++)
+  {
+    prev[i] = data[i];
+  }
+  for (int row = 1; row < rows; row++)
+  {
+    for (int col = 0; col < cols; col++)
+    {
+      int best = prev[col];
+      if (col > 0)
+        best = MIN(best, prev[col - 1]);
+      if (col + 1 < cols)
+        best = MIN(best, prev[col + 1]);
+      next[col] = best + wall[row][col];
+    }
+    int* tmp = prev;
+    prev = next;
+    next = tmp;
+  }
+  for (int i = 0; i < cols; i++)
+  {
+    reference[i] = prev[i];
+  }
+
+  int mismatch_count = 0;
+  int max_abs_diff = 0;
+  for (int i = 0; i < cols; i++)
+  {
+    int diff = result[i] - reference[i];
+    if (diff < 0)
+      diff = -diff;
+    if (diff > max_abs_diff)
+      max_abs_diff = diff;
+    if (result[i] != reference[i])
+      mismatch_count++;
+  }
+
+  printf("Pathfinder mismatch count: %d\n", mismatch_count);
+  printf("Pathfinder max abs diff: %d\n", max_abs_diff);
+  if (mismatch_count == 0)
+    printf("PASS\n");
+  else
+    printf("FAIL\n");
+
 #ifdef BENCH_PRINT
   for (int i = 0; i < cols; i++)
     printf("%d ", data[i]);
@@ -304,6 +352,9 @@ int main(int argc, char** argv)
   delete[] data;
   delete[] wall;
   delete[] result;
+  delete[] reference;
+  delete[] prev;
+  delete[] next;
   free(outputBuffer);
 
   return EXIT_SUCCESS;

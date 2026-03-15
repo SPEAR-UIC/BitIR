@@ -247,7 +247,8 @@ def write_benchmark_opcode_mix_data(records, bench, out_dat, top_n=30):
         counts[op][r["outcome"]] += 1
         totals[op] += 1
 
-    top_ops = [op for op, _ in sorted(totals.items(), key=lambda x: x[1], reverse=True)[:top_n]]
+    sorted_ops = [op for op, _ in sorted(totals.items(), key=lambda x: x[1], reverse=True)]
+    top_ops = sorted_ops if top_n <= 0 else sorted_ops[:top_n]
     with open(out_dat, "w") as f:
         f.write("opcode masked_err masked_noerr sdc_err sdc_noerr due\n")
         for op in top_ops:
@@ -258,6 +259,63 @@ def write_benchmark_opcode_mix_data(records, bench, out_dat, top_n=30):
             sn = counts[op]["SDC:noError"] / t if t else 0.0
             d = counts[op]["DUE"] / t if t else 0.0
             f.write(f"{op} {me:.6f} {mn:.6f} {se:.6f} {sn:.6f} {d:.6f}\n")
+
+
+def write_global_opcode_mix_data(records, out_dat, top_n=40):
+    counts = defaultdict(Counter)
+    totals = Counter()
+    for r in records:
+        op = r["opcode"] or "unknown"
+        counts[op][r["outcome"]] += 1
+        totals[op] += 1
+
+    sorted_ops = [op for op, _ in sorted(totals.items(), key=lambda x: x[1], reverse=True)]
+    top_ops = sorted_ops if top_n <= 0 else sorted_ops[:top_n]
+    with open(out_dat, "w") as f:
+        f.write("opcode masked_err masked_noerr sdc_err sdc_noerr due\n")
+        for op in top_ops:
+            t = totals[op]
+            me = counts[op]["MASKED:errorDetected"] / t if t else 0.0
+            mn = counts[op]["MASKED:noError"] / t if t else 0.0
+            se = counts[op]["SDC:errorDetected"] / t if t else 0.0
+            sn = counts[op]["SDC:noError"] / t if t else 0.0
+            d = counts[op]["DUE"] / t if t else 0.0
+            f.write(f"{op} {me:.6f} {mn:.6f} {se:.6f} {sn:.6f} {d:.6f}\n")
+
+
+def write_global_opcode_stats_csv(records, out_csv, top_n=40):
+    counts = defaultdict(Counter)
+    totals = Counter()
+    for r in records:
+        op = r["opcode"] or "unknown"
+        counts[op][r["outcome"]] += 1
+        totals[op] += 1
+
+    sorted_ops = [op for op, _ in sorted(totals.items(), key=lambda x: x[1], reverse=True)]
+    top_ops = sorted_ops if top_n <= 0 else sorted_ops[:top_n]
+    with open(out_csv, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(
+            [
+                "opcode",
+                "total",
+                "masked_err_frac",
+                "masked_noerr_frac",
+                "sdc_err_frac",
+                "sdc_noerr_frac",
+                "due_frac",
+                "sdc_total_frac",
+                "non_masked_frac",
+            ]
+        )
+        for op in top_ops:
+            t = totals[op]
+            me = counts[op]["MASKED:errorDetected"] / t if t else 0.0
+            mn = counts[op]["MASKED:noError"] / t if t else 0.0
+            se = counts[op]["SDC:errorDetected"] / t if t else 0.0
+            sn = counts[op]["SDC:noError"] / t if t else 0.0
+            d = counts[op]["DUE"] / t if t else 0.0
+            w.writerow([op, t, me, mn, se, sn, d, se + sn, 1.0 - me - mn])
 
 
 def write_opcode_heatmap_data(records, benches, out_dat, out_labels):
@@ -285,6 +343,11 @@ def write_opcode_heatmap_data(records, benches, out_dat, out_labels):
         f.write("x_labels=" + ",".join(benches) + "\n")
         f.write("y_labels=" + ",".join(top_ops) + "\n")
     return top_ops
+
+
+def write_opcode_heatmap_data_for_phase(records, benches, phase, out_dat, out_labels):
+    phase_rows = [r for r in records if r["phase"] == phase]
+    return write_opcode_heatmap_data(phase_rows, benches, out_dat, out_labels)
 
 
 def write_site_decile_data(records, benches, out_dat):
@@ -317,7 +380,7 @@ def run_gnuplot(script_text):
     subprocess.run(["gnuplot"], input=script_text.encode("utf-8"), check=True)
 
 
-def plot_outcome_mix(data, png, title):
+def plot_stacked_outcome_mix(data, png, title, xlabel, xtic_rotate=-25):
     script = f"""
 set terminal pngcairo size 1800,900
 set output '{png}'
@@ -329,10 +392,10 @@ set xrange [-0.5:*]
 set offset 0,0,0,0
 set key outside right top font ',12'
 set title '{title}' font ',20'
-set xlabel 'Benchmark (one stacked bar per benchmark)' font ',16'
+set xlabel '{xlabel}' font ',16'
 set ylabel 'Fraction of injected site/bit pairs' font ',16'
 set yrange [0:1]
-set xtics rotate by -25 font ',12'
+set xtics rotate by {xtic_rotate} font ',12'
 set ytics font ',12'
 plot '{data}' using 2:xtic(1) title 'MASKED:errorDetected' lc rgb '#5DA5DA', \\
      '' using 3 title 'MASKED:noError' lc rgb '#59A14F', \\
@@ -341,6 +404,16 @@ plot '{data}' using 2:xtic(1) title 'MASKED:errorDetected' lc rgb '#5DA5DA', \\
      '' using 6 title 'DUE' lc rgb '#E15759'
 """
     run_gnuplot(script)
+
+
+def plot_outcome_mix(data, png, title):
+    plot_stacked_outcome_mix(
+        data,
+        png,
+        title,
+        "Benchmark (one stacked bar per benchmark)",
+        xtic_rotate=-25,
+    )
 
 
 def quote_labels(labels):
@@ -366,6 +439,97 @@ set cblabel 'Fraction of injected site/bit pairs classified as SDC within opcode
 set cbrange [0:1]
 set palette rgbformulae 22,13,-31
 plot '{data}' using 1:2:3 with image pixels
+"""
+    run_gnuplot(script)
+
+
+def plot_opcode_heatmap_from_data(data, png, benches, op_labels, title):
+    script = f"""
+set terminal pngcairo size 1800,1000
+set output '{png}'
+set view map
+unset key
+set xrange [0.5:{len(benches)+0.5}]
+set yrange [0.5:{len(op_labels)+0.5}]
+set title '{title}' font ',20'
+set xtics ({quote_labels(benches)}) rotate by -25 font ',12'
+set ytics ({quote_labels(op_labels)}) font ',12'
+set xlabel 'Benchmark' font ',16'
+set ylabel 'Opcode category from aligned worklists' font ',16'
+set cblabel 'Fraction of injected site/bit pairs classified as SDC within opcode' font ',14'
+set cbrange [0:1]
+set palette rgbformulae 22,13,-31
+plot '{data}' using 1:2:3 with image pixels
+"""
+    run_gnuplot(script)
+
+
+def write_global_opcode_outcome_heatmap_data(stats_csv, out_dat):
+    rows = []
+    with open(stats_csv, newline="") as f:
+        r = csv.DictReader(f)
+        rows = list(r)
+    x_labels = ["MASKED:errorDetected", "MASKED:noError", "SDC:errorDetected", "SDC:noError", "DUE"]
+    cols = ["masked_err_frac", "masked_noerr_frac", "sdc_err_frac", "sdc_noerr_frac", "due_frac"]
+    y_labels = [row["opcode"] for row in rows]
+    with open(out_dat, "w") as f:
+        for yi, row in enumerate(rows, start=1):
+            for xi, col in enumerate(cols, start=1):
+                f.write(f"{xi} {yi} {float(row[col]):.6f}\n")
+    return x_labels, y_labels
+
+
+def plot_global_opcode_outcome_heatmap(data, png, x_labels, y_labels):
+    script = f"""
+set terminal pngcairo size 1900,1300
+set output '{png}'
+set view map
+unset key
+set xrange [0.5:{len(x_labels)+0.5}]
+set yrange [0.5:{len(y_labels)+0.5}]
+set title 'Opcode vs Outcome Heatmap (global, all benchmarks/phases)' font ',20'
+set xtics ({quote_labels(x_labels)}) rotate by -20 font ',12'
+set ytics ({quote_labels(y_labels)}) font ',10'
+set xlabel 'Outcome class' font ',16'
+set ylabel 'Opcode category' font ',16'
+set cblabel 'Fraction within opcode' font ',14'
+set cbrange [0:1]
+set palette rgbformulae 22,13,-31
+plot '{data}' using 1:2:3 with image pixels
+"""
+    run_gnuplot(script)
+
+
+def write_opcode_risk_scatter_data(stats_csv, out_dat, top_labels=24):
+    rows = []
+    with open(stats_csv, newline="") as f:
+        r = csv.DictReader(f)
+        rows = list(r)
+    max_total = max([int(row["total"]) for row in rows], default=1)
+    with open(out_dat, "w") as f:
+        f.write("opcode sdc due ps label\n")
+        for i, row in enumerate(rows):
+            t = int(row["total"])
+            sdc = float(row["sdc_total_frac"])
+            due = float(row["due_frac"])
+            ps = 0.6 + 2.4 * ((t / max_total) ** 0.5)
+            label = row["opcode"] if i < top_labels else ""
+            f.write(f"{row['opcode']} {sdc:.6f} {due:.6f} {ps:.4f} {label}\n")
+
+
+def plot_opcode_risk_scatter(data, png):
+    script = f"""
+set terminal pngcairo size 1700,1000
+set output '{png}'
+set title 'Opcode Risk Map (SDC vs DUE, bubble size by volume)' font ',20'
+set xlabel 'SDC fraction within opcode' font ',15'
+set ylabel 'DUE fraction within opcode' font ',15'
+set xrange [0:1]
+set yrange [0:1]
+set grid lc rgb '#dddddd'
+set key off
+plot '{data}' using 2:3:4 with points pt 7 ps variable lc rgb '#F28E2B', \\
+     '' using 2:3:5 with labels offset char 1,0.6 font ',9' tc rgb '#222222'
 """
     run_gnuplot(script)
 
@@ -549,6 +713,64 @@ plot '{data}' using 2:xtic(1) title 'Pointer-Float non-masked' lc rgb '#F28E2B',
     run_gnuplot(script)
 
 
+def write_phase_metric_cluster_data(records, benches, phases, metric, out_dat):
+    counts = {(b, p): Counter() for b in benches for p in phases}
+    totals = Counter()
+    for r in records:
+        b = r["bench"]
+        p = r["phase"]
+        if b not in benches or p not in phases:
+            continue
+        counts[(b, p)][r["outcome"]] += 1
+        totals[(b, p)] += 1
+
+    with open(out_dat, "w") as f:
+        f.write("bench float operand pointer\n")
+        for b in benches:
+            vals = []
+            for p in phases:
+                t = totals[(b, p)]
+                if t == 0:
+                    vals.append(0.0)
+                    continue
+                if metric == "sdc_total":
+                    v = (counts[(b, p)]["SDC:errorDetected"] + counts[(b, p)]["SDC:noError"]) / t
+                elif metric == "due":
+                    v = counts[(b, p)]["DUE"] / t
+                elif metric == "non_masked":
+                    v = (
+                        t
+                        - counts[(b, p)]["MASKED:errorDetected"]
+                        - counts[(b, p)]["MASKED:noError"]
+                    ) / t
+                else:
+                    raise ValueError(f"unknown metric {metric}")
+                vals.append(v)
+            f.write(f"{b} {vals[0]:.6f} {vals[1]:.6f} {vals[2]:.6f}\n")
+
+
+def plot_phase_metric_cluster(data, png, title, ylabel):
+    script = f"""
+set terminal pngcairo size 1800,900
+set output '{png}'
+set style data histogram
+set style histogram clustered gap 1
+set style fill solid 1.0 border -1
+set boxwidth 0.85
+set key outside right top font ',12'
+set title '{title}' font ',20'
+set xlabel 'Benchmark' font ',16'
+set ylabel '{ylabel}' font ',16'
+set yrange [0:1]
+set xtics rotate by -25 font ',12'
+set ytics font ',12'
+plot '{data}' using 2:xtic(1) title 'float' lc rgb '#4E79A7', \\
+     '' using 3 title 'operand' lc rgb '#F28E2B', \\
+     '' using 4 title 'pointer' lc rgb '#59A14F'
+"""
+    run_gnuplot(script)
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--root", default="HeCBench/results/llvm17_inject")
@@ -604,6 +826,17 @@ def main():
             f"Outcome Mix by Benchmark for {phase_desc[ph]}",
         )
     plot_opcode_heatmap(args.out_dir, chosen, op_labels)
+    for ph in phases:
+        hm_dat = os.path.join(args.out_dir, f"opcode_sdc_heatmap_{ph}.dat")
+        hm_lbl = os.path.join(args.out_dir, f"opcode_sdc_heatmap_{ph}_labels.txt")
+        ph_ops = write_opcode_heatmap_data_for_phase(filtered, chosen, ph, hm_dat, hm_lbl)
+        plot_opcode_heatmap_from_data(
+            hm_dat,
+            os.path.join(args.out_dir, f"opcode_sdc_heatmap_{ph}.png"),
+            chosen,
+            ph_ops,
+            f"Opcode-Level SDC Fraction by Benchmark ({ph} phase)",
+        )
     plot_site_decile_heatmap(args.out_dir, chosen)
     due_hm = os.path.join(args.out_dir, "phase_due_heatmap.dat")
     nonmasked_hm = os.path.join(args.out_dir, "phase_nonmasked_heatmap.dat")
@@ -636,15 +869,43 @@ def main():
     delta_dat = os.path.join(args.out_dir, "phase_delta_vs_float.dat")
     write_phase_delta_data(filtered, chosen, phases, delta_dat)
     plot_phase_delta(delta_dat, os.path.join(args.out_dir, "benchmark_phase_delta_vs_float.png"))
+    sdc_cluster = os.path.join(args.out_dir, "phase_sdc_cluster.dat")
+    write_phase_metric_cluster_data(filtered, chosen, phases, "sdc_total", sdc_cluster)
+    plot_phase_metric_cluster(
+        sdc_cluster,
+        os.path.join(args.out_dir, "benchmark_phase_sdc_cluster.png"),
+        "SDC Fraction by Benchmark and Injection Phase",
+        "SDC fraction of injected site/bit pairs",
+    )
+    due_cluster = os.path.join(args.out_dir, "phase_due_cluster.dat")
+    write_phase_metric_cluster_data(filtered, chosen, phases, "due", due_cluster)
+    plot_phase_metric_cluster(
+        due_cluster,
+        os.path.join(args.out_dir, "benchmark_phase_due_cluster.png"),
+        "DUE Fraction by Benchmark and Injection Phase",
+        "DUE fraction of injected site/bit pairs",
+    )
 
     if "layout" in chosen:
         layout_opcode_dat = os.path.join(args.out_dir, "layout_opcode_outcome_mix.dat")
-        write_benchmark_opcode_mix_data(filtered, "layout", layout_opcode_dat, top_n=30)
-        plot_outcome_mix(
+        write_benchmark_opcode_mix_data(filtered, "layout", layout_opcode_dat, top_n=0)
+        plot_stacked_outcome_mix(
             layout_opcode_dat,
             os.path.join(args.out_dir, "layout_opcode_outcome_mix.png"),
             "Layout Outcome Mix by Opcode Category (all phases, aligned site/bit pairs)",
+            "Layout opcode category",
+            xtic_rotate=-20,
         )
+
+    global_opcode_dat = os.path.join(args.out_dir, "opcode_outcome_mix_global.dat")
+    write_global_opcode_mix_data(filtered, global_opcode_dat, top_n=0)
+    plot_stacked_outcome_mix(
+        global_opcode_dat,
+        os.path.join(args.out_dir, "opcode_outcome_mix_global.png"),
+        "Outcome Mix by Opcode Category (all benchmarks, all phases)",
+        "Opcode category",
+        xtic_rotate=-20,
+    )
 
     print("Complete benches:", ",".join(sorted(complete)))
     print("Excluded benches:", ",".join(sorted(exclude)))

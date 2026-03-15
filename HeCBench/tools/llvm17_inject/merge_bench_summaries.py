@@ -23,7 +23,13 @@ def main():
         return 2
 
     repo_root = os.getcwd()
-    results_dir = os.path.join(repo_root, "HeCBench/results/llvm17_inject", bench)
+    results_dir = os.environ.get("RESULTS_DIR", "").strip()
+    if not results_dir:
+        results_subdir = os.environ.get("RESULTS_SUBDIR", "llvm17_inject").strip() or "llvm17_inject"
+        phase = os.environ.get("PHASE", "").strip()
+        results_dir = os.path.join(repo_root, "HeCBench", "results", results_subdir, bench)
+        if phase:
+          results_dir = os.path.join(results_dir, phase)
     pattern = os.path.join(results_dir, "summary_node*_gpu*.csv")
     files = sorted(glob.glob(pattern))
     if not files:
@@ -69,9 +75,9 @@ def main():
                 conflicts.append((key_to_row[key], row))
 
     if not all_fieldnames:
-        all_fieldnames = ["site_id", "bit_index", "result", "exit_code", "stdout", "stderr", "dump"]
+        all_fieldnames = ["site_id", "bit_index", "result", "taxonomy", "exit_code", "stdout", "stderr", "dump"]
     else:
-        for required in ("site_id", "bit_index", "result", "exit_code", "stdout", "stderr", "dump"):
+        for required in ("site_id", "bit_index", "result", "taxonomy", "exit_code", "stdout", "stderr", "dump"):
             if required not in all_fieldnames:
                 all_fieldnames.insert(0, required)
 
@@ -122,12 +128,17 @@ def main():
     for row in key_to_row.values():
         total += 1
         counts[row.get("result", "UNKNOWN")] += 1
+        tax = row.get("taxonomy", "")
+        if tax:
+            counts[tax] += 1
 
     with open(counts_path, "w") as out:
         out.write(f"total={total}\n")
-        for key in ("MASKED", "SDC", "FAILURE"):
+        for key in ("MASKED", "SDC", "DUE", "FAILURE"):
             out.write(f"{key}={counts.get(key,0)}\n")
-        others = total - sum(counts.get(k, 0) for k in ("MASKED", "SDC", "FAILURE"))
+        for key in ("MASKED_FLAGGED", "MASKED_UNFLAGGED", "SDC_FLAGGED", "SDC_NOTFLAGGED", "FAILURE_HANG", "FAILURE_NONHANG"):
+            out.write(f"{key}={counts.get(key,0)}\n")
+        others = total - sum(counts.get(k, 0) for k in ("MASKED", "SDC", "DUE", "FAILURE"))
         out.write(f"OTHER={others}\n")
         out.write(f"CONFLICTS={len(conflicts)}\n")
 

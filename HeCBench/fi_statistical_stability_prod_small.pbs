@@ -1,0 +1,23 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N fi_stat_stability
+#PBS -q prod
+#PBS -l select=4:ncpus=4:ngpus=4:mem=128gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=04:00:00
+#PBS -o OUT_statistical_stability.out
+#PBS -e ERROR_statistical_stability.err
+
+set -euo pipefail
+
+cd "${PBS_O_WORKDIR:-$(pwd)}"
+export REPO_ROOT="${PBS_O_WORKDIR:-$(pwd)}"
+export CPU_PER_GPU="${CPU_PER_GPU:-1}"
+export INJECT_TIMEOUT_SEC="${INJECT_TIMEOUT_SEC:-180}"
+export TIMEOUT_STREAK_ABORT="${TIMEOUT_STREAK_ABORT:-0}"
+export RANDOMACCESS_REPEAT="${RANDOMACCESS_REPEAT:-1}"
+export ABS_TOL="${ABS_TOL:-1e-5}"
+export REL_TOL="${REL_TOL:-1e-6}"
+export MANIFEST="${MANIFEST:-${REPO_ROOT}/HeCBench/results/llvm17_inject_statistical_stability/campaign_manifest.csv}"
+
+exec bash "${REPO_ROOT}/HeCBench/run_random_stability_sample_batch.sh"

@@ -162,6 +162,7 @@ if [[ -z "${JOB_TAG}" ]]; then
 fi
 QUEUE_FILE="${RESULTS_DIR}/work_queue_${JOB_TAG}.csv"
 QUEUE_LOCK="${RESULTS_DIR}/work_queue_${JOB_TAG}.lock"
+TIMEOUT_ABORT_FLAG="${RESULTS_DIR}/timeout_abort.flag"
 
 if [[ "${WORKLIST_EXPLICIT}" -eq 0 ]]; then
   if [[ -n "${WORKLIST_PRUNED:-}" && -f "${WORKLIST_PRUNED}" ]]; then
@@ -178,6 +179,7 @@ fi
 MISSING_ONLY="${MISSING_ONLY:-1}"
 
 if [[ "${WORKER:-0}" -ne 1 ]]; then
+  rm -f "${TIMEOUT_ABORT_FLAG}" || true
   if [[ ! -s "${WORKLIST}" || "${REBUILD_WORKLIST:-0}" -eq 1 ]]; then
     # Build the phase-specific worklist in RESULTS_DIR so queue/missing logic reads
     # the same file that was just generated.
@@ -318,7 +320,7 @@ echo "[env] GPU_COUNT=${GPU_COUNT}"
 MONITOR_GPU="${MONITOR_GPU:-0}"
 MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
 echo "[env] MONITOR_GPU=${MONITOR_GPU} MONITOR_INTERVAL=${MONITOR_INTERVAL}"
-INJECT_TIMEOUT_SEC="${INJECT_TIMEOUT_SEC:-0}"
+INJECT_TIMEOUT_SEC="${INJECT_TIMEOUT_SEC:-180}"
 SERIAL_DEBUG_MODE="${SERIAL_DEBUG_MODE:-0}"
 if [[ "${SERIAL_DEBUG_MODE}" -eq 1 ]]; then
   GPU_COUNT=1
@@ -523,10 +525,18 @@ PY
       INJECT_TARGET="${INJECT_TARGET}" \
       timeout "${INJECT_TIMEOUT_SEC}" "${run_cmd[@]}" || rc=$?
       if [[ "${rc}" -eq 124 ]]; then
-        echo "Result: TIMEOUT (exit timeout_${INJECT_TIMEOUT_SEC}s)" > "${RESULTS_DIR}/site${site}_bit${bit}.out"
-        echo "[runner] timeout after ${INJECT_TIMEOUT_SEC}s for site=${site} bit=${bit}" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
+        {
+          echo "Result: DUE (exit timeout_${INJECT_TIMEOUT_SEC}s)"
+          echo "[runner] timeout after ${INJECT_TIMEOUT_SEC}s for site=${site} bit=${bit}"
+          echo "failure_kind=hang_timeout"
+        } >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
+        if [[ ! -f "${csv}" ]]; then
+          echo "site_id,bit_index,result,exit_code,failure_kind,failure_signal,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes" > "${csv}"
+        fi
+        printf '%s\n' "${site},${bit},DUE,timeout_${INJECT_TIMEOUT_SEC}s,hang_timeout,,${RESULTS_DIR}/site${site}_bit${bit}.out,,,,,,,,,,,,,,,," >> "${csv}"
       fi
     else
+      rc=0
       CUDA_VISIBLE_DEVICES="${gpu_id}" \
       SITE_ID="${site}" \
       BIT_INDEX="${bit}" \
@@ -542,14 +552,17 @@ PY
       BENCH="${BENCH}" \
       COMPARE_MODE="${COMPARE_MODE}" \
       INJECT_TARGET="${INJECT_TARGET}" \
-      "${run_cmd[@]}" || true
+      "${run_cmd[@]}" || rc=$?
     fi
+    return "${rc}"
   }
 
   run_worker_gpu() {
     local gpu_id=$1
     local worker_rank=$((TASK_ID * GPU_COUNT + gpu_id))
     local processed=0
+    local timeout_streak=0
+    local timeout_streak_abort="${TIMEOUT_STREAK_ABORT:-0}"
     export CUDA_VISIBLE_DEVICES="${gpu_id}"
     local out_dir_base
     if [[ -n "${PBS_JOBTMP:-}" && -d "${PBS_JOBTMP}" ]]; then
@@ -659,6 +672,10 @@ PY
           echo "[worker] queue_empty processed=${processed} node=${TASK_ID} gpu=${gpu_id}"
           break
         fi
+        if [[ -f "${TIMEOUT_ABORT_FLAG}" ]]; then
+          echo "[worker] timeout abort flag detected; stopping node=${TASK_ID} gpu=${gpu_id}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
+          break
+        fi
         IFS=, read -r site bit <<< "${pair}"
         if [[ -z "${site}" || -z "${bit}" ]]; then
           continue
@@ -667,10 +684,28 @@ PY
         if (( processed % 10 == 0 )); then
           echo "[worker] progress processed=${processed} node=${TASK_ID} gpu=${gpu_id}"
         fi
-        run_injection_with_timeout "${gpu_id}" "${site}" "${bit}" "${out_dir}" "${csv}"
+        pair_start="$(date +%s)"
+        echo "[worker] start node=${TASK_ID} gpu=${gpu_id} site=${site} bit=${bit} ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "${RESULTS_DIR}/worker_heartbeats.txt"
+        pair_rc=0
+        run_injection_with_timeout "${gpu_id}" "${site}" "${bit}" "${out_dir}" "${csv}" || pair_rc=$?
+        pair_end="$(date +%s)"
+        pair_dur=$((pair_end - pair_start))
+        echo "[worker] end node=${TASK_ID} gpu=${gpu_id} site=${site} bit=${bit} rc=${pair_rc} dur_s=${pair_dur} ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "${RESULTS_DIR}/worker_heartbeats.txt"
+        if [[ "${pair_rc}" -eq 124 ]]; then
+          timeout_streak=$((timeout_streak + 1))
+          echo "[worker] timeout streak node=${TASK_ID} gpu=${gpu_id} streak=${timeout_streak}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
+          if [[ "${timeout_streak_abort}" -gt 0 && "${timeout_streak}" -ge "${timeout_streak_abort}" ]]; then
+            echo "[worker] timeout abort threshold reached node=${TASK_ID} gpu=${gpu_id} streak=${timeout_streak}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
+            touch "${TIMEOUT_ABORT_FLAG}"
+            break
+          fi
+        else
+          timeout_streak=0
+        fi
         if [[ ! -f "${RESULTS_DIR}/site${site}_bit${bit}.out" ]]; then
           echo "Result: FAILURE (exit missing_out)" > "${RESULTS_DIR}/site${site}_bit${bit}.out"
           echo "[runner] missing out file; created failure stub for site=${site} bit=${bit}" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
+          echo "failure_kind=missing_out_stub" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
         fi
       done
     else
@@ -696,6 +731,7 @@ PY
         if [[ ! -f "${RESULTS_DIR}/site${site}_bit${bit}.out" ]]; then
           echo "Result: FAILURE (exit missing_out)" > "${RESULTS_DIR}/site${site}_bit${bit}.out"
           echo "[runner] missing out file; created failure stub for site=${site} bit=${bit}" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
+          echo "failure_kind=missing_out_stub" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
         fi
       done < "${WORKLIST}"
     fi
@@ -713,23 +749,32 @@ PY
     run_worker_gpu "${gpu_id}" &
   done
   wait
+  if [[ -f "${TIMEOUT_ABORT_FLAG}" ]]; then
+    echo "[worker] timeout abort flag present after worker wait; exiting job."
+    exit 4
+  fi
   echo "[timing] workers_end=$(date +\"%s\")"
   exit 0
 fi
 
 if command -v pbsdsh &> /dev/null; then
   for i in $(seq 0 $((NODE_COUNT - 1))); do
-    pbsdsh -n "$i" -- bash -lc "WORKER=1 TASK_ID=${i} NODE_COUNT=${NODE_COUNT} GPU_COUNT=${GPU_COUNT} ABS_TOL=${ABS_TOL} REL_TOL=${REL_TOL} CUDA_HOME=${CUDA_HOME} REPO_ROOT=${REPO_ROOT} BENCH=${BENCH} COMPARE_MODE=${COMPARE_MODE} RESULTS_SUBDIR=${RESULTS_SUBDIR} RESULTS_SUBDIR_BASE=${RESULTS_SUBDIR_BASE} WORKLIST=${WORKLIST} WORKLIST_QUEUE=${WORKLIST_QUEUE} MAX_PAIRS=${MAX_PAIRS} MISSING_ONLY=${MISSING_ONLY:-0} SKIP_EXISTING=${SKIP_EXISTING} INJECT_TARGET=${INJECT_TARGET} PHASE=${PHASE} PLUGIN=${PLUGIN} INJECT_TIMEOUT_SEC=${INJECT_TIMEOUT_SEC} SERIAL_DEBUG_MODE=${SERIAL_DEBUG_MODE} PBS_JOBTMP=${PBS_JOBTMP:-} TMPDIR=${TMPDIR:-} bash ${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs" &
+    pbsdsh -n "$i" -- bash -lc "WORKER=1 TASK_ID=${i} NODE_COUNT=${NODE_COUNT} GPU_COUNT=${GPU_COUNT} ABS_TOL=${ABS_TOL} REL_TOL=${REL_TOL} CUDA_HOME=${CUDA_HOME} REPO_ROOT=${REPO_ROOT} BENCH=${BENCH} COMPARE_MODE=${COMPARE_MODE} RESULTS_SUBDIR=${RESULTS_SUBDIR} RESULTS_SUBDIR_BASE=${RESULTS_SUBDIR_BASE} RESULTS_DIR_OVERRIDE=${RESULTS_DIR_OVERRIDE:-} WORKLIST=${WORKLIST} WORKLIST_QUEUE=${WORKLIST_QUEUE} MAX_PAIRS=${MAX_PAIRS} MISSING_ONLY=${MISSING_ONLY:-0} SKIP_EXISTING=${SKIP_EXISTING} INJECT_TARGET=${INJECT_TARGET} PHASE=${PHASE} PLUGIN=${PLUGIN} INJECT_TIMEOUT_SEC=${INJECT_TIMEOUT_SEC} TIMEOUT_STREAK_ABORT=${TIMEOUT_STREAK_ABORT:-0} SERIAL_DEBUG_MODE=${SERIAL_DEBUG_MODE} MONITOR_GPU=${MONITOR_GPU:-0} MONITOR_INTERVAL=${MONITOR_INTERVAL:-300} RANDOMACCESS_REPEAT=${RANDOMACCESS_REPEAT:-} PBS_JOBTMP=${PBS_JOBTMP:-} TMPDIR=${TMPDIR:-} bash ${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs" &
   done
   wait
+  if [[ -f "${TIMEOUT_ABORT_FLAG}" ]]; then
+    echo "[runner] timeout abort flag present after node fanout; exiting job."
+    exit 4
+  fi
 else
   echo "pbsdsh not available; running single-node worker."
-  WORKER=1 TASK_ID=0 NODE_COUNT=1 GPU_COUNT="${GPU_COUNT}" BENCH="${BENCH}" COMPARE_MODE="${COMPARE_MODE}" RESULTS_SUBDIR="${RESULTS_SUBDIR}" RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE}" WORKLIST="${WORKLIST}" WORKLIST_QUEUE="${WORKLIST_QUEUE}" MAX_PAIRS="${MAX_PAIRS}" MISSING_ONLY="${MISSING_ONLY:-0}" SKIP_EXISTING="${SKIP_EXISTING}" INJECT_TARGET="${INJECT_TARGET}" PHASE="${PHASE}" PLUGIN="${PLUGIN}" INJECT_TIMEOUT_SEC="${INJECT_TIMEOUT_SEC}" SERIAL_DEBUG_MODE="${SERIAL_DEBUG_MODE}" \
+  WORKER=1 TASK_ID=0 NODE_COUNT=1 GPU_COUNT="${GPU_COUNT}" BENCH="${BENCH}" COMPARE_MODE="${COMPARE_MODE}" RESULTS_SUBDIR="${RESULTS_SUBDIR}" RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE}" RESULTS_DIR_OVERRIDE="${RESULTS_DIR_OVERRIDE:-}" WORKLIST="${WORKLIST}" WORKLIST_QUEUE="${WORKLIST_QUEUE}" MAX_PAIRS="${MAX_PAIRS}" MISSING_ONLY="${MISSING_ONLY:-0}" SKIP_EXISTING="${SKIP_EXISTING}" INJECT_TARGET="${INJECT_TARGET}" PHASE="${PHASE}" PLUGIN="${PLUGIN}" INJECT_TIMEOUT_SEC="${INJECT_TIMEOUT_SEC}" TIMEOUT_STREAK_ABORT="${TIMEOUT_STREAK_ABORT:-0}" SERIAL_DEBUG_MODE="${SERIAL_DEBUG_MODE}" MONITOR_GPU="${MONITOR_GPU:-0}" MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}" RANDOMACCESS_REPEAT="${RANDOMACCESS_REPEAT:-}" \
     bash "${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs"
 fi
 
 if ls "${RESULTS_DIR}"/summary_node*_gpu*.csv >/dev/null 2>&1; then
-  BENCH="${BENCH}" python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/merge_bench_summaries.py"
+  BENCH="${BENCH}" PHASE="${PHASE_LABEL}" RESULTS_SUBDIR="${RESULTS_SUBDIR}" RESULTS_DIR="${RESULTS_DIR}" \
+    python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/merge_bench_summaries.py"
 fi
 
 if [[ -f "${RESULTS_DIR}/baseline_mismatch.flag" ]]; then

@@ -64,6 +64,192 @@ log_timing() {
   echo "${SITE_ID},${BIT_INDEX},${label},${dur_ms}" >> "${TIMING_CSV}"
 }
 
+signal_name_from_exit() {
+  local status="$1"
+  if [[ ! "${status}" =~ ^[0-9]+$ ]]; then
+    return 1
+  fi
+  local sig=0
+  if (( status > 128 && status < 192 )); then
+    sig=$((status - 128))
+  else
+    return 1
+  fi
+  case "${sig}" in
+    4) echo "SIGILL" ;;
+    6) echo "SIGABRT" ;;
+    8) echo "SIGFPE" ;;
+    9) echo "SIGKILL" ;;
+    11) echo "SIGSEGV" ;;
+    13) echo "SIGPIPE" ;;
+    15) echo "SIGTERM" ;;
+    *) echo "SIG${sig}" ;;
+  esac
+}
+
+signal_name_from_failure_kind() {
+  local kind="$1"
+  case "${kind}" in
+    signal_segv|signal_segv_text|signal_segv_cuda_illegal_address) echo "SIGSEGV" ;;
+    signal_abrt|signal_abrt_text) echo "SIGABRT" ;;
+    signal_fpe|signal_fpe_text) echo "SIGFPE" ;;
+    signal_ill) echo "SIGILL" ;;
+    signal_kill) echo "SIGKILL" ;;
+    signal_term) echo "SIGTERM" ;;
+    *) return 1 ;;
+  esac
+}
+
+taxonomy_from_result() {
+  local result="$1"
+  local status="$2"
+  local failure_kind="$3"
+  local out_path="$4"
+  local err_path="$5"
+  local flagged=0
+  if [[ "${result}" == "DUE" || "${result}" == "FAILURE" || -n "${failure_kind}" || "${status}" != "0" ]]; then
+    flagged=1
+  else
+    local out_text=""
+    local err_text=""
+    [[ -f "${out_path}" ]] && out_text="$(cat "${out_path}" 2>/dev/null || true)"
+    [[ -f "${err_path}" ]] && err_text="$(cat "${err_path}" 2>/dev/null || true)"
+    if [[ "${BENCH}" == "randomAccess" ]]; then
+      if [[ "${out_text}" =~ Found[[:space:]]+([0-9]+)[[:space:]]+errors?[[:space:]]+in[[:space:]]+[0-9]+[[:space:]]+locations[[:space:]]+\((PASS|FAIL)\)\. ]]; then
+        local err_count="${BASH_REMATCH[1]}"
+        local bench_state="${BASH_REMATCH[2]}"
+        if (( err_count > 0 )) || [[ "${bench_state}" == "FAIL" ]]; then
+          flagged=1
+        fi
+      fi
+    elif [[ "${BENCH}" =~ ^(colorwheel|dense-embedding|entropy|jacobi|layout|matrix-rotate)$ ]]; then
+      if grep -Eq '^FAIL$' <<< "${out_text}"; then
+        flagged=1
+      elif grep -Eq '^PASS$' <<< "${out_text}"; then
+        flagged=0
+      fi
+    fi
+  fi
+  case "${result}" in
+    MASKED)
+      if [[ ${flagged} -eq 1 ]]; then
+        echo "MASKED_FLAGGED"
+      else
+        echo "MASKED_UNFLAGGED"
+      fi
+      ;;
+    SDC)
+      if [[ ${flagged} -eq 1 ]]; then
+        echo "SDC_FLAGGED"
+      else
+        echo "SDC_NOTFLAGGED"
+      fi
+      ;;
+    DUE|FAILURE)
+      if [[ "${status}" == timeout_* || "${failure_kind}" == "hang_timeout" ]]; then
+        echo "FAILURE_HANG"
+      else
+        echo "FAILURE_NONHANG"
+      fi
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
+classify_failure_kind() {
+  local status="$1"
+  local result="$2"
+  local out_path="$3"
+  local err_path="$4"
+
+  if [[ "${status}" == timeout_* ]]; then
+    echo "hang_timeout"
+    return 0
+  fi
+  case "${status}" in
+    missing_dump_no_crash) echo "missing_dump" ; return 0 ;;
+    missing_out) echo "missing_out_stub" ; return 0 ;;
+    nul_output) echo "nul_output" ; return 0 ;;
+  esac
+
+  local signal_name=""
+  if signal_name="$(signal_name_from_exit "${status}")"; then
+    case "${signal_name}" in
+      SIGSEGV) echo "signal_segv" ;;
+      SIGABRT) echo "signal_abrt" ;;
+      SIGFPE) echo "signal_fpe" ;;
+      SIGILL) echo "signal_ill" ;;
+      SIGKILL) echo "signal_kill" ;;
+      SIGTERM) echo "signal_term" ;;
+      *) echo "signal_exit" ;;
+    esac
+    return 0
+  fi
+
+  if [[ -f "${out_path}" || -f "${err_path}" ]]; then
+    if grep -Eqi "an illegal memory access was encountered|illegal memory access" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "signal_segv_cuda_illegal_address"
+      return 0
+    fi
+    if grep -Eqi "misaligned address" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "gpu_misaligned_address"
+      return 0
+    fi
+    if grep -Eqi "unspecified launch failure" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "gpu_unspecified_launch_failure"
+      return 0
+    fi
+    if grep -Eqi "launch failed|launch failure" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "gpu_launch_failure"
+      return 0
+    fi
+    if grep -Eqi "device-side assert|device side assert" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "gpu_device_assert"
+      return 0
+    fi
+    if grep -Eqi "out of memory" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "gpu_out_of_memory"
+      return 0
+    fi
+    if grep -Eqi "invalid device function" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "gpu_invalid_device_function"
+      return 0
+    fi
+    if grep -Eqi "warp illegal instruction|trap" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "gpu_trap"
+      return 0
+    fi
+    if grep -Eqi "segmentation fault|sigsegv" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "signal_segv_text"
+      return 0
+    fi
+    if grep -Eqi "aborted|sigabrt" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "signal_abrt_text"
+      return 0
+    fi
+    if grep -Eqi "floating point exception|sigfpe" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "signal_fpe_text"
+      return 0
+    fi
+    if grep -Eqi "found [0-9]+ errors in [0-9]+ locations \\(FAIL\\)|\\bFAIL\\b" "${out_path}" "${err_path}" 2>/dev/null; then
+      echo "kernel_reported_fail"
+      return 0
+    fi
+  fi
+
+  if [[ "${status}" =~ ^[0-9]+$ && "${status}" != "0" ]]; then
+    echo "nonzero_exit_${status}"
+    return 0
+  fi
+  if [[ "${result}" == "FAILURE" ]]; then
+    echo "failure_unspecified"
+    return 0
+  fi
+  return 1
+}
+
 case "${BENCH}" in
   matrix-rotate)
     SRC_DIR="HeCBench/src/matrix-rotate-cuda"
@@ -392,6 +578,8 @@ metric_mean_ulp=""
 metric_ham_bits=""
 metric_ham_bytes=""
 metric_size_bytes=""
+failure_kind=""
+failure_signal=""
 if [[ "${BASELINE}" -eq 1 ]]; then
   if [[ ${status} -eq 0 ]]; then
     if [[ "${COMPARE_MODE}" == "text" ]]; then
@@ -531,7 +719,14 @@ else
       fi
     fi
   elif [[ "${COMPARE_MODE}" != "text" && ! -f "${RUN_DUMP_TMP}" ]]; then
-    echo "[compare] skipped: missing dump ${RUN_DUMP_TMP} status=${status}" >> "${RUN_OUT}"
+    if [[ "${status}" == "0" ]]; then
+      # Process exited cleanly but did not emit a dump: treat as incomplete data.
+      result="DUE"
+      status="missing_dump_no_crash"
+      echo "[compare] required dump missing (non-crash) ${RUN_DUMP_TMP}" >> "${RUN_OUT}"
+    else
+      echo "[compare] skipped: missing dump ${RUN_DUMP_TMP} status=${status}" >> "${RUN_OUT}"
+    fi
   fi
 fi
 
@@ -540,6 +735,28 @@ if [[ "${BASELINE}" -eq 0 ]]; then
   if grep -qi "CUDA-capable device(s) is/are busy or unavailable" "${RUN_OUT}" "${RUN_ERR}" 2>/dev/null; then
     echo "[gpu] busy/unavailable detected; flagging ${BUSY_FLAG}" >> "${RUN_OUT}"
     touch "${BUSY_FLAG}"
+  fi
+fi
+
+if [[ "${BASELINE}" -eq 0 ]]; then
+  failure_kind="$(classify_failure_kind "${status}" "${result}" "${RUN_OUT}" "${RUN_ERR}" || true)"
+  failure_signal="$(signal_name_from_exit "${status}" || true)"
+  if [[ -z "${failure_signal}" && -n "${failure_kind}" ]]; then
+    failure_signal="$(signal_name_from_failure_kind "${failure_kind}" || true)"
+  fi
+  if [[ -n "${failure_kind}" ]]; then
+    echo "failure_kind=${failure_kind}" >> "${RUN_OUT}"
+  fi
+  if [[ -n "${failure_signal}" ]]; then
+    echo "failure_signal=${failure_signal}" >> "${RUN_OUT}"
+  fi
+fi
+
+taxonomy=""
+if [[ "${BASELINE}" -eq 0 ]]; then
+  taxonomy="$(taxonomy_from_result "${result}" "${status}" "${failure_kind}" "${RUN_OUT}" "${RUN_ERR}")"
+  if [[ -n "${taxonomy}" ]]; then
+    echo "taxonomy=${taxonomy}" >> "${RUN_OUT}"
   fi
 fi
 
@@ -556,12 +773,12 @@ if [[ -f "${RUN_DUMP_TMP}" ]]; then
 fi
 
 if [[ ! -f "${CSV}" ]]; then
-  echo "site_id,bit_index,result,exit_code,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes" > "${CSV}"
+  echo "site_id,bit_index,result,taxonomy,exit_code,failure_kind,failure_signal,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes" > "${CSV}"
 fi
 if [[ "${BASELINE}" -eq 1 ]]; then
-  echo "0,0,${result},${status},${BASELINE_OUT},${BASELINE_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_max_rel},${metric_mean_rel},${metric_p95_abs},${metric_p99_abs},${metric_num_bad},${metric_frac_bad},${metric_max_ulp},${metric_mean_ulp},${metric_ham_bits},${metric_ham_bytes},${metric_size_bytes}" >> "${CSV}"
+  echo "0,0,${result},,${status},,,${BASELINE_OUT},${BASELINE_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_max_rel},${metric_mean_rel},${metric_p95_abs},${metric_p99_abs},${metric_num_bad},${metric_frac_bad},${metric_max_ulp},${metric_mean_ulp},${metric_ham_bits},${metric_ham_bytes},${metric_size_bytes}" >> "${CSV}"
 else
-  echo "${SITE_ID},${BIT_INDEX},${result},${status},${RUN_OUT},${RUN_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_max_rel},${metric_mean_rel},${metric_p95_abs},${metric_p99_abs},${metric_num_bad},${metric_frac_bad},${metric_max_ulp},${metric_mean_ulp},${metric_ham_bits},${metric_ham_bytes},${metric_size_bytes}" >> "${CSV}"
+  echo "${SITE_ID},${BIT_INDEX},${result},${taxonomy},${status},${failure_kind},${failure_signal},${RUN_OUT},${RUN_ERR},${dump_path},${metric_abs_max},${metric_mean_abs},${metric_rmse},${metric_max_rel},${metric_mean_rel},${metric_p95_abs},${metric_p99_abs},${metric_num_bad},${metric_frac_bad},${metric_max_ulp},${metric_mean_ulp},${metric_ham_bits},${metric_ham_bytes},${metric_size_bytes}" >> "${CSV}"
 fi
 
 if [[ "${BASELINE}" -eq 1 ]]; then

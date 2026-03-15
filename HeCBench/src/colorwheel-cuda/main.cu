@@ -152,21 +152,21 @@ int main(int argc, char **argv)
     if (max_error > 0)
       printf("Maximum error between host and device results: %d\n", max_error);
     printf("PASS\n");
-    if (dump_path) {
-      FILE *fp = fopen(dump_path, "wb");
-      if (!fp) {
-        perror("colorwheel dump");
+  }
+  if (dump_path) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("colorwheel dump");
+    } else {
+      int meta[2] = {size, size};
+      fwrite(meta, sizeof(int), 2, fp);
+      size_t written = fwrite(res, sizeof(uchar), imgSize, fp);
+      fclose(fp);
+      if (written != imgSize) {
+        fprintf(stderr, "colorwheel: incomplete dump (%zu of %zu bytes)\n",
+                written, imgSize);
       } else {
-        int meta[2] = {size, size};
-        fwrite(meta, sizeof(int), 2, fp);
-        size_t written = fwrite(res, sizeof(uchar), imgSize, fp);
-        fclose(fp);
-        if (written != imgSize) {
-          fprintf(stderr, "colorwheel: incomplete dump (%zu of %zu bytes)\n",
-                  written, imgSize);
-        } else {
-          printf("colorwheel snapshot written to %s\n", dump_path);
-        }
+        printf("colorwheel snapshot written to %s\n", dump_path);
       }
     }
   }
