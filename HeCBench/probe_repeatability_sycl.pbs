@@ -1,0 +1,179 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N probe_repeatability_sycl
+#PBS -q debug
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l filesystems=home
+#PBS -l walltime=01:00:00
+#PBS -o OUT_probe_repeatability_sycl.out
+#PBS -e ERROR_probe_repeatability_sycl.err
+
+set -euo pipefail
+
+REPO_ROOT="${REPO_ROOT:-/home/mdunlavy/GPU_FI}"
+cd "${REPO_ROOT}"
+
+if ! command -v module &>/dev/null && [[ -f /etc/profile.d/modules.sh ]]; then
+  # shellcheck disable=SC1091
+  source /etc/profile.d/modules.sh
+fi
+
+if command -v module &>/dev/null; then
+  module purge || true
+  module use /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core 2>/dev/null || true
+  module use /opt/aurora/25.190.0/modulefiles 2>/dev/null || true
+  module load oneapi/release/2025.2.0 2>/dev/null || \
+  module load oneapi/release/2025.0.5 2>/dev/null || \
+  module load oneapi/release/2024.2.1 2>/dev/null || \
+  module load oneapi/eng-compiler/2024.07.30.002 2>/dev/null || true
+fi
+
+BENCH="${BENCH:-matrix-rotate}"
+INJECT_TARGET="${INJECT_TARGET:-all}"
+INPUT_PROFILE="${INPUT_PROFILE:-small}"
+GPU_ID="${GPU_ID:-0}"
+PAIR_LIST="${PAIR_LIST:-6:0,6:1,6:2,6:3,6:4,6:5,6:6,6:7}"
+PROBE_TAG="${PBS_JOBID//[^A-Za-z0-9._-]/_}"
+RESULTS_ROOT="${REPO_ROOT}/HeCBench/results/llvm17_probe/${BENCH}-sycl/repeatability_${PROBE_TAG}"
+CACHE_DIR="${REPO_ROOT}/HeCBench/build/repeatability-${BENCH}-sycl-${PROBE_TAG}/cache"
+
+mkdir -p "${RESULTS_ROOT}" "${CACHE_DIR}"
+
+export SYCL_DEVICE_FILTER="level_zero:gpu"
+export ONEAPI_DEVICE_SELECTOR="level_zero:gpu"
+export ZE_AFFINITY_MASK="${GPU_ID}"
+export HECBENCH_GPU_DEBUG=1
+export SKIP_EXISTING=0
+export INPUT_PROFILE
+export BENCH
+
+echo "[repeatability] start $(date -u +%F_%T)" | tee "${RESULTS_ROOT}/probe.log"
+echo "[repeatability] bench=${BENCH} target=${INJECT_TARGET} gpu=${GPU_ID}" | tee -a "${RESULTS_ROOT}/probe.log"
+echo "[repeatability] pair_list=${PAIR_LIST}" | tee -a "${RESULTS_ROOT}/probe.log"
+echo "[repeatability] cache_dir=${CACHE_DIR}" | tee -a "${RESULTS_ROOT}/probe.log"
+
+run_pass() {
+  local pass_name="$1"
+  local pass_dir="${RESULTS_ROOT}/${pass_name}"
+  mkdir -p "${pass_dir}"
+
+  IFS=',' read -r -a pairs <<< "${PAIR_LIST}"
+  for pair in "${pairs[@]}"; do
+    site_id="${pair%%:*}"
+    bit_index="${pair##*:}"
+    run_out="${pass_dir}/site${site_id}_bit${bit_index}.out"
+    run_err="${pass_dir}/site${site_id}_bit${bit_index}.err"
+    out_dir="${pass_dir}/build_site${site_id}_bit${bit_index}"
+
+    echo "[repeatability] ${pass_name} site=${site_id} bit=${bit_index}" | tee -a "${RESULTS_ROOT}/probe.log"
+
+    CACHE_DIR="${CACHE_DIR}" \
+    OUT_DIR="${out_dir}" \
+    RESULTS_DIR="${pass_dir}" \
+    RUN_OUT="${run_out}" \
+    RUN_ERR="${run_err}" \
+    BENCH="${BENCH}" \
+    SITE_ID="${site_id}" \
+    BIT_INDEX="${bit_index}" \
+    INJECT_TARGET="${INJECT_TARGET}" \
+    HECBENCH_GPU_DEBUG=1 \
+    bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection_sycl.sh" || true
+  done
+}
+
+run_pass pass1
+run_pass pass2
+
+export RESULTS_ROOT PAIR_LIST
+python3 - <<'PY'
+import csv
+import hashlib
+import os
+import sys
+
+results_root = os.environ["RESULTS_ROOT"]
+pairs = [p for p in os.environ["PAIR_LIST"].split(",") if p]
+
+def parse_result(path):
+    result = ""
+    exit_code = ""
+    if not os.path.exists(path):
+        return result, exit_code
+    with open(path, "r", encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            if line.startswith("Result:"):
+                payload = line[len("Result:"):].strip()
+                if "(exit " in payload and payload.endswith(")"):
+                    result = payload.split("(exit ", 1)[0].strip()
+                    exit_code = payload.rsplit("(exit ", 1)[1][:-1]
+                else:
+                    result = payload
+                break
+    return result, exit_code
+
+def sha256_file(path):
+    if not os.path.exists(path):
+        return ""
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        while True:
+            chunk = fh.read(1024 * 1024)
+            if not chunk:
+                break
+            h.update(chunk)
+    return h.hexdigest()
+
+rows = []
+mismatch = False
+for pair in pairs:
+    site_id, bit_index = pair.split(":", 1)
+    base = f"site{site_id}_bit{bit_index}"
+    p1_out = os.path.join(results_root, "pass1", f"{base}.out")
+    p2_out = os.path.join(results_root, "pass2", f"{base}.out")
+    p1_err = os.path.join(results_root, "pass1", f"{base}.err")
+    p2_err = os.path.join(results_root, "pass2", f"{base}.err")
+    p1_dump = os.path.join(results_root, "pass1", f"{os.environ.get('BENCH','matrix-rotate')}_site{site_id}_bit{bit_index}.bin")
+    p2_dump = os.path.join(results_root, "pass2", f"{os.environ.get('BENCH','matrix-rotate')}_site{site_id}_bit{bit_index}.bin")
+
+    p1_result, p1_exit = parse_result(p1_out)
+    p2_result, p2_exit = parse_result(p2_out)
+    p1_dump_sha = sha256_file(p1_dump)
+    p2_dump_sha = sha256_file(p2_dump)
+    same = (
+        p1_result == p2_result and
+        p1_exit == p2_exit and
+        p1_dump_sha == p2_dump_sha
+    )
+    mismatch = mismatch or not same
+    rows.append({
+        "site_id": site_id,
+        "bit_index": bit_index,
+        "pass1_result": p1_result,
+        "pass1_exit": p1_exit,
+        "pass1_dump_sha256": p1_dump_sha,
+        "pass2_result": p2_result,
+        "pass2_exit": p2_exit,
+        "pass2_dump_sha256": p2_dump_sha,
+        "match": "1" if same else "0",
+        "pass1_out": p1_out,
+        "pass2_out": p2_out,
+        "pass1_err": p1_err,
+        "pass2_err": p2_err,
+    })
+
+summary_path = os.path.join(results_root, "repeatability_summary.csv")
+with open(summary_path, "w", newline="", encoding="utf-8") as fh:
+    writer = csv.DictWriter(fh, fieldnames=list(rows[0].keys()) if rows else [
+        "site_id", "bit_index", "pass1_result", "pass1_exit", "pass1_dump_sha256",
+        "pass2_result", "pass2_exit", "pass2_dump_sha256", "match",
+        "pass1_out", "pass2_out", "pass1_err", "pass2_err"
+    ])
+    writer.writeheader()
+    writer.writerows(rows)
+
+print(f"[repeatability] summary={summary_path}")
+print(f"[repeatability] matches={sum(1 for row in rows if row['match'] == '1')}/{len(rows)}")
+sys.exit(1 if mismatch else 0)
+PY
+
+echo "[repeatability] end $(date -u +%F_%T)" | tee -a "${RESULTS_ROOT}/probe.log"

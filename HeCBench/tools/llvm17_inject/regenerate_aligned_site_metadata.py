@@ -33,8 +33,6 @@ def run_cmd(cmd, env=None):
 
 
 def builder_for(bench):
-    if bench == "jacobi":
-        return "HeCBench/tools/llvm17_inject/build_jacobi_worklist.py", []
     if bench == "matrix-rotate":
         return "HeCBench/tools/llvm17_inject/build_matrix_rotate_worklist.py", []
     return "HeCBench/tools/llvm17_inject/build_bench_worklist.py", ["--bench", bench]

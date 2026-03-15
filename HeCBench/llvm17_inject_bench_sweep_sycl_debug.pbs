@@ -1,0 +1,242 @@
+#!/bin/bash
+#PBS -A UIC-HPC
+#PBS -N llvm17_inject_sycl_dbg
+#PBS -q debug
+#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb
+#PBS -l filesystems=home
+#PBS -l walltime=01:00:00
+#PBS -o OUT_llvm17_inject_sycl_debug.out
+#PBS -e ERROR_llvm17_inject_sycl_debug.err
+set -euo pipefail
+ulimit -c 0
+if command -v module &>/dev/null; then
+  module purge
+  module use /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core 2>/dev/null || true
+  module use /opt/aurora/25.190.0/modulefiles 2>/dev/null || true
+  module load cmake/3.31.8 2>/dev/null || module load cmake 2>/dev/null || true
+  module load ninja/1.12.1 2>/dev/null || module load ninja 2>/dev/null || true
+  module load oneapi/release/2025.2.0 2>/dev/null || \
+  module load oneapi/release/2025.0.5 2>/dev/null || \
+  module load oneapi/release/2024.2.1 2>/dev/null || \
+  module load oneapi/eng-compiler/2024.07.30.002 2>/dev/null || true
+fi
+REPO_ROOT="${REPO_ROOT:-/home/mdunlavy/GPU_FI}"
+cd "${REPO_ROOT}"
+BENCH="${BENCH:-}"
+if [[ -z "${BENCH}" ]]; then
+  echo "BENCH is required"
+  exit 1
+fi
+INJECT_TARGET="${INJECT_TARGET:-all}"
+RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}-sycl}"
+EXCLUDE_GIT_REF="${EXCLUDE_GIT_REF:-origin/intel_aurora}"
+mkdir -p "${RESULTS_DIR}"
+JOB_TAG="${PBS_JOBID_SHORT:-${PBS_JOBID:-manual}}"
+JOB_DIAG_DIR="${JOB_DIAG_DIR:-${RESULTS_DIR}/jobdiag_${JOB_TAG}}"
+mkdir -p "${JOB_DIAG_DIR}"
+if [[ "${DIAG_REDIRECTED:-0}" -ne 1 ]]; then
+  if [[ "${WORKER:-0}" -eq 1 ]]; then
+    exec >>"${JOB_DIAG_DIR}/task${TASK_ID:-0}.out" 2>>"${JOB_DIAG_DIR}/task${TASK_ID:-0}.err"
+  else
+    exec >>"${JOB_DIAG_DIR}/controller.out" 2>>"${JOB_DIAG_DIR}/controller.err"
+  fi
+  export DIAG_REDIRECTED=1
+fi
+default_worklist="${RESULTS_DIR}/worklist.csv"
+missing_worklist="${RESULTS_DIR}/worklist_missing.csv"
+summary_csv="${RESULTS_DIR}/summary.csv"
+WORKLIST="${WORKLIST:-${default_worklist}}"
+WORKLIST_TO_RUN="${WORKLIST_TO_RUN:-}"
+build_args=()
+if [[ -n "${EXCLUDE_GIT_REF:-}" ]]; then
+  IFS=',' read -r -a refs <<< "${EXCLUDE_GIT_REF}"
+  for ref in "${refs[@]}"; do
+    [[ -n "${ref}" ]] && build_args+=(--exclude-git-ref "${ref}")
+  done
+fi
+if [[ -n "${EXCLUDE_SUMMARY_CSVS:-}" ]]; then
+  IFS=',' read -r -a summaries <<< "${EXCLUDE_SUMMARY_CSVS}"
+  for summary in "${summaries[@]}"; do
+    [[ -n "${summary}" ]] && build_args+=(--exclude-summary "${summary}")
+  done
+fi
+if [[ "${WORKER:-0}" -ne 1 ]]; then
+  bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
+  if [[ ! -s "${WORKLIST}" || "${REBUILD_WORKLIST:-0}" -eq 1 ]]; then
+    python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist_sycl.py" \
+      --bench "${BENCH}" \
+      --target "${INJECT_TARGET}" \
+      --worklist "${WORKLIST}" \
+      "${build_args[@]}"
+  fi
+  export WORKLIST SUMMARY_CSV="${summary_csv}" MISSING_WORKLIST="${missing_worklist}" RESULTS_DIR
+  python3 - <<'PY'
+import csv
+import os
+import re
+from pathlib import Path
+
+worklist = os.environ["WORKLIST"]
+summary_csv = os.environ["SUMMARY_CSV"]
+missing_worklist = os.environ["MISSING_WORKLIST"]
+results_dir = Path(os.environ["RESULTS_DIR"])
+completed = set()
+file_pat = re.compile(r"site(\d+)_bit(\d+)\.(out|err)$")
+seen_files = {}
+for path in results_dir.glob("site*_bit*.*"):
+    match = file_pat.fullmatch(path.name)
+    if not match:
+        continue
+    key = (int(match.group(1)), int(match.group(2)))
+    seen_files.setdefault(key, set()).add(match.group(3))
+for key, kinds in seen_files.items():
+    if "out" in kinds and "err" in kinds:
+        completed.add(key)
+if os.path.exists(summary_csv):
+    with open(summary_csv, newline="", encoding="utf-8", errors="replace") as fh:
+        reader = csv.DictReader(fh)
+        for row in reader:
+            try:
+                completed.add((int(row["site_id"]), int(row["bit_index"])))
+            except Exception:
+                continue
+with open(worklist, newline="", encoding="utf-8", errors="replace") as src:
+    reader = csv.DictReader(src)
+    fieldnames = reader.fieldnames or ["index", "site_id", "bit_index", "bitwidth", "type_kind", "opcode", "site_class", "operand_index"]
+    rows = []
+    for row in reader:
+        try:
+            key = (int(row["site_id"]), int(row["bit_index"]))
+        except Exception:
+            continue
+        if key not in completed:
+            rows.append(row)
+with open(missing_worklist, "w", newline="", encoding="utf-8") as out:
+    writer = csv.DictWriter(out, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(rows)
+PY
+  WORKLIST_TO_RUN="${WORKLIST}"
+  if [[ "${MISSING_ONLY:-1}" -eq 1 ]]; then
+    WORKLIST_TO_RUN="${missing_worklist}"
+  fi
+  if [[ "${RUN_BASELINE:-1}" -eq 1 ]]; then
+    read -r baseline_site baseline_bit < <(awk -F',' 'NR==2 {print $2, $3}' "${WORKLIST}")
+    if [[ -n "${baseline_site}" && -n "${baseline_bit}" ]]; then
+      echo "[baseline] bench=${BENCH} site=${baseline_site} bit=${baseline_bit}"
+      BENCH="${BENCH}" \
+      SITE_ID="${baseline_site}" \
+      BIT_INDEX="${baseline_bit}" \
+      BASELINE=1 \
+      INJECT_TARGET="${INJECT_TARGET}" \
+      RESULTS_DIR="${RESULTS_DIR}" \
+      INPUT_PROFILE="${INPUT_PROFILE:-small}" \
+      PERF_MODE=1 \
+      HECBENCH_TIMING_DEBUG="${HECBENCH_TIMING_DEBUG:-0}" \
+      bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection_sycl.sh"
+    fi
+  fi
+  if [[ "${BASELINE_ONLY:-0}" -eq 1 ]]; then
+    exit 0
+  fi
+fi
+GPU_IDS_STR="${GPU_IDS:-}"
+GPU_COUNT="${GPU_COUNT:-}"
+GPU_IDS=()
+if [[ -n "${GPU_IDS_STR}" ]]; then
+  read -r -a GPU_IDS <<< "${GPU_IDS_STR}"
+elif [[ -n "${GPU_COUNT}" && "${GPU_COUNT}" -gt 0 ]]; then
+  for ((i = 0; i < GPU_COUNT; ++i)); do
+    GPU_IDS+=("${i}")
+  done
+else
+  GPU_IDS=(0)
+fi
+GPU_COUNT="${GPU_COUNT:-${#GPU_IDS[@]}}"
+GPU_IDS_STR="${GPU_IDS[*]}"
+if [[ -n "${PBS_NODEFILE:-}" && -f "${PBS_NODEFILE}" ]]; then
+  NODE_COUNT=$(uniq "${PBS_NODEFILE}" | wc -l)
+else
+  NODE_COUNT="${NODE_COUNT:-1}"
+fi
+SITE_OFFSET="${SITE_OFFSET:-0}"
+MAX_INJECTIONS="${MAX_INJECTIONS:--1}"
+WORKER_INJECTION_TIMEOUT_SEC="${WORKER_INJECTION_TIMEOUT_SEC:-600}"
+WORKER_TIMEOUT_KILL_SEC="${WORKER_TIMEOUT_KILL_SEC:-30}"
+export TIMEOUT_RUN="${TIMEOUT_RUN:-180}"
+export TIMEOUT_COMPILE="${TIMEOUT_COMPILE:-300}"
+export TIMEOUT_UNBUNDLE="${TIMEOUT_UNBUNDLE:-120}"
+export TIMEOUT_OPT="${TIMEOUT_OPT:-300}"
+export TIMEOUT_REASSEMBLE="${TIMEOUT_REASSEMBLE:-120}"
+export TIMEOUT_POSTLINK="${TIMEOUT_POSTLINK:-180}"
+export TIMEOUT_SPIRV="${TIMEOUT_SPIRV:-120}"
+export TIMEOUT_WRAP="${TIMEOUT_WRAP:-120}"
+export TIMEOUT_LINK="${TIMEOUT_LINK:-180}"
+export CACHE_LOCK_MAX_WAIT_SEC="${CACHE_LOCK_MAX_WAIT_SEC:-900}"
+if [[ "${WORKER:-0}" -eq 1 ]]; then
+  TASK_ID="${TASK_ID:-0}"
+  TOTAL_WORKERS=$((NODE_COUNT * GPU_COUNT))
+  mapfile -t PAIRS < <(awk -F',' 'NR>1 {print $2 " " $3}' "${WORKLIST_TO_RUN}")
+  if [[ "${SITE_OFFSET}" -gt 0 ]]; then
+    PAIRS=("${PAIRS[@]:${SITE_OFFSET}}")
+  fi
+  if [[ "${MAX_INJECTIONS}" -ge 0 ]]; then
+    PAIRS=("${PAIRS[@]:0:${MAX_INJECTIONS}}")
+  fi
+  if [[ "${#PAIRS[@]}" -eq 0 ]]; then
+    echo "[inject] no pending pairs for ${BENCH}"
+    exit 0
+  fi
+  run_worker_gpu() {
+    local gpu_id="$1"
+    local local_rank="$2"
+    local worker_rank=$((TASK_ID * GPU_COUNT + local_rank))
+    local idx=0
+    if (( local_rank > 0 )); then
+      sleep "${local_rank}"
+    fi
+    for pair in "${PAIRS[@]}"; do
+      if (( idx % TOTAL_WORKERS != worker_rank )); then
+        idx=$((idx + 1))
+        continue
+      fi
+      read -r site_id bit_index <<< "${pair}"
+      if [[ -z "${site_id}" || -z "${bit_index}" ]]; then
+        idx=$((idx + 1))
+        continue
+      fi
+      echo "[inject] task=${TASK_ID} gpu=${gpu_id} rank=${worker_rank} site=${site_id} bit=${bit_index}"
+      ZE_AFFINITY_MASK="${gpu_id}" \
+      BENCH="${BENCH}" \
+      SITE_ID="${site_id}" \
+      BIT_INDEX="${bit_index}" \
+      BASELINE=0 \
+      INJECT_TARGET="${INJECT_TARGET}" \
+      RESULTS_DIR="${RESULTS_DIR}" \
+      INPUT_PROFILE="${INPUT_PROFILE:-small}" \
+      SKIP_EXISTING="${SKIP_EXISTING:-1}" \
+      PERF_MODE=1 \
+      HECBENCH_TIMING_DEBUG="${HECBENCH_TIMING_DEBUG:-0}" \
+      timeout -k "${WORKER_TIMEOUT_KILL_SEC}" "${WORKER_INJECTION_TIMEOUT_SEC}" \
+      bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection_sycl.sh" || true
+      idx=$((idx + 1))
+    done
+  }
+  for idx in "${!GPU_IDS[@]}"; do
+    run_worker_gpu "${GPU_IDS[idx]}" "${idx}" &
+  done
+  wait
+  exit 0
+fi
+if (( NODE_COUNT > 1 )) && command -v pbsdsh &>/dev/null; then
+  for i in $(seq 0 $((NODE_COUNT - 1))); do
+    pbsdsh -n "${i}" -- bash -lc \
+      "WORKER=1 TASK_ID=${i} NODE_COUNT=${NODE_COUNT} GPU_COUNT=${GPU_COUNT} REPO_ROOT=${REPO_ROOT} BENCH=${BENCH} INJECT_TARGET=${INJECT_TARGET} RESULTS_DIR=${RESULTS_DIR} WORKLIST_TO_RUN=${WORKLIST_TO_RUN} INPUT_PROFILE=${INPUT_PROFILE:-small} SKIP_EXISTING=${SKIP_EXISTING:-1} SITE_OFFSET=${SITE_OFFSET} MAX_INJECTIONS=${MAX_INJECTIONS} WORKER_INJECTION_TIMEOUT_SEC=${WORKER_INJECTION_TIMEOUT_SEC} WORKER_TIMEOUT_KILL_SEC=${WORKER_TIMEOUT_KILL_SEC} JOB_DIAG_DIR=${JOB_DIAG_DIR} GPU_IDS='${GPU_IDS_STR}' HECBENCH_TIMING_DEBUG=${HECBENCH_TIMING_DEBUG:-0} bash ${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep_sycl_debug.pbs" &
+  done
+  wait
+  exit 0
+fi
+WORKER=1 TASK_ID=0 NODE_COUNT=1 GPU_COUNT="${GPU_COUNT}" WORKLIST_TO_RUN="${WORKLIST_TO_RUN}" \
+  SITE_OFFSET="${SITE_OFFSET}" MAX_INJECTIONS="${MAX_INJECTIONS}" JOB_DIAG_DIR="${JOB_DIAG_DIR}" \
+  WORKER_INJECTION_TIMEOUT_SEC="${WORKER_INJECTION_TIMEOUT_SEC}" WORKER_TIMEOUT_KILL_SEC="${WORKER_TIMEOUT_KILL_SEC}" GPU_IDS="${GPU_IDS_STR}" \
+  bash "${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep_sycl_debug.pbs"

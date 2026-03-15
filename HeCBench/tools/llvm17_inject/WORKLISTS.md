@@ -25,9 +25,9 @@ python3 HeCBench/tools/llvm17_inject/build_matrix_rotate_worklist.py --target po
 
 Jacobi:
 ```bash
-python3 HeCBench/tools/llvm17_inject/build_jacobi_worklist.py
-python3 HeCBench/tools/llvm17_inject/build_jacobi_worklist.py --target operand --sites-only
-python3 HeCBench/tools/llvm17_inject/build_jacobi_worklist.py --target pointer --sites-only
+python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench jacobi
+python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench jacobi --target operand --sites-only
+python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench jacobi --target pointer --sites-only
 ```
 
 All other benchmarks:

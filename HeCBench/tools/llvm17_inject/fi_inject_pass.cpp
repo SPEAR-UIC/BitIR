@@ -18,7 +18,7 @@ static cl::opt<int> FiSite("fi-site", cl::desc("Injection site ID (1-based)"), c
 static cl::opt<int> FiBit("fi-bit", cl::desc("Bit index to flip (0-based)"), cl::init(0));
 static cl::opt<bool> FiOnlyIntFloat("fi-int-float-only", cl::desc("Restrict to int/float types"), cl::init(true));
 static cl::opt<std::string> FiTarget("fi-target",
-                                       cl::desc("Injection target: result|operand|pointer"),
+                                       cl::desc("Injection target: result|operand|pointer|all"),
                                        cl::init("result"));
 static cl::opt<std::string> FiDumpSites("fi-dump-sites", cl::desc("Write injection site list CSV"), cl::init(""));
 static cl::opt<std::string> FiDumpSitesRich("fi-dump-sites-rich",
@@ -92,7 +92,10 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
   }
 
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &) {
-    if (M.getTargetTriple().find("nvptx") == std::string::npos) {
+    const std::string triple = M.getTargetTriple().str();
+    if (triple.find("nvptx") == std::string::npos &&
+        triple.find("amdgcn") == std::string::npos &&
+        triple.find("spir") == std::string::npos) {
       return PreservedAnalyses::all();
     }
 
@@ -138,9 +141,11 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
 
     int curId = 0;
     const DataLayout &DL = M.getDataLayout();
-    bool targetResult = FiTarget == "result";
-    bool targetOperand = FiTarget == "operand";
-    bool targetPointer = FiTarget == "pointer";
+    bool targetAll = FiTarget == "all";
+    bool targetResult = targetAll || FiTarget == "result";
+    bool targetOperandOnly = FiTarget == "operand";
+    bool targetPointerOnly = FiTarget == "pointer";
+    bool targetAnyOperand = targetAll || targetOperandOnly || targetPointerOnly;
     for (Function &F : M) {
       if (F.isDeclaration())
         continue;
@@ -159,8 +164,8 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
               continue;
             if (I.isTerminator())
               continue;
-          if (FiOnlyIntFloat && !(I.getType()->isIntegerTy() || I.getType()->isFloatingPointTy()))
-            continue;
+            if (FiOnlyIntFloat && !(I.getType()->isIntegerTy() || I.getType()->isFloatingPointTy()))
+              continue;
 
             curId++;
             std::string kind = typeKind(I.getType());
@@ -185,97 +190,96 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                        << "," << csvEscape(sourceFile) << "," << sourceLine << "," << sourceColumn << "," << ordinal
                        << "," << csvEscape(semanticKey) << "\n";
             }
-          if (curId != FiSite || FiSite < 1)
-            continue;
-
-            Instruction *insertPt = I.getNextNode();
-            if (!insertPt) {
-              insertPt = insertAfterPhi ? insertAfterPhi->getNextNode() : nullptr;
-            }
-            if (!insertPt) {
-              return PreservedAnalyses::none();
-            }
-
-            IRBuilder<> B(insertPt);
-            Value *orig = &I;
-            Value *flipVal = nullptr;
-            SmallVector<Instruction *, 4> newInsts;
-
-            if (I.getType()->isIntegerTy()) {
-              IntegerType *Ty = cast<IntegerType>(I.getType());
-              unsigned width = Ty->getBitWidth();
-            unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
-              if (bit >= width)
-                bit = width - 1;
-              APInt maskVal = APInt::getOneBitSet(width, bit);
-              Value *mask = ConstantInt::get(Ty, maskVal);
-              auto *xorInst = cast<Instruction>(B.CreateXor(orig, mask, "fi_flip"));
-              newInsts.push_back(xorInst);
-              flipVal = xorInst;
-            } else if (I.getType()->isFloatingPointTy()) {
-              Type *FTy = I.getType();
-              unsigned width = FTy->getPrimitiveSizeInBits();
-              if (width == 0)
-                return PreservedAnalyses::none();
-            unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
-              if (bit >= width)
-                bit = width - 1;
-              IntegerType *ITy = IntegerType::get(M.getContext(), width);
-              auto *asInt = cast<Instruction>(B.CreateBitCast(orig, ITy, "fi_f2i"));
-              APInt maskVal = APInt::getOneBitSet(width, bit);
-              Value *mask = ConstantInt::get(ITy, maskVal);
-              auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "fi_fx"));
-              auto *flipInst = cast<Instruction>(B.CreateBitCast(xored, FTy, "fi_i2f"));
-              newInsts.push_back(asInt);
-              newInsts.push_back(xored);
-              newInsts.push_back(flipInst);
-              flipVal = flipInst;
-          } else if (!FiOnlyIntFloat && I.getType()->isPointerTy()) {
-            Type *PTy = I.getType();
-            unsigned width = typeBitWidth(PTy, DL);
-            if (width == 0)
-              return PreservedAnalyses::none();
-            unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
-            if (bit >= width)
-              bit = width - 1;
-              IntegerType *ITy = IntegerType::get(M.getContext(), width);
-              auto *asInt = cast<Instruction>(B.CreatePtrToInt(orig, ITy, "fi_p2i"));
-              APInt maskVal = APInt::getOneBitSet(width, bit);
-              Value *mask = ConstantInt::get(ITy, maskVal);
-              auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "fi_px"));
-              auto *flipInst = cast<Instruction>(B.CreateIntToPtr(xored, PTy, "fi_i2p"));
-              newInsts.push_back(asInt);
-              newInsts.push_back(xored);
-              newInsts.push_back(flipInst);
-              flipVal = flipInst;
-            }
-
-            if (!flipVal)
-              return PreservedAnalyses::none();
-
-            SmallVector<Use *, 8> uses;
-            for (Use &U : I.uses())
-              uses.push_back(&U);
-            for (Use *U : uses) {
-              Instruction *userI = dyn_cast<Instruction>(U->getUser());
-              if (userI) {
-                bool skip = false;
-                for (Instruction *inst : newInsts) {
-                  if (userI == inst) {
-                    skip = true;
-                    break;
-                  }
-                }
-                if (skip)
-                  continue;
+            if (curId == FiSite && FiSite >= 1) {
+              Instruction *insertPt = I.getNextNode();
+              if (!insertPt) {
+                insertPt = insertAfterPhi ? insertAfterPhi->getNextNode() : nullptr;
               }
-              U->set(flipVal);
-            }
+              if (!insertPt) {
+                return PreservedAnalyses::none();
+              }
 
-            return PreservedAnalyses::none();
+              IRBuilder<> B(insertPt);
+              Value *orig = &I;
+              Value *flipVal = nullptr;
+              SmallVector<Instruction *, 4> newInsts;
+
+              if (I.getType()->isIntegerTy()) {
+                IntegerType *Ty = cast<IntegerType>(I.getType());
+                unsigned width = Ty->getBitWidth();
+                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                if (bit >= width)
+                  bit = width - 1;
+                APInt maskVal = APInt::getOneBitSet(width, bit);
+                Value *mask = ConstantInt::get(Ty, maskVal);
+                auto *xorInst = cast<Instruction>(B.CreateXor(orig, mask, "fi_flip"));
+                newInsts.push_back(xorInst);
+                flipVal = xorInst;
+              } else if (I.getType()->isFloatingPointTy()) {
+                Type *FTy = I.getType();
+                unsigned width = FTy->getPrimitiveSizeInBits();
+                if (width == 0)
+                  return PreservedAnalyses::none();
+                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                if (bit >= width)
+                  bit = width - 1;
+                IntegerType *ITy = IntegerType::get(M.getContext(), width);
+                auto *asInt = cast<Instruction>(B.CreateBitCast(orig, ITy, "fi_f2i"));
+                APInt maskVal = APInt::getOneBitSet(width, bit);
+                Value *mask = ConstantInt::get(ITy, maskVal);
+                auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "fi_fx"));
+                auto *flipInst = cast<Instruction>(B.CreateBitCast(xored, FTy, "fi_i2f"));
+                newInsts.push_back(asInt);
+                newInsts.push_back(xored);
+                newInsts.push_back(flipInst);
+                flipVal = flipInst;
+              } else if (!FiOnlyIntFloat && I.getType()->isPointerTy()) {
+                Type *PTy = I.getType();
+                unsigned width = typeBitWidth(PTy, DL);
+                if (width == 0)
+                  return PreservedAnalyses::none();
+                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                if (bit >= width)
+                  bit = width - 1;
+                IntegerType *ITy = IntegerType::get(M.getContext(), width);
+                auto *asInt = cast<Instruction>(B.CreatePtrToInt(orig, ITy, "fi_p2i"));
+                APInt maskVal = APInt::getOneBitSet(width, bit);
+                Value *mask = ConstantInt::get(ITy, maskVal);
+                auto *xored = cast<Instruction>(B.CreateXor(asInt, mask, "fi_px"));
+                auto *flipInst = cast<Instruction>(B.CreateIntToPtr(xored, PTy, "fi_i2p"));
+                newInsts.push_back(asInt);
+                newInsts.push_back(xored);
+                newInsts.push_back(flipInst);
+                flipVal = flipInst;
+              }
+
+              if (!flipVal)
+                return PreservedAnalyses::none();
+
+              SmallVector<Use *, 8> uses;
+              for (Use &U : I.uses())
+                uses.push_back(&U);
+              for (Use *U : uses) {
+                Instruction *userI = dyn_cast<Instruction>(U->getUser());
+                if (userI) {
+                  bool skip = false;
+                  for (Instruction *inst : newInsts) {
+                    if (userI == inst) {
+                      skip = true;
+                      break;
+                    }
+                  }
+                  if (skip)
+                    continue;
+                }
+                U->set(flipVal);
+              }
+
+              return PreservedAnalyses::none();
+            }
           }
 
-          if (targetOperand || targetPointer) {
+          if (targetAnyOperand) {
             if (isa<PHINode>(&I))
               continue;
             for (unsigned opIdx = 0; opIdx < I.getNumOperands(); ++opIdx) {
@@ -285,16 +289,21 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
               if (!FiIncludeConstants && isa<Constant>(Op))
                 continue;
               Type *Ty = Op->getType();
-              if (targetPointer && !Ty->isPointerTy())
+              bool isPointer = Ty->isPointerTy();
+              if (targetPointerOnly && !isPointer)
                 continue;
-              if (!targetPointer && FiOnlyIntFloat &&
+              if (!isPointer && FiOnlyIntFloat &&
                   !(Ty->isIntegerTy() || Ty->isFloatingPointTy()))
+                continue;
+              if (!isPointer && targetPointerOnly)
+                continue;
+              if (targetOperandOnly && isPointer)
                 continue;
 
               curId++;
               std::string kind = typeKind(Ty);
               unsigned width = typeBitWidth(Ty, DL);
-              std::string siteClass = targetPointer ? "pointer" : "operand";
+              std::string siteClass = isPointer ? "pointer" : "operand";
               std::string sourceFile = sourceFileFor(F, I);
               unsigned sourceLine = I.getDebugLoc() ? I.getDebugLoc().getLine() : 0;
               unsigned sourceColumn = I.getDebugLoc() ? I.getDebugLoc().getCol() : 0;

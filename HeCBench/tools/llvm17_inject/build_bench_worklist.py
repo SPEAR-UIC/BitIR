@@ -3,6 +3,8 @@ import argparse
 import os
 import subprocess
 
+from worklist_exclusions import load_excluded_pairs
+
 
 def run_cmd(cmd):
     proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -45,6 +47,8 @@ def main():
     parser.add_argument("--sites", default="")
     parser.add_argument("--sites-rich", default="")
     parser.add_argument("--metadata-only", action="store_true")
+    parser.add_argument("--exclude-summary", action="append", default=[])
+    parser.add_argument("--exclude-git-ref", action="append", default=[])
     args = parser.parse_args()
 
     repo_root = os.getcwd()
@@ -122,10 +126,18 @@ def main():
         print(f"Wrote rich site metadata to {sites_rich_path}")
         return 0
 
+    excluded_pairs, exclusion_sources = load_excluded_pairs(
+        repo_root,
+        args.bench,
+        args.target,
+        summary_paths=args.exclude_summary,
+        git_refs=args.exclude_git_ref,
+    )
     worklist_path = resolve_results_path(repo_root, results_dir, args.worklist, f"worklist{suffix}.csv")
     with open(worklist_path, "w", encoding="utf-8") as wl:
         wl.write("index,site_id,bit_index,bitwidth,type_kind,opcode\n")
         index = 0
+        skipped = 0
         with open(sites_path, "r", encoding="utf-8") as fh:
             next(fh, None)
             for line in fh:
@@ -148,10 +160,16 @@ def main():
                 if bitwidth <= 0:
                     continue
                 for bit in range(bitwidth):
+                    if (site_id, str(bit)) in excluded_pairs:
+                        skipped += 1
+                        continue
                     index += 1
                     wl.write(f"{index},{site_id},{bit},{bitwidth},{kind},{opcode}\n")
 
-    print(f"Wrote {index} injections to {worklist_path}")
+    message = f"Wrote {index} injections to {worklist_path}"
+    if exclusion_sources:
+        message += f" (excluded {skipped} site-bit pairs from {len(exclusion_sources)} summary source(s))"
+    print(message)
     return 0
 
 

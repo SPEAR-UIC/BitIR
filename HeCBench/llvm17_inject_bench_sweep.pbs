@@ -188,13 +188,31 @@ if [[ "${WORKER:-0}" -ne 1 ]]; then
       pointer) wl_target="pointer" ;;
       *) wl_target="result" ;;
     esac
+    WORKLIST_EXCLUDE_ARGS=()
+    if [[ -n "${EXCLUDE_GIT_REF:-}" ]]; then
+      IFS=',' read -r -a exclude_git_refs <<< "${EXCLUDE_GIT_REF}"
+      for ref in "${exclude_git_refs[@]}"; do
+        if [[ -n "${ref}" ]]; then
+          WORKLIST_EXCLUDE_ARGS+=(--exclude-git-ref "${ref}")
+        fi
+      done
+    fi
+    if [[ -n "${EXCLUDE_SUMMARY_CSVS:-}" ]]; then
+      IFS=',' read -r -a exclude_summaries <<< "${EXCLUDE_SUMMARY_CSVS}"
+      for summary_csv in "${exclude_summaries[@]}"; do
+        if [[ -n "${summary_csv}" ]]; then
+          WORKLIST_EXCLUDE_ARGS+=(--exclude-summary "${summary_csv}")
+        fi
+      done
+    fi
     rel_worklist="${PHASE_LABEL}/worklist.csv"
     rel_sites="${PHASE_LABEL}/sites.csv"
     python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist.py" \
       --bench "${BENCH}" \
       --target "${wl_target}" \
       --worklist "${rel_worklist}" \
-      --sites "${rel_sites}"
+      --sites "${rel_sites}" \
+      "${WORKLIST_EXCLUDE_ARGS[@]}"
   fi
 fi
 

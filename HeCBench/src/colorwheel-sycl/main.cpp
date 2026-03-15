@@ -78,13 +78,15 @@ void color (sycl::nd_item<2> &item, uchar* pix, int size, int half_size, float r
 
 int main(int argc, char **argv)
 {
-  if (argc != 4) {
-    printf("Usage: %s <range> <size> <repeat>\n", argv[0]);
+  if (argc < 4 || argc > 5) {
+    printf("Usage: %s <range> <size> <repeat> [dump file]\n", argv[0]);
     exit(1);
   }
   const float truerange = atof(argv[1]);
   const int size = atoi(argv[2]);
   const int repeat = atoi(argv[3]);
+  const char* dump_path = argc == 5 ? argv[4] : nullptr;
+  const bool force_dump = getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
 
   // make picture slightly bigger to show out-of-range coding
   float range = 1.04f * truerange;
@@ -153,6 +155,21 @@ int main(int argc, char **argv)
   }
   else {
     printf("%s\n", "PASS");
+  }
+
+  if (dump_path && (!fail || force_dump)) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("colorwheel dump");
+    } else {
+      size_t written = fwrite(res, sizeof(uchar), imgSize, fp);
+      fclose(fp);
+      if (written != imgSize) {
+        fprintf(stderr, "colorwheel: incomplete dump (%zu of %zu bytes)\n", written, imgSize);
+      } else {
+        printf("colorwheel snapshot written to %s\n", dump_path);
+      }
+    }
   }
   
   sycl::free(d_pix, q);

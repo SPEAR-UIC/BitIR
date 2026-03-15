@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
 #include <chrono>
 #include <sycl/sycl.hpp>
 
@@ -57,11 +59,13 @@ HPCC_starts(s64Int n)
 
 
 int main(int argc, char** argv) {
-  if (argc != 2) {
-    printf("Usage: %s <repeat>\n", argv[0]);
+  if (argc < 2 || argc > 3) {
+    printf("Usage: %s <repeat> [dump file]\n", argv[0]);
     return 1;
   }
   const int repeat = atoi(argv[1]);
+  const char* dump_path = argc == 3 ? argv[2] : nullptr;
+  const bool force_dump = getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
 
   int failure;
   u64Int i;
@@ -145,6 +149,15 @@ int main(int argc, char** argv) {
   printf("Average kernel execution time: %f (s)\n", (time * 1e-9f) / repeat);
 
   q.memcpy(Table, d_Table, TableSize * sizeof(u64Int)).wait();
+  u64Int *snapshot = nullptr;
+  if (dump_path) {
+    snapshot = (u64Int*) malloc (TableSize * sizeof(u64Int));
+    if (!snapshot) {
+      fprintf(stderr, "Failed to allocate randomAccess snapshot buffer\n");
+    } else {
+      memcpy(snapshot, Table, TableSize * sizeof(u64Int));
+    }
+  }
 
   /* validation */
   temp = 0x1;
@@ -164,6 +177,25 @@ int main(int argc, char** argv) {
   if (temp <= 0.01*TableSize) failure = 0;
   else failure = 1;
 
+  if (dump_path && snapshot && (failure == 0 || force_dump)) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("randomAccess dump");
+    } else {
+      uint64_t meta = TableSize;
+      fwrite(&meta, sizeof(uint64_t), 1, fp);
+      size_t written = fwrite(snapshot, sizeof(u64Int), TableSize, fp);
+      fclose(fp);
+      if (written != TableSize) {
+        fprintf(stderr, "randomAccess: incomplete dump (%zu of %llu)\n",
+                written, (unsigned long long)TableSize);
+      } else {
+        printf("randomAccess snapshot written to %s\n", dump_path);
+      }
+    }
+  }
+
+  free(snapshot);
   free( Table );
   sycl::free(d_Table, q);
   return failure;

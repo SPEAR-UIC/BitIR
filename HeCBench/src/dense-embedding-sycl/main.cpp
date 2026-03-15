@@ -95,13 +95,20 @@ void dense_esuhm3(
 
 int main(int argc, char* argv[])
 {
-  if (argc != 4) {
-    printf("Usage: %s <number of rows> <batch size> <repeat>\n", argv[0]);
+  if (argc < 4 || argc > 5) {
+    printf("Usage: %s <number of rows> <batch size> <repeat> [dump file]\n", argv[0]);
     return 1;
   }
   const int nrows = atoi(argv[1]);
   const int batch_size = atoi(argv[2]);
   const int repeat = atoi(argv[3]);
+  const char* dump_path = argc == 5 ? argv[4] : nullptr;
+  const bool force_dump = getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
+  FILE* dump = nullptr;
+  if (dump_path) {
+    dump = fopen(dump_path, "wb");
+    if (!dump) perror("dense-embedding dump");
+  }
   assert(nrows > batch_size * batch_size);
 
   printf("Number of rows in the embedding table: %d\n", nrows);
@@ -245,6 +252,14 @@ int main(int argc, char* argv[])
         }
       }
       printf("%s\n", ok ? "PASS" : "FAIL");
+
+      if (dump && (ok || force_dump)) {
+        int meta[4] = {ncols, batch_size, nrows, input_size};
+        fwrite(meta, sizeof(int), 4, dump);
+        fwrite(output_k1, sizeof(float), input_size, dump);
+        fwrite(output_k2, sizeof(float), input_size, dump);
+        fwrite(output_k3, sizeof(float), input_size, dump);
+      }
     }
 
     sycl::free(d_input, q);
@@ -259,6 +274,11 @@ int main(int argc, char* argv[])
     free(output_k3);
     free(output_ref);
     free(input_offset);
+  }
+
+  if (dump) {
+    fclose(dump);
+    printf("dense-embedding snapshot written to %s\n", dump_path);
   }
 
   return 0;

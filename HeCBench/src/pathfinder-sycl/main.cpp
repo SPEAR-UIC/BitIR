@@ -48,8 +48,13 @@ int main(int argc, char** argv)
   int** wall;
   int*  result;
   int   pyramid_height;
+  const char* dump_path = nullptr;
 
-  if (argc == 4)
+  if (argc == 5) {
+    dump_path = argv[4];
+  }
+
+  if (argc == 4 || argc == 5)
   {
     cols = atoi(argv[1]);
     rows = atoi(argv[2]);
@@ -57,7 +62,7 @@ int main(int argc, char** argv)
   }
   else
   {
-    printf("Usage: %s <column length> <row length> <pyramid_height>\n", argv[0]);
+    printf("Usage: %s <column length> <row length> <pyramid_height> [dump file]\n", argv[0]);
     exit(0);
   }
 
@@ -178,6 +183,22 @@ int main(int argc, char** argv)
     printf("%d ", result[i]);
   printf("\n");
 #endif
+
+  if (dump_path) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("pathfinder dump");
+    } else {
+      fwrite(&cols, sizeof(int), 1, fp);
+      size_t written = fwrite(result, sizeof(int), cols, fp);
+      fclose(fp);
+      if (written != static_cast<size_t>(cols)) {
+        fprintf(stderr, "pathfinder: incomplete dump (%zu of %d values)\n", written, cols);
+      } else {
+        printf("pathfinder snapshot written to %s\n", dump_path);
+      }
+    }
+  }
 
   // Memory cleanup here.
   delete[] data;

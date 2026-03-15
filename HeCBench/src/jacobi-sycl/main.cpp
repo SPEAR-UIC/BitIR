@@ -14,6 +14,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -135,7 +136,13 @@ void jacobi_step (float*__restrict__ f,
   }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+  if (argc > 2) {
+    std::cout << "Usage: " << argv[0] << " [dump file]\n";
+    return 1;
+  }
+  const char* dump_path = argc == 2 ? argv[1] : nullptr;
+  const bool force_dump = std::getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
   // Begin wall timing
   auto start_time = std::chrono::steady_clock::now();
 
@@ -218,12 +225,30 @@ int main() {
   // If we took fewer than max_iters steps and the error is below the tolerance,
   // we succeeded. Otherwise, we failed.
 
-  if (error <= tolerance && num_iters < max_iters) {
+  bool ok = (error <= tolerance && num_iters < max_iters);
+  if (ok) {
     std::cout << "PASS" << std::endl;
   }
   else {
     std::cout << "FAIL" << std::endl;
     return -1;
+  }
+
+  if (dump_path && (ok || force_dump)) {
+    q.memcpy(f, d_f_old, N * N * sizeof(float)).wait();
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      std::perror("jacobi dump");
+    } else {
+      size_t written = fwrite(f, sizeof(float), N * N, fp);
+      fclose(fp);
+      if (written != static_cast<size_t>(N * N)) {
+        std::cerr << "jacobi: incomplete dump (" << written << " of "
+                  << N * N << " values)\n";
+      } else {
+        std::cout << "Jacobi snapshot written to " << dump_path << std::endl;
+      }
+    }
   }
 
   // CLean up memory allocations

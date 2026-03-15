@@ -80,3 +80,25 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python3 plot_analysis
   --worklist HeCBench/results/llvm17_inject/matrix-rotate-sycl/worklist_sycl_aligned.csv \
   --out-dir plots/analysis/matrix-rotate --k 20 --fine-cluster
 ```
+
+## SYCL / Aurora debug flow
+
+Small-input goldens for the eight Intel SYCL benchmarks:
+
+```bash
+qsub HeCBench/target_golden_outputs_sycl.pbs
+```
+
+Baseline smoke against those goldens:
+
+```bash
+qsub HeCBench/run_all_baselines_sycl_debug.pbs
+```
+
+LLVM17 SYCL injection debug sweep for one benchmark:
+
+```bash
+qsub -v "BENCH=layout,INJECT_TARGET=result" HeCBench/llvm17_inject_bench_sweep_sycl_debug.pbs
+```
+
+The SYCL sweep excludes completed `(site_id, bit_index)` pairs found on `origin/intel_aurora` by default when it regenerates a worklist.

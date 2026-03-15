@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <chrono>
+#include <cstdio>
+#include <cstdint>
 #include <sycl/sycl.hpp>
 
 #define TREE_NUM 4096
@@ -64,12 +66,14 @@ void SoAKernel(const ApplesOnTrees *__restrict applesOnTrees,
 
 int main(int argc, char * argv[])
 {
-  if (argc != 2) {
-    printf("Usage: %s <repeat>\n", argv[0]);
+  if (argc < 2 || argc > 3) {
+    printf("Usage: %s <repeat> [dump file]\n", argv[0]);
     return 1;
   }
 
   const int iterations = atoi(argv[1]); // Number of iterations for kernel execution
+  const char* dump_path = argc == 3 ? argv[2] : nullptr;
+  const bool force_dump = getenv("HECBENCH_LLFI_FORCE_DUMP") != nullptr;
   const int treeSize = TREE_SIZE;
   const int treeNumber = TREE_NUM;
   bool fail = false;
@@ -159,6 +163,24 @@ int main(int argc, char * argv[])
     std::cout << "FAIL\n";
   else
     std::cout << "PASS\n";
+
+  if (dump_path && (!fail || force_dump)) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      std::perror("layout dump");
+    } else {
+      uint32_t count = treeNumber;
+      fwrite(&count, sizeof(uint32_t), 1, fp);
+      size_t written = fwrite(deviceResult, sizeof(int), treeNumber, fp);
+      fclose(fp);
+      if (written != static_cast<size_t>(treeNumber)) {
+        std::cerr << "layout: incomplete dump (" << written << " of "
+                  << treeNumber << " values)\n";
+      } else {
+        std::cout << "layout snapshot written to " << dump_path << std::endl;
+      }
+    }
+  }
 
   //initialize soa data
   for (int i = 0; i < treeNumber; i++)
