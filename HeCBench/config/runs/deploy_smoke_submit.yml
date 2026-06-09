@@ -1,0 +1,19 @@
+extends: ../bitir.yml
+
+machines:
+  nvidia:
+    jobs:
+      deploy:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=8:ngpus=1:mem=32gb
+        filesystems: home:eagle
+        walltime: 01:00:00
+        stdout: OUT_deploy_smoke.out
+        stderr: ERROR_deploy_smoke.err
+
+run:
+  machine: nvidia
+  task: deploy
+  campaign: smoke
+  execution_mode: submit

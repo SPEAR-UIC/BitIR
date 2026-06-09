@@ -4,10 +4,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUT_DIR="${OUT_DIR:-${SCRIPT_DIR}}"
 SRC_DIR="${SRC_DIR:-${SCRIPT_DIR}}"
-
-DEFAULT_ONEAPI_ROOT="/opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler"
-ALT_ONEAPI_ROOT="/opt/aurora/25.190.0/oneapi/compiler/2025.2/bin/compiler"
 LOCAL_LLVM_BIN="${SCRIPT_DIR}/llvm/build/bin"
+
+TOOL_SEARCH_ROOTS="${BITIR_MACHINE_TOOL_SEARCH_ROOTS:-${TOOL_SEARCH_ROOTS:-}}"
+LLVM_SEARCH_ROOT="${BITIR_MACHINE_LLVM_SEARCH_ROOT:-${LLVM_SEARCH_ROOT:-}}"
+read -r -a TOOL_SEARCH_ROOTS_ARR <<< "${TOOL_SEARCH_ROOTS}"
 
 find_tool() {
   local current="$1"
@@ -25,6 +26,13 @@ find_tool() {
   fi
 
   local candidate
+  for root in "${TOOL_SEARCH_ROOTS_ARR[@]}"; do
+    candidate="${root}/${name}"
+    if [[ -x "${candidate}" ]]; then
+      printf '%s\n' "${candidate}"
+      return 0
+    fi
+  done
   for candidate in "$@"; do
     if [[ -x "${candidate}" ]]; then
       printf '%s\n' "${candidate}"
@@ -35,9 +43,11 @@ find_tool() {
 }
 
 LLVM_CONFIG="$(find_tool "${LLVM_CONFIG:-}" llvm-config \
-  "${LOCAL_LLVM_BIN}/llvm-config" \
-  "${DEFAULT_ONEAPI_ROOT}/llvm-config" "${ALT_ONEAPI_ROOT}/llvm-config")" || {
-  LLVM_CONFIG_FALLBACK="$(find /opt/aurora/25.190.0/spack/unified -name llvm-config -print -quit 2>/dev/null || true)"
+  "${LOCAL_LLVM_BIN}/llvm-config")" || {
+  LLVM_CONFIG_FALLBACK=""
+  if [[ -n "${LLVM_SEARCH_ROOT}" && -d "${LLVM_SEARCH_ROOT}" ]]; then
+    LLVM_CONFIG_FALLBACK="$(find "${LLVM_SEARCH_ROOT}" -name llvm-config -print -quit 2>/dev/null || true)"
+  fi
   if [[ -n "${LLVM_CONFIG_FALLBACK}" && -x "${LLVM_CONFIG_FALLBACK}" ]]; then
     LLVM_CONFIG="${LLVM_CONFIG_FALLBACK}"
   else
@@ -50,8 +60,7 @@ LLVM_BINDIR="$("${LLVM_CONFIG}" --bindir)"
 LLVM_INCLUDEDIR="$("${LLVM_CONFIG}" --includedir)"
 CLANGXX="$(find_tool "${CLANGXX:-}" clang++ \
   "${LLVM_BINDIR}/clang++" \
-  "${LOCAL_LLVM_BIN}/clang++" \
-  "${DEFAULT_ONEAPI_ROOT}/clang++" "${ALT_ONEAPI_ROOT}/clang++")" || {
+  "${LOCAL_LLVM_BIN}/clang++")" || {
   echo "clang++ not found" >&2
   exit 1
 }

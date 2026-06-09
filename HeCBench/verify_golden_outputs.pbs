@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -A UIC-HPC
-#PBS -N polaris_golden_verify
+#PBS -N bitir_golden_verify
 #PBS -q debug
 #PBS -l select=1:ncpus=8:ngpus=1:mem=16gb
 #PBS -l filesystems=home:eagle
@@ -10,234 +10,154 @@
 
 set -euo pipefail
 
+JOB_WORKDIR="${PBS_O_WORKDIR:-${SLURM_SUBMIT_DIR:-$(pwd)}}"
+BITIR_MACHINE="${BITIR_MACHINE:?BITIR_MACHINE is required}"
+
 if command -v module &> /dev/null; then
-  module use /soft/modulefiles
   module purge
-  module load spack-pe-base cmake
-  for m in ${MODULE_LIST:-cuda/12.6}; do
-    module load "$m"
+  for p in ${BITIR_MACHINE_MODULE_USE:-}; do
+    module use "${p}" 2>/dev/null || true
+  done
+  for m in ${MODULE_LIST:-${BITIR_MACHINE_MODULES:-}}; do
+    module load "$m" 2>/dev/null || true
   done
 fi
 
-cd "$PBS_O_WORKDIR"
+cd "${JOB_WORKDIR}"
 
-REPO_DIR="$PBS_O_WORKDIR"
-BUILD_DIR="${BUILD_DIR:-$REPO_DIR/build}"
-GOLDEN_DIR="${GOLDEN_DIR:-$REPO_DIR/Polaris_Golden_Outputs}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-$REPO_DIR/Polaris_Verification_Outputs}"
-mkdir -p "$OUTPUT_ROOT"
+REPO_DIR="${JOB_WORKDIR}"
+BUILD_DIR="${BUILD_DIR:-$REPO_DIR/${BITIR_MACHINE_BUILD_DIR:?BITIR_MACHINE_BUILD_DIR is required}}"
+GOLDEN_DIR="${GOLDEN_DIR:-$REPO_DIR/${BITIR_MACHINE_GOLDEN_ROOT:?BITIR_MACHINE_GOLDEN_ROOT is required}}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-$REPO_DIR/${BITIR_MACHINE_MACHINE_LABEL:-Machine}_Verification_Outputs}"
+RUNTIME_HOME="${BITIR_MACHINE_RUNTIME_HOME:-}"
+RUNTIME_HOME_FALLBACKS="${BITIR_MACHINE_RUNTIME_HOME_FALLBACKS:-}"
+RUNTIME_BIN_DIRS="${BITIR_MACHINE_RUNTIME_BIN_DIRS:-bin}"
+RUNTIME_LIB_DIRS="${BITIR_MACHINE_RUNTIME_LIB_DIRS:-lib64 lib64/stubs}"
+COMPILER_DRIVER="${BITIR_MACHINE_COMPILER_DRIVER:?BITIR_MACHINE_COMPILER_DRIVER is required}"
+DEVICE_BIN_SUBDIR="${BITIR_MACHINE_BINARY_SUBDIR:?BITIR_MACHINE_BINARY_SUBDIR is required}"
+ABS_TOL="${ABS_TOL:?ABS_TOL is required}"
+REL_TOL="${REL_TOL:?REL_TOL is required}"
+mkdir -p "${OUTPUT_ROOT}"
 
 timestamp() {
   date +"%Y-%m-%d %H:%M:%S"
 }
 
-SUMMARY_FILE="$OUTPUT_ROOT/verify_summary.txt"
+SUMMARY_FILE="${OUTPUT_ROOT}/verify_summary.txt"
 {
-  echo "Polaris golden verification run"
-  echo "Repository   : $REPO_DIR"
-  echo "Build dir    : $BUILD_DIR"
-  echo "Golden dir   : $GOLDEN_DIR"
-  echo "Output dir   : $OUTPUT_ROOT"
+  echo "${BITIR_MACHINE_MACHINE_LABEL:-Machine} golden verification run"
+  echo "Repository   : ${REPO_DIR}"
+  echo "Build dir    : ${BUILD_DIR}"
+  echo "Golden dir   : ${GOLDEN_DIR}"
+  echo "Output dir   : ${OUTPUT_ROOT}"
   echo "Start time   : $(timestamp)"
-} > "$SUMMARY_FILE"
+} > "${SUMMARY_FILE}"
 
 append_summary() {
-  echo "[$(timestamp)] $1" >> "$SUMMARY_FILE"
+  echo "[$(timestamp)] $1" >> "${SUMMARY_FILE}"
 }
 
-# CUDA runtime discovery
-: "${DEFAULT_CUDA_HOME:=/opt/nvidia/hpc_sdk/Linux_x86_64/24.11/cuda/12.6}"
 if [[ -z "${CUDA_HOME:-}" ]]; then
-  if [[ -d "$DEFAULT_CUDA_HOME" ]]; then
-    CUDA_HOME="$DEFAULT_CUDA_HOME"
-  elif [[ -d "/opt/nvidia/hpc_sdk/Linux_x86_64/24.11/cuda/11.8" ]]; then
-    CUDA_HOME="/opt/nvidia/hpc_sdk/Linux_x86_64/24.11/cuda/11.8"
-  elif command -v nvcc &> /dev/null; then
-    CUDA_HOME="$(dirname "$(dirname "$(command -v nvcc)")")"
+  if [[ -n "${RUNTIME_HOME}" && -d "${RUNTIME_HOME}" ]]; then
+    CUDA_HOME="${RUNTIME_HOME}"
+  elif command -v "${COMPILER_DRIVER}" &> /dev/null; then
+    CUDA_HOME="$(dirname "$(dirname "$(command -v "${COMPILER_DRIVER}")")")"
   elif [[ -n "${CUDATOOLKIT_ROOT:-}" ]]; then
-    CUDA_HOME="$CUDATOOLKIT_ROOT"
+    CUDA_HOME="${CUDATOOLKIT_ROOT}"
   else
-    for candidate in \
-      /opt/nvidia/hpc_sdk/Linux_x86_64/latest/cuda \
-      /usr/local/cuda; do
-      if [[ -d "$candidate" ]]; then
-        CUDA_HOME="$candidate"
+    for candidate in ${RUNTIME_HOME_FALLBACKS}; do
+      if [[ -d "${candidate}" ]]; then
+        CUDA_HOME="${candidate}"
         break
       fi
     done
   fi
 fi
 if [[ -n "${CUDA_HOME:-}" ]]; then
-  echo "Using CUDA_HOME=$CUDA_HOME"
-  for candidate in "$CUDA_HOME/bin" "$CUDA_HOME/lib64" "$CUDA_HOME/lib" "$CUDA_HOME/lib64/stubs"; do
-    if [[ "$candidate" == *"/bin" ]]; then
-      if [[ -d "$candidate" ]]; then
-        PATH="$candidate:${PATH:-}"
-      fi
-    else
-      if [[ -d "$candidate" ]]; then
-        LD_LIBRARY_PATH="$candidate:${LD_LIBRARY_PATH:-}"
-      fi
-    fi
+  for rel in ${RUNTIME_BIN_DIRS}; do
+    candidate="${CUDA_HOME}/${rel}"
+    [[ -d "${candidate}" ]] && PATH="${candidate}:${PATH:-}"
   done
-  export PATH
-  export LD_LIBRARY_PATH
-  append_summary "CUDA runtime: $CUDA_HOME"
-else
-  echo "Warning: CUDA_HOME not set and CUDA installation could not be detected."
+  for rel in ${RUNTIME_LIB_DIRS}; do
+    candidate="${CUDA_HOME}/${rel}"
+    [[ -d "${candidate}" ]] && LD_LIBRARY_PATH="${candidate}:${LD_LIBRARY_PATH:-}"
+  done
+  export PATH LD_LIBRARY_PATH
+  append_summary "Runtime home: ${CUDA_HOME}"
 fi
 
 ensure_binary() {
-  local name=$1
-  local path=$2
-  if [[ ! -x "$path" ]]; then
-    echo "Missing binary for ${name}: $path"
+  local name="$1"
+  local path="$2"
+  if [[ ! -x "${path}" ]]; then
+    echo "Missing binary for ${name}: ${path}"
     exit 1
   fi
 }
 
 run_benchmark() {
-  local name=$1
-  local bin=$2
+  local name="$1"
+  local bin="$2"
   shift 2
-  local log="$OUTPUT_ROOT/${name}.log"
-  local err="$OUTPUT_ROOT/${name}.err"
-  rm -f "$log" "$err"
-  ensure_binary "$name" "$bin"
-  echo "[$(timestamp)] Running ${name}: $bin $*" | tee "$log"
+  local log="${OUTPUT_ROOT}/${name}.log"
+  local err="${OUTPUT_ROOT}/${name}.err"
+  rm -f "${log}" "${err}"
+  ensure_binary "${name}" "${bin}"
+  echo "[$(timestamp)] Running ${name}: ${bin} $*" | tee "${log}"
   set +e
-  "$bin" "$@" > >(tee -a "$log") 2> >(tee -a "$err" >&2)
+  "${bin}" "$@" > >(tee -a "${log}") 2> >(tee -a "${err}" >&2)
   local status=$?
   set -e
   if [[ $status -ne 0 ]]; then
-    echo "[$(timestamp)] ${name} FAILED (status $status). See $log / $err" | tee -a "$log"
     append_summary "${name}: FAILED during execution"
-    exit $status
+    exit "${status}"
   fi
-  if [[ ! -s "$err" ]]; then
-    rm -f "$err"
-  fi
-  echo "[$(timestamp)] ${name} completed successfully." | tee -a "$log"
-  append_summary "${name}: log=$(basename "$log")"
+  [[ ! -s "${err}" ]] && rm -f "${err}"
+  append_summary "${name}: log=$(basename "${log}")"
 }
 
-compare_dump() {
-  local name=$1
-  local golden=$2
-  local candidate=$3
-  if [[ ! -f "$golden" ]]; then
-    echo "Golden reference for ${name} missing: $golden"
-    exit 2
-  fi
-  if ! cmp -s "$golden" "$candidate"; then
-    echo "Mismatch detected for ${name}: $candidate vs $golden"
-    append_summary "${name}: MISMATCH"
+compare_exact() {
+  if ! cmp -s "$2" "$1"; then
+    echo "Mismatch detected for $3: $1 vs $2"
+    append_summary "$3: MISMATCH"
     exit 3
   fi
-  append_summary "${name}: matches golden output"
 }
 
-# Binaries
-MATRIX_BIN="${BUILD_DIR}/bin/cuda/matrix-rotate"
-JACOBI_BIN="${BUILD_DIR}/bin/cuda/jacobi"
-LAYOUT_BIN="${BUILD_DIR}/bin/cuda/layout"
-ATOMIC_BIN="${BUILD_DIR}/bin/cuda/atomicCost"
-DENSE_BIN="${BUILD_DIR}/bin/cuda/dense-embedding"
-PATHFINDER_BIN="${BUILD_DIR}/bin/cuda/pathfinder"
-BSEARCH_BIN="${BUILD_DIR}/bin/cuda/bsearch"
-ENTROPY_BIN="${BUILD_DIR}/bin/cuda/entropy"
-COLORWHEEL_BIN="${BUILD_DIR}/bin/cuda/colorwheel"
-RANDOMACCESS_BIN="${BUILD_DIR}/bin/cuda/randomAccess"
+compare_matrix() {
+  if ! python3 "${REPO_DIR}/HeCBench/tools/llvm17_inject/compare_matrix_dump.py" \
+      "$1" "$2" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}" >/dev/null; then
+    echo "Mismatch detected for $3: $2 vs $1"
+    append_summary "$3: MISMATCH"
+    exit 3
+  fi
+}
 
-# Parameter defaults
-MATRIX_SIZE="${MATRIX_SIZE:-8192}"
-MATRIX_REPEAT="${MATRIX_REPEAT:-10}"
-LAYOUT_REPEAT="${LAYOUT_REPEAT:-20}"
-ATOMIC_NELEMS="${ATOMIC_NELEMS:-16}"
-ATOMIC_REPEAT="${ATOMIC_REPEAT:-5}"
-DENSE_ROWS="${DENSE_ROWS:-5000}"
-DENSE_BATCH="${DENSE_BATCH:-64}"
-DENSE_REPEAT="${DENSE_REPEAT:-5}"
-PATHFINDER_COLS="${PATHFINDER_COLS:-1000}"
-PATHFINDER_ROWS="${PATHFINDER_ROWS:-1000}"
-PATHFINDER_PYRAMID="${PATHFINDER_PYRAMID:-100}"
-BSEARCH_ELEMENTS="${BSEARCH_ELEMENTS:-16777216}"
-BSEARCH_REPEAT="${BSEARCH_REPEAT:-10}"
-ENTROPY_WIDTH="${ENTROPY_WIDTH:-4096}"
-ENTROPY_HEIGHT="${ENTROPY_HEIGHT:-4096}"
-ENTROPY_REPEAT="${ENTROPY_REPEAT:-5}"
-COLORWHEEL_RANGE="${COLORWHEEL_RANGE:-1.0}"
-COLORWHEEL_SIZE="${COLORWHEEL_SIZE:-4096}"
-COLORWHEEL_REPEAT="${COLORWHEEL_REPEAT:-5}"
-RANDOMACCESS_REPEAT="${RANDOMACCESS_REPEAT:-3}"
-
-if (( DENSE_ROWS <= DENSE_BATCH * DENSE_BATCH )); then
-  echo "DENSE_ROWS must be greater than DENSE_BATCH^2 to satisfy kernel assumptions."
-  exit 1
+if [[ -n "${BENCH_ONLY_FILE:-}" && -f "${BENCH_ONLY_FILE}" ]]; then
+  mapfile -t BENCH_LIST < "${BENCH_ONLY_FILE}"
+elif [[ -n "${BENCH_ONLY:-}" ]]; then
+  BENCH_ONLY_NORM="${BENCH_ONLY//,/ }"
+  read -r -a BENCH_LIST <<< "${BENCH_ONLY_NORM}"
+else
+  read -r -a BENCH_LIST <<< "${BITIR_BENCHMARKS:-}"
 fi
 
-if (( (PATHFINDER_ROWS * PATHFINDER_COLS) % 250 != 0 )); then
-  echo "PATHFINDER_ROWS * PATHFINDER_COLS must be divisible by 250 (current product $((PATHFINDER_ROWS * PATHFINDER_COLS)))."
-  exit 1
-fi
-
-# Matrix rotate
-matrix_dump="${OUTPUT_ROOT}/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}.bin"
-rm -f "$matrix_dump"
-run_benchmark "matrix-rotate" "$MATRIX_BIN" \
-  "$MATRIX_SIZE" "$MATRIX_REPEAT" "$matrix_dump"
-compare_dump "matrix-rotate" \
-  "${GOLDEN_DIR}/matrix-rotate_${MATRIX_SIZE}_${MATRIX_REPEAT}.bin" \
-  "$matrix_dump"
-
-jacobi_dump="${OUTPUT_ROOT}/jacobi.bin"
-rm -f "$jacobi_dump"
-run_benchmark "jacobi" "$JACOBI_BIN" "$jacobi_dump"
-compare_dump "jacobi" "${GOLDEN_DIR}/jacobi.bin" "$jacobi_dump"
-
-layout_dump="${OUTPUT_ROOT}/layout.bin"
-rm -f "$layout_dump"
-run_benchmark "layout" "$LAYOUT_BIN" "$LAYOUT_REPEAT" "$layout_dump"
-compare_dump "layout" "${GOLDEN_DIR}/layout.bin" "$layout_dump"
-
-atomic_dump="${OUTPUT_ROOT}/atomicCost.bin"
-rm -f "$atomic_dump"
-run_benchmark "atomicCost" "$ATOMIC_BIN" "$ATOMIC_NELEMS" "$ATOMIC_REPEAT" "$atomic_dump"
-compare_dump "atomicCost" "${GOLDEN_DIR}/atomicCost.bin" "$atomic_dump"
-
-dense_dump="${OUTPUT_ROOT}/dense-embedding.bin"
-rm -f "$dense_dump"
-run_benchmark "dense-embedding" "$DENSE_BIN" \
-  "$DENSE_ROWS" "$DENSE_BATCH" "$DENSE_REPEAT" "$dense_dump"
-compare_dump "dense-embedding" "${GOLDEN_DIR}/dense-embedding.bin" "$dense_dump"
-
-pathfinder_dump="${OUTPUT_ROOT}/pathfinder.bin"
-rm -f "$pathfinder_dump"
-run_benchmark "pathfinder" "$PATHFINDER_BIN" \
-  "$PATHFINDER_COLS" "$PATHFINDER_ROWS" "$PATHFINDER_PYRAMID" "$pathfinder_dump"
-compare_dump "pathfinder" "${GOLDEN_DIR}/pathfinder.bin" "$pathfinder_dump"
-
-bsearch_dump="${OUTPUT_ROOT}/bsearch.bin"
-rm -f "$bsearch_dump"
-run_benchmark "bsearch" "$BSEARCH_BIN" "$BSEARCH_ELEMENTS" "$BSEARCH_REPEAT" "$bsearch_dump"
-compare_dump "bsearch" "${GOLDEN_DIR}/bsearch.bin" "$bsearch_dump"
-
-entropy_dump="${OUTPUT_ROOT}/entropy.bin"
-rm -f "$entropy_dump"
-run_benchmark "entropy" "$ENTROPY_BIN" \
-  "$ENTROPY_WIDTH" "$ENTROPY_HEIGHT" "$ENTROPY_REPEAT" "$entropy_dump"
-compare_dump "entropy" "${GOLDEN_DIR}/entropy.bin" "$entropy_dump"
-
-colorwheel_dump="${OUTPUT_ROOT}/colorwheel.bin"
-rm -f "$colorwheel_dump"
-run_benchmark "colorwheel" "$COLORWHEEL_BIN" \
-  "$COLORWHEEL_RANGE" "$COLORWHEEL_SIZE" "$COLORWHEEL_REPEAT" "$colorwheel_dump"
-compare_dump "colorwheel" "${GOLDEN_DIR}/colorwheel.bin" "$colorwheel_dump"
-
-random_dump="${OUTPUT_ROOT}/randomAccess.bin"
-rm -f "$random_dump"
-run_benchmark "randomAccess" "$RANDOMACCESS_BIN" "$RANDOMACCESS_REPEAT" "$random_dump"
-compare_dump "randomAccess" "${GOLDEN_DIR}/randomAccess.bin" "$random_dump"
+for bench in "${BENCH_LIST[@]}"; do
+  dump="${OUTPUT_ROOT}/${BITIR_GOLDEN_FILE:-${bench}.bin}"
+  bin="${BUILD_DIR}/bin/${DEVICE_BIN_SUBDIR}/${bench}"
+  bench_args=()
+  if [[ -n "${BITIR_RUN_ARGS:-}" ]]; then
+    read -r -a bench_args <<< "${BITIR_RUN_ARGS}"
+  fi
+  rm -f "${dump}"
+  run_benchmark "${bench}" "${bin}" "${bench_args[@]}" "${dump}"
+  if [[ "${BITIR_COMPARE_MODE:-exact}" == "float" ]]; then
+    compare_matrix "${GOLDEN_DIR}/${BITIR_GOLDEN_FILE:-${bench}.bin}" "${dump}" "${bench}"
+  else
+    compare_exact "${dump}" "${GOLDEN_DIR}/${BITIR_GOLDEN_FILE:-${bench}.bin}" "${bench}"
+  fi
+  append_summary "${bench}: matches golden output"
+done
 
 append_summary "All verification comparisons matched their golden references."
-echo "Verification outputs stored under $OUTPUT_ROOT"
+echo "Verification outputs stored under ${OUTPUT_ROOT}"

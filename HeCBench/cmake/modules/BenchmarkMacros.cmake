@@ -51,6 +51,21 @@ function(add_hecbench_benchmark)
 
     # Normalize model name
     string(TOLOWER "${BENCH_MODEL}" BENCH_MODEL_LOWER)
+    set(TARGET_NAME "${BENCH_NAME}-${BENCH_MODEL_LOWER}")
+
+    # Skip unselected benchmarks early
+    if(DEFINED HECBENCH_BENCHMARKS AND NOT "${HECBENCH_BENCHMARKS}" STREQUAL "")
+        set(_hecbench_selected FALSE)
+        foreach(_selected ${HECBENCH_BENCHMARKS})
+            if(_selected STREQUAL "${BENCH_NAME}" OR _selected STREQUAL "${TARGET_NAME}")
+                set(_hecbench_selected TRUE)
+                break()
+            endif()
+        endforeach()
+        if(NOT _hecbench_selected)
+            return()
+        endif()
+    endif()
 
     # Check if this model is enabled
     set(MODEL_ENABLED FALSE)
@@ -68,9 +83,6 @@ function(add_hecbench_benchmark)
         message(STATUS "Skipping ${BENCH_NAME}-${BENCH_MODEL_LOWER} (model not enabled)")
         return()
     endif()
-
-    # Create target name
-    set(TARGET_NAME "${BENCH_NAME}-${BENCH_MODEL_LOWER}")
 
     # For HIP, ensure .cu files are treated as HIP language
     if(BENCH_MODEL_LOWER STREQUAL "hip")

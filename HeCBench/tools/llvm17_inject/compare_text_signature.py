@@ -64,9 +64,30 @@ def compare_btree(baseline: str, candidate: str) -> Tuple[bool, str, int, float]
     return True, "btree_pass_present", 0, 0.0
 
 
+def compare_passfail(baseline: str, candidate: str) -> Tuple[bool, str, int, float]:
+    token = re.compile(r"\b(pass|fail)\b", re.IGNORECASE)
+    b_tokens = [t.lower() for t in token.findall(baseline)]
+    c_tokens = [t.lower() for t in token.findall(candidate)]
+    if not b_tokens:
+        return False, "missing_passfail_tokens_baseline", 1, 1.0
+    if not c_tokens:
+        return False, "missing_passfail_tokens_candidate", 1, 1.0
+    if b_tokens == c_tokens:
+        return True, "passfail_token_stream_equal", 0, 0.0
+    common = min(len(b_tokens), len(c_tokens))
+    mismatches = sum(1 for i in range(common) if b_tokens[i] != c_tokens[i]) + abs(len(b_tokens) - len(c_tokens))
+    denom = max(len(b_tokens), 1)
+    return (
+        False,
+        f"passfail_token_stream_diff baseline={b_tokens} candidate={c_tokens}",
+        mismatches,
+        float(mismatches) / float(denom),
+    )
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Compare text signatures for non-dump benchmarks.")
-    ap.add_argument("--bench", required=True, choices=["match", "crc64", "btree"])
+    ap.add_argument("--bench", required=True)
     ap.add_argument("--baseline", required=True)
     ap.add_argument("--candidate", required=True)
     args = ap.parse_args()
@@ -90,8 +111,7 @@ def main() -> int:
     elif args.bench == "btree":
         ok, reason, num_bad, frac_bad = compare_btree(baseline, candidate)
     else:
-        print(f"compare_fail unsupported_bench: {args.bench}")
-        return 2
+        ok, reason, num_bad, frac_bad = compare_passfail(baseline, candidate)
 
     if ok:
         print("compare_ok")

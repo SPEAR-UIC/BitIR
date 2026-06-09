@@ -170,7 +170,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
             curId++;
             std::string kind = typeKind(I.getType());
             unsigned width = typeBitWidth(I.getType(), DL);
-            std::string siteClass = "base";
+            std::string siteClass = "result";
             std::string sourceFile = sourceFileFor(F, I);
             unsigned sourceLine = I.getDebugLoc() ? I.getDebugLoc().getLine() : 0;
             unsigned sourceColumn = I.getDebugLoc() ? I.getDebugLoc().getCol() : 0;

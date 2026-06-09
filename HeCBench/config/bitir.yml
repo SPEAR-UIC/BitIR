@@ -1,0 +1,448 @@
+methodology:
+  default_campaign: default
+  timeout_sec: 200
+  float_abs_tol: 1e-5
+  float_rel_tol: 0.0
+
+fault_models:
+  result:
+    inject_target: result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+  operand:
+    inject_target: operand
+    phase: operand
+    int_float_only: 1
+    include_constants: 0
+  pointer:
+    inject_target: pointer
+    phase: pointer
+    int_float_only: 1
+    include_constants: 0
+  all:
+    inject_target: all
+    int_float_only: 1
+    include_constants: 0
+  smoke:
+    inject_target: result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+    max_pairs: 8
+    max_injections: 8
+    run_baseline: 1
+    skip_existing: 0
+    missing_only: 0
+    worklist_queue: 0
+    results_subdir_base: llvm17_inject_smoke
+
+run:
+  machine: nvidia
+  task: build
+  campaign: default
+  execution_mode: print-script
+  site_id: 1
+  bit_index: 0
+
+campaigns:
+  default:
+    benchmarks:
+      - matrix-rotate
+      - jacobi
+      - layout
+      - dense-embedding
+      - pathfinder
+      - entropy
+      - colorwheel
+      - randomAccess
+  smoke:
+    benchmarks:
+      - layout
+
+machines:
+  nvidia:
+    backend: nvidia
+    machine_label: Polaris
+    scheduler: pbs
+    submit_command: qsub
+    module_use:
+      - /soft/modulefiles
+    build_dir: HeCBench/build-cuda118
+    binary_subdir: cuda
+    results_root: HeCBench/results/llvm17_inject
+    golden_root: Polaris_Golden_Outputs
+    timeout_sec: 200
+    compare_backend: nvidia
+    gpu_query_tool: nvidia-smi
+    gpu_monitor_style: nvidia_smi
+    device_visible_env: CUDA_VISIBLE_DEVICES
+    device_visible_value: "0"
+    device_order_env: CUDA_DEVICE_ORDER
+    device_order_value: PCI_BUS_ID
+    runtime_home: /soft/compilers/cudatoolkit/cuda-11.8.0
+    runtime_bin_dirs:
+      - bin
+    runtime_lib_dirs:
+      - lib64
+      - lib64/stubs
+    runtime_home_fallbacks:
+      - /opt/nvidia/hpc_sdk/Linux_x86_64/24.11/cuda/11.8
+      - /opt/nvidia/hpc_sdk/Linux_x86_64/latest/cuda
+      - /usr/local/cuda
+    cmake_generator: Unix Makefiles
+    c_compiler_driver: cc
+    cxx_compiler_driver: CC
+    compiler_driver: nvcc
+    cuda_arch: 80
+    cuda_arch_name: sm_80
+    nvcc_prepend_flags: --allow-unsupported-compiler
+    modules:
+      - PrgEnv-gnu
+      - spack-pe-base
+      - cmake
+      - gcc-native/12.3
+      - cudatoolkit-standalone/11.8.0
+      - llvm/release-17.0.0
+    task_scripts:
+      deploy: HeCBench/llvm17_inject_bench_sweep.pbs
+      inject_one: HeCBench/tools/llvm17_inject/run_benchmark_injection.sh
+    jobs:
+      build:
+        account: UIC-HPC
+        queue: prod
+        select: 10:ncpus=1:ngpus=1:mem=32gb
+        filesystems: home:eagle
+        walltime: 03:00:00
+        stdout: OUT_golden.out
+        stderr: ERROR_golden.err
+      golden:
+        account: UIC-HPC
+        queue: prod
+        select: 10:ncpus=1:ngpus=1:mem=32gb
+        filesystems: home:eagle
+        walltime: 03:00:00
+        stdout: OUT_golden.out
+        stderr: ERROR_golden.err
+      baseline:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=32:ngpus=1:mem=64gb
+        filesystems: home:eagle
+        walltime: 01:00:00
+        stdout: OUT_baseline_check_all.out
+        stderr: ERROR_baseline_check_all.err
+      inject_one:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=8:ngpus=1:mem=32gb
+        filesystems: home:eagle
+        walltime: 01:00:00
+        stdout: OUT_inject_one.out
+        stderr: ERROR_inject_one.err
+      deploy:
+        account: UIC-HPC
+        queue: medium
+        select: 25:ncpus=1:ngpus=4:mem=32gb
+        filesystems: home:eagle
+        walltime: 06:00:00
+        stdout: OUT_bench_sweep_llvm17_inject.out
+        stderr: ERROR_bench_sweep_llvm17_inject.err
+
+  intel:
+    backend: intel
+    machine_label: Aurora
+    scheduler: pbs
+    submit_command: qsub
+    module_use:
+      - /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core
+      - /opt/aurora/25.190.0/modulefiles
+    build_dir: HeCBench/build/sycl-intel-golden
+    binary_subdir: sycl
+    results_root: HeCBench/results/llvm17_inject
+    golden_root: Aurora_Sycl_Golden_Outputs
+    timeout_sec: 200
+    compare_backend: intel
+    gpu_query_tool: xpu-smi
+    device_visible_env: ONEAPI_DEVICE_SELECTOR
+    device_visible_value: level_zero:gpu
+    c_compiler_driver: icx
+    cxx_compiler_driver: icpx
+    compiler_driver: icpx
+    runtime_home: ""
+    sycl_target: spir64
+    sycl_device_triple: spir64-unknown-unknown
+    sycl_offload_target: sycl-spir64-unknown-unknown
+    sycl_host_triple: x86_64-unknown-linux-gnu
+    sycl_postlink_split: kernel
+    tool_search_roots:
+      - /opt/aurora/25.190.0/oneapi/compiler/latest/bin
+      - /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler
+      - /opt/aurora/25.190.0/oneapi/compiler/2025.2/bin
+      - /opt/aurora/25.190.0/oneapi/compiler/2025.2/bin/compiler
+    llvm_search_root: /opt/aurora/25.190.0/spack/unified
+    modules:
+      - cmake/3.31.8
+      - ninja/1.12.1
+      - oneapi/release/2025.2.0
+    task_scripts:
+      deploy: HeCBench/llvm17_inject_bench_sweep.pbs
+      inject_one: HeCBench/tools/llvm17_inject/run_benchmark_injection.sh
+    jobs:
+      build:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=8:ngpus=1:mem=32gb
+        filesystems: home
+        walltime: 01:00:00
+        stdout: OUT_sycl_golden.out
+        stderr: ERROR_sycl_golden.err
+      golden:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=8:ngpus=1:mem=32gb
+        filesystems: home
+        walltime: 01:00:00
+        stdout: OUT_sycl_golden.out
+        stderr: ERROR_sycl_golden.err
+      baseline:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=12:ngpus=1:mem=32gb
+        filesystems: home
+        walltime: 01:00:00
+        stdout: OUT_baseline_all_sycl.out
+        stderr: ERROR_baseline_all_sycl.err
+      inject_one:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=12:ngpus=1:mem=32gb
+        filesystems: home
+        walltime: 01:00:00
+        stdout: OUT_llvm17_inject_sycl_debug.out
+        stderr: ERROR_llvm17_inject_sycl_debug.err
+      deploy:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=12:ngpus=1:mem=32gb
+        filesystems: home
+        walltime: 01:00:00
+        stdout: OUT_llvm17_inject_sycl_debug.out
+        stderr: ERROR_llvm17_inject_sycl_debug.err
+
+  amd:
+    backend: amd
+    machine_label: Frontier
+    scheduler: slurm
+    submit_command: sbatch
+    module_use: []
+    build_dir: HeCBench/build-hip
+    binary_subdir: hip
+    results_root: HeCBench/results/llvm17_inject_amd
+    golden_root: Frontier_HIP_Golden_Outputs
+    timeout_sec: 200
+    compare_backend: amd
+    gpu_query_tool: rocm-smi
+    device_visible_env: ROCR_VISIBLE_DEVICES
+    device_visible_value: "0"
+    compiler_driver: hipcc
+    runtime_home: /opt/rocm
+    hip_arch: gfx90a
+    modules:
+      - rocm/6.4.2
+    task_scripts:
+      deploy: ""
+      inject_one: ""
+    jobs:
+      build:
+        account: UIC-HPC
+        partition: batch
+        nodes: 1
+        ntasks_per_node: 1
+        gpus_per_node: 1
+        cpus_per_task: 8
+        mem: 32G
+        walltime: 01:00:00
+        stdout: OUT_hip_golden.out
+        stderr: ERROR_hip_golden.err
+      golden:
+        account: UIC-HPC
+        partition: batch
+        nodes: 1
+        ntasks_per_node: 1
+        gpus_per_node: 1
+        cpus_per_task: 8
+        mem: 32G
+        walltime: 01:00:00
+        stdout: OUT_hip_golden.out
+        stderr: ERROR_hip_golden.err
+      baseline:
+        account: UIC-HPC
+        partition: batch
+        nodes: 1
+        ntasks_per_node: 1
+        gpus_per_node: 1
+        cpus_per_task: 8
+        mem: 32G
+        walltime: 01:00:00
+        stdout: OUT_hip_baseline.out
+        stderr: ERROR_hip_baseline.err
+      inject_one:
+        account: UIC-HPC
+        partition: batch
+        nodes: 1
+        ntasks_per_node: 1
+        gpus_per_node: 1
+        cpus_per_task: 8
+        mem: 32G
+        walltime: 01:00:00
+        stdout: OUT_hip_inject_one.out
+        stderr: ERROR_hip_inject_one.err
+      deploy:
+        account: UIC-HPC
+        partition: batch
+        nodes: 1
+        ntasks_per_node: 1
+        gpus_per_node: 1
+        cpus_per_task: 8
+        mem: 32G
+        walltime: 01:00:00
+        stdout: OUT_hip_deploy.out
+        stderr: ERROR_hip_deploy.err
+
+benchmarks:
+  matrix-rotate:
+    compare_mode: float
+    source_dirs:
+      nvidia: HeCBench/src/matrix-rotate-cuda
+      intel: HeCBench/src/matrix-rotate-sycl
+      amd: HeCBench/src/matrix-rotate-hip
+    golden_file: matrix-rotate_{MATRIX_SIZE}_{MATRIX_REPEAT}.bin
+    args:
+      - "{MATRIX_SIZE}"
+      - "{MATRIX_REPEAT}"
+    env:
+      MATRIX_SIZE: "10000"
+      MATRIX_REPEAT: "1"
+    status:
+      pass_line: PASS
+      fail_line: FAIL
+
+  jacobi:
+    compare_mode: exact
+    source_dirs:
+      nvidia: HeCBench/src/jacobi-cuda
+      intel: HeCBench/src/jacobi-sycl
+      amd: HeCBench/src/jacobi-hip
+    golden_file: jacobi.bin
+    args: []
+    env: {}
+    status:
+      pass_line: PASS
+      fail_line: FAIL
+
+  layout:
+    compare_mode: exact
+    source_dirs:
+      nvidia: HeCBench/src/layout-cuda
+      intel: HeCBench/src/layout-sycl
+      amd: HeCBench/src/layout-hip
+    golden_file: layout.bin
+    args:
+      - "{LAYOUT_REPEAT}"
+    env:
+      LAYOUT_REPEAT: "1"
+    status:
+      pass_line: PASS
+      fail_line: FAIL
+
+  dense-embedding:
+    compare_mode: exact
+    source_dirs:
+      nvidia: HeCBench/src/dense-embedding-cuda
+      intel: HeCBench/src/dense-embedding-sycl
+      amd: HeCBench/src/dense-embedding-hip
+    golden_file: dense-embedding.bin
+    args:
+      - "{DENSE_ROWS}"
+      - "{DENSE_BATCH}"
+      - "{DENSE_REPEAT}"
+    env:
+      DENSE_ROWS: "10000"
+      DENSE_BATCH: "8"
+      DENSE_REPEAT: "1"
+    status:
+      pass_line: PASS
+      fail_line: FAIL
+
+  pathfinder:
+    compare_mode: exact
+    source_dirs:
+      nvidia: HeCBench/src/pathfinder-cuda
+      intel: HeCBench/src/pathfinder-sycl
+      amd: HeCBench/src/pathfinder-hip
+    golden_file: pathfinder.bin
+    args:
+      - "{PATHFINDER_COLS}"
+      - "{PATHFINDER_ROWS}"
+      - "{PATHFINDER_PYRAMID}"
+    env:
+      PATHFINDER_COLS: "10000"
+      PATHFINDER_ROWS: "1000"
+      PATHFINDER_PYRAMID: "1000"
+
+  entropy:
+    compare_mode: exact
+    source_dirs:
+      nvidia: HeCBench/src/entropy-cuda
+      intel: HeCBench/src/entropy-sycl
+      amd: HeCBench/src/entropy-hip
+    golden_file: entropy.bin
+    args:
+      - "{ENTROPY_WIDTH}"
+      - "{ENTROPY_HEIGHT}"
+      - "{ENTROPY_REPEAT}"
+    extra_includes:
+      intel:
+        - HeCBench/src/entropy-cuda
+    env:
+      ENTROPY_WIDTH: "10000"
+      ENTROPY_HEIGHT: "1024"
+      ENTROPY_REPEAT: "1"
+    status:
+      pass_line: PASS
+      fail_line: FAIL
+
+  colorwheel:
+    compare_mode: exact
+    source_dirs:
+      nvidia: HeCBench/src/colorwheel-cuda
+      intel: HeCBench/src/colorwheel-sycl
+      amd: HeCBench/src/colorwheel-hip
+    golden_file: colorwheel.bin
+    args:
+      - "{COLORWHEEL_RANGE}"
+      - "{COLORWHEEL_SIZE}"
+      - "{COLORWHEEL_REPEAT}"
+    env:
+      COLORWHEEL_RANGE: "10000"
+      COLORWHEEL_SIZE: "8"
+      COLORWHEEL_REPEAT: "1"
+    status:
+      pass_line: PASS
+      fail_line: FAIL
+
+  randomAccess:
+    compare_mode: exact
+    source_dirs:
+      nvidia: HeCBench/src/randomAccess-cuda
+      intel: HeCBench/src/randomAccess-sycl
+      amd: HeCBench/src/randomAccess-hip
+    golden_file: randomAccess.bin
+    args:
+      - "{RANDOMACCESS_REPEAT}"
+    env:
+      RANDOMACCESS_REPEAT: "1"
+    status:
+      pass_regex: Found[[:space:]]+0[[:space:]]+errors?[[:space:]]+in[[:space:]]+[0-9]+[[:space:]]+locations[[:space:]]+\(PASS\)\.
+      fail_regex: Found[[:space:]]+[1-9][0-9]*[[:space:]]+errors?[[:space:]]+in[[:space:]]+[0-9]+[[:space:]]+locations[[:space:]]+\((PASS|FAIL)\)\.

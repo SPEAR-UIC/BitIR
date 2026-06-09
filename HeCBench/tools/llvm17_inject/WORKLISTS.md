@@ -16,25 +16,18 @@ Files:
 
 Run these from the repo root.
 
-Matrix rotate:
-```bash
-python3 HeCBench/tools/llvm17_inject/build_matrix_rotate_worklist.py
-python3 HeCBench/tools/llvm17_inject/build_matrix_rotate_worklist.py --target operand --sites-only
-python3 HeCBench/tools/llvm17_inject/build_matrix_rotate_worklist.py --target pointer --sites-only
-```
-
-Jacobi:
-```bash
-python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench jacobi
-python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench jacobi --target operand --sites-only
-python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench jacobi --target pointer --sites-only
-```
-
-All other benchmarks:
+CUDA/NVIDIA:
 ```bash
 python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench <bench>
 python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench <bench> --target operand --sites-only
 python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench <bench> --target pointer --sites-only
+```
+
+SYCL/Intel:
+```bash
+python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench <bench> --backend intel
+python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench <bench> --backend intel --target operand --sites-only
+python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench <bench> --backend intel --target pointer --sites-only
 ```
 
 Optional flags:
