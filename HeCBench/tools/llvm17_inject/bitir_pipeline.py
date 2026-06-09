@@ -144,6 +144,27 @@ def machine_exports(task, machine):
     return {key: machine[key] for key in keys if key in machine}
 
 
+def append_fault_model_compat_exports(exports, fault_model_cfg):
+    compat = {
+        "inject_target": "INJECT_TARGET",
+        "phase": "PHASE",
+        "int_float_only": "INT_FLOAT_ONLY",
+        "include_constants": "INCLUDE_CONSTANTS",
+        "max_pairs": "MAX_PAIRS",
+        "max_injections": "MAX_INJECTIONS",
+        "run_baseline": "RUN_BASELINE",
+        "skip_existing": "SKIP_EXISTING",
+        "missing_only": "MISSING_ONLY",
+        "worklist_queue": "WORKLIST_QUEUE",
+        "results_subdir_base": "RESULTS_SUBDIR_BASE",
+    }
+    for key, env_name in compat.items():
+        if key in fault_model_cfg:
+            line = export_line(env_name, fault_model_cfg[key])
+            if line:
+                exports.append(line)
+
+
 def suffixed_path(path, suffix):
     if not path or not suffix:
         return path
@@ -496,8 +517,10 @@ def main():
             exports.append(export_line("SITE_ID", site_id))
             exports.append(export_line("BIT_INDEX", bit_index))
         if fault_model:
+            fault_model_cfg = dict(cfg.get("fault_models", {}).get(fault_model, {}))
             exports.append(export_line("BITIR_FAULT_MODEL_NAME", fault_model))
-            export_mapping(exports, "BITIR_FAULT_MODEL", dict(cfg.get("fault_models", {}).get(fault_model, {})))
+            export_mapping(exports, "BITIR_FAULT_MODEL", fault_model_cfg)
+            append_fault_model_compat_exports(exports, fault_model_cfg)
         export_mapping(exports, "BITIR_MACHINE", machine_exports(args.task, machine))
 
         bench_suffix = bench_name.replace("/", "_").replace(" ", "_")

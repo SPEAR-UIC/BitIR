@@ -43,9 +43,25 @@ if [[ "${BACKEND}" == "intel" ]]; then
   REPO_ROOT="${REPO_ROOT:-${PBS_O_WORKDIR:-${SLURM_SUBMIT_DIR:-$(pwd)}}}"
   cd "${REPO_ROOT}"
   INJECT_TARGET="${INJECT_TARGET:-all}"
-  RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}-sycl}"
   EXCLUDE_GIT_REF="${EXCLUDE_GIT_REF:-${BITIR_MACHINE_EXCLUDE_GIT_REF:-}}"
-  mkdir -p "${RESULTS_DIR}"
+  RESULTS_SUBDIR="${RESULTS_SUBDIR:-llvm17_inject}"
+  RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE:-${RESULTS_SUBDIR}}"
+  PHASE="${PHASE:-}"
+  if [[ -z "${PHASE}" ]]; then
+    case "${INJECT_TARGET}" in
+      operand) PHASE="operand" ;;
+      pointer) PHASE="pointer" ;;
+      *) PHASE="float" ;;
+    esac
+  fi
+  case "${PHASE}" in
+    operand) PHASE_LABEL="operand" ;;
+    pointer) PHASE_LABEL="pointer" ;;
+    *) PHASE_LABEL="float" ;;
+  esac
+  BENCH_RESULTS_ROOT="${REPO_ROOT}/HeCBench/results/${RESULTS_SUBDIR_BASE}/${BENCH}"
+  RESULTS_DIR="${RESULTS_DIR:-${BENCH_RESULTS_ROOT}/${PHASE_LABEL}}"
+  mkdir -p "${RESULTS_DIR}" "${BENCH_RESULTS_ROOT}/baseline"
   JOB_TAG="${PBS_JOBID_SHORT:-${PBS_JOBID:-manual}}"
   JOB_DIAG_DIR="${JOB_DIAG_DIR:-${RESULTS_DIR}/jobdiag_${JOB_TAG}}"
   mkdir -p "${JOB_DIAG_DIR}"
@@ -60,6 +76,7 @@ if [[ "${BACKEND}" == "intel" ]]; then
   default_worklist="${RESULTS_DIR}/worklist.csv"
   missing_worklist="${RESULTS_DIR}/worklist_missing.csv"
   summary_csv="${RESULTS_DIR}/summary.csv"
+  BASELINE_FILE="${BASELINE_FILE:-${BENCH_RESULTS_ROOT}/baseline/${PHASE_LABEL}_baseline_${BENCH}.bin}"
   WORKLIST="${WORKLIST:-${default_worklist}}"
   WORKLIST_TO_RUN="${WORKLIST_TO_RUN:-}"
   build_args=()

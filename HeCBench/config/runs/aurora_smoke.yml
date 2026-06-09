@@ -1,0 +1,27 @@
+extends: ../bitir.yml
+
+machines:
+  intel:
+    build_dir: HeCBench/build/sycl-intel-aurora-smoke
+    golden_root: Aurora_Sycl_Golden_Outputs_smoke
+    jobs:
+      build:
+        stdout: OUT_aurora_build_smoke.out
+        stderr: ERROR_aurora_build_smoke.err
+      golden:
+        stdout: OUT_aurora_golden_smoke.out
+        stderr: ERROR_aurora_golden_smoke.err
+      baseline:
+        stdout: OUT_aurora_baseline_smoke.out
+        stderr: ERROR_aurora_baseline_smoke.err
+      inject_one:
+        stdout: OUT_aurora_inject_one_smoke.out
+        stderr: ERROR_aurora_inject_one_smoke.err
+      deploy:
+        stdout: OUT_aurora_deploy_smoke.out
+        stderr: ERROR_aurora_deploy_smoke.err
+
+run:
+  machine: intel
+  campaign: smoke
+  execution_mode: print-script
