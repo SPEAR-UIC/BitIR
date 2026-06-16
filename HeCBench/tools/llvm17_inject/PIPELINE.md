@@ -25,19 +25,31 @@ python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
   build HeCBench/config/runs/build_default.yml
 ```
 
-Build a smoke campaign and submit it:
+Build a smoke campaign and write the PBS script:
 
 ```bash
 python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
-  build HeCBench/config/runs/build_smoke_submit.yml
+  build HeCBench/config/runs/nvidia_smoke.yml
 ```
 
-Deploy a smoke test:
+Then submit the generated build script:
+
+```bash
+qsub .bitir_jobs/nvidia_build_layout_<timestamp>_00.pbs
+```
+
+Deploy a smoke test and write the PBS script:
 
 ```bash
 python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
-  deploy HeCBench/config/runs/deploy_smoke_submit.yml \
+  deploy HeCBench/config/runs/nvidia_smoke.yml \
   --fault-model smoke
+```
+
+Then submit the generated deploy script:
+
+```bash
+qsub .bitir_jobs/nvidia_deploy_layout_<timestamp>_00.pbs
 ```
 
 Deploy a full operand campaign:
@@ -58,7 +70,7 @@ python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
   deploy HeCBench/config/runs/toy_nvidia.yml
 ```
 
-By default the example run YAMLs use `execution_mode: print-script`. Change the
+By default the example run YAMLs use `execution_mode: write-script`. Change the
 YAML to use one of:
 
 - `print-script`: print the generated job script
@@ -91,7 +103,7 @@ run:
   machine: nvidia
   task: deploy
   campaign: smoke
-  execution_mode: submit
+  execution_mode: write-script
 ```
 
 The toy NVIDIA config is:
@@ -133,6 +145,19 @@ Each model can set the following keys:
 - `missing_only`: whether to rebuild and run only missing worklist entries
 - `worklist_queue`: whether to use the queue-based missing-worklist mode
 - `results_subdir_base`: result root override for the campaign
+- `keep_dumps`: whether to keep candidate dump files in the results directory
+- `trace_level`: trace granularity for disagreement studies
+- `trace_source_window`: number of source lines to save around the matched site
+- `trace_metadata_dir`: optional override for the site metadata and worklist directory
+- `trace_repeats`: number of repeated reruns per selected site and bit
+- `site_list`: optional curated `site_id,bit_index` CSV for targeted reruns
+
+Trace levels:
+
+- `off`: normal run with no extra trace packet
+- `basic`: save manifest, matched site row, worklist row, source window, stdout, stderr, and dumps
+- `backend`: add injected IR text and backend lowering artifacts such as PTX or SPIR-V wrappers
+- `full`: keep the full temporary backend build directory for the rerun
 
 The `smoke` model is the recommended first test. It runs only a small subset of
 injection points so you can validate that worklist generation, compilation,
@@ -172,17 +197,21 @@ This renders one deploy script per benchmark under `.bitir_jobs/`
 
 ```bash
 python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
-  build HeCBench/config/runs/toy_nvidia.yml --submit
+  build HeCBench/config/runs/toy_nvidia.yml
 ```
 
-This submits the build scripts to PBS
+This writes one build script per benchmark under `.bitir_jobs/`
+
+```bash
+qsub .bitir_jobs/nvidia_build_ace_<timestamp>_00.pbs
+```
 
 ```bash
 python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
-  deploy HeCBench/config/runs/toy_nvidia.yml --submit
+  deploy HeCBench/config/runs/toy_nvidia.yml --fault-model toy50
 ```
 
-This submits the deploy scripts to PBS after the golden text files exist
+This writes one deploy script per benchmark under `.bitir_jobs/`
 
 Expected outputs for the toy build:
 

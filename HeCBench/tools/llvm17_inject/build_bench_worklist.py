@@ -59,9 +59,32 @@ def find_opt(repo_root, configured_opt, llvm_search_root):
     return configured_opt
 
 
+def find_llvm_tool(repo_root, configured_tool, tool_name, llvm_search_root):
+    candidates = []
+    if configured_tool:
+        candidates.append(configured_tool)
+        if not os.path.isabs(configured_tool):
+            candidates.append(os.path.join(repo_root, configured_tool))
+    candidates.append(os.path.join(repo_root, "HeCBench/tools/llvm17_inject/llvm/build/bin", tool_name))
+    for candidate in candidates:
+        if candidate and os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    found = shutil.which(tool_name)
+    if found:
+        return found
+    if llvm_search_root and os.path.isdir(llvm_search_root):
+        for root, _, files in os.walk(llvm_search_root):
+            if tool_name in files:
+                candidate = os.path.join(root, tool_name)
+                if os.access(candidate, os.X_OK):
+                    return candidate
+    return configured_tool
+
+
 def build_cuda_ir(args, repo_root, src_dir, src, out_dir):
-    clang = args.clang or shutil.which("clang++") or ""
-    llvm_as = args.llvm_as or shutil.which("llvm-as") or ""
+    llvm_search_root = os.environ.get("BITIR_MACHINE_LLVM_SEARCH_ROOT", "")
+    clang = find_llvm_tool(repo_root, args.clang, "clang++", llvm_search_root) or ""
+    llvm_as = find_llvm_tool(repo_root, args.llvm_as, "llvm-as", llvm_search_root) or ""
     cuda_home = args.cuda_home or os.environ.get("BITIR_MACHINE_RUNTIME_HOME", "")
     cuda_arch = args.cuda_arch or os.environ.get("BITIR_MACHINE_CUDA_ARCH_NAME", "")
     if not clang or not args.opt or not llvm_as or not cuda_home or not cuda_arch:
@@ -79,11 +102,6 @@ def build_cuda_ir(args, repo_root, src_dir, src, out_dir):
         "-S", "-O0", "-g",
         "-D__STRICT_ANSI__",
         "-D_GLIBCXX_USE_FLOAT128=0",
-        "-nostdinc++",
-        "-isystem", "/usr/include/c++/7",
-        "-isystem", "/usr/include/c++/7/x86_64-suse-linux",
-        "-isystem", "/usr/include/c++/7/backward",
-        "-isystem", "/usr/lib64/gcc/x86_64-suse-linux/7/include",
         "-I", src_dir,
         "-I", os.path.join(repo_root, "HeCBench/src"),
         src,
@@ -300,6 +318,7 @@ def main():
     if not opt_bin or not os.path.isfile(opt_bin):
         print(f"missing opt: {args.opt or 'not found'}")
         return 2
+    args.opt = opt_bin
 
     if backend == "intel":
         ir_bc, code = build_sycl_ir(args, repo_root, source_dir, src, out_dir)

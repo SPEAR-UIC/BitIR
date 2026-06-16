@@ -1,1053 +1,132 @@
-#!/bin/bash
-#PBS -A UIC-HPC
-#PBS -N llvm17_inject_bench_sweep
-#PBS -q medium
-#PBS -l select=25:ncpus=1:ngpus=4:mem=32gb
-#PBS -l filesystems=home:eagle
-#PBS -l walltime=06:00:00
-#PBS -o OUT_bench_sweep_llvm17_inject.out
-#PBS -e ERROR_bench_sweep_llvm17_inject.err
-
+#!/usr/bin/env bash
 set -euo pipefail
-ulimit -c 0
 
-QUEUE_ONLY=0
-if [[ "${1:-}" == "--queue-only" ]]; then
-  QUEUE_ONLY=1
-fi
-
-if command -v module &> /dev/null; then
-  module use /soft/modulefiles
-  module purge
-  for m in ${MODULE_LIST:-${BITIR_MACHINE_MODULES:-}}; do
-    module load "$m"
-  done
-fi
-
-cd "$PBS_O_WORKDIR"
-
-# Reset PBS output files so reruns don't append (skip for queue-only helper calls).
-if [[ -n "${PBS_O_WORKDIR:-}" && "${QUEUE_ONLY}" -eq 0 ]]; then
-  : > "${PBS_O_WORKDIR}/OUT_bench_sweep_llvm17_inject.out"
-  : > "${PBS_O_WORKDIR}/ERROR_bench_sweep_llvm17_inject.err"
-fi
-
-BENCH="${BENCH:-}"
-BACKEND="${BITIR_MACHINE_BACKEND:?BITIR_MACHINE_BACKEND is required}"
-if [[ -z "${BENCH}" ]]; then
-  echo "BENCH is required."
-  exit 2
-fi
-
-if [[ "${BACKEND}" == "intel" ]]; then
-  REPO_ROOT="${REPO_ROOT:-${PBS_O_WORKDIR:-${SLURM_SUBMIT_DIR:-$(pwd)}}}"
-  cd "${REPO_ROOT}"
-  INJECT_TARGET="${INJECT_TARGET:-all}"
-  EXCLUDE_GIT_REF="${EXCLUDE_GIT_REF:-${BITIR_MACHINE_EXCLUDE_GIT_REF:-}}"
-  RESULTS_SUBDIR="${RESULTS_SUBDIR:-llvm17_inject}"
-  RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE:-${RESULTS_SUBDIR}}"
-  PHASE="${PHASE:-}"
-  if [[ -z "${PHASE}" ]]; then
-    case "${INJECT_TARGET}" in
-      operand) PHASE="operand" ;;
-      pointer) PHASE="pointer" ;;
-      *) PHASE="float" ;;
-    esac
+need() {
+  local name="$1"
+  if [[ -z "${!name:-}" ]]; then
+    echo "missing required setting: ${name}" >&2
+    exit 1
   fi
-  case "${PHASE}" in
-    operand) PHASE_LABEL="operand" ;;
-    pointer) PHASE_LABEL="pointer" ;;
-    *) PHASE_LABEL="float" ;;
-  esac
-  BENCH_RESULTS_ROOT="${REPO_ROOT}/HeCBench/results/${RESULTS_SUBDIR_BASE}/${BENCH}"
-  RESULTS_DIR="${RESULTS_DIR:-${BENCH_RESULTS_ROOT}/${PHASE_LABEL}}"
-  mkdir -p "${RESULTS_DIR}" "${BENCH_RESULTS_ROOT}/baseline"
-  JOB_TAG="${PBS_JOBID_SHORT:-${PBS_JOBID:-manual}}"
-  JOB_DIAG_DIR="${JOB_DIAG_DIR:-${RESULTS_DIR}/jobdiag_${JOB_TAG}}"
-  mkdir -p "${JOB_DIAG_DIR}"
-  if [[ "${DIAG_REDIRECTED:-0}" -ne 1 ]]; then
-    if [[ "${WORKER:-0}" -eq 1 ]]; then
-      exec >>"${JOB_DIAG_DIR}/task${TASK_ID:-0}.out" 2>>"${JOB_DIAG_DIR}/task${TASK_ID:-0}.err"
-    else
-      exec >>"${JOB_DIAG_DIR}/controller.out" 2>>"${JOB_DIAG_DIR}/controller.err"
-    fi
-    export DIAG_REDIRECTED=1
-  fi
-  default_worklist="${RESULTS_DIR}/worklist.csv"
-  missing_worklist="${RESULTS_DIR}/worklist_missing.csv"
-  summary_csv="${RESULTS_DIR}/summary.csv"
-  BASELINE_FILE="${BASELINE_FILE:-${BENCH_RESULTS_ROOT}/baseline/${PHASE_LABEL}_baseline_${BENCH}.bin}"
-  WORKLIST="${WORKLIST:-${default_worklist}}"
-  WORKLIST_TO_RUN="${WORKLIST_TO_RUN:-}"
-  build_args=()
-  if [[ -n "${EXCLUDE_GIT_REF:-}" ]]; then
-    IFS=',' read -r -a refs <<< "${EXCLUDE_GIT_REF}"
-    for ref in "${refs[@]}"; do
-      [[ -n "${ref}" ]] && build_args+=(--exclude-git-ref "${ref}")
-    done
-  fi
-  if [[ -n "${EXCLUDE_SUMMARY_CSVS:-}" ]]; then
-    IFS=',' read -r -a summaries <<< "${EXCLUDE_SUMMARY_CSVS}"
-    for summary in "${summaries[@]}"; do
-      [[ -n "${summary}" ]] && build_args+=(--exclude-summary "${summary}")
-    done
-  fi
-  if [[ "${WORKER:-0}" -ne 1 ]]; then
-    bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
-    if [[ ! -s "${WORKLIST}" || "${REBUILD_WORKLIST:-0}" -eq 1 ]]; then
-      python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist.py" \
-        --bench "${BENCH}" \
-        --target "${INJECT_TARGET}" \
-        --worklist "${WORKLIST}" \
-        "${build_args[@]}"
-    fi
-    export WORKLIST SUMMARY_CSV="${summary_csv}" MISSING_WORKLIST="${missing_worklist}" RESULTS_DIR
-    python3 - <<'PY'
-import csv
-import os
-import re
-from pathlib import Path
+}
 
-worklist = os.environ["WORKLIST"]
-summary_csv = os.environ["SUMMARY_CSV"]
-missing_worklist = os.environ["MISSING_WORKLIST"]
-results_dir = Path(os.environ["RESULTS_DIR"])
-completed = set()
-file_pat = re.compile(r"site(\d+)_bit(\d+)\.(out|err)$")
-seen_files = {}
-for path in results_dir.glob("site*_bit*.*"):
-    match = file_pat.fullmatch(path.name)
-    if not match:
-        continue
-    key = (int(match.group(1)), int(match.group(2)))
-    seen_files.setdefault(key, set()).add(match.group(3))
-for key, kinds in seen_files.items():
-    if "out" in kinds and "err" in kinds:
-        completed.add(key)
-if os.path.exists(summary_csv):
-    with open(summary_csv, newline="", encoding="utf-8", errors="replace") as fh:
-        reader = csv.DictReader(fh)
-        for row in reader:
-            try:
-                completed.add((int(row["site_id"]), int(row["bit_index"])))
-            except Exception:
-                continue
-with open(worklist, newline="", encoding="utf-8", errors="replace") as src:
-    reader = csv.DictReader(src)
-    fieldnames = reader.fieldnames or ["index", "site_id", "bit_index", "bitwidth", "type_kind", "opcode", "site_class", "operand_index"]
-    rows = []
-    for row in reader:
-        try:
-            key = (int(row["site_id"]), int(row["bit_index"]))
-        except Exception:
-            continue
-        if key not in completed:
-            rows.append(row)
-with open(missing_worklist, "w", newline="", encoding="utf-8") as out:
-    writer = csv.DictWriter(out, fieldnames=fieldnames)
-    writer.writeheader()
-    writer.writerows(rows)
-PY
-    WORKLIST_TO_RUN="${WORKLIST}"
-    if [[ "${MISSING_ONLY:-1}" -eq 1 ]]; then
-      WORKLIST_TO_RUN="${missing_worklist}"
-    fi
-    if [[ "${RUN_BASELINE:-1}" -eq 1 ]]; then
-      read -r baseline_site baseline_bit < <(awk -F',' 'NR==2 {print $2, $3}' "${WORKLIST}")
-      if [[ -n "${baseline_site}" && -n "${baseline_bit}" ]]; then
-        echo "[baseline] bench=${BENCH} site=${baseline_site} bit=${baseline_bit}"
-        BENCH="${BENCH}" \
-        SITE_ID="${baseline_site}" \
-        BIT_INDEX="${baseline_bit}" \
-        BASELINE=1 \
-        INJECT_TARGET="${INJECT_TARGET}" \
-        RESULTS_DIR="${RESULTS_DIR}" \
-        INPUT_PROFILE="${INPUT_PROFILE:-default}" \
-        PERF_MODE=1 \
-        HECBENCH_TIMING_DEBUG="${HECBENCH_TIMING_DEBUG:-0}" \
-        bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh"
-      fi
-    fi
-    if [[ "${BASELINE_ONLY:-0}" -eq 1 ]]; then
-      exit 0
-    fi
-  fi
-  GPU_IDS_STR="${GPU_IDS:-}"
-  GPU_COUNT="${GPU_COUNT:-}"
-  GPU_IDS=()
-  if [[ -n "${GPU_IDS_STR}" ]]; then
-    read -r -a GPU_IDS <<< "${GPU_IDS_STR}"
-  elif [[ -n "${GPU_COUNT}" && "${GPU_COUNT}" -gt 0 ]]; then
-    for ((i = 0; i < GPU_COUNT; ++i)); do
-      GPU_IDS+=("${i}")
-    done
-  else
-    GPU_IDS=(0)
-  fi
-  GPU_COUNT="${GPU_COUNT:-${#GPU_IDS[@]}}"
-  GPU_IDS_STR="${GPU_IDS[*]}"
-  if [[ -n "${PBS_NODEFILE:-}" && -f "${PBS_NODEFILE}" ]]; then
-    NODE_COUNT=$(uniq "${PBS_NODEFILE}" | wc -l)
-  else
-    NODE_COUNT="${NODE_COUNT:-1}"
-  fi
-  SITE_OFFSET="${SITE_OFFSET:-0}"
-  MAX_INJECTIONS="${MAX_INJECTIONS:--1}"
-  WORKER_INJECTION_TIMEOUT_SEC="${WORKER_INJECTION_TIMEOUT_SEC:-600}"
-  WORKER_TIMEOUT_KILL_SEC="${WORKER_TIMEOUT_KILL_SEC:-30}"
-  export TIMEOUT_RUN="${TIMEOUT_RUN:-${BITIR_TIMEOUT_SEC}}"
-  export TIMEOUT_COMPILE="${TIMEOUT_COMPILE:-300}"
-  export TIMEOUT_UNBUNDLE="${TIMEOUT_UNBUNDLE:-120}"
-  export TIMEOUT_OPT="${TIMEOUT_OPT:-300}"
-  export TIMEOUT_REASSEMBLE="${TIMEOUT_REASSEMBLE:-120}"
-  export TIMEOUT_POSTLINK="${TIMEOUT_POSTLINK:-180}"
-  export TIMEOUT_SPIRV="${TIMEOUT_SPIRV:-120}"
-  export TIMEOUT_WRAP="${TIMEOUT_WRAP:-120}"
-  export TIMEOUT_LINK="${TIMEOUT_LINK:-180}"
-  export CACHE_LOCK_MAX_WAIT_SEC="${CACHE_LOCK_MAX_WAIT_SEC:-900}"
-  if [[ "${WORKER:-0}" -eq 1 ]]; then
-    TASK_ID="${TASK_ID:-0}"
-    TOTAL_WORKERS=$((NODE_COUNT * GPU_COUNT))
-    mapfile -t PAIRS < <(awk -F',' 'NR>1 {print $2 " " $3}' "${WORKLIST_TO_RUN}")
-    if [[ "${SITE_OFFSET}" -gt 0 ]]; then
-      PAIRS=("${PAIRS[@]:${SITE_OFFSET}}")
-    fi
-    if [[ "${MAX_INJECTIONS}" -ge 0 ]]; then
-      PAIRS=("${PAIRS[@]:0:${MAX_INJECTIONS}}")
-    fi
-    if [[ "${#PAIRS[@]}" -eq 0 ]]; then
-      echo "[inject] no pending pairs for ${BENCH}"
-      exit 0
-    fi
-    run_worker_gpu() {
-      local gpu_id="$1"
-      local local_rank="$2"
-      local worker_rank=$((TASK_ID * GPU_COUNT + local_rank))
-      local idx=0
-      if (( local_rank > 0 )); then
-        sleep "${local_rank}"
-      fi
-      for pair in "${PAIRS[@]}"; do
-        if (( idx % TOTAL_WORKERS != worker_rank )); then
-          idx=$((idx + 1))
-          continue
-        fi
-        read -r site_id bit_index <<< "${pair}"
-        if [[ -z "${site_id}" || -z "${bit_index}" ]]; then
-          idx=$((idx + 1))
-          continue
-        fi
-        echo "[inject] task=${TASK_ID} gpu=${gpu_id} rank=${worker_rank} site=${site_id} bit=${bit_index}"
-        ZE_AFFINITY_MASK="${gpu_id}" \
-        BENCH="${BENCH}" \
-        SITE_ID="${site_id}" \
-        BIT_INDEX="${bit_index}" \
-        BASELINE=0 \
-        INJECT_TARGET="${INJECT_TARGET}" \
-        RESULTS_DIR="${RESULTS_DIR}" \
-        INPUT_PROFILE="${INPUT_PROFILE:-default}" \
-        SKIP_EXISTING="${SKIP_EXISTING:-1}" \
-        PERF_MODE=1 \
-        HECBENCH_TIMING_DEBUG="${HECBENCH_TIMING_DEBUG:-0}" \
-        timeout -k "${WORKER_TIMEOUT_KILL_SEC}" "${WORKER_INJECTION_TIMEOUT_SEC}" \
-        bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
-        idx=$((idx + 1))
-      done
-    }
-    for idx in "${!GPU_IDS[@]}"; do
-      run_worker_gpu "${GPU_IDS[idx]}" "${idx}" &
-    done
-    wait
-    exit 0
-  fi
-  if (( NODE_COUNT > 1 )) && command -v pbsdsh &>/dev/null; then
-    for i in $(seq 0 $((NODE_COUNT - 1))); do
-      pbsdsh -n "${i}" -- bash -lc \
-        "WORKER=1 TASK_ID=${i} NODE_COUNT=${NODE_COUNT} GPU_COUNT=${GPU_COUNT} REPO_ROOT=${REPO_ROOT} BENCH=${BENCH} INJECT_TARGET=${INJECT_TARGET} RESULTS_DIR=${RESULTS_DIR} WORKLIST_TO_RUN=${WORKLIST_TO_RUN} INPUT_PROFILE=${INPUT_PROFILE:-default} SKIP_EXISTING=${SKIP_EXISTING:-1} SITE_OFFSET=${SITE_OFFSET} MAX_INJECTIONS=${MAX_INJECTIONS} WORKER_INJECTION_TIMEOUT_SEC=${WORKER_INJECTION_TIMEOUT_SEC} WORKER_TIMEOUT_KILL_SEC=${WORKER_TIMEOUT_KILL_SEC} JOB_DIAG_DIR=${JOB_DIAG_DIR} GPU_IDS='${GPU_IDS_STR}' HECBENCH_TIMING_DEBUG=${HECBENCH_TIMING_DEBUG:-0} bash ${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs" &
-    done
-    wait
-    exit 0
-  fi
-  WORKER=1 TASK_ID=0 NODE_COUNT=1 GPU_COUNT="${GPU_COUNT}" WORKLIST_TO_RUN="${WORKLIST_TO_RUN}" \
-    SITE_OFFSET="${SITE_OFFSET}" MAX_INJECTIONS="${MAX_INJECTIONS}" JOB_DIAG_DIR="${JOB_DIAG_DIR}" \
-    WORKER_INJECTION_TIMEOUT_SEC="${WORKER_INJECTION_TIMEOUT_SEC}" WORKER_TIMEOUT_KILL_SEC="${WORKER_TIMEOUT_KILL_SEC}" GPU_IDS="${GPU_IDS_STR}" \
-    bash "${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs"
-  exit 0
-fi
-
-POLICY_SH="${PBS_O_WORKDIR}/HeCBench/tools/llvm17_inject/bench_policy.sh"
-if [[ -f "${POLICY_SH}" ]]; then
-  source "${POLICY_SH}"
-  if [[ "${ALLOW_NONACTIVE_BENCH:-0}" -ne 1 ]]; then
-    if ! require_bench_active "${BENCH}"; then
-      echo "[bench-policy] refusing to run BENCH=${BENCH}. Set ALLOW_NONACTIVE_BENCH=1 to override."
-      exit 3
-    fi
-  fi
-else
-  echo "[bench-policy] warning: policy file missing at ${POLICY_SH}; continuing without guard"
-fi
-
-REPO_ROOT="${REPO_ROOT:-$PBS_O_WORKDIR}"
-MACHINE_LABEL="${BITIR_MACHINE_MACHINE_LABEL:-${BITIR_MACHINE:-machine}}"
-GPU_QUERY_TOOL="${BITIR_MACHINE_GPU_QUERY_TOOL:-}"
-GPU_MONITOR_STYLE="${BITIR_MACHINE_GPU_MONITOR_STYLE:-none}"
-DEVICE_VISIBLE_ENV="${BITIR_MACHINE_DEVICE_VISIBLE_ENV:?BITIR_MACHINE_DEVICE_VISIBLE_ENV is required}"
-DEVICE_VISIBLE_VALUE="${BITIR_MACHINE_DEVICE_VISIBLE_VALUE:?BITIR_MACHINE_DEVICE_VISIBLE_VALUE is required}"
-DEVICE_ORDER_ENV="${BITIR_MACHINE_DEVICE_ORDER_ENV:?BITIR_MACHINE_DEVICE_ORDER_ENV is required}"
-DEVICE_ORDER_VALUE="${BITIR_MACHINE_DEVICE_ORDER_VALUE:?BITIR_MACHINE_DEVICE_ORDER_VALUE is required}"
-RUNTIME_HOME="${BITIR_MACHINE_RUNTIME_HOME:-}"
-export CUDA_HOME="${CUDA_HOME:-${RUNTIME_HOME}}"
-if [[ -n "${CUDA_HOME}" ]]; then
-  export PATH="${CUDA_HOME}/bin:${PATH:-}"
-  export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
-fi
-if [[ -n "${DEVICE_ORDER_ENV}" ]]; then
-  export "${DEVICE_ORDER_ENV}=${!DEVICE_ORDER_ENV:-${DEVICE_ORDER_VALUE}}"
-fi
-if [[ -n "${DEVICE_VISIBLE_ENV}" ]]; then
-  export "${DEVICE_VISIBLE_ENV}=${!DEVICE_VISIBLE_ENV:-${DEVICE_VISIBLE_VALUE}}"
-fi
-export NVCC_PREPEND_FLAGS="${NVCC_PREPEND_FLAGS:-${BITIR_MACHINE_NVCC_PREPEND_FLAGS:---allow-unsupported-compiler}}"
-export HECBENCH_GPU_DEBUG="${HECBENCH_GPU_DEBUG:-0}"
-export CACHE_DEVICE_IR="${CACHE_DEVICE_IR:-1}"
-export GENERATE_IR_LL="${GENERATE_IR_LL:-0}"
-export MONITOR_GPU="${MONITOR_GPU:-0}"
-export MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
-export CPU_PER_GPU="${CPU_PER_GPU:-8}"
-
-# Per-GPU CPU parallelism to maximize compile/injection throughput.
-export CMAKE_BUILD_PARALLEL_LEVEL="${CPU_PER_GPU}"
-export MAKEFLAGS="-j${CPU_PER_GPU}"
-export NINJAFLAGS="-j${CPU_PER_GPU}"
-export OMP_NUM_THREADS="${CPU_PER_GPU}"
-export MKL_NUM_THREADS="${CPU_PER_GPU}"
-export OPENBLAS_NUM_THREADS="${CPU_PER_GPU}"
-
-ABS_TOL="${ABS_TOL:?ABS_TOL is required}"
-REL_TOL="${REL_TOL:?REL_TOL is required}"
-START_SITE="${START_SITE:-1}"
-CLEAN_RUN="${CLEAN_RUN:-0}"
-SKIP_EXISTING="${SKIP_EXISTING:-0}"
-COMPARE_MODE="${COMPARE_MODE:-exact}"
-RUN_BASELINE="${RUN_BASELINE:-1}"
-RESULTS_SUBDIR="${RESULTS_SUBDIR:-llvm17_inject}"
-RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE:-llvm17_inject}"
-WORKLIST_QUEUE="${WORKLIST_QUEUE:-1}"
-MAX_PAIRS="${MAX_PAIRS:-0}"
-PHASE="${PHASE:-}"
-PHASES="${PHASES:-}"
-INJECT_TARGET="${INJECT_TARGET:-result}"
-
-# If PHASE isn't set, infer it from INJECT_TARGET to avoid defaulting to float.
-if [[ -z "${PHASE}" ]]; then
+worklist_suffix() {
   case "${INJECT_TARGET}" in
-    operand) PHASE="operand" ;;
-    pointer) PHASE="pointer" ;;
-    *) PHASE="float" ;;
-  esac
-fi
-
-select_phase_defaults() {
-  case "${PHASE}" in
-    float|"")
-      INJECT_TARGET="${INJECT_TARGET:-result}"
-      if [[ -n "${RESULTS_SUBDIR_BASE}" ]]; then
-        RESULTS_SUBDIR="${RESULTS_SUBDIR_BASE}"
-      else
-        RESULTS_SUBDIR="${RESULTS_SUBDIR:-llvm17_inject}"
-      fi
-      PRUNED_SRC="${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}-sycl/worklist_sycl_aligned.csv"
-      PHASE_LABEL="float"
-      ;;
-    operand)
-      INJECT_TARGET="${INJECT_TARGET:-operand}"
-      if [[ -n "${RESULTS_SUBDIR_BASE}" ]]; then
-        RESULTS_SUBDIR="${RESULTS_SUBDIR_BASE}"
-      else
-        RESULTS_SUBDIR="${RESULTS_SUBDIR:-fi_operand}"
-      fi
-      PRUNED_SRC="${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}-sycl/worklist_operand_sycl_aligned.csv"
-      PHASE_LABEL="operand"
-      ;;
-    pointer)
-      INJECT_TARGET="${INJECT_TARGET:-pointer}"
-      if [[ -n "${RESULTS_SUBDIR_BASE}" ]]; then
-        RESULTS_SUBDIR="${RESULTS_SUBDIR_BASE}"
-      else
-        RESULTS_SUBDIR="${RESULTS_SUBDIR:-fi_pointer}"
-      fi
-      PRUNED_SRC="${REPO_ROOT}/HeCBench/results/llvm17_inject/${BENCH}-sycl/worklist_pointer_sycl_aligned.csv"
-      PHASE_LABEL="pointer"
-      ;;
-    *)
-      PRUNED_SRC=""
-      PHASE_LABEL="${PHASE:-float}"
-      ;;
+    operand) printf '%s\n' "_operand" ;;
+    pointer) printf '%s\n' "_pointer" ;;
+    *) printf '%s\n' "" ;;
   esac
 }
 
-select_phase_defaults
+need BITIR_WORKDIR
+need BITIR_MACHINE_BACKEND
+need BITIR_MACHINE_RESULTS_ROOT
+need BENCH
+need BITIR_SOURCE_DIR
 
-BENCH_RESULTS_ROOT="${REPO_ROOT}/HeCBench/results/${RESULTS_SUBDIR}/${BENCH}"
-RESULTS_DIR="${BENCH_RESULTS_ROOT}/${PHASE_LABEL}"
-WORKLIST_DEFAULT="${RESULTS_DIR}/worklist.csv"
-WORKLIST="${WORKLIST:-${WORKLIST_DEFAULT}}"
-WORKLIST_EXPLICIT=0
-if [[ "${WORKLIST}" != "${WORKLIST_DEFAULT}" ]]; then
-  WORKLIST_EXPLICIT=1
+REPO_ROOT="${REPO_ROOT:-${BITIR_WORKDIR}}"
+RUNNER="${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh"
+PLUGIN_BUILD="${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
+WORKLIST_TOOL="${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist.py"
+
+INJECT_TARGET="${INJECT_TARGET:-${BITIR_FAULT_MODEL_INJECT_TARGET:-result}}"
+INT_FLOAT_ONLY="${INT_FLOAT_ONLY:-${BITIR_FAULT_MODEL_INT_FLOAT_ONLY:-1}}"
+INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS:-${BITIR_FAULT_MODEL_INCLUDE_CONSTANTS:-0}}"
+PHASE="${PHASE:-${BITIR_FAULT_MODEL_PHASE:-float}}"
+RUN_BASELINE="${RUN_BASELINE:-0}"
+SKIP_EXISTING="${SKIP_EXISTING:-1}"
+MAX_RUNS="${MAX_INJECTIONS:-${MAX_PAIRS:-0}}"
+TRACE_REPEATS="${TRACE_REPEATS:-${BITIR_FAULT_MODEL_TRACE_REPEATS:-1}}"
+SITE_LIST="${SITE_LIST:-${BITIR_SITE_LIST:-${BITIR_FAULT_MODEL_SITE_LIST:-}}}"
+
+RESULTS_ROOT_REL="${BITIR_MACHINE_RESULTS_ROOT}"
+if [[ -n "${RESULTS_SUBDIR_BASE:-}" ]]; then
+  RESULTS_ROOT_REL="HeCBench/results/${RESULTS_SUBDIR_BASE}"
 fi
-BASELINE_FILE="${BASELINE_FILE:-${BENCH_RESULTS_ROOT}/baseline/${PHASE_LABEL}_baseline_${BENCH}.bin}"
-mkdir -p "${RESULTS_DIR}" "${BENCH_RESULTS_ROOT}/baseline"
-
-PRUNED_DST="${RESULTS_DIR}/worklist_pruned.csv"
-if [[ -n "${RESULTS_DIR_OVERRIDE:-}" ]]; then
-  RESULTS_DIR="${RESULTS_DIR_OVERRIDE}"
-  mkdir -p "${RESULTS_DIR}"
-  PRUNED_DST="${RESULTS_DIR}/worklist_pruned.csv"
-fi
-
-# Per-job queue files avoid cross-job contention and stale queue reuse.
-JOB_TAG="${QUEUE_TAG:-${PBS_JOBID%%.*}}"
-if [[ -z "${JOB_TAG}" ]]; then
-  JOB_TAG="local_${PHASE_LABEL}_$$"
-fi
-QUEUE_FILE="${RESULTS_DIR}/work_queue_${JOB_TAG}.csv"
-QUEUE_LOCK="${RESULTS_DIR}/work_queue_${JOB_TAG}.lock"
-TIMEOUT_ABORT_FLAG="${RESULTS_DIR}/timeout_abort.flag"
-
-if [[ "${WORKLIST_EXPLICIT}" -eq 0 ]]; then
-  if [[ -n "${WORKLIST_PRUNED:-}" && -f "${WORKLIST_PRUNED}" ]]; then
-    WORKLIST="${WORKLIST_PRUNED}"
-  elif [[ -n "${PRUNED_SRC:-}" && -f "${PRUNED_SRC}" ]]; then
-    if [[ ! -f "${PRUNED_DST}" || "${REBUILD_PRUNED_WORKLIST:-0}" -eq 1 ]]; then
-      cp -f "${PRUNED_SRC}" "${PRUNED_DST}"
-    fi
-    WORKLIST="${PRUNED_DST}"
-  fi
+RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/${RESULTS_ROOT_REL}/${BENCH}/${PHASE}}"
+WORKLIST_SUFFIX="$(worklist_suffix)"
+WORKLIST="${WORKLIST:-${RESULTS_DIR}/worklist${WORKLIST_SUFFIX}.csv}"
+if [[ -n "${SITE_LIST}" && "${SITE_LIST}" != /* ]]; then
+  SITE_LIST="${REPO_ROOT}/${SITE_LIST}"
 fi
 
-# Always build and use missing-only worklists unless explicitly disabled.
-MISSING_ONLY="${MISSING_ONLY:-1}"
+mkdir -p "${RESULTS_DIR}"
+cd "${REPO_ROOT}"
 
-if [[ "${WORKER:-0}" -ne 1 ]]; then
-  rm -f "${TIMEOUT_ABORT_FLAG}" || true
-  if [[ ! -s "${WORKLIST}" || "${REBUILD_WORKLIST:-0}" -eq 1 ]]; then
-    # Build the phase-specific worklist in RESULTS_DIR so queue/missing logic reads
-    # the same file that was just generated.
-    case "${PHASE_LABEL}" in
-      operand) wl_target="operand" ;;
-      pointer) wl_target="pointer" ;;
-      *) wl_target="result" ;;
-    esac
-    WORKLIST_EXCLUDE_ARGS=()
-    if [[ -n "${EXCLUDE_GIT_REF:-}" ]]; then
-      IFS=',' read -r -a exclude_git_refs <<< "${EXCLUDE_GIT_REF}"
-      for ref in "${exclude_git_refs[@]}"; do
-        if [[ -n "${ref}" ]]; then
-          WORKLIST_EXCLUDE_ARGS+=(--exclude-git-ref "${ref}")
-        fi
-      done
-    fi
-    if [[ -n "${EXCLUDE_SUMMARY_CSVS:-}" ]]; then
-      IFS=',' read -r -a exclude_summaries <<< "${EXCLUDE_SUMMARY_CSVS}"
-      for summary_csv in "${exclude_summaries[@]}"; do
-        if [[ -n "${summary_csv}" ]]; then
-          WORKLIST_EXCLUDE_ARGS+=(--exclude-summary "${summary_csv}")
-        fi
-      done
-    fi
-    rel_worklist="${PHASE_LABEL}/worklist.csv"
-    rel_sites="${PHASE_LABEL}/sites.csv"
-    python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build_bench_worklist.py" \
-      --bench "${BENCH}" \
-      --target "${wl_target}" \
-      --worklist "${rel_worklist}" \
-      --sites "${rel_sites}" \
-      "${WORKLIST_EXCLUDE_ARGS[@]}"
-  fi
-fi
-
-if [[ "${MISSING_ONLY:-0}" -eq 1 && "${WORKER:-0}" -ne 1 ]]; then
-  if ls "${RESULTS_DIR}"/summary_node*_gpu*.csv >/dev/null 2>&1; then
-    BENCH="${BENCH}" python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/merge_bench_summaries.py"
-  fi
-  echo "[missing-only] building missing worklist for ${BENCH}"
-  RESULTS_DIR="${RESULTS_DIR}" WORKLIST="${WORKLIST}" BENCH="${BENCH}" python3 - <<'PY'
-import csv
-import io
-import os
-
-bench = os.environ.get("BENCH")
-results_dir = os.environ.get("RESULTS_DIR")
-worklist = os.environ.get("WORKLIST")
-missing_path = os.path.join(results_dir, "worklist_missing.csv")
-
-with open(worklist, "rb") as fh, open(missing_path, "w", newline="") as out:
-    raw = fh.read().replace(b"\x00", b"")
-    text = raw.decode("utf-8", errors="replace")
-    r = csv.DictReader(io.StringIO(text))
-    fieldnames = list(r.fieldnames) if r.fieldnames else ["site_id", "bit_index"]
-    w = csv.DictWriter(out, fieldnames=fieldnames)
-    w.writeheader()
-    if not r.fieldnames:
-        # Empty/corrupt worklist: keep header-only file so caller exits cleanly.
-        raise SystemExit(0)
-    def out_is_usable(path):
-        if (not os.path.exists(path)) or os.path.getsize(path) == 0:
-            return False
-        with open(path, "rb") as pf:
-            blob = pf.read()
-        if b"\x00" in blob:
-            return False
-        text = blob.decode("utf-8", errors="ignore").lower()
-        # Taxonomy-complete: explicit compare marker or explicit DUE.
-        return (
-            ("result: masked" in text) or
-            ("result: sdc" in text) or
-            ("compare_ok" in text) or
-            ("compare_exact" in text) or
-            ("compare_mismatch" in text) or
-            ("\nmismatch\n" in ("\n" + text + "\n")) or
-            ("result: due" in text)
-        )
-    for row in r:
-        try:
-            key = (int(row["site_id"]), int(row["bit_index"]))
-        except Exception:
-            continue
-        out_path = os.path.join(results_dir, f"site{key[0]}_bit{key[1]}.out")
-        if not out_is_usable(out_path):
-            w.writerow(row)
-
-print(f"[missing-only] wrote {missing_path}")
-PY
-  WORKLIST="${RESULTS_DIR}/worklist_missing.csv"
-  echo "[missing-only] using ${WORKLIST}"
-  SKIP_EXISTING=0
-  missing_count=$(awk 'NR>1' "${WORKLIST}" | wc -l)
-  echo "[missing-only] count=${missing_count}"
-  if [[ "${missing_count}" -eq 0 ]]; then
-    echo "[missing-only] no missing pairs; exiting."
-    exit 0
-  fi
-fi
-
-echo "[env] BENCH=${BENCH}"
-echo "[env] REPO_ROOT=${REPO_ROOT}"
-echo "[env] runtime_home=${CUDA_HOME}"
-echo "[env] ${DEVICE_VISIBLE_ENV}=${!DEVICE_VISIBLE_ENV:-}"
-echo "[env] ABS_TOL=${ABS_TOL} REL_TOL=${REL_TOL}"
-echo "[env] START_SITE=${START_SITE} CLEAN_RUN=${CLEAN_RUN}"
-echo "[env] SKIP_EXISTING=${SKIP_EXISTING}"
-echo "[env] COMPARE_MODE=${COMPARE_MODE}"
-echo "[env] WORKLIST_QUEUE=${WORKLIST_QUEUE} MISSING_ONLY=${MISSING_ONLY:-0}"
-echo "[env] RESULTS_SUBDIR=${RESULTS_SUBDIR}"
-echo "[env] RESULTS_DIR=${RESULTS_DIR}"
-echo "[env] WORKLIST=${WORKLIST}"
-echo "[env] QUEUE_FILE=${QUEUE_FILE}"
-echo "[env] MAX_PAIRS=${MAX_PAIRS}"
-echo "[env] PHASE=${PHASE}"
-echo "[env] PHASES=${PHASES}"
-echo "[env] INJECT_TARGET=${INJECT_TARGET}"
-echo "[env] start=$(date)"
-echo "[timing] workers_start=$(date +\"%s\")"
-
-if [[ "${GPU_MONITOR_STYLE}" == "nvidia_smi" ]] && command -v "${GPU_QUERY_TOOL}" &> /dev/null; then
-  echo "[env] ${GPU_QUERY_TOOL} -L"
-  "${GPU_QUERY_TOOL}" -L || true
-  echo "[env] ${GPU_QUERY_TOOL} compute mode"
-  "${GPU_QUERY_TOOL}" -q | egrep -i "Compute Mode|Persistence Mode" || true
-fi
-
-if [[ -n "${PBS_GPUFILE:-}" && -f "${PBS_GPUFILE}" ]]; then
-  GPU_IDS=$(cut -d' ' -f1 "${PBS_GPUFILE}" | sort -u | tr '\n' ' ')
-  export "${DEVICE_VISIBLE_ENV}="
-  for id in ${GPU_IDS}; do
-    idx=$("${GPU_QUERY_TOOL}" -L | nl -v0 -w1 -s: | awk -v needle="${id}" '$0 ~ needle {print $1}' | head -n1)
-    if [[ -n "${idx}" ]]; then
-      if [[ -z "${!DEVICE_VISIBLE_ENV:-}" ]]; then
-        export "${DEVICE_VISIBLE_ENV}=${idx}"
-      else
-        export "${DEVICE_VISIBLE_ENV}=${!DEVICE_VISIBLE_ENV},${idx}"
-      fi
-    fi
-  done
-fi
-
-if [[ -n "${!DEVICE_VISIBLE_ENV:-}" ]]; then
-  GPU_COUNT=$(echo "${!DEVICE_VISIBLE_ENV}" | awk -F',' '{print NF}')
-else
-  if [[ "${GPU_MONITOR_STYLE}" == "nvidia_smi" ]] && command -v "${GPU_QUERY_TOOL}" &> /dev/null; then
-    GPU_COUNT=$("${GPU_QUERY_TOOL}" -L | wc -l)
-  else
-    GPU_COUNT=1
-  fi
-fi
-export GPU_COUNT
-echo "[env] GPU_COUNT=${GPU_COUNT}"
-MONITOR_GPU="${MONITOR_GPU:-0}"
-MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}"
-echo "[env] MONITOR_GPU=${MONITOR_GPU} MONITOR_INTERVAL=${MONITOR_INTERVAL}"
-INJECT_TIMEOUT_SEC="${INJECT_TIMEOUT_SEC:-${BITIR_TIMEOUT_SEC}}"
-SERIAL_DEBUG_MODE="${SERIAL_DEBUG_MODE:-0}"
-if [[ "${SERIAL_DEBUG_MODE}" -eq 1 ]]; then
-  GPU_COUNT=1
-fi
-echo "[env] INJECT_TIMEOUT_SEC=${INJECT_TIMEOUT_SEC} SERIAL_DEBUG_MODE=${SERIAL_DEBUG_MODE}"
-
-bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
-
-PLUGIN_SRC="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libfi_inject.so"
-if [[ ! -s "${PLUGIN_SRC}" ]]; then
-  echo "[error] missing or empty plugin: ${PLUGIN_SRC}"
+if [[ ! -f "${RUNNER}" ]]; then
+  echo "missing runner: ${RUNNER}" >&2
   exit 1
 fi
-# Use the stable plugin path directly to avoid partial copies on shared FS.
-export PLUGIN="${PLUGIN_SRC}"
+if [[ ! -f "${WORKLIST_TOOL}" ]]; then
+  echo "missing worklist tool: ${WORKLIST_TOOL}" >&2
+  exit 1
+fi
 
-if [[ "${WORKLIST_QUEUE}" -eq 1 && "${WORKER:-0}" -ne 1 ]]; then
-  echo "[queue] building work queue ${QUEUE_FILE}"
-  RESULTS_DIR="${RESULTS_DIR}" WORKLIST="${WORKLIST}" MAX_PAIRS="${MAX_PAIRS}" QUEUE_FILE="${QUEUE_FILE}" python3 - <<'PY'
-import csv, io, os
-max_pairs = int(os.environ.get("MAX_PAIRS", "0") or "0")
-results_dir = os.environ["RESULTS_DIR"]
-worklist = os.environ["WORKLIST"]
-queue_path = os.environ.get("QUEUE_FILE", os.path.join(results_dir, "work_queue.csv"))
+echo "[deploy] bench=${BENCH}"
+echo "[deploy] backend=${BITIR_MACHINE_BACKEND}"
+echo "[deploy] results=${RESULTS_DIR}"
+echo "[deploy] target=${INJECT_TARGET}"
 
-def get_pair(row):
-    site = row.get("site_id") or row.get("site") or row.get("Site")
-    bit = row.get("bit_index") or row.get("bit") or row.get("BIT_INDEX")
-    if site is None or bit is None:
-        return None
-    return int(site), int(bit)
+bash "${PLUGIN_BUILD}"
 
-with open(worklist, "rb") as fh, open(queue_path, "w", newline="") as out:
-    raw = fh.read().replace(b"\x00", b"")
-    r = csv.DictReader(io.StringIO(raw.decode("utf-8", errors="replace")))
-    w = csv.writer(out)
-    w.writerow(["site_id", "bit_index"])
-    count = 0
-    def out_is_usable(path):
-        if (not os.path.exists(path)) or os.path.getsize(path) == 0:
-            return False
-        with open(path, "rb") as pf:
-            blob = pf.read()
-        if b"\x00" in blob:
-            return False
-        text = blob.decode("utf-8", errors="ignore").lower()
-        return (
-            ("result: masked" in text) or
-            ("result: sdc" in text) or
-            ("compare_ok" in text) or
-            ("compare_exact" in text) or
-            ("compare_mismatch" in text) or
-            ("\nmismatch\n" in ("\n" + text + "\n")) or
-            ("result: due" in text)
-        )
-    for row in r:
-        pair = get_pair(row)
-        if pair is None:
-            continue
-        out_path = os.path.join(results_dir, f"site{pair[0]}_bit{pair[1]}.out")
-        if not out_is_usable(out_path):
-            w.writerow([pair[0], pair[1]])
-            count += 1
-            if max_pairs and count >= max_pairs:
-                break
-PY
-  if [[ -f "${QUEUE_FILE}" ]]; then
-    qlines=$(wc -l < "${QUEUE_FILE}")
-    echo "[queue] queue_lines=${qlines} (includes header)"
-    if (( qlines <= 1 )); then
-      echo "[queue] no pending pairs after rebuild; exiting."
-      exit 0
-    fi
+python3 "${WORKLIST_TOOL}" \
+  --bench "${BENCH}" \
+  --backend "${BITIR_MACHINE_BACKEND}" \
+  --source-dir "${BITIR_SOURCE_DIR}" \
+  --target "${INJECT_TARGET}" \
+  --int-float-only "${INT_FLOAT_ONLY}" \
+  --include-constants "${INCLUDE_CONSTANTS}" \
+  --worklist "${WORKLIST}"
+
+if [[ ! -s "${WORKLIST}" ]]; then
+  echo "empty worklist: ${WORKLIST}" >&2
+  exit 1
+fi
+
+if [[ "${RUN_BASELINE}" == "1" ]]; then
+  IFS=, read -r _ baseline_site baseline_bit _ < <(tail -n +2 "${WORKLIST}" | head -n 1)
+  if [[ -z "${baseline_site:-}" || -z "${baseline_bit:-}" ]]; then
+    echo "failed to read first site from ${WORKLIST}" >&2
+    exit 1
   fi
+  echo "[deploy] baseline site=${baseline_site} bit=${baseline_bit}"
+  BASELINE=1 SITE_ID="${baseline_site}" BIT_INDEX="${baseline_bit}" RESULTS_DIR="${RESULTS_DIR}" \
+    bash "${RUNNER}"
 fi
 
-if [[ "${QUEUE_ONLY}" -eq 1 ]]; then
-  exit 0
-fi
-
-if [[ -n "${PHASES}" && "${WORKER:-0}" -ne 1 ]]; then
-  for p in ${PHASES}; do
-    # Build queue for this phase and skip if empty (avoid idle jobs).
-    PHASE="${p}" RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE}" \
-      WORKLIST_QUEUE="${WORKLIST_QUEUE}" MAX_PAIRS="${MAX_PAIRS}" \
-      MISSING_ONLY="${MISSING_ONLY:-0}" SKIP_EXISTING="${SKIP_EXISTING}" \
-      REPO_ROOT="${REPO_ROOT}" BENCH="${BENCH}" \
-      bash "${PBS_O_WORKDIR:-$(pwd)}/HeCBench/llvm17_inject_bench_sweep.pbs" --queue-only || true
-    if [[ "${WORKLIST_QUEUE}" -eq 1 && -f "${QUEUE_FILE}" ]]; then
-      qlines=$(wc -l < "${QUEUE_FILE}")
-      if (( qlines <= 1 )); then
-        echo "[phase] ${p} empty queue, skipping $(date)"
-        continue
-      fi
-    fi
-    echo "[phase] start ${p} $(date)"
-    phase_start=$(date +%s)
-    PHASE="${p}" PHASES="" RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE}" \
-      WORKLIST_QUEUE="${WORKLIST_QUEUE}" MAX_PAIRS="${MAX_PAIRS}" \
-      MISSING_ONLY="${MISSING_ONLY:-0}" SKIP_EXISTING="${SKIP_EXISTING}" \
-      REPO_ROOT="${REPO_ROOT}" BENCH="${BENCH}" \
-      bash "${PBS_O_WORKDIR:-$(pwd)}/HeCBench/llvm17_inject_bench_sweep.pbs" || phase_status=$?
-    phase_end=$(date +%s)
-    phase_dur=$((phase_end - phase_start))
-    echo "[phase] end ${p} $(date) duration_s=${phase_dur} status=${phase_status:-0}"
-    if [[ "${phase_status:-0}" -eq 3 ]]; then
-      echo "[phase] aborting due to baseline mismatch"
-      exit 3
-    fi
-    unset phase_status
-  done
-  exit 0
-fi
-
-if [[ "${CLEAN_RUN}" -eq 1 ]]; then
-  rm -f "${RESULTS_DIR}"/summary_node*_gpu*.csv "${RESULTS_DIR}/summary.csv" "${RESULTS_DIR}/summary_counts.txt" || true
-fi
-
-if [[ -n "${PBS_NODEFILE:-}" && -f "${PBS_NODEFILE}" ]]; then
-  NODE_COUNT=$(uniq "${PBS_NODEFILE}" | wc -l)
-else
-  NODE_COUNT="${NODE_COUNT:-1}"
-fi
-echo "[env] NODE_COUNT=${NODE_COUNT}"
-
-if [[ "${WORKER:-0}" -eq 1 ]]; then
-  TASK_ID="${TASK_ID:-0}"
-  TOTAL_WORKERS=$((NODE_COUNT * GPU_COUNT))
-  echo "[worker] task=${TASK_ID} gpus=${GPU_COUNT} total_workers=${TOTAL_WORKERS}"
-
-  pop_next_pair() {
-    python3 - "${QUEUE_FILE}" "${QUEUE_LOCK}" <<'PY'
-import csv, fcntl, io, os, sys, tempfile, time
-queue, lock = sys.argv[1], sys.argv[2]
-if not os.path.exists(queue):
-    print("")
-    raise SystemExit(0)
-attempts = 5
-pair_out = ""
-with open(lock, "a+") as lf:
-    for _ in range(attempts):
-        try:
-            fcntl.flock(lf, fcntl.LOCK_EX)
-            with open(queue, "rb") as qf:
-                raw = qf.read()
-            if b"\x00" in raw:
-                raw = raw.replace(b"\x00", b"")
-            text = raw.decode("utf-8", errors="replace")
-            rows = list(csv.reader(io.StringIO(text)))
-            if len(rows) <= 1:
-                pair_out = ""
-                break
-            header = rows[0]
-            pair = rows[1]
-            rest = rows[2:]
-            d = os.path.dirname(queue) or "."
-            fd, tmp_path = tempfile.mkstemp(prefix=".work_queue.", suffix=".csv", dir=d)
-            try:
-                with os.fdopen(fd, "w", newline="") as qf:
-                    w = csv.writer(qf)
-                    w.writerow(header)
-                    w.writerows(rest)
-                    qf.flush()
-                    os.fsync(qf.fileno())
-                os.replace(tmp_path, queue)
-            finally:
-                if os.path.exists(tmp_path):
-                    os.unlink(tmp_path)
-            pair_out = ",".join(pair)
-            break
-        except Exception:
-            time.sleep(0.05)
-        finally:
-            fcntl.flock(lf, fcntl.LOCK_UN)
-print(pair_out)
-PY
-  }
-
-  run_injection_with_timeout() {
-    local gpu_id="$1"
-    local site="$2"
-    local bit="$3"
-    local out_dir="$4"
-    local csv="$5"
-    local rc=0
-    local run_cmd=(bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh")
-    if [[ "${INJECT_TIMEOUT_SEC}" -gt 0 ]] && command -v timeout >/dev/null 2>&1; then
-      env "${DEVICE_VISIBLE_ENV}=${gpu_id}" \
-      SITE_ID="${site}" \
-      BIT_INDEX="${bit}" \
-      ABS_TOL="${ABS_TOL}" \
-      REL_TOL="${REL_TOL}" \
-      START_SITE="${START_SITE}" \
-      SKIP_EXISTING="${SKIP_EXISTING}" \
-      OUT_DIR="${out_dir}" \
-      RESULTS_DIR="${RESULTS_DIR}" \
-      CSV="${csv}" \
-      REPO_ROOT="${REPO_ROOT}" \
-      CUDA_HOME="${CUDA_HOME}" \
-      BENCH="${BENCH}" \
-      COMPARE_MODE="${COMPARE_MODE}" \
-      INJECT_TARGET="${INJECT_TARGET}" \
-      timeout "${INJECT_TIMEOUT_SEC}" "${run_cmd[@]}" || rc=$?
-      if [[ "${rc}" -eq 124 ]]; then
-        {
-          echo "Result: DUE (exit timeout_${INJECT_TIMEOUT_SEC}s)"
-          echo "[runner] timeout after ${INJECT_TIMEOUT_SEC}s for site=${site} bit=${bit}"
-          echo "failure_kind=hang_timeout"
-        } >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
-        if [[ ! -f "${csv}" ]]; then
-          echo "site_id,bit_index,result,exit_code,failure_kind,failure_signal,stdout,stderr,dump,metric_abs_max,metric_mean_abs,metric_rmse,metric_max_rel,metric_mean_rel,metric_p95_abs,metric_p99_abs,metric_num_bad,metric_frac_bad,metric_max_ulp,metric_mean_ulp,metric_ham_bits,metric_ham_bytes,metric_size_bytes" > "${csv}"
-        fi
-        printf '%s\n' "${site},${bit},DUE,timeout_${INJECT_TIMEOUT_SEC}s,hang_timeout,,${RESULTS_DIR}/site${site}_bit${bit}.out,,,,,,,,,,,,,,,," >> "${csv}"
-      fi
-    else
-      rc=0
-      env "${DEVICE_VISIBLE_ENV}=${gpu_id}" \
-      SITE_ID="${site}" \
-      BIT_INDEX="${bit}" \
-      ABS_TOL="${ABS_TOL}" \
-      REL_TOL="${REL_TOL}" \
-      START_SITE="${START_SITE}" \
-      SKIP_EXISTING="${SKIP_EXISTING}" \
-      OUT_DIR="${out_dir}" \
-      RESULTS_DIR="${RESULTS_DIR}" \
-      CSV="${csv}" \
-      REPO_ROOT="${REPO_ROOT}" \
-      CUDA_HOME="${CUDA_HOME}" \
-      BENCH="${BENCH}" \
-      COMPARE_MODE="${COMPARE_MODE}" \
-      INJECT_TARGET="${INJECT_TARGET}" \
-      "${run_cmd[@]}" || rc=$?
-    fi
-    return "${rc}"
-  }
-
-  run_worker_gpu() {
-    local gpu_id=$1
-    local worker_rank=$((TASK_ID * GPU_COUNT + gpu_id))
-    local processed=0
-    local timeout_streak=0
-    local timeout_streak_abort="${TIMEOUT_STREAK_ABORT:-0}"
-    export "${DEVICE_VISIBLE_ENV}=${gpu_id}"
-    local out_dir_base
-    if [[ -n "${PBS_JOBTMP:-}" && -d "${PBS_JOBTMP}" ]]; then
-      out_dir_base="${PBS_JOBTMP}"
-    elif [[ -n "${TMPDIR:-}" && -d "${TMPDIR}" ]]; then
-      out_dir_base="${TMPDIR}"
-    else
-      out_dir_base="/tmp"
-    fi
-    local out_dir="${out_dir_base}/llvm17-inject-${BENCH}-node${TASK_ID}_gpu${gpu_id}"
-    local csv="${RESULTS_DIR}/summary_node${TASK_ID}_gpu${gpu_id}.csv"
-    echo "[worker] rank=${worker_rank} gpu=${gpu_id} out_dir=${out_dir}"
-    if [[ -f "${QUEUE_FILE}" ]]; then
-      qlines=$(wc -l < "${QUEUE_FILE}")
-      echo "[worker] initial_queue_lines=${qlines} (includes header)"
-    fi
-    echo "[heartbeat] $(date +"%Y-%m-%d %H:%M:%S") bench=${BENCH} node=${TASK_ID} gpu=${gpu_id} host=$(hostname) out_dir=${out_dir}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-
-    # GPU binding snapshot per worker.
-    if [[ "${GPU_MONITOR_STYLE}" == "nvidia_smi" ]] && [[ -x "$(command -v "${GPU_QUERY_TOOL}")" ]]; then
-      local gpu_uuid
-      gpu_uuid=$("${GPU_QUERY_TOOL}" --query-gpu=index,uuid --format=csv,noheader | awk -F',' -v idx="${gpu_id}" '$1+0==idx{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}')
-      echo "[worker] gpu_bind node=${TASK_ID} gpu=${gpu_id} uuid=${gpu_uuid} visible=${!DEVICE_VISIBLE_ENV:-}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-    fi
-
-    local monitor_pid=""
-    if [[ "${MONITOR_GPU}" -eq 1 && "${gpu_id}" -eq 0 && "${GPU_MONITOR_STYLE}" == "nvidia_smi" && -x "$(command -v "${GPU_QUERY_TOOL}")" ]]; then
-      local monitor_log="${RESULTS_DIR}/gpu_monitor_node${TASK_ID}.csv"
-      if [[ ! -f "${monitor_log}" ]]; then
-        echo "timestamp,host,jobid,index,uuid,util.gpu,util.mem,mem.used" > "${monitor_log}"
-      fi
-      (
-        while true; do
-          "${GPU_QUERY_TOOL}" --query-gpu=timestamp,uuid,index,utilization.gpu,utilization.memory,memory.used \
-            --format=csv,noheader | awk -v host="$(hostname)" -v job="${PBS_JOBID:-local}" \
-            '{print $1","host","job","$3","$2","$4","$5","$6}' >> "${monitor_log}"
-          sleep "${MONITOR_INTERVAL}"
-        done
-      ) &
-      monitor_pid=$!
-      echo "[gpu-monitor] node=${TASK_ID} pid=${monitor_pid} log=${monitor_log}"
-    fi
-
-    if [[ "${RUN_BASELINE}" -eq 1 && "${TASK_ID}" -eq 0 && "${gpu_id}" -eq 0 ]]; then
-      # Clear stale baseline mismatch flags from prior jobs before rechecking baseline.
-      rm -f "${RESULTS_DIR}/baseline_mismatch.flag"
-      env "${DEVICE_VISIBLE_ENV}=${gpu_id}" \
-      BASELINE=1 \
-      SITE_ID=0 \
-      BIT_INDEX=0 \
-      ABS_TOL="${ABS_TOL}" \
-      REL_TOL="${REL_TOL}" \
-      OUT_DIR="${out_dir}" \
-      RESULTS_DIR="${RESULTS_DIR}" \
-      REPO_ROOT="${REPO_ROOT}" \
-      CUDA_HOME="${CUDA_HOME}" \
-      BENCH="${BENCH}" \
-      COMPARE_MODE="${COMPARE_MODE}" \
-      INJECT_TARGET="${INJECT_TARGET}" \
-      bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" || true
-      BASELINE_ERR="${RESULTS_DIR}/baseline/baseline.err"
-      BASELINE_OUT="${RESULTS_DIR}/baseline/baseline.out"
-      BASELINE_META="${RESULTS_DIR}/baseline/baseline_meta.txt"
-      if [[ -s "${BASELINE_ERR}" ]]; then
-        if grep -qv "err=no error" "${BASELINE_ERR}"; then
-          echo "[baseline] non-empty error log: ${BASELINE_ERR}"
-          touch "${RESULTS_DIR}/baseline_mismatch.flag"
-        else
-          echo "[baseline] only trivial gpu-debug lines in ${BASELINE_ERR}"
-        fi
-      fi
-      baseline_result=""
-      if [[ -f "${BASELINE_META}" ]]; then
-        baseline_result="$(awk -F= '$1=="result"{print $2}' "${BASELINE_META}" | tail -n1)"
-      fi
-      if [[ -n "${baseline_result}" && "${baseline_result}" != "BASELINE" ]]; then
-        echo "[baseline] mismatch detected in ${BASELINE_META} result=${baseline_result}"
-        touch "${RESULTS_DIR}/baseline_mismatch.flag"
-      elif [[ -f "${BASELINE_OUT}" ]] && grep -q "BASELINE_MISMATCH" "${BASELINE_OUT}"; then
-        echo "[baseline] mismatch detected in ${BASELINE_OUT}"
-        touch "${RESULTS_DIR}/baseline_mismatch.flag"
-      fi
-      if [[ -f "${RESULTS_DIR}/baseline_mismatch.flag" ]]; then
-        echo "[baseline] aborting due to baseline mismatch/errors"
-        exit 3
-      fi
-    fi
-
-    if [[ "${WORKLIST_QUEUE}" -eq 1 ]]; then
-      while true; do
-        # If busy/unavailable flag is set, throttle to a single GPU worker.
-        if [[ -f "${RESULTS_DIR}/gpu_busy.flag" && "${gpu_id}" -ne 0 ]]; then
-          echo "[worker] gpu_busy flag present; throttling gpu=${gpu_id}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-          break
-        fi
-
-        # Log per-GPU memory usage before each injection.
-        if [[ "${GPU_MONITOR_STYLE}" == "nvidia_smi" ]] && [[ -x "$(command -v "${GPU_QUERY_TOOL}")" ]]; then
-          "${GPU_QUERY_TOOL}" -i "${gpu_id}" --query-gpu=index,uuid,memory.used,memory.total --format=csv,noheader | \
-            awk -v host="$(hostname)" -v job="${PBS_JOBID:-local}" -v node="${TASK_ID}" -v gpu="${gpu_id}" \
-              '{print "[gpu-mem] host="host" job="job" node="node" worker_gpu="gpu" idx="$1" uuid="$2" used="$3" total="$4}' \
-              >> "${RESULTS_DIR}/worker_heartbeats.txt"
-        fi
-
-        pair="$(pop_next_pair)"
-        if [[ -z "${pair}" ]]; then
-          echo "[worker] queue_empty processed=${processed} node=${TASK_ID} gpu=${gpu_id}"
-          break
-        fi
-        if [[ -f "${TIMEOUT_ABORT_FLAG}" ]]; then
-          echo "[worker] timeout abort flag detected; stopping node=${TASK_ID} gpu=${gpu_id}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-          break
-        fi
-        IFS=, read -r site bit <<< "${pair}"
-        if [[ -z "${site}" || -z "${bit}" ]]; then
-          continue
-        fi
-        processed=$((processed + 1))
-        if (( processed % 10 == 0 )); then
-          echo "[worker] progress processed=${processed} node=${TASK_ID} gpu=${gpu_id}"
-        fi
-        pair_start="$(date +%s)"
-        echo "[worker] start node=${TASK_ID} gpu=${gpu_id} site=${site} bit=${bit} ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-        pair_rc=0
-        run_injection_with_timeout "${gpu_id}" "${site}" "${bit}" "${out_dir}" "${csv}" || pair_rc=$?
-        pair_end="$(date +%s)"
-        pair_dur=$((pair_end - pair_start))
-        echo "[worker] end node=${TASK_ID} gpu=${gpu_id} site=${site} bit=${bit} rc=${pair_rc} dur_s=${pair_dur} ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-        if [[ "${pair_rc}" -eq 124 ]]; then
-          timeout_streak=$((timeout_streak + 1))
-          echo "[worker] timeout streak node=${TASK_ID} gpu=${gpu_id} streak=${timeout_streak}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-          if [[ "${timeout_streak_abort}" -gt 0 && "${timeout_streak}" -ge "${timeout_streak_abort}" ]]; then
-            echo "[worker] timeout abort threshold reached node=${TASK_ID} gpu=${gpu_id} streak=${timeout_streak}" >> "${RESULTS_DIR}/worker_heartbeats.txt"
-            touch "${TIMEOUT_ABORT_FLAG}"
-            break
-          fi
-        else
-          timeout_streak=0
-        fi
-        if [[ ! -f "${RESULTS_DIR}/site${site}_bit${bit}.out" ]]; then
-          echo "Result: FAILURE (exit missing_out)" > "${RESULTS_DIR}/site${site}_bit${bit}.out"
-          echo "[runner] missing out file; created failure stub for site=${site} bit=${bit}" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
-          echo "failure_kind=missing_out_stub" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
-        fi
-      done
-    else
-      while IFS= read -r line; do
-        [[ -z "${line}" ]] && continue
-        idx="$(printf '%s' "${line}" | cut -d, -f1)"
-        site="$(printf '%s' "${line}" | cut -d, -f2)"
-        bit="$(printf '%s' "${line}" | cut -d, -f3)"
-        if [[ "${idx}" == "index" || "${idx}" == "site_id" || -z "${idx}" ]]; then
-          continue
-        fi
-        if [[ ! "${site}" =~ ^[0-9]+$ || ! "${bit}" =~ ^[0-9]+$ ]]; then
-          continue
-        fi
-        if (( site < START_SITE )); then
-          continue
-        fi
-        if (( (idx - 1) % TOTAL_WORKERS != worker_rank )); then
-          continue
-        fi
-        processed=$((processed + 1))
-        run_injection_with_timeout "${gpu_id}" "${site}" "${bit}" "${out_dir}" "${csv}"
-        if [[ ! -f "${RESULTS_DIR}/site${site}_bit${bit}.out" ]]; then
-          echo "Result: FAILURE (exit missing_out)" > "${RESULTS_DIR}/site${site}_bit${bit}.out"
-          echo "[runner] missing out file; created failure stub for site=${site} bit=${bit}" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
-          echo "failure_kind=missing_out_stub" >> "${RESULTS_DIR}/site${site}_bit${bit}.out"
-        fi
-      done < "${WORKLIST}"
-    fi
-
-    if [[ "${DEBUG_WORKLIST:-0}" -eq 1 ]]; then
-      echo "[worker] rank=${worker_rank} processed=${processed}" >> "${RESULTS_DIR}/worker_counts.txt"
-    fi
-
-    if [[ -n "${monitor_pid}" ]]; then
-      kill "${monitor_pid}" >/dev/null 2>&1 || true
-    fi
-  }
-
-  for gpu_id in $(seq 0 $((GPU_COUNT - 1))); do
-    run_worker_gpu "${gpu_id}" &
-  done
-  wait
-  if [[ -f "${TIMEOUT_ABORT_FLAG}" ]]; then
-    echo "[worker] timeout abort flag present after worker wait; exiting job."
-    exit 4
+count=0
+INPUT_LIST="${WORKLIST}"
+if [[ -n "${SITE_LIST}" ]]; then
+  if [[ ! -f "${SITE_LIST}" ]]; then
+    echo "missing site list: ${SITE_LIST}" >&2
+    exit 1
   fi
-  echo "[timing] workers_end=$(date +\"%s\")"
-  exit 0
+  INPUT_LIST="${SITE_LIST}"
 fi
 
-if command -v pbsdsh &> /dev/null; then
-  for i in $(seq 0 $((NODE_COUNT - 1))); do
-    pbsdsh -n "$i" -- bash -lc "WORKER=1 TASK_ID=${i} NODE_COUNT=${NODE_COUNT} GPU_COUNT=${GPU_COUNT} ABS_TOL=${ABS_TOL} REL_TOL=${REL_TOL} CUDA_HOME=${CUDA_HOME} REPO_ROOT=${REPO_ROOT} BENCH=${BENCH} COMPARE_MODE=${COMPARE_MODE} RESULTS_SUBDIR=${RESULTS_SUBDIR} RESULTS_SUBDIR_BASE=${RESULTS_SUBDIR_BASE} RESULTS_DIR_OVERRIDE=${RESULTS_DIR_OVERRIDE:-} WORKLIST=${WORKLIST} WORKLIST_QUEUE=${WORKLIST_QUEUE} MAX_PAIRS=${MAX_PAIRS} MISSING_ONLY=${MISSING_ONLY:-0} SKIP_EXISTING=${SKIP_EXISTING} INJECT_TARGET=${INJECT_TARGET} PHASE=${PHASE} PLUGIN=${PLUGIN} INJECT_TIMEOUT_SEC=${INJECT_TIMEOUT_SEC} TIMEOUT_STREAK_ABORT=${TIMEOUT_STREAK_ABORT:-0} SERIAL_DEBUG_MODE=${SERIAL_DEBUG_MODE} MONITOR_GPU=${MONITOR_GPU:-0} MONITOR_INTERVAL=${MONITOR_INTERVAL:-300} RANDOMACCESS_REPEAT=${RANDOMACCESS_REPEAT:-} PBS_JOBTMP=${PBS_JOBTMP:-} TMPDIR=${TMPDIR:-} DEVICE_VISIBLE_ENV=${DEVICE_VISIBLE_ENV} GPU_QUERY_TOOL=${GPU_QUERY_TOOL} bash ${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs" &
-  done
-  wait
-  if [[ -f "${TIMEOUT_ABORT_FLAG}" ]]; then
-    echo "[runner] timeout abort flag present after node fanout; exiting job."
-    exit 4
+while IFS=, read -r a b c _; do
+  site_id="${a}"
+  bit_index="${b}"
+  if [[ "${a}" =~ ^[0-9]+$ && "${b}" =~ ^[0-9]+$ && "${c:-}" =~ ^[0-9]+$ ]]; then
+    site_id="${b}"
+    bit_index="${c}"
   fi
-else
-  echo "pbsdsh not available; running single-node worker."
-  WORKER=1 TASK_ID=0 NODE_COUNT=1 GPU_COUNT="${GPU_COUNT}" BENCH="${BENCH}" COMPARE_MODE="${COMPARE_MODE}" RESULTS_SUBDIR="${RESULTS_SUBDIR}" RESULTS_SUBDIR_BASE="${RESULTS_SUBDIR_BASE}" RESULTS_DIR_OVERRIDE="${RESULTS_DIR_OVERRIDE:-}" WORKLIST="${WORKLIST}" WORKLIST_QUEUE="${WORKLIST_QUEUE}" MAX_PAIRS="${MAX_PAIRS}" MISSING_ONLY="${MISSING_ONLY:-0}" SKIP_EXISTING="${SKIP_EXISTING}" INJECT_TARGET="${INJECT_TARGET}" PHASE="${PHASE}" PLUGIN="${PLUGIN}" INJECT_TIMEOUT_SEC="${INJECT_TIMEOUT_SEC}" TIMEOUT_STREAK_ABORT="${TIMEOUT_STREAK_ABORT:-0}" SERIAL_DEBUG_MODE="${SERIAL_DEBUG_MODE}" MONITOR_GPU="${MONITOR_GPU:-0}" MONITOR_INTERVAL="${MONITOR_INTERVAL:-300}" RANDOMACCESS_REPEAT="${RANDOMACCESS_REPEAT:-}" \
-    bash "${REPO_ROOT}/HeCBench/llvm17_inject_bench_sweep.pbs"
-fi
+  [[ "${site_id}" == "site_id" ]] && continue
+  [[ "${site_id}" == "index" ]] && continue
+  [[ "${site_id}" == "x_index" ]] && continue
+  if [[ -z "${site_id}" || -z "${bit_index}" ]]; then
+    continue
+  fi
+  if [[ "${MAX_RUNS}" != "0" && "${count}" -ge "${MAX_RUNS}" ]]; then
+    break
+  fi
+  trial=1
+  while [[ "${trial}" -le "${TRACE_REPEATS}" ]]; do
+    echo "[deploy] site=${site_id} bit=${bit_index} trial=${trial}"
+    BASELINE=0 SITE_ID="${site_id}" BIT_INDEX="${bit_index}" TRIAL_INDEX="${trial}" RESULTS_DIR="${RESULTS_DIR}" \
+      SKIP_EXISTING="${SKIP_EXISTING}" bash "${RUNNER}"
+    trial=$((trial + 1))
+  done
+  count=$((count + 1))
+done < "${INPUT_LIST}"
 
-if ls "${RESULTS_DIR}"/summary_node*_gpu*.csv >/dev/null 2>&1; then
-  BENCH="${BENCH}" PHASE="${PHASE_LABEL}" RESULTS_SUBDIR="${RESULTS_SUBDIR}" RESULTS_DIR="${RESULTS_DIR}" \
-    python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/merge_bench_summaries.py"
-fi
-
-if [[ -f "${RESULTS_DIR}/baseline_mismatch.flag" ]]; then
-  echo "[baseline] WARNING: mismatch or baseline errors detected in ${RESULTS_DIR}"
-fi
-
-echo "[env] end=$(date)"
+echo "[deploy] completed ${count} injection sites with ${TRACE_REPEATS} trial(s) each"

@@ -9,6 +9,7 @@ LOCAL_LLVM_BIN="${SCRIPT_DIR}/llvm/build/bin"
 TOOL_SEARCH_ROOTS="${BITIR_MACHINE_TOOL_SEARCH_ROOTS:-${TOOL_SEARCH_ROOTS:-}}"
 LLVM_SEARCH_ROOT="${BITIR_MACHINE_LLVM_SEARCH_ROOT:-${LLVM_SEARCH_ROOT:-}}"
 read -r -a TOOL_SEARCH_ROOTS_ARR <<< "${TOOL_SEARCH_ROOTS}"
+OPT_BIN="${OPT_BIN:-$(command -v opt || true)}"
 
 find_tool() {
   local current="$1"
@@ -42,7 +43,13 @@ find_tool() {
   return 1
 }
 
+LLVM_CONFIG_CANDIDATE=""
+if [[ -n "${OPT_BIN}" && -x "${OPT_BIN}" ]]; then
+  LLVM_CONFIG_CANDIDATE="$(dirname "${OPT_BIN}")/llvm-config"
+fi
+
 LLVM_CONFIG="$(find_tool "${LLVM_CONFIG:-}" llvm-config \
+  "${LLVM_CONFIG_CANDIDATE}" \
   "${LOCAL_LLVM_BIN}/llvm-config")" || {
   LLVM_CONFIG_FALLBACK=""
   if [[ -n "${LLVM_SEARCH_ROOT}" && -d "${LLVM_SEARCH_ROOT}" ]]; then

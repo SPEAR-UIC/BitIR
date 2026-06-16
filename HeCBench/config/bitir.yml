@@ -36,6 +36,45 @@ fault_models:
     missing_only: 0
     worklist_queue: 0
     results_subdir_base: llvm17_inject_smoke
+  trace_basic:
+    inject_target: result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    missing_only: 0
+    worklist_queue: 0
+    trace_level: basic
+    trace_source_window: 6
+    results_subdir_base: llvm17_inject_trace
+  trace_backend:
+    inject_target: result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    missing_only: 0
+    worklist_queue: 0
+    trace_level: backend
+    trace_source_window: 8
+    results_subdir_base: llvm17_inject_trace
+  trace_full:
+    inject_target: result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    missing_only: 0
+    worklist_queue: 0
+    trace_level: full
+    trace_source_window: 10
+    results_subdir_base: llvm17_inject_trace
 
 run:
   machine: nvidia

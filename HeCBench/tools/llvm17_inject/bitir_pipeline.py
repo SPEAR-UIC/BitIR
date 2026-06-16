@@ -150,11 +150,15 @@ def append_fault_model_compat_exports(exports, fault_model_cfg):
         "phase": "PHASE",
         "int_float_only": "INT_FLOAT_ONLY",
         "include_constants": "INCLUDE_CONSTANTS",
+        "keep_dumps": "KEEP_DUMPS",
         "max_pairs": "MAX_PAIRS",
         "max_injections": "MAX_INJECTIONS",
         "run_baseline": "RUN_BASELINE",
         "skip_existing": "SKIP_EXISTING",
         "missing_only": "MISSING_ONLY",
+        "trace_level": "TRACE_LEVEL",
+        "trace_source_window": "TRACE_SOURCE_WINDOW",
+        "trace_metadata_dir": "BITIR_TRACE_METADATA_DIR",
         "worklist_queue": "WORKLIST_QUEUE",
         "results_subdir_base": "RESULTS_SUBDIR_BASE",
     }
@@ -542,7 +546,8 @@ def main():
             body,
         )
         suffix = f"_{bench_name}" if bench_name else ""
-        path = jobs_dir / f"{machine_name}_{job_key}{suffix}_{stamp}_{index:02d}.sh"
+        file_ext = ".pbs" if scheduler == "pbs" else ".sbatch"
+        path = jobs_dir / f"{machine_name}_{job_key}{suffix}_{stamp}_{index:02d}{file_ext}"
         path.write_text(script, encoding="utf-8")
         os.chmod(path, 0o755)
         generated.append((bench_name, path, script))
@@ -586,6 +591,10 @@ def main():
 
     for _, path, _ in generated:
         print(path)
+        if scheduler == "pbs":
+            print(f"qsub {path}")
+        else:
+            print(f"sbatch {path}")
 
 
 if __name__ == "__main__":

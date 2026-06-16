@@ -92,7 +92,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
   }
 
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &) {
-    const std::string triple = M.getTargetTriple().str();
+    const std::string triple = std::string(M.getTargetTriple());
     if (triple.find("nvptx") == std::string::npos &&
         triple.find("amdgcn") == std::string::npos &&
         triple.find("spir") == std::string::npos) {

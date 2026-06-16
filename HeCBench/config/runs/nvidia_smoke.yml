@@ -1,0 +1,37 @@
+extends: ../bitir.yml
+
+machines:
+  nvidia:
+    build_dir: HeCBench/build-cuda118-smoke
+    golden_root: Polaris_Golden_Outputs_smoke
+    jobs:
+      build:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=8:ngpus=1:mem=32gb
+        filesystems: home:eagle
+        walltime: 00:20:00
+        stdout: OUT_nvidia_smoke_build.out
+        stderr: ERROR_nvidia_smoke_build.err
+      golden:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=8:ngpus=1:mem=32gb
+        filesystems: home:eagle
+        walltime: 00:20:00
+        stdout: OUT_nvidia_smoke_build.out
+        stderr: ERROR_nvidia_smoke_build.err
+      deploy:
+        account: UIC-HPC
+        queue: debug
+        select: 1:ncpus=8:ngpus=1:mem=32gb
+        filesystems: home:eagle
+        walltime: 00:20:00
+        stdout: OUT_nvidia_smoke_deploy.out
+        stderr: ERROR_nvidia_smoke_deploy.err
+
+run:
+  machine: nvidia
+  campaign: smoke
+  fault_model: smoke
+  execution_mode: write-script
