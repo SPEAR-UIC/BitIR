@@ -67,8 +67,10 @@ benchmarks:
     source_dirs:
       nvidia: HeCBench/src/randomAccess-cuda
     golden_file: randomAccess.bin
-    args: []
+    args:
+      - "{RANDOMACCESS_REPEAT}"
     env:
+      RANDOMACCESS_REPEAT: "1"
       BITIR_SITE_LIST: HeCBench/config/sites/randomAccess_trace_cases.csv
 
 machines:
