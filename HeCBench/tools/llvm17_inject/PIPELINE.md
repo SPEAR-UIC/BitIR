@@ -151,13 +151,25 @@ Each model can set the following keys:
 - `trace_metadata_dir`: optional override for the site metadata and worklist directory
 - `trace_repeats`: number of repeated reruns per selected site and bit
 - `site_list`: optional curated `site_id,bit_index` CSV for targeted reruns
+- `runtime_env`: raw runtime env vars exported for the run such as `SYCL_PI_TRACE` or `UR_L0_DEBUG`
 
 Trace levels:
 
 - `off`: normal run with no extra trace packet
-- `basic`: save manifest, matched site row, worklist row, source window, stdout, stderr, and dumps
-- `backend`: add injected IR text and backend lowering artifacts such as PTX or SPIR-V wrappers
+- `basic`: save manifest, matched site row, worklist row, source window, runtime env, GPU state before and after the run, stdout, stderr, and dumps
+- `backend`: add injected IR text, linked library info, and backend lowering artifacts such as PTX or SPIR-V wrappers
 - `full`: keep the full temporary backend build directory for the rerun
+
+For GPU stack studies, set runtime trace env vars in the fault model so the trace packet includes device-side runtime logs instead of only compiler artifacts:
+
+```yaml
+fault_models:
+  trace_full_gpu:
+    trace_level: full
+    runtime_env:
+      SYCL_PI_TRACE: "2"
+      UR_L0_DEBUG: "1"
+```
 
 The `smoke` model is the recommended first test. It runs only a small subset of
 injection points so you can validate that worklist generation, compilation,
