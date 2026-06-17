@@ -76,6 +76,24 @@ int main(int argc, char * argv[])
   const int treeSize = TREE_SIZE;
   const int treeNumber = TREE_NUM;
   bool fail = false;
+  const bool gpu_debug = std::getenv("HECBENCH_GPU_DEBUG") != nullptr;
+
+  if (gpu_debug) {
+    int device_count = 0;
+    cudaError_t err = cudaGetDeviceCount(&device_count);
+    fprintf(stderr, "[gpu-debug] cudaGetDeviceCount=%d err=%s\n",
+            device_count, cudaGetErrorString(err));
+    int device = -1;
+    err = cudaGetDevice(&device);
+    fprintf(stderr, "[gpu-debug] cudaGetDevice=%d err=%s\n",
+            device, cudaGetErrorString(err));
+    if (device >= 0) {
+      cudaDeviceProp prop{};
+      err = cudaGetDeviceProperties(&prop, device);
+      fprintf(stderr, "[gpu-debug] device=%d name=%s cc=%d.%d err=%s\n",
+              device, prop.name, prop.major, prop.minor, cudaGetErrorString(err));
+    }
+  }
 
   if(iterations < 1)
   {
@@ -133,7 +151,10 @@ int main(int argc, char * argv[])
   for (int i = 0; i < iterations; i++)
     AoSKernel<treeSize><<<grid, block>>>((AppleTree*)inputBuffer, outputBuffer);
 
-  cudaDeviceSynchronize();
+  cudaError_t sync_err = cudaDeviceSynchronize();
+  if (gpu_debug) {
+    fprintf(stderr, "[gpu-debug] aos cudaDeviceSynchronize err=%s\n", cudaGetErrorString(sync_err));
+  }
   auto end = std::chrono::steady_clock::now();
   auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
   std::cout << "Average kernel execution time (AoS): "
@@ -168,7 +189,10 @@ int main(int argc, char * argv[])
   for (int i = 0; i < iterations; i++)
     SoAKernel<treeSize><<<grid, block>>>((ApplesOnTrees*)inputBuffer, outputBuffer);
 
-  cudaDeviceSynchronize();
+  sync_err = cudaDeviceSynchronize();
+  if (gpu_debug) {
+    fprintf(stderr, "[gpu-debug] soa cudaDeviceSynchronize err=%s\n", cudaGetErrorString(sync_err));
+  }
   end = std::chrono::steady_clock::now();
   time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
   std::cout << "Average kernel execution time (SoA): "

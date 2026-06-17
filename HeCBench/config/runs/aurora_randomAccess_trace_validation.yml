@@ -20,6 +20,9 @@ fault_models:
     trace_source_window: 12
     trace_repeats: 3
     results_subdir_base: llvm17_inject_trace_probe
+    runtime_env:
+      SYCL_PI_TRACE: "2"
+      UR_L0_DEBUG: "1"
 
 benchmarks:
   randomAccess:

@@ -23,6 +23,8 @@ fault_models:
     trace_source_window: 12
     trace_repeats: 3
     results_subdir_base: llvm17_inject_trace_probe
+    runtime_env:
+      CUDA_LAUNCH_BLOCKING: "1"
 
 benchmarks:
   entropy:
