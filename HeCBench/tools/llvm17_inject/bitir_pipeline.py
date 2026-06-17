@@ -167,6 +167,11 @@ def append_fault_model_compat_exports(exports, fault_model_cfg):
             line = export_line(env_name, fault_model_cfg[key])
             if line:
                 exports.append(line)
+    # Let fault models turn on runtime tracing without shell edits
+    for key, value in dict(fault_model_cfg.get("runtime_env", {})).items():
+        line = export_line(str(key), value)
+        if line:
+            exports.append(line)
 
 
 def suffixed_path(path, suffix):

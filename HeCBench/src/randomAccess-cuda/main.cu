@@ -79,6 +79,24 @@ int main(int argc, char** argv) {
   }
   const int repeat = atoi(argv[1]);
   const char* dump_path = argc == 3 ? argv[2] : nullptr;
+  const bool gpu_debug = std::getenv("HECBENCH_GPU_DEBUG") != nullptr;
+
+  if (gpu_debug) {
+    int device_count = 0;
+    cudaError_t err = cudaGetDeviceCount(&device_count);
+    fprintf(stderr, "[gpu-debug] cudaGetDeviceCount=%d err=%s\n",
+            device_count, cudaGetErrorString(err));
+    int device = -1;
+    err = cudaGetDevice(&device);
+    fprintf(stderr, "[gpu-debug] cudaGetDevice=%d err=%s\n",
+            device, cudaGetErrorString(err));
+    if (device >= 0) {
+      cudaDeviceProp prop{};
+      err = cudaGetDeviceProperties(&prop, device);
+      fprintf(stderr, "[gpu-debug] device=%d name=%s cc=%d.%d err=%s\n",
+              device, prop.name, prop.major, prop.minor, cudaGetErrorString(err));
+    }
+  }
 
   int failure;
   u64Int i;
@@ -123,7 +141,10 @@ int main(int argc, char** argv) {
     update<<<1, K2_BLOCKSIZE>>>(d_Table, TableSize);
   }
 
-  cudaDeviceSynchronize();
+  cudaError_t sync_err = cudaDeviceSynchronize();
+  if (gpu_debug) {
+    fprintf(stderr, "[gpu-debug] cudaDeviceSynchronize err=%s\n", cudaGetErrorString(sync_err));
+  }
   auto end = std::chrono::steady_clock::now();
   auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
   printf("Average kernel execution time: %f (s)\n", (time * 1e-9f) / repeat);

@@ -94,6 +94,24 @@ int main(int argc, char* argv[]) {
   const int height = atoi(argv[2]); 
   const int repeat = atoi(argv[3]); 
   const char* dump_path = argc == 5 ? argv[4] : nullptr;
+  const bool gpu_debug = std::getenv("HECBENCH_GPU_DEBUG") != nullptr;
+
+  if (gpu_debug) {
+    int device_count = 0;
+    cudaError_t err = cudaGetDeviceCount(&device_count);
+    fprintf(stderr, "[gpu-debug] cudaGetDeviceCount=%d err=%s\n",
+            device_count, cudaGetErrorString(err));
+    int device = -1;
+    err = cudaGetDevice(&device);
+    fprintf(stderr, "[gpu-debug] cudaGetDevice=%d err=%s\n",
+            device, cudaGetErrorString(err));
+    if (device >= 0) {
+      cudaDeviceProp prop{};
+      err = cudaGetDeviceProperties(&prop, device);
+      fprintf(stderr, "[gpu-debug] device=%d name=%s cc=%d.%d err=%s\n",
+              device, prop.name, prop.major, prop.minor, cudaGetErrorString(err));
+    }
+  }
 
   const int input_bytes = width * height * sizeof(char);
   const int output_bytes = width * height * sizeof(float);

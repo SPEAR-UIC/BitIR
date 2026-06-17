@@ -68,25 +68,50 @@ trace_record_command() {
   printf '\n' >> "${TRACE_DIR}/${name}.cmd"
 }
 
-trace_capture_runtime_context() {
+trace_runtime_env() {
   [[ -n "${TRACE_DIR:-}" ]] || return 0
   {
-    echo "ONEAPI_DEVICE_SELECTOR=${ONEAPI_DEVICE_SELECTOR:-}"
-    echo "SYCL_DEVICE_FILTER=${SYCL_DEVICE_FILTER:-}"
-    echo "ZE_AFFINITY_MASK=${ZE_AFFINITY_MASK:-}"
-    echo "ZE_ENABLE_PCI_ID_DEVICE_ORDER=${ZE_ENABLE_PCI_ID_DEVICE_ORDER:-}"
     echo "PWD=$(pwd)"
-  } > "${TRACE_DIR}/runtime_env.txt"
+    env | sort | egrep '^(ONEAPI_|SYCL_|UR_|ZE_|LEVEL_ZERO_|LIBOMPTARGET_|CUDA_|NVIDIA_|ROCR_|HIP_|HSA_)' || true
+  } > "${TRACE_DIR}/runtime_env.txt" 2>/dev/null
 
   if command -v sycl-ls >/dev/null 2>&1; then
     trace_record_command sycl_ls sycl-ls
     sycl-ls > "${TRACE_DIR}/sycl-ls.txt" 2>&1 || true
   fi
+}
 
-  if [[ -n "${BITIR_MACHINE_GPU_QUERY_TOOL:-}" ]] && command -v "${BITIR_MACHINE_GPU_QUERY_TOOL}" >/dev/null 2>&1; then
-    trace_record_command gpu_discovery "${BITIR_MACHINE_GPU_QUERY_TOOL}" discovery
-    "${BITIR_MACHINE_GPU_QUERY_TOOL}" discovery > "${TRACE_DIR}/gpu-discovery.txt" 2>&1 || true
+trace_gpu_state() {
+  local label="$1"
+  [[ -n "${TRACE_DIR:-}" ]] || return 0
+  local tool="${BITIR_MACHINE_GPU_QUERY_TOOL:-}"
+  [[ -n "${tool}" ]] || return 0
+  if ! command -v "${tool}" >/dev/null 2>&1; then
+    return 0
   fi
+
+  case "${tool}" in
+    nvidia-smi)
+      {
+        "${tool}" -L
+        printf '\n'
+        "${tool}" -q
+      } > "${TRACE_DIR}/gpu_${label}.txt" 2>&1 || true
+      ;;
+    xpu-smi)
+      {
+        "${tool}" discovery
+        printf '\n'
+        "${tool}" dump
+      } > "${TRACE_DIR}/gpu_${label}.txt" 2>&1 || true
+      ;;
+    rocm-smi)
+      "${tool}" > "${TRACE_DIR}/gpu_${label}.txt" 2>&1 || true
+      ;;
+    *)
+      "${tool}" > "${TRACE_DIR}/gpu_${label}.txt" 2>&1 || true
+      ;;
+  esac
 }
 
 trace_finalize() {
@@ -114,6 +139,8 @@ run_out=${RUN_OUT}
 run_err=${RUN_ERR}
 run_dump=${RUN_DUMP}
 EOF
+
+  trace_runtime_env
 
   if [[ -f "${metadata_csv}" ]]; then
     {
@@ -159,6 +186,9 @@ EOF
         [[ -f "${file}" ]] || continue
         cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
       done
+    fi
+    if [[ -f "${BIN_PATH:-}" ]]; then
+      ldd "${BIN_PATH}" > "${TRACE_DIR}/binary_libraries.txt" 2>&1 || true
     fi
   fi
 
@@ -538,9 +568,8 @@ build_intel_binary() {
 
 run_binary() {
   set +e
-  if [[ "${BACKEND}" == "intel" && "${TRACE_RANK}" -gt 0 ]]; then
-    trace_capture_runtime_context
-  fi
+  trace_runtime_env
+  trace_gpu_state before
   if [[ "${COMPARE_MODE}" == "text" ]]; then
     trace_record_command run_binary "${BIN_PATH}" "${RUN_ARGS[@]}"
     "${BIN_PATH}" "${RUN_ARGS[@]}" > "${RUN_OUT}" 2> "${RUN_ERR}"
@@ -550,10 +579,11 @@ run_binary() {
     HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
     RUN_STATUS=$?
   else
-    trace_record_command run_binary HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
-    HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
+    trace_record_command run_binary HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
+    HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
     RUN_STATUS=$?
   fi
+  trace_gpu_state after
   set -e
 }
 
