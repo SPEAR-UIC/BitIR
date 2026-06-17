@@ -32,6 +32,13 @@ tool_or_fail() {
   exit 1
 }
 
+find_tool_under_root() {
+  local root="$1"
+  local name="$2"
+  [[ -n "${root}" && -d "${root}" ]] || return 1
+  find "${root}" -type f -name "${name}" 2>/dev/null | head -n 1
+}
+
 trace_level_rank() {
   case "$1" in
     off|"")
@@ -59,6 +66,27 @@ trace_record_command() {
   [[ -n "${TRACE_DIR:-}" ]] || return 0
   printf '%q ' "$@" > "${TRACE_DIR}/${name}.cmd"
   printf '\n' >> "${TRACE_DIR}/${name}.cmd"
+}
+
+trace_capture_runtime_context() {
+  [[ -n "${TRACE_DIR:-}" ]] || return 0
+  {
+    echo "ONEAPI_DEVICE_SELECTOR=${ONEAPI_DEVICE_SELECTOR:-}"
+    echo "SYCL_DEVICE_FILTER=${SYCL_DEVICE_FILTER:-}"
+    echo "ZE_AFFINITY_MASK=${ZE_AFFINITY_MASK:-}"
+    echo "ZE_ENABLE_PCI_ID_DEVICE_ORDER=${ZE_ENABLE_PCI_ID_DEVICE_ORDER:-}"
+    echo "PWD=$(pwd)"
+  } > "${TRACE_DIR}/runtime_env.txt"
+
+  if command -v sycl-ls >/dev/null 2>&1; then
+    trace_record_command sycl_ls sycl-ls
+    sycl-ls > "${TRACE_DIR}/sycl-ls.txt" 2>&1 || true
+  fi
+
+  if [[ -n "${BITIR_MACHINE_GPU_QUERY_TOOL:-}" ]] && command -v "${BITIR_MACHINE_GPU_QUERY_TOOL}" >/dev/null 2>&1; then
+    trace_record_command gpu_discovery "${BITIR_MACHINE_GPU_QUERY_TOOL}" discovery
+    "${BITIR_MACHINE_GPU_QUERY_TOOL}" discovery > "${TRACE_DIR}/gpu-discovery.txt" 2>&1 || true
+  fi
 }
 
 trace_finalize() {
@@ -382,6 +410,7 @@ prepare_intel() {
   need BITIR_MACHINE_SYCL_HOST_TRIPLE
 
   TOOL_SEARCH_ROOTS=()
+  LLVM_SEARCH_ROOT="${BITIR_MACHINE_LLVM_SEARCH_ROOT:-}"
   if [[ -n "${BITIR_MACHINE_TOOL_SEARCH_ROOTS:-}" ]]; then
     read -r -a TOOL_SEARCH_ROOTS <<< "${BITIR_MACHINE_TOOL_SEARCH_ROOTS}"
   fi
@@ -391,6 +420,7 @@ prepare_intel() {
   local postlink_candidates=()
   local spirv_candidates=()
   local wrapper_candidates=()
+  local opt_candidates=()
   local root
   for root in "${TOOL_SEARCH_ROOTS[@]}"; do
     icpx_candidates+=("${root}/icpx")
@@ -398,14 +428,21 @@ prepare_intel() {
     postlink_candidates+=("${root}/sycl-post-link")
     spirv_candidates+=("${root}/llvm-spirv")
     wrapper_candidates+=("${root}/clang-offload-wrapper")
+    opt_candidates+=("${root}/opt" "${root}/llvm/bin/opt")
   done
+  if [[ -n "${LLVM_SEARCH_ROOT}" ]]; then
+    root="$(find_tool_under_root "${LLVM_SEARCH_ROOT}" opt || true)"
+    if [[ -n "${root}" ]]; then
+      opt_candidates+=("${root}")
+    fi
+  fi
 
   ICPX="$(tool_or_fail "${ICPX:-}" icpx "${icpx_candidates[@]}")"
   CLANG_OFFLOAD_BUNDLER="$(tool_or_fail "${CLANG_OFFLOAD_BUNDLER:-}" clang-offload-bundler "${bundler_candidates[@]}")"
   SYCL_POST_LINK="$(tool_or_fail "${SYCL_POST_LINK:-}" sycl-post-link "${postlink_candidates[@]}")"
   LLVM_SPIRV="$(tool_or_fail "${LLVM_SPIRV:-}" llvm-spirv "${spirv_candidates[@]}")"
   CLANG_OFFLOAD_WRAPPER="$(tool_or_fail "${CLANG_OFFLOAD_WRAPPER:-}" clang-offload-wrapper "${wrapper_candidates[@]}")"
-  OPT_BIN="$(tool_or_fail "${OPT_BIN:-}" opt)"
+  OPT_BIN="$(tool_or_fail "${OPT_BIN:-}" opt "${opt_candidates[@]}")"
 
   export SYCL_DEVICE_FILTER="${BITIR_MACHINE_DEVICE_VISIBLE_VALUE:-}"
   if [[ -n "${BITIR_MACHINE_DEVICE_VISIBLE_ENV:-}" && -n "${BITIR_MACHINE_DEVICE_VISIBLE_VALUE:-}" ]]; then
@@ -501,13 +538,16 @@ build_intel_binary() {
 
 run_binary() {
   set +e
+  if [[ "${BACKEND}" == "intel" && "${TRACE_RANK}" -gt 0 ]]; then
+    trace_capture_runtime_context
+  fi
   if [[ "${COMPARE_MODE}" == "text" ]]; then
     trace_record_command run_binary "${BIN_PATH}" "${RUN_ARGS[@]}"
     "${BIN_PATH}" "${RUN_ARGS[@]}" > "${RUN_OUT}" 2> "${RUN_ERR}"
     RUN_STATUS=$?
   elif [[ "${BACKEND}" == "intel" ]]; then
-    trace_record_command run_binary HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
-    HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
+    trace_record_command run_binary HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
+    HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
     RUN_STATUS=$?
   else
     trace_record_command run_binary HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <chrono>
+#include <string>
 #include <sycl/sycl.hpp>
 
 typedef unsigned long long int u64Int;
@@ -104,6 +105,17 @@ int main(int argc, char** argv) {
 #else
   sycl::queue q(sycl::cpu_selector_v, sycl::property::queue::in_order());
 #endif
+
+  if (getenv("HECBENCH_GPU_DEBUG") != nullptr) {
+    auto dev = q.get_device();
+    auto platform = dev.get_platform();
+    std::string name = dev.get_info<sycl::info::device::name>();
+    std::string vendor = dev.get_info<sycl::info::device::vendor>();
+    std::string driver = dev.get_info<sycl::info::device::driver_version>();
+    std::string backend = platform.get_backend() == sycl::backend::ext_oneapi_level_zero ? "level_zero" : "other";
+    fprintf(stderr, "[gpu-debug] device=%s vendor=%s driver=%s backend=%s is_gpu=%d\n",
+            name.c_str(), vendor.c_str(), driver.c_str(), backend.c_str(), dev.is_gpu() ? 1 : 0);
+  }
 
   u64Int *d_Table = sycl::malloc_device<u64Int>(TableSize, q);
 
