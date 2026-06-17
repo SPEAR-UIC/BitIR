@@ -45,8 +45,10 @@ benchmarks:
     source_dirs:
       nvidia: HeCBench/src/layout-cuda
     golden_file: layout.bin
-    args: []
+    args:
+      - "{LAYOUT_REPEAT}"
     env:
+      LAYOUT_REPEAT: "1"
       BITIR_SITE_LIST: HeCBench/config/sites/layout_trace_cases.csv
 
   matrix-rotate:
