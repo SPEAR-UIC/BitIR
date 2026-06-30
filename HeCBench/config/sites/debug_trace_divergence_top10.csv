@@ -1,0 +1,12 @@
+bench,aligned_index,bit_index,nvidia_site,intel_site,amd_site,nvidia_result,intel_result,amd_result,opcode,source_line,source_column,function
+entropy,273,16,9,21,472,MASKED,MASKED,FAILURE,mul,15,42,_Z7entropyPfPKcii
+entropy,260,3,9,20,472,MASKED,MASKED,FAILURE,mul,15,42,_Z7entropyPfPKcii
+layout,161,0,7,11,381,MASKED,FAILURE,SDC,icmp,46,20,_Z9AoSKernelILi4096EEvPK9AppleTreePi
+layout,498,16,16,20,417,MASKED,FAILURE,SDC,add,46,33,_Z9AoSKernelILi4096EEvPK9AppleTreePi
+layout,530,16,17,21,422,MASKED,FAILURE,SDC,load,50,17,_Z9AoSKernelILi4096EEvPK9AppleTreePi
+layout,753,15,24,25,521,MASKED,SDC,FAILURE,add,58,38,_Z9SoAKernelILi4096EEvPK13ApplesOnTreesPi
+randomAccess,65,0,2,2,316,SDC,FAILURE,MASKED,icmp,27,12,_Z11HPCC_startsx
+randomAccess,837,0,19,20,377,SDC,FAILURE,MASKED,icmp,36,41,_Z11HPCC_startsx
+randomAccess,870,32,20,20,380,MASKED,FAILURE,SDC,zext,36,27,_Z11HPCC_startsx
+randomAccess,804,31,18,19,375,MASKED,FAILURE,SDC,load,36,36,_Z11HPCC_startsx
+randomAccess,99,33,3,3,320,MASKED,FAILURE,SDC,load,27,19,_Z11HPCC_startsx

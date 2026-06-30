@@ -1,0 +1,54 @@
+extends: ../bitir.yml
+
+campaigns:
+  debug_trace_top10:
+    benchmarks:
+      - entropy
+      - layout
+      - randomAccess
+
+fault_models:
+  debug_trace_top10:
+    inject_target: result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    missing_only: 0
+    worklist_queue: 0
+    trace_level: full
+    trace_source_window: 12
+    trace_repeats: 2
+    results_subdir_base: debug_trace_top10/amd
+
+benchmarks:
+  entropy:
+    env:
+      ENTROPY_WIDTH: "10000"
+      ENTROPY_HEIGHT: "1024"
+      ENTROPY_REPEAT: "1"
+      BITIR_SITE_LIST: HeCBench/config/sites/debug_trace_top10_amd_entropy.csv
+
+  layout:
+    env:
+      LAYOUT_REPEAT: "1"
+      BITIR_SITE_LIST: HeCBench/config/sites/debug_trace_top10_amd_layout.csv
+
+  randomAccess:
+    env:
+      RANDOMACCESS_REPEAT: "1"
+      BITIR_SITE_LIST: HeCBench/config/sites/debug_trace_top10_amd_randomAccess.csv
+
+machines:
+  amd:
+    task_scripts:
+      deploy: HeCBench/llvm17_inject_bench_sweep.pbs
+      inject_one: HeCBench/tools/llvm17_inject/run_benchmark_injection.sh
+
+run:
+  machine: amd
+  campaign: debug_trace_top10
+  fault_model: debug_trace_top10
+  execution_mode: write-script
