@@ -1,0 +1,5 @@
+Average kernel execution time (AoS): 180.717 (us)
+FAIL
+Average kernel execution time (SoA): 6176.16 (us)
+FAIL
+Result: SDC_FLAGGED (exit 0)

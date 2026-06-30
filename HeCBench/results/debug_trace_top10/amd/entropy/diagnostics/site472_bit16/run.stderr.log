@@ -1,0 +1,5 @@
+Memory access fault by GPU node-4 (Agent handle: 0x2ca770) on address 0x7ffe7e4c9000. Reason: Unknown.
+Traceback (most recent call last):
+  File "/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/gpu_fi/llvm17_inject/compare_benchmark_stdout.py", line 13, in <module>
+    def normalize_line(line: str) -> str | None:
+TypeError: unsupported operand type(s) for |: 'type' and 'NoneType'

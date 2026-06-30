@@ -1,0 +1,4 @@
+Average kernel (baseline) execution time 0.000000 (s)
+Average kernel (optimized) execution time 0.000000 (s)
+FAIL
+Result: SDC_FLAGGED (exit 0)

@@ -1,0 +1,6 @@
+Table size = 67108864
+Main table size   = 2^26 = 67108864 words
+Number of updates = 268435456
+Average kernel execution time: 8.723550 (s)
+Found 0 errors in 67108864 locations (PASS).
+Result: SDC_NOT_FLAGGED (exit 0)

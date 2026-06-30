@@ -1,0 +1,26 @@
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:129:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  129 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:129:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  129 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/randomAccess-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for host.
