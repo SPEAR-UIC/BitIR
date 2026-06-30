@@ -1,0 +1,2 @@
+site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
+1,result,call,int,32,-1,_Z7entropyPfPKcii,/soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_builtin_vars.h,53,3,1,_Z7entropyPfPKcii|result|call|int|32|-1|/soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_builtin_vars.h|53|3|1

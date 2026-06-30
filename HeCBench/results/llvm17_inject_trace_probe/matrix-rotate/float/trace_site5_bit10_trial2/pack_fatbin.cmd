@@ -1,0 +1,1 @@
+/soft/compilers/cudatoolkit/cuda-11.8.0/bin/nvcc --fatbin -arch=sm_80 /var/tmp/pbs.7230203.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_matrix-rotate_site5_bit10/device.injected.ptx -o /var/tmp/pbs.7230203.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_matrix-rotate_site5_bit10/device.injected.fatbin 

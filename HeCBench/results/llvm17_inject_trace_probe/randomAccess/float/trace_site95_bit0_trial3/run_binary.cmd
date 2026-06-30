@@ -1,0 +1,1 @@
+HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /var/tmp/pbs.7230212.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_randomAccess_site95_bit0/randomAccess 1 /var/tmp/pbs.7230212.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_randomAccess_site95_bit0/randomAccess_site95_bit0_trial3.bin 

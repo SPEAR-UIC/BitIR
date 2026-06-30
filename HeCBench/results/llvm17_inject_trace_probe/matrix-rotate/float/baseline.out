@@ -1,0 +1,5 @@
+Average kernel execution time: 0.002542 (s)
+PASS
+Matrix snapshot written to /var/tmp/pbs.7230203.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_matrix-rotate_site1_bit0/matrix-rotate_baseline.bin
+compare_ok
+Result: BASELINE (exit 0)

@@ -1,0 +1,8 @@
+Table size = 67108864
+Main table size   = 2^26 = 67108864 words
+Number of updates = 268435456
+Average kernel execution time: 8.755728 (s)
+Found 0 errors in 67108864 locations (PASS).
+randomAccess snapshot written to /var/tmp/pbs.7230212.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_randomAccess_site99_bit0/randomAccess_site99_bit0.bin
+compare_ok
+Result: MASKED (exit 0)

@@ -1,0 +1,1 @@
+run_env_bin HECBENCH_LLFI_FORCE_DUMP=1 /var/tmp/pbs.7229181.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_layout_site8_bit12/layout 1 /var/tmp/pbs.7229181.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_layout_site8_bit12/layout_site8_bit12_trial3.bin 

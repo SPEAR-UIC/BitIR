@@ -1,0 +1,2 @@
+site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
+8,result,load,int,32,-1,_Z9AoSKernelILi4096EEvPK9AppleTreePi,/home/mdunlavy/GPU_FI/HeCBench/src/layout-cuda/main.cu,48,18,2,_Z9AoSKernelILi4096EEvPK9AppleTreePi|result|load|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/layout-cuda/main.cu|48|18|2

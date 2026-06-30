@@ -1,0 +1,5 @@
+[gpu-debug] cudaGetDeviceCount=4 err=no error
+[gpu-debug] cudaGetDevice=0 err=no error
+[gpu-debug] device=0 name=NVIDIA A100-SXM4-40GB cc=8.0 err=no error
+[gpu-debug] kernel launch err=no error
+[gpu-debug] cudaDeviceSynchronize err=no error

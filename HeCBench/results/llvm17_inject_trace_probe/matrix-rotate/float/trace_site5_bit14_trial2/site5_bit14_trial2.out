@@ -1,0 +1,14 @@
+Average kernel execution time: 0.000229 (s)
+FAIL
+Matrix snapshot written to /var/tmp/pbs.7230203.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_matrix-rotate_site5_bit14/matrix-rotate_site5_bit14_trial2.bin
+compare_mismatch
+idx=0 golden=65280 candidate=0 diff=65280 tol=1e-05
+idx=1 golden=65024 candidate=1 diff=65023 tol=1e-05
+idx=2 golden=64768 candidate=2 diff=64766 tol=1e-05
+idx=3 golden=64512 candidate=3 diff=64509 tol=1e-05
+idx=4 golden=64256 candidate=4 diff=64252 tol=1e-05
+idx=5 golden=64000 candidate=5 diff=63995 tol=1e-05
+idx=6 golden=63744 candidate=6 diff=63738 tol=1e-05
+idx=7 golden=63488 candidate=7 diff=63481 tol=1e-05
+idx=8 golden=63232 candidate=8 diff=63224 tol=1e-05
+idx=9 golden=62976 candidate=9 diff=62967 tol=1e-05

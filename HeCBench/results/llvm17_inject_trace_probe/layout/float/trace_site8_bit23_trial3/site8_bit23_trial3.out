@@ -1,0 +1,6 @@
+Average kernel execution time (AoS): 467102 (us)
+FAIL
+Average kernel execution time (SoA): 19.566 (us)
+FAIL
+layout snapshot written to /var/tmp/pbs.7230201.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_layout_site8_bit23/layout_site8_bit23_trial3.bin
+mismatch
