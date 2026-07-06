@@ -1,0 +1,15 @@
+trace_level=full
+backend=amd
+bench=entropy
+source=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/entropy-hip/main.cu
+source_dir=HeCBench/src/entropy-hip
+site_id=472
+bit_index=16
+inject_target=result
+compare_mode=text
+phase=float
+results_dir=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/results/debug_trace_top10/amd/entropy/float
+out_dir=/tmp/bitir_amd_entropy_site472_bit16
+run_out=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/results/debug_trace_top10/amd/entropy/float/baseline.out
+run_err=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/results/debug_trace_top10/amd/entropy/float/baseline.err
+run_dump=/tmp/bitir_amd_entropy_site472_bit16/entropy_baseline.bin

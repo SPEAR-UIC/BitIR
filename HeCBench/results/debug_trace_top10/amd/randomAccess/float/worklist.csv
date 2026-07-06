@@ -1,0 +1,6 @@
+index,site_id,bit_index,bitwidth,type_kind,opcode,site_class,operand_index
+1,316,0,,,,,
+2,377,0,,,,,
+3,380,32,,,,,
+4,375,31,,,,,
+5,320,33,,,,,

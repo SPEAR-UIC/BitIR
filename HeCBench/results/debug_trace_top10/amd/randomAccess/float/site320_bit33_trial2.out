@@ -1,0 +1,10 @@
+Table size = 67108864
+Main table size   = 2^26 = 67108864 words
+Number of updates = 268435456
+Average kernel execution time: 7.767587 (s)
+Found 0 errors in 67108864 locations (PASS).
+compare_ok
+compare_note: passfail_token_stream_equal
+metric_num_bad=0
+metric_frac_bad=0
+Result: MASKED (exit 0)

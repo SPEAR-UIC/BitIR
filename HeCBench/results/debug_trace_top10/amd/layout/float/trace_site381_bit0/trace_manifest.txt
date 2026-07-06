@@ -1,0 +1,15 @@
+trace_level=full
+backend=amd
+bench=layout
+source=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/layout-hip/main.cu
+source_dir=HeCBench/src/layout-hip
+site_id=381
+bit_index=0
+inject_target=result
+compare_mode=text
+phase=float
+results_dir=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/results/debug_trace_top10/amd/layout/float
+out_dir=/tmp/bitir_amd_layout_site381_bit0
+run_out=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/results/debug_trace_top10/amd/layout/float/site381_bit0.out
+run_err=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/results/debug_trace_top10/amd/layout/float/site381_bit0.err
+run_dump=/tmp/bitir_amd_layout_site381_bit0/layout_site381_bit0.bin

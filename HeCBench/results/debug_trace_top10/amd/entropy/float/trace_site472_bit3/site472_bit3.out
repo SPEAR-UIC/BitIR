@@ -1,0 +1,7 @@
+Average kernel (baseline) execution time 0.039289 (s)
+Average kernel (optimized) execution time 0.023498 (s)
+PASS
+compare_ok
+compare_note: passfail_token_stream_equal
+metric_num_bad=0
+metric_frac_bad=0

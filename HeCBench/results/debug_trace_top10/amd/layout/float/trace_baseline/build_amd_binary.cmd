@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/clang++ -x hip --offload-arch=gfx90a --hip-path=/opt/rocm-6.4.2 -O0 -g -I /autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/layout-hip -I /autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src /autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/layout-hip/main.cu -o /tmp/bitir_amd_layout_site381_bit0/layout 
