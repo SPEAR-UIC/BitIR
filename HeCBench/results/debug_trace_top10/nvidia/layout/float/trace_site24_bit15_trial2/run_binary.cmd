@@ -1,0 +1,1 @@
+HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /var/tmp/pbs.7238618.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_layout_site24_bit15/layout 1 /var/tmp/pbs.7238618.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_layout_site24_bit15/layout_site24_bit15_trial2.bin 

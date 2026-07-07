@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/opt -S /var/tmp/pbs.7239498.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_randomAccess_site20_bit32/device.injected.bc -o /home/mdunlavy/GPU_FI/HeCBench/results/debug_trace_top10/nvidia/randomAccess/float/trace_site20_bit32_trial2/device.injected.ll 

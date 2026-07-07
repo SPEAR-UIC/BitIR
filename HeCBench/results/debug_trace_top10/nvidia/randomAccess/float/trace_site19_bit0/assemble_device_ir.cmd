@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/llvm-as /var/tmp/pbs.7239498.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_randomAccess_site19_bit0/device.ll -o /var/tmp/pbs.7239498.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_randomAccess_site19_bit0/device.bc 

@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/llc -march=nvptx64 -mcpu=sm_80 -o /var/tmp/pbs.7238618.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_layout_site7_bit0/device.injected.ptx /var/tmp/pbs.7238618.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_layout_site7_bit0/device.injected.bc 

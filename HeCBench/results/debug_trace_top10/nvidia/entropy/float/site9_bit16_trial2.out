@@ -1,0 +1,6 @@
+Average kernel (baseline) execution time 0.000463 (s)
+Average kernel (optimized) execution time 0.014972 (s)
+PASS
+entropy snapshot written to /var/tmp/pbs.7238636.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_entropy_site9_bit16/entropy_site9_bit16_trial2.bin
+compare_ok
+Result: MASKED (exit 0)
