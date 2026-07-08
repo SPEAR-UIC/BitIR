@@ -86,10 +86,11 @@ exec 9>"${LOCK_PATH}"
 flock 9
 
 TMP_OUT="$(mktemp "${PLUGIN_PATH}.tmp.XXXXXX")"
+read -r -a LLVM_CXXFLAGS <<< "$(${LLVM_CONFIG} --cxxflags)"
 ${CLANGXX} -std=c++17 -fPIC -shared \
   -I "${LLVM_INCLUDEDIR}" \
   "$SRC_DIR/fi_inject_pass.cpp" \
-  "$(${LLVM_CONFIG} --cxxflags --ldflags --system-libs --libs core)" \
+  "${LLVM_CXXFLAGS[@]}" \
   -o "${TMP_OUT}"
 
 if [[ ! -s "${TMP_OUT}" ]]; then

@@ -118,7 +118,7 @@ trace_finalize() {
   [[ -n "${TRACE_DIR:-}" ]] || return 0
   local bench_key metadata_dir metadata_csv worklist_csv source_line start end file
   bench_key="$(basename "${BITIR_SOURCE_DIR}")"
-  metadata_dir="${BITIR_TRACE_METADATA_DIR:-${REPO_ROOT}/HeCBench/results/llvm17_inject/${bench_key}}"
+  metadata_dir="${BITIR_TRACE_METADATA_DIR:-${REPO_ROOT}/${BITIR_MACHINE_RESULTS_ROOT}/${BENCH}}"
   metadata_csv="${metadata_dir}/sites_metadata.csv"
   worklist_csv="${metadata_dir}/${TRACE_WORKLIST_NAME}"
 
@@ -206,7 +206,7 @@ source_file() {
     intel)
       printf '%s\n' "${dir}/main.cpp"
       ;;
-    nvidia)
+    nvidia|amd)
       if [[ -f "${dir}/main.cu" ]]; then
         printf '%s\n' "${dir}/main.cu"
         return
@@ -233,14 +233,80 @@ build_include_args() {
 
 compare_result() {
   if [[ "${COMPARE_MODE}" == "text" ]]; then
+    if [[ ! -f "${TEXT_BASELINE:-${GOLDEN_TEXT}}" ]]; then
+      echo "missing golden text: ${TEXT_BASELINE:-${GOLDEN_TEXT}}" >&2
+      return 1
+    fi
     python3 "${COMPARE_TEXT}" --bench "${BENCH}" --baseline "${TEXT_BASELINE}" --candidate "${TEXT_CANDIDATE}"
     return
   fi
   if [[ "${COMPARE_MODE}" == "float" ]]; then
+    if [[ ! -f "${GOLDEN_FILE}" ]]; then
+      echo "missing golden file: ${GOLDEN_FILE}" >&2
+      return 1
+    fi
     python3 "${COMPARE_FLOAT}" "${GOLDEN_FILE}" "${DUMP_CANDIDATE}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}"
     return
   fi
+  if [[ ! -f "${GOLDEN_FILE}" ]]; then
+    echo "missing golden file: ${GOLDEN_FILE}" >&2
+    return 1
+  fi
   python3 "${COMPARE_EXACT}" "${GOLDEN_FILE}" "${DUMP_CANDIDATE}"
+}
+
+validate_site_semantics() {
+  local site_list metadata_dir metadata_csv expected_row actual_row
+  site_list="${BITIR_SITE_LIST:-}"
+  [[ -n "${site_list}" ]] || return 0
+  if [[ "${site_list}" != /* ]]; then
+    site_list="${REPO_ROOT}/${site_list}"
+  fi
+  [[ -f "${site_list}" ]] || return 0
+
+  metadata_dir="${BITIR_TRACE_METADATA_DIR:-${REPO_ROOT}/${BITIR_MACHINE_RESULTS_ROOT}/${BENCH}}"
+  metadata_csv="${metadata_dir}/sites_metadata.csv"
+  [[ -f "${metadata_csv}" ]] || return 0
+
+  expected_row="$(awk -F, -v site="${SITE_ID}" -v bit="${BIT_INDEX}" -v compare="${COMPARE_MODE}" '
+    NR == 1 {
+      for (i = 1; i <= NF; i++) {
+        idx[$i] = i
+      }
+      next
+    }
+    idx["site_id"] && idx["bit_index"] && $idx["site_id"] == site && $idx["bit_index"] == bit {
+      print $idx["opcode"] "," $idx["source_line"] "," $idx["source_column"] "," $idx["function"] "," \
+            $idx["site_class"] "," $idx["type_kind"] "," $idx["bitwidth"] "," $idx["signature_ordinal"] "," compare
+      exit
+    }
+  ' "${site_list}")"
+  [[ -n "${expected_row}" ]] || return 0
+
+  actual_row="$(awk -F, -v site="${SITE_ID}" '
+    NR == 1 {
+      for (i = 1; i <= NF; i++) {
+        idx[$i] = i
+      }
+      next
+    }
+    idx["site_id"] && $idx["site_id"] == site {
+      print $idx["opcode"] "," $idx["source_line"] "," $idx["source_column"] "," $idx["function"] "," \
+            $idx["site_class"] "," $idx["type_kind"] "," $idx["bitwidth"] "," $idx["signature_ordinal"] ",exact"
+      exit
+    }
+  ' "${metadata_csv}")"
+
+  if [[ -z "${actual_row}" ]]; then
+    echo "site validation failed: site_id ${SITE_ID} not found in ${metadata_csv}" >&2
+    exit 1
+  fi
+  if [[ "${expected_row}" != "${actual_row}" ]]; then
+    echo "site validation failed for site=${SITE_ID} bit=${BIT_INDEX}" >&2
+    echo "expected semantic fields: ${expected_row}" >&2
+    echo "actual semantic fields:   ${actual_row}" >&2
+    exit 1
+  fi
 }
 
 write_summary() {
@@ -315,7 +381,10 @@ setup_common() {
     TRACE_WORKLIST_NAME="${TRACE_PHASE}/worklist.csv"
   fi
   GOLDEN_NAME="${BITIR_GOLDEN_FILE:-${BENCH}.bin}"
-  GOLDEN_ROOT="${REPO_ROOT}/${BITIR_MACHINE_GOLDEN_ROOT}"
+  GOLDEN_ROOT="${BITIR_MACHINE_GOLDEN_ROOT}"
+  if [[ "${GOLDEN_ROOT}" != /* ]]; then
+    GOLDEN_ROOT="${REPO_ROOT}/${GOLDEN_ROOT}"
+  fi
   GOLDEN_FILE="${GOLDEN_ROOT}/${GOLDEN_NAME}"
   GOLDEN_TEXT="${GOLDEN_ROOT}/${BITIR_GOLDEN_FILE:-${BENCH}.txt}"
   RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/${BITIR_MACHINE_RESULTS_ROOT}/${BENCH}}"
@@ -339,14 +408,6 @@ setup_common() {
 
   if [[ ! -f "${PLUGIN}" ]]; then
     echo "missing plugin: ${PLUGIN}" >&2
-    exit 1
-  fi
-  if [[ "${COMPARE_MODE}" == "text" && ! -f "${GOLDEN_TEXT}" ]]; then
-    echo "missing golden text: ${GOLDEN_TEXT}" >&2
-    exit 1
-  fi
-  if [[ "${COMPARE_MODE}" != "text" && ! -f "${GOLDEN_FILE}" ]]; then
-    echo "missing golden file: ${GOLDEN_FILE}" >&2
     exit 1
   fi
 }
@@ -488,6 +549,58 @@ prepare_intel() {
   WRAPPER_BCS=()
 }
 
+prepare_amd() {
+  need BITIR_MACHINE_RUNTIME_HOME
+  need BITIR_MACHINE_HIP_ARCH
+
+  HIP_HOME="${BITIR_MACHINE_RUNTIME_HOME}"
+  CLANG="$(tool_or_fail "${CLANG:-}" clang++ \
+    "${HIP_HOME}/lib/llvm/bin/clang++" \
+    "${HIP_HOME}/llvm/bin/clang++")"
+  OPT_BIN="$(tool_or_fail "${OPT_BIN:-}" opt \
+    "${HIP_HOME}/lib/llvm/bin/opt" \
+    "${HIP_HOME}/llvm/bin/opt")"
+
+  export PATH="${HIP_HOME}/bin:${HIP_HOME}/lib/llvm/bin:${PATH}"
+  export LD_LIBRARY_PATH="${HIP_HOME}/lib:${HIP_HOME}/lib64:${LD_LIBRARY_PATH:-}"
+  if [[ -n "${BITIR_MACHINE_DEVICE_VISIBLE_ENV:-}" && -n "${BITIR_MACHINE_DEVICE_VISIBLE_VALUE:-}" ]]; then
+    export "${BITIR_MACHINE_DEVICE_VISIBLE_ENV}=${BITIR_MACHINE_DEVICE_VISIBLE_VALUE}"
+  fi
+
+  BIN_PATH="${OUT_DIR}/${BENCH}"
+}
+
+build_amd_binary() {
+  local common_flags=(
+    -x hip
+    --offload-arch="${BITIR_MACHINE_HIP_ARCH}"
+    --hip-path="${HIP_HOME}"
+    -O0
+    -g
+    "${INCLUDE_ARGS[@]}"
+  )
+
+  if [[ "${BASELINE}" == "1" ]]; then
+    trace_record_command build_amd_binary "${CLANG}" "${common_flags[@]}" "${SRC}" -o "${BIN_PATH}"
+    "${CLANG}" "${common_flags[@]}" "${SRC}" -o "${BIN_PATH}"
+    return
+  fi
+
+  trace_record_command build_amd_binary \
+    env LLFI_SITE="${SITE_ID}" LLFI_BIT="${BIT_INDEX}" LLFI_TARGET="${INJECT_TARGET}" \
+    LLFI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}" LLFI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}" \
+    "${CLANG}" "${common_flags[@]}" -fpass-plugin="${PLUGIN}" \
+    "${SRC}" -o "${BIN_PATH}"
+  LLFI_SITE="${SITE_ID}" \
+  LLFI_BIT="${BIT_INDEX}" \
+  LLFI_TARGET="${INJECT_TARGET}" \
+  LLFI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}" \
+  LLFI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}" \
+  "${CLANG}" "${common_flags[@]}" \
+    -fpass-plugin="${PLUGIN}" \
+    "${SRC}" -o "${BIN_PATH}"
+}
+
 build_intel_binary() {
   # Build host object and device bitcode
   trace_record_command build_bundle \
@@ -601,7 +714,7 @@ finalize_run() {
       else
         RESULT="BASELINE_MISMATCH"
       fi
-    elif [[ "${RUN_STATUS}" == "0" && -f "${RUN_DUMP}" ]]; then
+    elif [[ -f "${RUN_DUMP}" ]]; then
       DUMP_CANDIDATE="${RUN_DUMP}"
       if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
         RESULT="BASELINE"
@@ -610,25 +723,23 @@ finalize_run() {
       fi
     fi
   else
-    if [[ "${RUN_STATUS}" == "0" ]]; then
-      if [[ "${COMPARE_MODE}" == "text" ]]; then
-        TEXT_BASELINE="${RESULTS_DIR}/baseline.stdout"
-        TEXT_CANDIDATE="${RUN_OUT}"
-        if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
-          RESULT="MASKED"
-        else
-          RESULT="SDC"
-        fi
-      elif [[ -f "${RUN_DUMP}" ]]; then
-        DUMP_CANDIDATE="${RUN_DUMP}"
-        if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
-          RESULT="MASKED"
-        else
-          RESULT="SDC"
-        fi
+    if [[ "${COMPARE_MODE}" == "text" && "${RUN_STATUS}" == "0" ]]; then
+      TEXT_BASELINE="${RESULTS_DIR}/baseline.stdout"
+      TEXT_CANDIDATE="${RUN_OUT}"
+      if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
+        RESULT="MASKED"
       else
-        RESULT="DUE"
+        RESULT="SDC"
       fi
+    elif [[ -f "${RUN_DUMP}" ]]; then
+      DUMP_CANDIDATE="${RUN_DUMP}"
+      if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
+        RESULT="MASKED"
+      else
+        RESULT="SDC"
+      fi
+    elif [[ "${RUN_STATUS}" == "0" ]]; then
+      RESULT="DUE"
     else
       RESULT="FAILURE"
     fi
@@ -649,11 +760,16 @@ finalize_run() {
 
 setup_common
 common_run
+validate_site_semantics
 
 case "${BACKEND}" in
   nvidia)
     prepare_nvidia
     build_nvidia_binary
+    ;;
+  amd)
+    prepare_amd
+    build_amd_binary
     ;;
   intel)
     prepare_intel

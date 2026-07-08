@@ -8,6 +8,7 @@
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/CommandLine.h"
+#include <cstdlib>
 #include <fstream>
 #include <map>
 #include <string>
@@ -31,6 +32,27 @@ static cl::opt<bool> FiIncludeConstants("fi-include-constants",
 namespace {
 
 struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
+  static int envInt(const char *name, int defaultValue) {
+    const char *value = std::getenv(name);
+    if (!value || !*value)
+      return defaultValue;
+    return std::atoi(value);
+  }
+
+  static bool envBool(const char *name, bool defaultValue) {
+    const char *value = std::getenv(name);
+    if (!value || !*value)
+      return defaultValue;
+    return std::string(value) != "0";
+  }
+
+  static std::string envString(const char *name, const std::string &defaultValue) {
+    const char *value = std::getenv(name);
+    if (!value || !*value)
+      return defaultValue;
+    return std::string(value);
+  }
+
   static std::string csvEscape(const std::string &S) {
     if (S.find_first_of(",\"\n\r") == std::string::npos)
       return S;
@@ -99,6 +121,18 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
       return PreservedAnalyses::all();
     }
 
+    int fiSite = FiSite;
+    int fiBit = FiBit;
+    bool fiOnlyIntFloat = FiOnlyIntFloat;
+    std::string fiTarget = FiTarget;
+    bool fiIncludeConstants = FiIncludeConstants;
+    if (fiSite < 0)
+      fiSite = envInt("LLFI_SITE", fiSite);
+    fiBit = envInt("LLFI_BIT", fiBit);
+    fiOnlyIntFloat = envBool("LLFI_INT_FLOAT_ONLY", fiOnlyIntFloat);
+    fiTarget = envString("LLFI_TARGET", fiTarget);
+    fiIncludeConstants = envBool("LLFI_INCLUDE_CONSTANTS", fiIncludeConstants);
+
     bool doDump = !FiDumpSites.empty();
     bool doDumpRich = !FiDumpSitesRich.empty();
     std::ofstream dump;
@@ -141,10 +175,10 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
 
     int curId = 0;
     const DataLayout &DL = M.getDataLayout();
-    bool targetAll = FiTarget == "all";
-    bool targetResult = targetAll || FiTarget == "result";
-    bool targetOperandOnly = FiTarget == "operand";
-    bool targetPointerOnly = FiTarget == "pointer";
+    bool targetAll = fiTarget == "all";
+    bool targetResult = targetAll || fiTarget == "result";
+    bool targetOperandOnly = fiTarget == "operand";
+    bool targetPointerOnly = fiTarget == "pointer";
     bool targetAnyOperand = targetAll || targetOperandOnly || targetPointerOnly;
     for (Function &F : M) {
       if (F.isDeclaration())
@@ -164,7 +198,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
               continue;
             if (I.isTerminator())
               continue;
-            if (FiOnlyIntFloat && !(I.getType()->isIntegerTy() || I.getType()->isFloatingPointTy()))
+            if (fiOnlyIntFloat && !(I.getType()->isIntegerTy() || I.getType()->isFloatingPointTy()))
               continue;
 
             curId++;
@@ -190,7 +224,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                        << "," << csvEscape(sourceFile) << "," << sourceLine << "," << sourceColumn << "," << ordinal
                        << "," << csvEscape(semanticKey) << "\n";
             }
-            if (curId == FiSite && FiSite >= 1) {
+            if (curId == fiSite && fiSite >= 1) {
               Instruction *insertPt = I.getNextNode();
               if (!insertPt) {
                 insertPt = insertAfterPhi ? insertAfterPhi->getNextNode() : nullptr;
@@ -207,7 +241,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
               if (I.getType()->isIntegerTy()) {
                 IntegerType *Ty = cast<IntegerType>(I.getType());
                 unsigned width = Ty->getBitWidth();
-                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                unsigned bit = (fiBit < 0) ? 0 : (unsigned)fiBit;
                 if (bit >= width)
                   bit = width - 1;
                 APInt maskVal = APInt::getOneBitSet(width, bit);
@@ -220,7 +254,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                 unsigned width = FTy->getPrimitiveSizeInBits();
                 if (width == 0)
                   return PreservedAnalyses::none();
-                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                unsigned bit = (fiBit < 0) ? 0 : (unsigned)fiBit;
                 if (bit >= width)
                   bit = width - 1;
                 IntegerType *ITy = IntegerType::get(M.getContext(), width);
@@ -233,12 +267,12 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                 newInsts.push_back(xored);
                 newInsts.push_back(flipInst);
                 flipVal = flipInst;
-              } else if (!FiOnlyIntFloat && I.getType()->isPointerTy()) {
+              } else if (!fiOnlyIntFloat && I.getType()->isPointerTy()) {
                 Type *PTy = I.getType();
                 unsigned width = typeBitWidth(PTy, DL);
                 if (width == 0)
                   return PreservedAnalyses::none();
-                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                unsigned bit = (fiBit < 0) ? 0 : (unsigned)fiBit;
                 if (bit >= width)
                   bit = width - 1;
                 IntegerType *ITy = IntegerType::get(M.getContext(), width);
@@ -286,13 +320,13 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
               Value *Op = I.getOperand(opIdx);
               if (!Op)
                 continue;
-              if (!FiIncludeConstants && isa<Constant>(Op))
+              if (!fiIncludeConstants && isa<Constant>(Op))
                 continue;
               Type *Ty = Op->getType();
               bool isPointer = Ty->isPointerTy();
               if (targetPointerOnly && !isPointer)
                 continue;
-              if (!isPointer && FiOnlyIntFloat &&
+              if (!isPointer && fiOnlyIntFloat &&
                   !(Ty->isIntegerTy() || Ty->isFloatingPointTy()))
                 continue;
               if (!isPointer && targetPointerOnly)
@@ -324,7 +358,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                          << sourceLine << "," << sourceColumn << "," << ordinal << "," << csvEscape(semanticKey)
                          << "\n";
               }
-              if (curId != FiSite || FiSite < 1)
+              if (curId != fiSite || fiSite < 1)
                 continue;
 
               Instruction *insertPt = &I;
@@ -335,7 +369,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
               if (Ty->isIntegerTy()) {
                 IntegerType *ITy = cast<IntegerType>(Ty);
                 unsigned width = ITy->getBitWidth();
-                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                unsigned bit = (fiBit < 0) ? 0 : (unsigned)fiBit;
                 if (bit >= width)
                   bit = width - 1;
                 APInt maskVal = APInt::getOneBitSet(width, bit);
@@ -345,7 +379,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                 unsigned width = Ty->getPrimitiveSizeInBits();
                 if (width == 0)
                   return PreservedAnalyses::none();
-                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                unsigned bit = (fiBit < 0) ? 0 : (unsigned)fiBit;
                 if (bit >= width)
                   bit = width - 1;
                 IntegerType *ITy = IntegerType::get(M.getContext(), width);
@@ -358,7 +392,7 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                 unsigned width = typeBitWidth(Ty, DL);
                 if (width == 0)
                   return PreservedAnalyses::none();
-                unsigned bit = (FiBit < 0) ? 0 : (unsigned)FiBit;
+                unsigned bit = (fiBit < 0) ? 0 : (unsigned)fiBit;
                 if (bit >= width)
                   bit = width - 1;
                 IntegerType *ITy = IntegerType::get(M.getContext(), width);

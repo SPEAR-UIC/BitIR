@@ -118,6 +118,49 @@ def build_cuda_ir(args, repo_root, src_dir, src, out_dir):
     return ir_bc, 0
 
 
+def build_amd_ir(args, repo_root, src_dir, src, out_dir):
+    llvm_search_root = os.environ.get("BITIR_MACHINE_LLVM_SEARCH_ROOT", "")
+    clang = find_llvm_tool(repo_root, args.clang, "clang++", llvm_search_root) or ""
+    llvm_as = find_llvm_tool(repo_root, args.llvm_as, "llvm-as", llvm_search_root) or ""
+    hip_home = args.cuda_home or os.environ.get("BITIR_MACHINE_RUNTIME_HOME", "")
+    hip_arch = args.cuda_arch or os.environ.get("BITIR_MACHINE_HIP_ARCH", "")
+    if not clang or not llvm_as or not hip_home or not hip_arch:
+        print("missing required HIP or LLVM settings")
+        return "", 2
+    ir_ll = os.path.join(out_dir, "device.ll")
+    ir_bc = os.path.join(out_dir, "device.bc")
+    cmd = [
+        clang,
+        "-x", "hip",
+        "--offload-device-only",
+        f"--offload-arch={hip_arch}",
+        f"--hip-path={hip_home}",
+        "-Xclang", "-emit-llvm",
+        "-S", "-O0", "-g",
+        "-D__STRICT_ANSI__",
+        "-D_GLIBCXX_USE_FLOAT128=0",
+        "-I", src_dir,
+        "-I", os.path.join(repo_root, "HeCBench/src"),
+        src,
+        "-o", ir_ll,
+    ]
+    extra_includes = str(os.environ.get("BITIR_EXTRA_INCLUDES", "")).split()
+    for include_dir in extra_includes:
+        include_path = include_dir if os.path.isabs(include_dir) else os.path.join(repo_root, include_dir)
+        cmd[1:1] = ["-I", include_path]
+    if args.extra_cflags:
+        cmd[1:1] = shlex.split(args.extra_cflags)
+    code, out = run_cmd(cmd)
+    if code != 0:
+        print(out)
+        return "", code
+    code, out = run_cmd([llvm_as, ir_ll, "-o", ir_bc])
+    if code != 0:
+        print(out)
+        return "", code
+    return ir_bc, 0
+
+
 def build_sycl_ir(args, repo_root, src_dir, src, out_dir):
     sycl_target = os.environ.get("BITIR_MACHINE_SYCL_TARGET", "")
     sycl_offload_target = os.environ.get("BITIR_MACHINE_SYCL_OFFLOAD_TARGET", "")
@@ -310,7 +353,8 @@ def main():
     bench_name = os.path.basename(source_dir)
     out_dir = os.path.join(repo_root, args.out_dir, bench_name)
     os.makedirs(out_dir, exist_ok=True)
-    results_dir = os.path.join(repo_root, "HeCBench/results/llvm17_inject", bench_name)
+    results_root = os.environ.get("BITIR_MACHINE_RESULTS_ROOT", "HeCBench/results/llvm17_inject")
+    results_dir = os.path.join(repo_root, results_root, bench_name)
     os.makedirs(results_dir, exist_ok=True)
 
     llvm_search_root = os.environ.get("BITIR_MACHINE_LLVM_SEARCH_ROOT", "")
@@ -322,6 +366,8 @@ def main():
 
     if backend == "intel":
         ir_bc, code = build_sycl_ir(args, repo_root, source_dir, src, out_dir)
+    elif backend == "amd":
+        ir_bc, code = build_amd_ir(args, repo_root, source_dir, src, out_dir)
     else:
         ir_bc, code = build_cuda_ir(args, repo_root, source_dir, src, out_dir)
     if code != 0:
@@ -371,7 +417,7 @@ def main():
         git_refs=args.exclude_git_ref,
     )
     worklist_path = resolve_results_path(repo_root, results_dir, args.worklist, f"worklist{suffix}.csv")
-    if backend == "intel":
+    if backend in ("intel", "amd"):
         count, skipped = write_sycl_worklist(
             worklist_path,
             sites_rich_path,

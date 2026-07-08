@@ -72,11 +72,13 @@ __global__ void update (u64Int*__restrict__ Table, const u64Int TableSize)
 }
 
 int main(int argc, char** argv) {
-  if (argc != 2) {
-    printf("Usage: %s <repeat>\n", argv[0]);
+  if (argc < 2 || argc > 3) {
+    printf("Usage: %s <repeat> [dump file]\n", argv[0]);
     return 1;
   }
   const int repeat = atoi(argv[1]);
+  const char* dump_path = argc == 3 ? argv[2] : nullptr;
+  const bool force_dump = getenv("HECBENCH_FI_FORCE_DUMP") != nullptr;
 
   int failure;
   u64Int i;
@@ -145,6 +147,21 @@ int main(int argc, char** argv) {
           temp, TableSize, (temp <= 0.01*TableSize) ? "PASS" : "FAIL");
   if (temp <= 0.01*TableSize) failure = 0;
   else failure = 1;
+
+  if (dump_path && (!failure || force_dump)) {
+    FILE* fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("randomAccess dump");
+    } else {
+      size_t written = fwrite(Table, sizeof(u64Int), TableSize, fp);
+      fclose(fp);
+      if (written != TableSize) {
+        fprintf(stderr, "randomAccess: incomplete dump (%zu of %llu elements)\n", written, TableSize);
+      } else {
+        printf("randomAccess snapshot written to %s\n", dump_path);
+      }
+    }
+  }
 
   free( Table );
   hipFree(d_Table);

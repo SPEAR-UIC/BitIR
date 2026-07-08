@@ -1,6 +1,6 @@
-site_id,bit_index
-316,0
-377,0
-380,32
-375,31
-320,33
+site_id,bit_index,aligned_index,opcode,source_line,source_column,function,site_class,type_kind,bitwidth,signature_ordinal,compare_mode
+51,0,65,icmp,27,12,_Z11HPCC_startsx,result,int,1,2,exact
+71,0,837,icmp,36,41,_Z11HPCC_startsx,result,int,1,6,exact
+72,32,870,zext,36,27,_Z11HPCC_startsx,result,int,64,2,exact
+70,31,804,load,36,36,_Z11HPCC_startsx,result,int,64,10,exact
+48,33,99,load,26,19,_Z11HPCC_startsx,result,int,64,2,exact
