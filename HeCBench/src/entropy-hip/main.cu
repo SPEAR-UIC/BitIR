@@ -83,13 +83,15 @@ __global__ void entropy_opt(
 }
 
 int main(int argc, char* argv[]) {
-  if (argc != 4) {
-    printf("Usage: %s <width> <height> <repeat>\n", argv[0]);
+  if (argc < 4 || argc > 5) {
+    printf("Usage: %s <width> <height> <repeat> [dump file]\n", argv[0]);
     return 1;
   }
   const int width = atoi(argv[1]); 
   const int height = atoi(argv[2]); 
   const int repeat = atoi(argv[3]); 
+  const char* dump_path = argc == 5 ? argv[4] : nullptr;
+  const bool force_dump = getenv("HECBENCH_FI_FORCE_DUMP") != nullptr;
 
   const int input_bytes = width * height * sizeof(char);
   const int output_bytes = width * height * sizeof(float);
@@ -163,6 +165,22 @@ int main(int argc, char* argv[]) {
     if (!ok) break;
   }
   printf("%s\n", ok ? "PASS" : "FAIL");
+
+  if (dump_path && (ok || force_dump)) {
+    FILE* fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("entropy dump");
+    } else {
+      size_t elements = (size_t)width * (size_t)height;
+      size_t written = fwrite(output, sizeof(float), elements, fp);
+      fclose(fp);
+      if (written != elements) {
+        fprintf(stderr, "entropy: incomplete dump (%zu of %zu elements)\n", written, elements);
+      } else {
+        printf("entropy snapshot written to %s\n", dump_path);
+      }
+    }
+  }
  
   free(input);
   free(output);

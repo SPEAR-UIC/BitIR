@@ -65,12 +65,14 @@ void SoAKernel(const ApplesOnTrees *__restrict__ applesOnTrees,
 
 int main(int argc, char * argv[])
 {
-  if (argc != 2) {
-    printf("Usage: %s <repeat>\n", argv[0]);
+  if (argc < 2 || argc > 3) {
+    printf("Usage: %s <repeat> [dump file]\n", argv[0]);
     return 1;
   }
   
   const int iterations = atoi(argv[1]); // Number of iterations for kernel execution
+  const char* dump_path = argc == 3 ? argv[2] : nullptr;
+  const bool force_dump = getenv("HECBENCH_FI_FORCE_DUMP") != nullptr;
   const int treeSize = TREE_SIZE;
   const int treeNumber = TREE_NUM;
   bool fail = false;
@@ -187,6 +189,22 @@ int main(int argc, char * argv[])
     std::cout << "FAIL\n";
   else
     std::cout << "PASS\n";
+
+  if (dump_path && (!fail || force_dump)) {
+    FILE* fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("layout dump");
+    } else {
+      size_t elements = (size_t)treeNumber;
+      size_t written = fwrite(deviceResult, sizeof(int), elements, fp);
+      fclose(fp);
+      if (written != elements) {
+        fprintf(stderr, "layout: incomplete dump (%zu of %zu elements)\n", written, elements);
+      } else {
+        std::cout << "layout snapshot written to " << dump_path << "\n";
+      }
+    }
+  }
   
   hipFree(inputBuffer);
   hipFree(outputBuffer);
