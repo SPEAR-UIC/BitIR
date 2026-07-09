@@ -1,0 +1,268 @@
+PWD=/ccs/home/mdunlavy/GPU_Fault_Injection
+ *v*)
+ *v*x*)
+ *x*)
+ ;;
+ ;;
+ ;;
+ __lmod_my_status=$?;
+ __lmod_sh_dbg='v'
+ __lmod_sh_dbg='vx'
+ __lmod_sh_dbg='x'
+ case "$-" in 
+ echo "Shell debugging restarted" 1>&2;
+ echo "Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output" 1>&2;
+ esac;
+ eval "$($LMOD_CMD shell "$@")" && eval "$(${LMOD_SETTARG_CMD:-:} -s sh)";
+ fi;
+ fi;
+ fi;
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ return $__lmod_my_status
+ set +$__lmod_sh_dbg;
+ set -$__lmod_sh_dbg;
+ unset __lmod_sh_dbg;
+ABS_TOL=1e-5
+BASELINE=0
+BASH_ENV=/opt/cray/pe/lmod/lmod/init/bash
+BASH_FUNC_ml%%=() {  eval "$($LMOD_DIR/ml_cmd "$@")"
+BASH_FUNC_module%%=() {  if [ -z "${LMOD_SH_DBG_ON+x}" ]; then
+BENCH=colorwheel
+BENCH_DIR=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/src/colorwheel-hip
+BIN_PATH=/tmp/bitir_colorwheel_site225_bit12/colorwheel
+BITIR_COMPARE_MODE=exact
+BITIR_GOLDEN_FILE=colorwheel.bin
+BITIR_MACHINE_CLANGXX=/opt/rocm-6.4.2/lib/llvm/bin/clang++
+BITIR_MACHINE_GOLDEN_ROOT=Frontier_HIP_Golden_Outputs
+BITIR_MACHINE_GPU_QUERY_COMMAND=rocm-smi
+BITIR_MACHINE_HIP_ARCH=gfx90a
+BITIR_MACHINE_INJECT_BUILD_BASELINE="${BITIR_MACHINE_CLANGXX}" -x hip --offload-arch="${BITIR_MACHINE_HIP_ARCH}" --hip-path="${BITIR_MACHINE_RUNTIME_HOME}" -O0 -g -I "${BENCH_DIR}" -I "${REPO_ROOT}/HeCBench/src" "${SRC}" -o "${BIN_PATH}"
+BITIR_MACHINE_INJECT_BUILD_INJECTED=FI_SITE="${SITE_ID}" FI_BIT="${BIT_INDEX}" FI_TARGET="${INJECT_TARGET}" FI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}" FI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}" "${BITIR_MACHINE_CLANGXX}" -x hip --offload-arch="${BITIR_MACHINE_HIP_ARCH}" --hip-path="${BITIR_MACHINE_RUNTIME_HOME}" -O0 -g -I "${BENCH_DIR}" -I "${REPO_ROOT}/HeCBench/src" -fpass-plugin="${PLUGIN}" "${SRC}" -o "${BIN_PATH}"
+BITIR_MACHINE_LLVM_CONFIG=/opt/rocm-6.4.2/lib/llvm/bin/llvm-config
+BITIR_MACHINE_OPT_BIN=/opt/rocm-6.4.2/lib/llvm/bin/opt
+BITIR_MACHINE_RESULTS_ROOT=HeCBench/results/divergence_trace_selected_frontier_v2/amd
+BITIR_MACHINE_RUNTIME_HOME=/opt/rocm-6.4.2
+BITIR_MACHINE_RUN_DUMP_ENV=HECBENCH_FI_FORCE_DUMP=1
+BITIR_MACHINE_SOURCE_FILE=main.cu
+BITIR_RUN_ARGS=10000 8 1
+BITIR_SITE_LIST=/ccs/home/mdunlavy/GPU_Fault_Injection/.bitir_jobs/selected_case_site_lists/colorwheel.csv
+BITIR_SOURCE_DIR=HeCBench/src/colorwheel-hip
+BITIR_TRACE_METADATA_DIR=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/llvm17_inject_amd/colorwheel
+BIT_INDEX=12
+BROWSER=/autofs/nccs-svm1_home2/mdunlavy/.vscode-server/cli/servers/Stable-7c6fdfb0b8f2f675eb0b47f3d95eeca78962565b/server/bin/helpers/browser.sh
+C3_RSH=ssh -oConnectTimeout=10 -oForwardX11=no
+CMAKE_PREFIX_PATH=/opt/rocm-6.4.2/lib/cmake/hip
+CODEX_CI=1
+CODEX_INTERNAL_ORIGINATOR_OVERRIDE=codex_vscode
+CODEX_SANDBOX_NETWORK_DISABLED=1
+CODEX_THREAD_ID=019f19dc-81e7-7a70-a30a-4fe852f129de
+COLORTERM=1
+CPU=x86_64
+CRAY_ROCM_DIR=/opt/rocm-6.4.2
+CRAY_ROCM_INCLUDE_OPTS=-I/opt/rocm-6.4.2/include -I/opt/rocm-6.4.2/include/rocprofiler -I/opt/rocm-6.4.2/include/roctracer -I/opt/rocm-6.4.2/include/hip -D__HIP_PLATFORM_AMD__
+CRAY_ROCM_POST_LINK_OPTS= -L/opt/rocm-6.4.2/lib -L/opt/rocm-6.4.2/lib/rocprofiler -L/opt/rocm-6.4.2/lib/roctracer -lamdhip64
+CRAY_ROCM_PREFIX=/opt/rocm-6.4.2
+CRAY_ROCM_VERSION=6.4.2
+CSHEDIT=emacs
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/20468/bus
+DEBUG=release
+ELECTRON_RUN_AS_NODE=1
+ENVIRONMENT=BATCH
+FATBIN_FILE=/tmp/bitir_colorwheel_site225_bit12/device.injected.fatbin
+FI_CXI_ATS=0
+FI_MR_CACHE_MONITOR=kdreg2
+FROM_HEADER=
+GH_PAGER=cat
+GIT_PAGER=cat
+GPG_TTY=not a tty
+G_BROKEN_FILENAMES=1
+G_FILENAME_ENCODING=@locale,UTF-8,ISO-8859-15,CP1252
+HIP_LIB_PATH=/opt/rocm-6.4.2/lib
+HISTSIZE=1000
+HOME=/ccs/home/mdunlavy
+HOST=login08
+HOSTNAME=frontier10365
+HOSTTYPE=x86_64
+HYDRA_BOOTSTRAP=slurm
+HYDRA_LAUNCHER_EXTRA_ARGS=--external-launcher
+INCLUDE_CONSTANTS=0
+INJECT_TARGET=result
+INT_FLOAT_ONLY=1
+IR_BC=/tmp/bitir_colorwheel_site225_bit12/device.bc
+IR_INJ_BC=/tmp/bitir_colorwheel_site225_bit12/device.injected.bc
+IR_LL=/tmp/bitir_colorwheel_site225_bit12/device.ll
+I_MPI_HYDRA_BOOTSTRAP=slurm
+I_MPI_HYDRA_BOOTSTRAP_EXEC_EXTRA_ARGS=--external-launcher
+JAVA_BINDIR=/usr/lib64/jvm/java-11-openjdk-11/bin
+JAVA_HOME=/usr/lib64/jvm/java-11-openjdk-11
+JDK_HOME=/usr/lib64/jvm/java-11-openjdk-11
+JRE_HOME=/usr/lib64/jvm/java-11-openjdk-11
+KEEP_DUMPS=1
+LANG=en_US.UTF-8
+LANGUAGE=en_US.UTF-8
+LC_ALL=C.UTF-8
+LC_CTYPE=C.UTF-8
+LD_LIBRARY_PATH=/opt/rocm-6.4.2/lib:/opt/rocm-6.4.2/lib64:/opt/rocm-6.4.2/lib/roctracer:/opt/rocm-6.4.2/lib/rocprofiler:/opt/rocm-6.4.2/lib
+LESS=-M -I -R
+LESSCLOSE=lessclose.sh %s %s
+LESSKEY=/etc/lesskey.bin
+LESSOPEN=lessopen.sh %s
+LESS_ADVANCED_PREPROCESSOR=no
+LIBGL_DEBUG=quiet
+LMOD_ADMIN_FILE=/sw/frontier/lmod/etc/admin.list
+LMOD_AVAIL_STYLE=nsp-pretty:system
+LMOD_CMD=/opt/cray/pe/lmod/lmod/libexec/lmod
+LMOD_DIR=/opt/cray/pe/lmod/lmod/libexec
+LMOD_MODULERCFILE=/sw/frontier/lmod/etc/rc.lua
+LMOD_PACKAGE_PATH=/sw/frontier/lmod/hooks
+LMOD_PKG=/opt/cray/pe/lmod/lmod
+LMOD_RC=/sw/frontier/lmod/etc/lmodrc.lua
+LMOD_ROOT=/opt/cray/pe/lmod
+LMOD_SETTARG_FULL_SUPPORT=no
+LMOD_SITE_NAME=OLCF
+LMOD_SYSTEM_DEFAULT_MODULES=craype-x86-trento:craype-network-ofi:perftools-base:xpmem:cray-pmi:PrgEnv-cray:DefApps
+LMOD_SYSTEM_NAME=frontier
+LMOD_VERSION=8.7.37
+LMOD_sys=Linux
+LOADEDMODULES=rocm/6.4.2:rocm-llvm-toolchain
+LOGNAME=mdunlavy
+LS_COLORS=
+LS_OPTIONS=-N --color=none -T 0
+MACHTYPE=x86_64-suse-linux
+MAIL=/var/spool/mail/mdunlavy
+MANPATH=/opt/rocm-6.4.2/share/man:/opt/cray/pe/lmod/lmod/share/man:/usr/local/man:/usr/local/share/man:/usr/share/man:/opt/c3/man:/opt/puppetlabs/puppet/share/man:/opt/clmgr/man:/opt/sgi/share/man:/opt/clmgr/share/man:/opt/clmgr/lib/cm-cli/man
+MEMBERWORK=/lustre/orion/scratch/mdunlavy
+MINICOM=-c on
+MODULEPATH=/opt/cray/pe/modulefiles/Linux:/opt/cray/pe/modulefiles/Core:/opt/cray/pe/lmod/lmod/modulefiles/Core:/opt/cray/pe/lmod/modulefiles/core:/opt/cray/pe/lmod/modulefiles/craype-targets/default:/sw/frontier/modulefiles:/opt/cray/modulefiles
+MODULEPATH_ROOT=/opt/cray/pe/modulefiles
+MODULESHOME=/opt/cray/pe/lmod/lmod
+MORE=-sl
+MPICH_OFI_NIC_POLICY=NUMA
+NO_COLOR=1
+OLDPWD=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection
+OMPI_MCA_plm_slurm_args=--external-launcher
+OSCAR_HOME=/opt/oscar
+OSTYPE=linux
+OUT_DIR=/tmp/bitir_colorwheel_site225_bit12
+PAGER=less
+PATH=/opt/rocm-6.4.2/bin:/opt/rocm-6.4.2/lib/llvm/bin:/opt/rocm-6.4.2/lib/llvm/bin:/opt/rocm-6.4.2/bin:/ccs/home/mdunlavy/.codex/tmp/arg0/codex-arg0xLhCAJ:/autofs/nccs-svm1_home2/mdunlavy/.vscode-server/cli/servers/Stable-7c6fdfb0b8f2f675eb0b47f3d95eeca78962565b/server/bin/remote-cli:/opt/clmgr/sbin:/opt/clmgr/bin:/opt/sgi/sbin:/opt/sgi/bin:/sw/frontier/bin:/usr/local/bin:/usr/bin:/bin:/opt/bin:/opt/c3/bin:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/puppetlabs/bin:/usr/diags/scripts:/usr/diags/bin/non-mpi:/usr/diags/bin/nvidia/gpuburn_static:/ccs/home/mdunlavy/.vscode-server/extensions/openai.chatgpt-26.623.141536-linux-x64/bin/linux-x86_64
+PELOCAL_PRGENV=true
+PE_PKGCONFIG_LIBS=rocm-6.4.2
+PE_PRODUCT_LIST=CRAY_ROCM
+PHASE=float
+PKG_CONFIG_PATH=/usr/lib64/pkgconfig
+PLUGIN=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/tools/llvm17_inject/libfi_inject.so
+POSTLINK_TABLE=/tmp/bitir_colorwheel_site225_bit12/postlink.table
+PROFILEREAD=true
+PROJWORK=/lustre/orion/proj-shared
+PRTE_MCA_plm_slurm_args=--external-launcher
+PTX_FILE=/tmp/bitir_colorwheel_site225_bit12/device.injected.ptx
+PWD=/ccs/home/mdunlavy/GPU_Fault_Injection
+PYTHONSTARTUP=/etc/pythonstart
+REL_TOL=0.0
+REPO_ROOT=/ccs/home/mdunlavy/GPU_Fault_Injection
+RESULTS_DIR=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_selected_frontier_v2/amd/colorwheel/float
+RFE_811452_DISABLE=1
+ROCM_PATH=/opt/rocm-6.4.2
+ROCR_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+RUST_LOG=warn
+SDK_HOME=/usr/lib64/jvm/java-11-openjdk-11
+SHELL=/bin/bash
+SHLVL=7
+SITE_ID=225
+SKIP_EXISTING=0
+SLURMD_NODENAME=frontier10365
+SLURM_CLUSTER_NAME=frontier
+SLURM_CONF=/var/spool/slurmd/conf-cache/slurm.conf
+SLURM_CPUS_ON_NODE=56
+SLURM_CPUS_PER_TASK=8
+SLURM_GPUS_ON_NODE=8
+SLURM_GPUS_PER_NODE=1
+SLURM_GTIDS=0
+SLURM_JOBID=4962517
+SLURM_JOB_ACCOUNT=csc707
+SLURM_JOB_CPUS_PER_NODE=56
+SLURM_JOB_END_TIME=1783624324
+SLURM_JOB_GID=33540
+SLURM_JOB_GPUS=0,1,2,3,4,5,6,7
+SLURM_JOB_ID=4962517
+SLURM_JOB_NAME=amd_sel_colorwheel
+SLURM_JOB_NODELIST=frontier10365
+SLURM_JOB_NUM_NODES=1
+SLURM_JOB_PARTITION=extended
+SLURM_JOB_QOS=normal
+SLURM_JOB_START_TIME=1783609924
+SLURM_JOB_UID=20468
+SLURM_JOB_USER=mdunlavy
+SLURM_LOCALID=0
+SLURM_MEM_PER_NODE=32768
+SLURM_NNODES=1
+SLURM_NODEID=0
+SLURM_NODELIST=frontier10365
+SLURM_NPROCS=1
+SLURM_NTASKS=1
+SLURM_NTASKS_PER_NODE=1
+SLURM_OOM_KILL_STEP=0
+SLURM_PRIO_PROCESS=0
+SLURM_PROCID=0
+SLURM_SPANK_GPU_COUNTERS=0
+SLURM_SPANK_GPU_COUNTERS_SRC=default
+SLURM_SPANK_GPU_POWER_CAP=560
+SLURM_SPANK_GPU_POWER_CAP_SRC=default
+SLURM_SPANK_GPU_SRANGE=500-1700
+SLURM_SPANK_GPU_SRANGE_SRC=default
+SLURM_SUBMIT_DIR=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection
+SLURM_SUBMIT_HOST=login08
+SLURM_TASKS_PER_NODE=1
+SLURM_TASK_PID=2544337
+SLURM_THREADS_PER_CORE=1
+SLURM_TOPOLOGY_ADDR=root.s2610.frontier10365
+SLURM_TOPOLOGY_ADDR_PATTERN=switch.switch.node
+SLURM_TRES_PER_TASK=cpu=8
+SRC=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/src/colorwheel-hip/main.cu
+SSH_CLIENT=172.58.165.68 41909 22
+SSH_CONNECTION=172.58.165.68 41909 128.219.135.138 22
+SSL_CERT_DIR=/etc/ssl/certs
+SSL_CERT_FILE=/etc/ssl/ca-bundle.pem
+TERM=dumb
+TMPDIR=/tmp
+TRACE_LEVEL=full
+TRACE_REPEATS=2
+TRACE_SOURCE_WINDOW=12
+USER=mdunlavy
+USE_PCM_DB=2
+VSCODE_AGENT_FOLDER=/ccs/home/mdunlavy/.vscode-server
+VSCODE_CLI_REQUIRE_TOKEN=537df62f-092c-47f6-a36e-03bb9f3953b3
+VSCODE_CWD=/autofs/nccs-svm1_home2/mdunlavy
+VSCODE_ESM_ENTRYPOINT=vs/workbench/api/node/extensionHostProcess
+VSCODE_HANDLES_SIGPIPE=true
+VSCODE_HANDLES_UNCAUGHT_ERRORS=true
+VSCODE_IPC_HOOK_CLI=/run/user/20468/vscode-ipc-1306ad0b-1a9c-49ca-8ca5-8255fca87362.sock
+VSCODE_NLS_CONFIG={"userLocale":"en","osLocale":"en","resolvedLanguage":"en","defaultMessagesFile":"/autofs/nccs-svm1_home2/mdunlavy/.vscode-server/cli/servers/Stable-7c6fdfb0b8f2f675eb0b47f3d95eeca78962565b/server/out/nls.messages.json","locale":"en","availableLanguages":{}}
+WINDOWMANAGER=xterm
+WORLDWORK=/lustre/orion/world-shared
+XDG_CONFIG_DIRS=/etc/xdg
+XDG_DATA_DIRS=/usr/local/share:/usr/share
+XDG_RUNTIME_DIR=/run/user/20468
+XDG_SESSION_CLASS=user
+XDG_SESSION_ID=20924
+XDG_SESSION_TYPE=tty
+XKEYSYMDB=/usr/X11R6/lib/X11/XKeysymDB
+XNLSPATH=/usr/X11R6/lib/X11/nls
+_=/usr/bin/env
+_LMFILES_=/opt/cray/pe/lmod/modulefiles/core/rocm/6.4.2.lua:/sw/frontier/modulefiles/rocm-llvm-toolchain.lua
+_ModuleTable001_=X01vZHVsZVRhYmxlXyA9IHsKTVR2ZXJzaW9uID0gMywKY19yZWJ1aWxkVGltZSA9IGZhbHNlLApjX3Nob3J0VGltZSA9IGZhbHNlLApkZXB0aFQgPSB7fSwKZmFtaWx5ID0ge30sCm1UID0gewpyb2NtID0gewpmbiA9ICIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlL3JvY20vNi40LjIubHVhIiwKZnVsbE5hbWUgPSAicm9jbS82LjQuMiIsCmxvYWRPcmRlciA9IDEsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAwLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAicm9jbS82LjQuMiIsCndWID0gIjAwMDAwMDAwNi4wMDAwMDAwMDQuMDAwMDAwMDAyLip6ZmluYWwiLAp9LApbInJvY20tbGx2bS10b29sY2hhaW4iXSA9IHsKZm4gPSAiL3N3L2Zyb250aWVy
+_ModuleTable002_=L21vZHVsZWZpbGVzL3JvY20tbGx2bS10b29sY2hhaW4ubHVhIiwKZnVsbE5hbWUgPSAicm9jbS1sbHZtLXRvb2xjaGFpbiIsCmxvYWRPcmRlciA9IDIsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAwLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAicm9jbS1sbHZtLXRvb2xjaGFpbiIsCndWID0gIk0uKnpmaW5hbCIsCn0sCn0sCm1wYXRoQSA9IHsKIi9vcHQvY3JheS9wZS9tb2R1bGVmaWxlcy9MaW51eCIsICIvb3B0L2NyYXkvcGUvbW9kdWxlZmlsZXMvQ29yZSIKLCAiL29wdC9jcmF5L3BlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIgosICIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlIgosICIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxl
+_ModuleTable003_=cy9jcmF5cGUtdGFyZ2V0cy9kZWZhdWx0IgosICIvc3cvZnJvbnRpZXIvbW9kdWxlZmlsZXMiLCAiL29wdC9jcmF5L21vZHVsZWZpbGVzIiwKfSwKc3lzdGVtQmFzZU1QQVRIID0gIi9vcHQvY3JheS9wZS9tb2R1bGVmaWxlcy9MaW51eDovb3B0L2NyYXkvcGUvbW9kdWxlZmlsZXMvQ29yZTovb3B0L2NyYXkvcGUvbG1vZC9sbW9kL21vZHVsZWZpbGVzL0NvcmU6L29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZTovb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jcmF5cGUtdGFyZ2V0cy9kZWZhdWx0Oi9zdy9mcm9udGllci9tb2R1bGVmaWxlczovb3B0L2NyYXkvbW9kdWxlZmlsZXMiLAp9Cg==
+_ModuleTable_Sz_=3
+__LMOD_REF_COUNT_CMAKE_PREFIX_PATH=/opt/rocm-6.4.2/lib/cmake/hip:1
+__LMOD_REF_COUNT_LD_LIBRARY_PATH=/opt/rocm-6.4.2/lib/roctracer:1;/opt/rocm-6.4.2/lib/rocprofiler:1;/opt/rocm-6.4.2/lib:1
+__LMOD_REF_COUNT_MANPATH=/opt/rocm-6.4.2/share/man:1;/opt/cray/pe/lmod/lmod/share/man:1;/usr/local/man:1;/usr/local/share/man:1;/usr/share/man:1;/opt/c3/man:1;/opt/puppetlabs/puppet/share/man:1;/opt/clmgr/man:1;/opt/sgi/share/man:1;/opt/clmgr/share/man:1;/opt/clmgr/lib/cm-cli/man:1
+__LMOD_REF_COUNT_MODULEPATH=/opt/cray/pe/modulefiles/Linux:1;/opt/cray/pe/modulefiles/Core:1;/opt/cray/pe/lmod/lmod/modulefiles/Core:1;/opt/cray/pe/lmod/modulefiles/core:1;/opt/cray/pe/lmod/modulefiles/craype-targets/default:1;/sw/frontier/modulefiles:1;/opt/cray/modulefiles:1
+__LMOD_REF_COUNT_PATH=/opt/rocm-6.4.2/lib/llvm/bin:1;/opt/rocm-6.4.2/bin:1;/ccs/home/mdunlavy/.codex/tmp/arg0/codex-arg0xLhCAJ:1;/autofs/nccs-svm1_home2/mdunlavy/.vscode-server/cli/servers/Stable-7c6fdfb0b8f2f675eb0b47f3d95eeca78962565b/server/bin/remote-cli:1;/opt/clmgr/sbin:1;/opt/clmgr/bin:1;/opt/sgi/sbin:1;/opt/sgi/bin:1;/sw/frontier/bin:1;/usr/local/bin:1;/usr/bin:1;/bin:1;/opt/bin:1;/opt/c3/bin:1;/usr/lib/mit/bin:1;/usr/lib/mit/sbin:1;/opt/puppetlabs/bin:1;/usr/diags/scripts:1;/usr/diags/bin/non-mpi:1;/usr/diags/bin/nvidia/gpuburn_static:1;/ccs/home/mdunlavy/.vscode-server/extensions/openai.chatgpt-26.623.141536-linux-x64/bin/linux-x86_64:1
+__LMOD_REF_COUNT_PE_PKGCONFIG_LIBS=rocm-6.4.2:1
+__LMOD_REF_COUNT_PE_PRODUCT_LIST=CRAY_ROCM:1
+__LMOD_REF_COUNT_PKG_CONFIG_PATH=/usr/lib64/pkgconfig:1
+}
+}

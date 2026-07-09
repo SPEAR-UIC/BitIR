@@ -1,0 +1,14 @@
+trace_level=full
+bench=colorwheel
+source=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/src/colorwheel-hip/main.cu
+source_dir=HeCBench/src/colorwheel-hip
+site_id=225
+bit_index=7
+inject_target=result
+compare_mode=exact
+phase=float
+results_dir=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_selected_frontier_v2/amd/colorwheel/float
+out_dir=/tmp/bitir_colorwheel_site225_bit7
+run_out=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_selected_frontier_v2/amd/colorwheel/float/site225_bit7_trial2.out
+run_err=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_selected_frontier_v2/amd/colorwheel/float/site225_bit7_trial2.err
+run_dump=/tmp/bitir_colorwheel_site225_bit7/colorwheel_site225_bit7_trial2.bin

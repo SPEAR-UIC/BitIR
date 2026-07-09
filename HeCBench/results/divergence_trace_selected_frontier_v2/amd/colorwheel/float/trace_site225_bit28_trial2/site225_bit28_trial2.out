@@ -1,0 +1,5 @@
+Start execution on a device
+Average kernel execution time : 5.277042 (ms)
+Maximum error between host and device results: 255
+colorwheel snapshot written to /tmp/bitir_colorwheel_site225_bit28/colorwheel_site225_bit28_trial2.bin
+mismatch

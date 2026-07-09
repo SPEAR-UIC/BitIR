@@ -1,0 +1,6 @@
+Start execution on a device
+Average kernel execution time : 5.276341 (ms)
+Maximum error between host and device results: 255
+colorwheel snapshot written to /tmp/bitir_colorwheel_site225_bit23/colorwheel_site225_bit23_trial2.bin
+mismatch
+Result: SDC (exit 0)

@@ -1,0 +1,1 @@
+"${BITIR_MACHINE_CLANGXX}" -x hip --offload-arch="${BITIR_MACHINE_HIP_ARCH}" --hip-path="${BITIR_MACHINE_RUNTIME_HOME}" -O0 -g -I "${BENCH_DIR}" -I "${REPO_ROOT}/HeCBench/src" "${SRC}" -o "${BIN_PATH}"
