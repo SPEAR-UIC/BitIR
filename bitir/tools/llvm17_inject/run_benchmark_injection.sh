@@ -61,8 +61,10 @@ trace_runtime_env() {
 trace_gpu_state() {
   local label="$1"
   [[ -n "${TRACE_DIR:-}" ]] || return 0
+  [[ "${TRACE_RANK}" -ge 2 ]] || return 0
   [[ -n "${BITIR_MACHINE_GPU_QUERY_COMMAND:-}" ]] || return 0
-  TRACE_GPU_LABEL="${label}" run_shell_block "gpu_${label}" "${BITIR_MACHINE_GPU_QUERY_COMMAND}" || true
+  printf '%s\n' "${BITIR_MACHINE_GPU_QUERY_COMMAND}" > "${TRACE_DIR}/gpu_${label}.sh"
+  TRACE_GPU_LABEL="${label}" eval "${BITIR_MACHINE_GPU_QUERY_COMMAND}" > "${TRACE_DIR}/gpu_${label}.txt" 2>&1 || true
 }
 
 resolve_source_file() {

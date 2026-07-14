@@ -437,6 +437,18 @@ DEPLOY_BODY = dedent(
       export BITIR_COMPARE_MODE BITIR_GOLDEN_FILE
     }
 
+    BITIR_DEPLOY_SOURCE_ROOT="${REPO_ROOT}/bitir/build/benchmark_sets/${BITIR_BENCHMARK_SET}/${BITIR_MACHINE_BINARY_SUBDIR}"
+    python3 "${BITIR_ROOT}/tools/benchmark_sets/prepare_benchmark_set.py" \
+      --benchmark-set "${BITIR_BENCHMARK_SET}" \
+      --benchmark-root "${BITIR_BENCHMARK_ROOT}" \
+      --source-root "${BITIR_BENCHMARK_SOURCE_ROOT#${BITIR_BENCHMARK_ROOT}/}" \
+      --output-root "${BITIR_DEPLOY_SOURCE_ROOT}" \
+      --benchmarks "${benchmarks_cmake}" \
+      --models "${BITIR_MACHINE_BINARY_SUBDIR}"
+    BITIR_BENCHMARK_ROOT="${BITIR_DEPLOY_SOURCE_ROOT}"
+    BITIR_BENCHMARK_SOURCE_ROOT="${BITIR_DEPLOY_SOURCE_ROOT}/src"
+    export BITIR_BENCHMARK_ROOT BITIR_BENCHMARK_SOURCE_ROOT
+
     bash "${PLUGIN_BUILD}"
 
     total_count=0
