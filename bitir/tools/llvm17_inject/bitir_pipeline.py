@@ -270,16 +270,15 @@ BASELINE_BODY = dedent(
       exit 1
     fi
 
-    BENCH_RESULTS_ROOT="${REPO_DIR}/bitir/results/baseline_checks"
-    mkdir -p "${BENCH_RESULTS_ROOT}"
+    RESULTS_RUN_DIR="${REPO_DIR}/results/$(date -u +%Y%m%d_%H%M%S)"
+    mkdir -p "${RESULTS_RUN_DIR}"
+    echo "[baseline] run_results=${RESULTS_RUN_DIR}"
 
     """ + BENCH_LIST_BLOCK + """
 
     for bench in "${BENCH_LIST[@]}"; do
       set_benchmark_config "${bench}"
-      RESULTS_DIR="${BENCH_RESULTS_ROOT}/${bench}"
-      mkdir -p "${RESULTS_DIR}"
-      BASELINE=1 BENCH="${bench}" SITE_ID=-1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_DIR}" bash "${RUNNER}"
+      BASELINE=1 BENCH="${bench}" SITE_ID=-1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_RUN_DIR}" RESULT_TAG="${bench}_baseline" bash "${RUNNER}"
     done
     """
 ).strip()
@@ -466,6 +465,10 @@ DEPLOY_BODY = dedent(
 
     bash "${PLUGIN_BUILD}"
 
+    RESULTS_RUN_DIR="${REPO_ROOT}/results/$(date -u +%Y%m%d_%H%M%S)"
+    mkdir -p "${RESULTS_RUN_DIR}"
+    echo "[deploy] run_results=${RESULTS_RUN_DIR}"
+
     total_count=0
     for bench in "${BENCH_LIST[@]}"; do
       set_benchmark_config "${bench}"
@@ -476,18 +479,9 @@ DEPLOY_BODY = dedent(
       need BITIR_SOURCE_DIR
 
       SITE_LIST="${SITE_LIST:-${BITIR_SITE_LIST:-${BITIR_FAULT_MODEL_SITE_LIST:-}}}"
-      RESULTS_ROOT_REL="${BITIR_MACHINE_RESULTS_ROOT}"
-      if [[ -n "${RESULTS_SUBDIR_BASE:-}" ]]; then
-        RESULTS_ROOT_REL="bitir/results/${RESULTS_SUBDIR_BASE}"
-      fi
-      RESULTS_DIR="${REPO_ROOT}/${RESULTS_ROOT_REL}/${BENCH}"
-      RESULT_TAG="${PHASE:-default}"
-      WORKLIST_SUFFIX="$(worklist_suffix)"
-      WORKLIST_NAME_SUFFIX="${WORKLIST_SUFFIX}"
-      if [[ -n "${PHASE:-}" ]]; then
-        WORKLIST_NAME_SUFFIX="_${RESULT_TAG}"
-      fi
-      WORKLIST="${RESULTS_DIR}/worklist${WORKLIST_NAME_SUFFIX}.csv"
+      RESULTS_DIR="${RESULTS_RUN_DIR}"
+      RESULT_TAG="${BENCH}_${PHASE:-default}"
+      WORKLIST="${RESULTS_DIR}/${RESULT_TAG}_worklist.csv"
       if [[ -n "${SITE_LIST}" && "${SITE_LIST}" != /* ]]; then
         SITE_LIST="${REPO_ROOT}/${SITE_LIST}"
       fi
@@ -508,6 +502,8 @@ DEPLOY_BODY = dedent(
         --opcode "${WORKLIST_OPCODES}" \
         --random-sample "${WORKLIST_RANDOM_SAMPLE:-0}" \
         --random-seed "${WORKLIST_RANDOM_SEED}" \
+        --sites "${RESULTS_DIR}/${RESULT_TAG}_sites.csv" \
+        --sites-rich "${RESULTS_DIR}/${RESULT_TAG}_sites_metadata.csv" \
         --worklist "${WORKLIST}"
 
       [[ -s "${WORKLIST}" ]] || { echo "empty worklist: ${WORKLIST}" >&2; exit 1; }
@@ -522,6 +518,7 @@ DEPLOY_BODY = dedent(
         echo "[deploy] baseline no-flip site=-1 bit=0"
         BASELINE=1 SITE_ID=-1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_DIR}" RESULT_TAG="${RESULT_TAG}" \
           BITIR_TRACE_METADATA_DIR="${RESULTS_DIR}" BITIR_TRACE_WORKLIST_NAME="$(basename "${WORKLIST}")" \
+          BITIR_TRACE_METADATA_CSV="${RESULTS_DIR}/${RESULT_TAG}_sites_metadata.csv" \
           bash "${RUNNER}"
       fi
 
@@ -547,6 +544,7 @@ DEPLOY_BODY = dedent(
         echo "[deploy] site=${site_id} bit=${bit_index}"
         BASELINE=0 SITE_ID="${site_id}" BIT_INDEX="${bit_index}" RESULTS_DIR="${RESULTS_DIR}" RESULT_TAG="${RESULT_TAG}" \
           BITIR_TRACE_METADATA_DIR="${RESULTS_DIR}" BITIR_TRACE_WORKLIST_NAME="$(basename "${WORKLIST}")" \
+          BITIR_TRACE_METADATA_CSV="${RESULTS_DIR}/${RESULT_TAG}_sites_metadata.csv" \
           SKIP_EXISTING="${SKIP_EXISTING}" bash "${RUNNER}"
         count=$((count + 1))
       done < "${INPUT_LIST}"

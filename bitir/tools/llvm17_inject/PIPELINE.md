@@ -311,14 +311,15 @@ Supported `trace_level` values:
 Each trace directory includes `trace_results.txt` with the result, exit code,
 stdout/stderr paths, scratch path, dump path, and failure tails when applicable.
 
-Deploy results are grouped under one directory per benchmark. The deploy phase
-writes `summary_<tag>.csv` and `worklist*.csv` at that level, per-run stdout and
-stderr under `runs/`, and full trace bundles under `traces/`.
+Deploy, baseline, and targeted injection results write to a top-level
+timestamped directory such as
+`results/YYYYMMDD_HHMMSS/`. Files inside that directory are flat and prefixed by
+benchmark/fault-model tag, for example `layout_pointer_summary.csv`,
+`layout_pointer_worklist.csv`, and `layout_pointer_site1_bit0.out`.
 
 Related options:
 
 - `trace_repeats`: repeat non-baseline injections
 - `trace_source_window`: source lines saved around the selected metadata line
-- `trace_metadata_dir`: alternate directory for `sites_metadata.csv` and
-  worklists
+- `trace_metadata_dir`: alternate directory for site metadata and worklists
 - `runtime_env`: extra environment variables for the run

@@ -26,15 +26,19 @@ trace_record_command() {
   local name="$1"
   shift
   [[ -n "${TRACE_DIR:-}" ]] || return 0
-  printf '%q ' "$@" > "${TRACE_DIR}/${name}.cmd"
-  printf '\n' >> "${TRACE_DIR}/${name}.cmd"
+  printf '%q ' "$@" > "$(trace_file "${name}.cmd")"
+  printf '\n' >> "$(trace_file "${name}.cmd")"
+}
+
+trace_file() {
+  printf '%s/%s_%s\n' "${TRACE_DIR}" "${TRACE_PREFIX}" "$1"
 }
 
 run_shell_block() {
   local label="$1"
   local command_text="$2"
   [[ -n "${command_text}" ]] || return 0
-  [[ -n "${TRACE_DIR:-}" ]] && printf '%s\n' "${command_text}" > "${TRACE_DIR}/${label}.sh"
+  [[ -n "${TRACE_DIR:-}" ]] && printf '%s\n' "${command_text}" > "$(trace_file "${label}.sh")"
   eval "${command_text}"
 }
 
@@ -55,7 +59,7 @@ trace_runtime_env() {
   {
     echo "PWD=$(pwd)"
     env | sort
-  } > "${TRACE_DIR}/runtime_env.txt" 2>/dev/null
+  } > "$(trace_file runtime_env.txt)" 2>/dev/null
 }
 
 trace_gpu_state() {
@@ -63,8 +67,8 @@ trace_gpu_state() {
   [[ -n "${TRACE_DIR:-}" ]] || return 0
   [[ "${TRACE_RANK}" -ge 2 ]] || return 0
   [[ -n "${BITIR_MACHINE_GPU_QUERY_COMMAND:-}" ]] || return 0
-  printf '%s\n' "${BITIR_MACHINE_GPU_QUERY_COMMAND}" > "${TRACE_DIR}/gpu_${label}.sh"
-  TRACE_GPU_LABEL="${label}" eval "${BITIR_MACHINE_GPU_QUERY_COMMAND}" > "${TRACE_DIR}/gpu_${label}.txt" 2>&1 || true
+  printf '%s\n' "${BITIR_MACHINE_GPU_QUERY_COMMAND}" > "$(trace_file "gpu_${label}.sh")"
+  TRACE_GPU_LABEL="${label}" eval "${BITIR_MACHINE_GPU_QUERY_COMMAND}" > "$(trace_file "gpu_${label}.txt")" 2>&1 || true
 }
 
 resolve_source_file() {
@@ -87,7 +91,7 @@ copy_trace_globs() {
     local file
     for file in ${pattern}; do
       [[ -f "${file}" ]] || continue
-      cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
+      cp -f "${file}" "$(trace_file "$(basename "${file}")")"
     done
   done
 }
@@ -96,10 +100,10 @@ trace_finalize() {
   [[ -n "${TRACE_DIR:-}" ]] || return 0
   local metadata_dir metadata_csv worklist_csv source_line start end file
   metadata_dir="${BITIR_TRACE_METADATA_DIR:-${RESULTS_DIR}}"
-  metadata_csv="${metadata_dir}/sites_metadata.csv"
+  metadata_csv="${BITIR_TRACE_METADATA_CSV:-${metadata_dir}/sites_metadata.csv}"
   worklist_csv="${metadata_dir}/${TRACE_WORKLIST_NAME}"
 
-  cat > "${TRACE_DIR}/trace_manifest.txt" <<EOF
+  cat > "$(trace_file trace_manifest.txt)" <<EOF
 trace_level=${TRACE_LEVEL}
 bench=${BENCH}
 source=${SRC}
@@ -122,13 +126,13 @@ EOF
     {
       head -n 1 "${metadata_csv}"
       awk -F, -v site="${SITE_ID}" '$1 == site { print }' "${metadata_csv}"
-    } > "${TRACE_DIR}/site_metadata.csv"
-    source_line="$(awk -F, 'NR == 2 { print $8 }' "${TRACE_DIR}/site_metadata.csv" 2>/dev/null || true)"
+    } > "$(trace_file site_metadata.csv)"
+    source_line="$(awk -F, 'NR == 2 { print $8 }' "$(trace_file site_metadata.csv)" 2>/dev/null || true)"
     if [[ -n "${source_line}" && "${source_line}" =~ ^[0-9]+$ ]]; then
       start=$((source_line - TRACE_SOURCE_WINDOW))
       end=$((source_line + TRACE_SOURCE_WINDOW))
       [[ "${start}" -lt 1 ]] && start=1
-      sed -n "${start},${end}p" "${SRC}" > "${TRACE_DIR}/source_window.txt"
+      sed -n "${start},${end}p" "${SRC}" > "$(trace_file source_window.txt)"
     fi
   fi
 
@@ -136,22 +140,22 @@ EOF
     {
       head -n 1 "${worklist_csv}"
       awk -F, -v site="${SITE_ID}" -v bit="${BIT_INDEX}" '$2 == site && $3 == bit { print }' "${worklist_csv}"
-    } > "${TRACE_DIR}/worklist_row.csv"
+    } > "$(trace_file worklist_row.csv)"
   fi
 
   for file in "${IR_LL}" "${IR_BC}" "${IR_INJ_BC}" "${RUN_OUT}" "${RUN_ERR}" "${RUN_DUMP:-}" "${BIN_PATH}"; do
     [[ -f "${file}" ]] || continue
-    cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
+    cp -f "${file}" "$(trace_file "$(basename "${file}")")"
   done
 
   local trace_opt="${BITIR_MACHINE_OPT_BIN:-${OPT_BIN:-}}"
   if [[ "${TRACE_RANK}" -ge 2 && -n "${trace_opt}" && -f "${IR_INJ_BC}" ]]; then
-    trace_record_command render_injected_ir "${trace_opt}" -S "${IR_INJ_BC}" -o "${TRACE_DIR}/device.injected.ll"
-    "${trace_opt}" -S "${IR_INJ_BC}" -o "${TRACE_DIR}/device.injected.ll" >/dev/null 2>&1 || true
+    trace_record_command render_injected_ir "${trace_opt}" -S "${IR_INJ_BC}" -o "$(trace_file device.injected.ll)"
+    "${trace_opt}" -S "${IR_INJ_BC}" -o "$(trace_file device.injected.ll)" >/dev/null 2>&1 || true
   fi
 
   if [[ "${TRACE_RANK}" -ge 2 && -f "${BIN_PATH}" ]]; then
-    ldd "${BIN_PATH}" > "${TRACE_DIR}/binary_libraries.txt" 2>&1 || true
+    ldd "${BIN_PATH}" > "$(trace_file binary_libraries.txt)" 2>&1 || true
   fi
 
   copy_trace_globs
@@ -159,7 +163,7 @@ EOF
   if [[ "${TRACE_RANK}" -ge 3 ]]; then
     for file in "${OUT_DIR}"/*; do
       [[ -f "${file}" ]] || continue
-      cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
+      cp -f "${file}" "$(trace_file "$(basename "${file}")")"
     done
   fi
 }
@@ -210,7 +214,7 @@ write_trace_results() {
     echo "scratch=${OUT_DIR}"
     echo "dump=${RUN_DUMP}"
     echo "trace_dir=${TRACE_DIR}"
-  } > "${TRACE_DIR}/trace_results.txt"
+  } > "$(trace_file trace_results.txt)"
 }
 
 print_failure_debug_body() {
@@ -231,7 +235,7 @@ print_failure_debug() {
     BASELINE|MASKED|SDC|DUE) return 0 ;;
   esac
   if [[ -n "${TRACE_DIR:-}" ]]; then
-    print_failure_debug_body | tee -a "${TRACE_DIR}/trace_results.txt"
+    print_failure_debug_body | tee -a "$(trace_file trace_results.txt)"
     return
   fi
   print_failure_debug_body
@@ -244,31 +248,29 @@ common_run() {
   if [[ "${TRIAL_INDEX}" != "1" ]]; then
     TRIAL_SUFFIX="_trial${TRIAL_INDEX}"
   fi
-  RESULT_TAG="${RESULT_TAG:-${PHASE:-}}"
+  RESULT_TAG="${RESULT_TAG:-${BENCH}_${PHASE:-inject}}"
   RESULT_FILE_PREFIX=""
   RESULT_FILE_SUFFIX=""
   if [[ -n "${RESULT_TAG}" ]]; then
     RESULT_FILE_PREFIX="${RESULT_TAG}_"
     RESULT_FILE_SUFFIX="_${RESULT_TAG}"
   fi
-  RUN_DIR="${RESULTS_DIR}/runs"
-  mkdir -p "${RUN_DIR}"
-  RUN_OUT="${RUN_DIR}/${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.out"
-  RUN_ERR="${RUN_DIR}/${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.err"
+  RUN_OUT="${RESULTS_DIR}/${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.out"
+  RUN_ERR="${RESULTS_DIR}/${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.err"
   RUN_DUMP="${OUT_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.bin"
   DUMP_RECORD=""
-  SUMMARY_CSV="${CSV:-${RESULTS_DIR}/summary${RESULT_FILE_SUFFIX}.csv}"
+  SUMMARY_CSV="${CSV:-${RESULTS_DIR}/${RESULT_TAG:-summary}_summary.csv}"
   if [[ "${TRACE_RANK}" -gt 0 ]]; then
-    TRACE_NAME="${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}"
+    TRACE_PREFIX="${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}"
     if [[ "${BASELINE}" == "1" ]]; then
-      TRACE_NAME="${RESULT_FILE_PREFIX}baseline${TRIAL_SUFFIX}"
+      TRACE_PREFIX="${RESULT_FILE_PREFIX}baseline${TRIAL_SUFFIX}"
     fi
-    TRACE_DIR="${RESULTS_DIR}/traces/${TRACE_NAME}"
+    TRACE_DIR="${RESULTS_DIR}"
     mkdir -p "${TRACE_DIR}"
   fi
   if [[ "${BASELINE}" == "1" ]]; then
-    RUN_OUT="${RUN_DIR}/${RESULT_FILE_PREFIX}baseline.out"
-    RUN_ERR="${RUN_DIR}/${RESULT_FILE_PREFIX}baseline.err"
+    RUN_OUT="${RESULTS_DIR}/${RESULT_FILE_PREFIX}baseline.out"
+    RUN_ERR="${RESULTS_DIR}/${RESULT_FILE_PREFIX}baseline.err"
     RUN_DUMP="${OUT_DIR}/${BENCH}_baseline.bin"
   elif [[ "${SKIP_EXISTING:-1}" == "1" && -f "${RUN_OUT}" && -f "${RUN_ERR}" ]]; then
     echo "[inject] skip existing site=${SITE_ID} bit=${BIT_INDEX}"
@@ -327,7 +329,7 @@ setup_common() {
   GOLDEN_ROOT="${REPO_ROOT}/${BITIR_MACHINE_GOLDEN_ROOT}"
   GOLDEN_FILE="${GOLDEN_ROOT}/${GOLDEN_NAME}"
   GOLDEN_TEXT="${GOLDEN_ROOT}/${BITIR_GOLDEN_FILE:-${BENCH}.txt}"
-  RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/${BITIR_MACHINE_RESULTS_ROOT}/${BENCH}}"
+  RESULTS_DIR="${RESULTS_DIR:-${REPO_ROOT}/results/$(date -u +%Y%m%d_%H%M%S)}"
   SCRATCH_ROOT="${TMPDIR:-/tmp}"
   OUT_DIR="${OUT_DIR:-${SCRATCH_ROOT}/bitir_${BENCH}_site${SITE_ID}_bit${BIT_INDEX}}"
   PLUGIN="${PLUGIN:-${BITIR_ROOT}/tools/llvm17_inject/libfi_inject.so}"

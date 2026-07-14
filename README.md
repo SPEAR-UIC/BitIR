@@ -364,17 +364,18 @@ Related trace fields:
   runs once
 - `trace_source_window`: source lines to save before and after the selected
   metadata line; default is `6`
-- `trace_metadata_dir`: directory containing `sites_metadata.csv` and
-  worklists; defaults to the current results directory
+- `trace_metadata_dir`: directory containing site metadata and worklists;
+  defaults to the current results directory
 
 Each trace directory contains `trace_results.txt`, a compact summary of the
 result, exit code, stdout/stderr paths, scratch directory, dump path, and failure
 tails when applicable.
 
-Deploy results are grouped by benchmark instead of by separate fault-model
-directories. For example, a Polaris toy pointer run writes summary/worklist
-files under `bitir/results/llvm17_inject_toy/layout/`, run stdout/stderr under
-`runs/`, and detailed trace bundles under `traces/`.
+Deploy, baseline, and targeted injection results write to a top-level
+timestamped directory such as
+`results/YYYYMMDD_HHMMSS/`. Files inside that directory are flat and prefixed by
+benchmark/fault-model tag, for example `layout_pointer_summary.csv`,
+`layout_pointer_worklist.csv`, and `layout_pointer_site1_bit0.out`.
 
 Runtime debug environment variables can be set under `runtime_env` or machine
 dump env fields. Current HeCBench layout adapters recognize:
