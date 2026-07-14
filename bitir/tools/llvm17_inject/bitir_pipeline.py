@@ -505,6 +505,12 @@ DEPLOY_BODY = dedent(
         --worklist "${WORKLIST}"
 
       [[ -s "${WORKLIST}" ]] || { echo "empty worklist: ${WORKLIST}" >&2; exit 1; }
+      worklist_rows="$(awk 'NR > 1 { count++ } END { print count + 0 }' "${WORKLIST}")"
+      if [[ "${MAX_RUNS}" == "0" ]]; then
+        echo "[deploy] worklist candidates=${worklist_rows} run_limit=all"
+      else
+        echo "[deploy] worklist candidates=${worklist_rows} run_limit=${MAX_RUNS}"
+      fi
 
       if [[ "${RUN_BASELINE}" == "1" ]]; then
         echo "[deploy] baseline no-flip site=-1 bit=0"

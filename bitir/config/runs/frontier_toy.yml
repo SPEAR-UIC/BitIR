@@ -23,6 +23,8 @@ fault_models:
     max_injections: 8
     run_baseline: 1
     skip_existing: 0
+    trace_level: full
+    trace_source_window: 8
 
 campaigns:
   toy:

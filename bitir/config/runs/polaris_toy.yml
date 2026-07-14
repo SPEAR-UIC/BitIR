@@ -21,7 +21,7 @@ fault_models:
     max_injections: 8
     run_baseline: 1
     skip_existing: 0
-    trace_level: basic
+    trace_level: full
     trace_source_window: 8
 
   polaris_toy_float_8:
@@ -32,7 +32,7 @@ fault_models:
     max_injections: 8
     run_baseline: 1
     skip_existing: 0
-    trace_level: basic
+    trace_level: full
     trace_source_window: 8
 
 campaigns:

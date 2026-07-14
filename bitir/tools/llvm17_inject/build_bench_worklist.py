@@ -347,7 +347,7 @@ def main():
             args.random_seed,
         )
 
-    message = f"Wrote {count} injections to {worklist_path}"
+    message = f"Wrote {count} candidate injections to {worklist_path}"
     if exclusion_sources:
         message += f" (excluded {skipped} site-bit pairs from {len(exclusion_sources)} summary source(s))"
     print(message)
