@@ -212,10 +212,10 @@ Supported `selection_mode` values:
 - `instruction_result`: SSA values produced by LLVM instructions
 - `all`: valid instruction result, operand, and pointer sites
 - `random`: deterministic random subset of all valid sites
-- `pointer_only`
+- `pointer_only`, `instruction_pointer`
 - `int_only`
 - `float_only`
-- `operand_only`
+- `operand_only`, `instruction_operand`
 - instruction families: `add`, `sub`, `mul`, `div`, `rem`, `shift`, `bitwise`, `compare`, `cast`
 - individual opcodes: `zext`, `sext`, `trunc`, `bitcast`, `select`, `load`, `store`, `getelementptr`, `gep`, `call`, `phi`
 
@@ -309,10 +309,10 @@ Predefined `selection_mode` values:
 - `all`, `all_bits`, `all_sites`: valid result, operand, and pointer sites
 - `random`: deterministic random subset of all valid sites; use with
   `random_sample` and `random_seed`
-- `pointer`, `pointer_only`: pointer sites only
+- `pointer`, `pointer_only`, `instruction_pointer`: pointer sites only
 - `int`, `int_only`: integer typed sites
 - `float`, `float_only`: floating point typed sites
-- `operand`, `operand_only`: instruction operand sites
+- `operand`, `operand_only`, `instruction_operand`: instruction operand sites
 - `add`, `add_instructions`: `add,fadd`
 - `sub`, `sub_instructions`: `sub,fsub`
 - `mul`, `mul_instructions`: `mul,fmul`

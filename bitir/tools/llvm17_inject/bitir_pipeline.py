@@ -317,7 +317,7 @@ DEPLOY_BODY = dedent(
           INT_FLOAT_ONLY=0
           WORKLIST_RANDOM_SAMPLE="${WORKLIST_RANDOM_SAMPLE:-${MAX_RUNS}}"
           ;;
-        pointer|pointer_only)
+        pointer|pointer_only|instruction_pointer|instruction_pointers)
           INJECT_TARGET=pointer
           ;;
         int|int_only)
@@ -328,7 +328,7 @@ DEPLOY_BODY = dedent(
           INJECT_TARGET=all
           WORKLIST_TYPE_KIND="${WORKLIST_TYPE_KIND:-float}"
           ;;
-        operand|operand_only)
+        operand|operand_only|instruction_operand|instruction_operands)
           INJECT_TARGET=operand
           ;;
         add|add_instructions)

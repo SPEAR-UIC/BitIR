@@ -31,6 +31,13 @@ fault_models:
     run_baseline: 1
     skip_existing: 1
 
+  instruction_pointer:
+    selection_mode: instruction_pointer
+    phase: pointer
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
   int_only:
     selection_mode: int_only
     phase: int
@@ -47,6 +54,13 @@ fault_models:
 
   operand_only:
     selection_mode: operand_only
+    phase: operand
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  instruction_operand:
+    selection_mode: instruction_operand
     phase: operand
     max_injections: 0
     run_baseline: 1

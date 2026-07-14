@@ -114,10 +114,10 @@ Supported `selection_mode` values:
 - `instruction_result`: instruction result sites only
 - `all`: all valid instruction result, operand, and pointer sites
 - `random`: generate all valid sites, shuffle them deterministically, and keep `random_sample` rows
-- `pointer_only`: pointer sites only
+- `pointer_only`, `instruction_pointer`: pointer sites only
 - `int_only`: integer sites only
 - `float_only`: floating point sites only
-- `operand_only`: operand sites only
+- `operand_only`, `instruction_operand`: operand sites only
 - instruction families: `add`, `sub`, `mul`, `div`, `rem`, `shift`, `bitwise`, `compare`, `cast`
 - individual opcodes: `zext`, `sext`, `trunc`, `bitcast`, `select`, `load`, `store`, `getelementptr`, `gep`, `call`, `phi`
 
