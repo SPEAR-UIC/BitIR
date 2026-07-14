@@ -480,9 +480,14 @@ DEPLOY_BODY = dedent(
       if [[ -n "${RESULTS_SUBDIR_BASE:-}" ]]; then
         RESULTS_ROOT_REL="bitir/results/${RESULTS_SUBDIR_BASE}"
       fi
-      RESULTS_DIR="${REPO_ROOT}/${RESULTS_ROOT_REL}/${BENCH}/${PHASE}"
+      RESULTS_DIR="${REPO_ROOT}/${RESULTS_ROOT_REL}/${BENCH}"
+      RESULT_TAG="${PHASE:-default}"
       WORKLIST_SUFFIX="$(worklist_suffix)"
-      WORKLIST="${RESULTS_DIR}/worklist${WORKLIST_SUFFIX}.csv"
+      WORKLIST_NAME_SUFFIX="${WORKLIST_SUFFIX}"
+      if [[ -n "${PHASE:-}" ]]; then
+        WORKLIST_NAME_SUFFIX="_${RESULT_TAG}"
+      fi
+      WORKLIST="${RESULTS_DIR}/worklist${WORKLIST_NAME_SUFFIX}.csv"
       if [[ -n "${SITE_LIST}" && "${SITE_LIST}" != /* ]]; then
         SITE_LIST="${REPO_ROOT}/${SITE_LIST}"
       fi
@@ -490,6 +495,7 @@ DEPLOY_BODY = dedent(
       mkdir -p "${RESULTS_DIR}"
       echo "[deploy] bench=${BENCH}"
       echo "[deploy] results=${RESULTS_DIR}"
+      echo "[deploy] result_tag=${RESULT_TAG}"
       echo "[deploy] target=${INJECT_TARGET}"
 
       python3 "${WORKLIST_TOOL}" \
@@ -514,7 +520,9 @@ DEPLOY_BODY = dedent(
 
       if [[ "${RUN_BASELINE}" == "1" ]]; then
         echo "[deploy] baseline no-flip site=-1 bit=0"
-        BASELINE=1 SITE_ID=-1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_DIR}" bash "${RUNNER}"
+        BASELINE=1 SITE_ID=-1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_DIR}" RESULT_TAG="${RESULT_TAG}" \
+          BITIR_TRACE_METADATA_DIR="${RESULTS_DIR}" BITIR_TRACE_WORKLIST_NAME="$(basename "${WORKLIST}")" \
+          bash "${RUNNER}"
       fi
 
       INPUT_LIST="${WORKLIST}"
@@ -537,7 +545,8 @@ DEPLOY_BODY = dedent(
           break
         fi
         echo "[deploy] site=${site_id} bit=${bit_index}"
-        BASELINE=0 SITE_ID="${site_id}" BIT_INDEX="${bit_index}" RESULTS_DIR="${RESULTS_DIR}" \
+        BASELINE=0 SITE_ID="${site_id}" BIT_INDEX="${bit_index}" RESULTS_DIR="${RESULTS_DIR}" RESULT_TAG="${RESULT_TAG}" \
+          BITIR_TRACE_METADATA_DIR="${RESULTS_DIR}" BITIR_TRACE_WORKLIST_NAME="$(basename "${WORKLIST}")" \
           SKIP_EXISTING="${SKIP_EXISTING}" bash "${RUNNER}"
         count=$((count + 1))
       done < "${INPUT_LIST}"

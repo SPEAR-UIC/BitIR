@@ -371,6 +371,11 @@ Each trace directory contains `trace_results.txt`, a compact summary of the
 result, exit code, stdout/stderr paths, scratch directory, dump path, and failure
 tails when applicable.
 
+Deploy results are grouped by benchmark instead of by separate fault-model
+directories. For example, a Polaris toy pointer run writes summary/worklist
+files under `bitir/results/llvm17_inject_toy/layout/`, run stdout/stderr under
+`runs/`, and detailed trace bundles under `traces/`.
+
 Runtime debug environment variables can be set under `runtime_env` or machine
 dump env fields. Current HeCBench layout adapters recognize:
 

@@ -244,22 +244,31 @@ common_run() {
   if [[ "${TRIAL_INDEX}" != "1" ]]; then
     TRIAL_SUFFIX="_trial${TRIAL_INDEX}"
   fi
-  RUN_OUT="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.out"
-  RUN_ERR="${RESULTS_DIR}/site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.err"
+  RESULT_TAG="${RESULT_TAG:-${PHASE:-}}"
+  RESULT_FILE_PREFIX=""
+  RESULT_FILE_SUFFIX=""
+  if [[ -n "${RESULT_TAG}" ]]; then
+    RESULT_FILE_PREFIX="${RESULT_TAG}_"
+    RESULT_FILE_SUFFIX="_${RESULT_TAG}"
+  fi
+  RUN_DIR="${RESULTS_DIR}/runs"
+  mkdir -p "${RUN_DIR}"
+  RUN_OUT="${RUN_DIR}/${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.out"
+  RUN_ERR="${RUN_DIR}/${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.err"
   RUN_DUMP="${OUT_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.bin"
   DUMP_RECORD=""
-  SUMMARY_CSV="${CSV:-${RESULTS_DIR}/summary.csv}"
+  SUMMARY_CSV="${CSV:-${RESULTS_DIR}/summary${RESULT_FILE_SUFFIX}.csv}"
   if [[ "${TRACE_RANK}" -gt 0 ]]; then
-    TRACE_NAME="trace_site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}"
+    TRACE_NAME="${RESULT_FILE_PREFIX}site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}"
     if [[ "${BASELINE}" == "1" ]]; then
-      TRACE_NAME="trace_baseline${TRIAL_SUFFIX}"
+      TRACE_NAME="${RESULT_FILE_PREFIX}baseline${TRIAL_SUFFIX}"
     fi
-    TRACE_DIR="${RESULTS_DIR}/${TRACE_NAME}"
+    TRACE_DIR="${RESULTS_DIR}/traces/${TRACE_NAME}"
     mkdir -p "${TRACE_DIR}"
   fi
   if [[ "${BASELINE}" == "1" ]]; then
-    RUN_OUT="${RESULTS_DIR}/baseline.out"
-    RUN_ERR="${RESULTS_DIR}/baseline.err"
+    RUN_OUT="${RUN_DIR}/${RESULT_FILE_PREFIX}baseline.out"
+    RUN_ERR="${RUN_DIR}/${RESULT_FILE_PREFIX}baseline.err"
     RUN_DUMP="${OUT_DIR}/${BENCH}_baseline.bin"
   elif [[ "${SKIP_EXISTING:-1}" == "1" && -f "${RUN_OUT}" && -f "${RUN_ERR}" ]]; then
     echo "[inject] skip existing site=${SITE_ID} bit=${BIT_INDEX}"
@@ -312,10 +321,7 @@ setup_common() {
   TRACE_RANK="$(trace_level_rank "${TRACE_LEVEL}")"
   TRACE_SOURCE_WINDOW="${TRACE_SOURCE_WINDOW:-${BITIR_FAULT_MODEL_TRACE_SOURCE_WINDOW:-6}}"
   TRACE_PHASE="${PHASE:-${BITIR_FAULT_MODEL_PHASE:-}}"
-  TRACE_WORKLIST_NAME="worklist.csv"
-  if [[ -n "${TRACE_PHASE}" ]]; then
-    TRACE_WORKLIST_NAME="${TRACE_PHASE}/worklist.csv"
-  fi
+  TRACE_WORKLIST_NAME="${BITIR_TRACE_WORKLIST_NAME:-worklist.csv}"
 
   GOLDEN_NAME="${BITIR_GOLDEN_FILE:-${BENCH}.bin}"
   GOLDEN_ROOT="${REPO_ROOT}/${BITIR_MACHINE_GOLDEN_ROOT}"

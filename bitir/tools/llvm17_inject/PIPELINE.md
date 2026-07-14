@@ -311,6 +311,10 @@ Supported `trace_level` values:
 Each trace directory includes `trace_results.txt` with the result, exit code,
 stdout/stderr paths, scratch path, dump path, and failure tails when applicable.
 
+Deploy results are grouped under one directory per benchmark. The deploy phase
+writes `summary_<tag>.csv` and `worklist*.csv` at that level, per-run stdout and
+stderr under `runs/`, and full trace bundles under `traces/`.
+
 Related options:
 
 - `trace_repeats`: repeat non-baseline injections
