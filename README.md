@@ -427,6 +427,7 @@ Common fields under `machines.<name>`:
 - `source_key`: backend key used to select benchmark source directories
 - `binary_subdir`: backend binary directory, usually `cuda`, `hip`, or `sycl`
 - `source_file`: benchmark source filename or glob
+- `cuda_host_compiler`: optional host C++ compiler for nvcc/CMake CUDA builds
 - `build_dir`, `golden_root`, `results_root`: run output locations
 - `build_configure`, `build_prepare`: build-stage shell commands
 - `build_run_dump_env`, `run_dump_env`: environment assignments used while
@@ -439,6 +440,10 @@ Common fields under `machines.<name>`:
 - `gpu_query_command`: command captured by `trace_level: machine` or `full`
 - `trace_copy_globs`: files copied into trace directories at machine/full trace
   levels
+
+Polaris currently uses CUDA 11.8. Its normal `gcc-native` modules expose GCC
+12+, which is not reliable for all CUDA 11.8 benchmarks, so the Polaris YAMLs
+set `cuda_host_compiler: /usr/bin/g++`.
 
 ## Expanding To Other Machines
 
