@@ -1,4 +1,6 @@
-extends: ../bitir.yml
+extends:
+  - ../bitir.yml
+  - ../fault_models.yml
 
 methodology:
   default_campaign: template
@@ -9,18 +11,8 @@ run:
   machine: aurora
   benchmark_set: hecbench
   campaign: template
-  fault_model: smoke8
+  fault_model: quick_float_8
   execution_mode: write-script
-
-fault_models:
-  smoke8:
-    selection_mode: instruction_result
-    phase: float
-    int_float_only: 1
-    include_constants: 0
-    max_injections: 8
-    run_baseline: 1
-    skip_existing: 0
 
 campaigns:
   template:

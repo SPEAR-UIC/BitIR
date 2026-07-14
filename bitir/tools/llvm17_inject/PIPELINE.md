@@ -105,6 +105,10 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
 
 Deploy fault models can either use an explicit `site_list` CSV or ask the pipeline to generate a worklist from a preset mode.
 
+Reusable predefined fault models are listed in `bitir/config/fault_models.yml`.
+Run YAMLs can either select one of those names through `run.fault_model` or
+define local entries under `fault_models`.
+
 Supported `selection_mode` values:
 
 - `instruction_result`: instruction result sites only
@@ -163,7 +167,7 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
 
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/polaris_toy.yml \
-  --fault-model smoke8
+  --fault-model polaris_toy_float_8
 ```
 
 Inspect and edit generated `.pbs` account/resource lines before submitting with
@@ -177,7 +181,7 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
 
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/aurora_toy.yml \
-  --fault-model smoke8
+  --fault-model aurora_toy_float_8
 ```
 
 Inspect and edit generated `.pbs` account/resource lines before submitting with
@@ -191,7 +195,7 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
 
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/frontier_toy.yml \
-  --fault-model smoke8
+  --fault-model frontier_toy_float_8
 ```
 
 Inspect and edit generated `.sbatch` account/resource lines before submitting

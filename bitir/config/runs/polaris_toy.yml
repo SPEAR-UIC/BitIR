@@ -1,4 +1,6 @@
-extends: ../bitir.yml
+extends:
+  - ../bitir.yml
+  - ../fault_models.yml
 
 methodology:
   default_campaign: toy
@@ -9,11 +11,11 @@ run:
   machine: polaris
   benchmark_set: hecbench
   campaign: toy
-  fault_model: smoke8
+  fault_model: polaris_toy_float_8
   execution_mode: write-script
 
 fault_models:
-  smoke8:
+  polaris_toy_float_8:
     selection_mode: instruction_result
     phase: float
     int_float_only: 1

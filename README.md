@@ -183,7 +183,17 @@ Again, inspect/edit the generated scheduler script before submitting it.
 
 ### Fault Models And Worklists
 
-Fault models live under `fault_models`:
+Reusable fault models live in [bitir/config/fault_models.yml](bitir/config/fault_models.yml).
+Run YAMLs can use those models by extending that file:
+
+```yaml
+extends:
+  - ../bitir.yml
+  - ../fault_models.yml
+```
+
+Machine-specific or campaign-specific models can still be defined under
+`fault_models` in the run YAML:
 
 ```yaml
 fault_models:

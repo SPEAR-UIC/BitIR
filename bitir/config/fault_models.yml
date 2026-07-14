@@ -1,0 +1,186 @@
+fault_models:
+  quick_float_8:
+    selection_mode: instruction_result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+    max_injections: 8
+    run_baseline: 1
+    skip_existing: 0
+
+  all_sites:
+    selection_mode: all
+    phase: all
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  random_100:
+    selection_mode: random
+    random_sample: 100
+    random_seed: 42
+    phase: random
+    max_injections: 100
+    run_baseline: 1
+    skip_existing: 1
+
+  pointer_only:
+    selection_mode: pointer_only
+    phase: pointer
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  int_only:
+    selection_mode: int_only
+    phase: int
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  float_only:
+    selection_mode: float_only
+    phase: float
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  operand_only:
+    selection_mode: operand_only
+    phase: operand
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  add_instructions:
+    selection_mode: add_instructions
+    phase: add
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  sub_instructions:
+    selection_mode: sub_instructions
+    phase: sub
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  mul_instructions:
+    selection_mode: mul_instructions
+    phase: mul
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  div_instructions:
+    selection_mode: div_instructions
+    phase: div
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  remainder_instructions:
+    selection_mode: remainder_instructions
+    phase: rem
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  shift_instructions:
+    selection_mode: shift_instructions
+    phase: shift
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  bitwise_instructions:
+    selection_mode: bitwise_instructions
+    phase: bitwise
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  compare_instructions:
+    selection_mode: compare_instructions
+    phase: compare
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  cast_instructions:
+    selection_mode: cast_instructions
+    phase: cast
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  zext_instructions:
+    selection_mode: zext
+    phase: zext
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  sext_instructions:
+    selection_mode: sext
+    phase: sext
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  trunc_instructions:
+    selection_mode: trunc
+    phase: trunc
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  bitcast_instructions:
+    selection_mode: bitcast
+    phase: bitcast
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  select_instructions:
+    selection_mode: select
+    phase: select
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  load_instructions:
+    selection_mode: load
+    phase: load
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  store_instructions:
+    selection_mode: store
+    phase: store
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  gep_instructions:
+    selection_mode: gep
+    phase: gep
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  call_instructions:
+    selection_mode: call
+    phase: call
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
+
+  phi_instructions:
+    selection_mode: phi
+    phase: phi
+    max_injections: 0
+    run_baseline: 1
+    skip_existing: 1
