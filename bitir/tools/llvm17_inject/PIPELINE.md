@@ -2,6 +2,10 @@
 
 The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs render one scheduler script for the selected benchmark set. `inject-one` remains a targeted single benchmark/site helper.
 
+Written and submitted scheduler scripts are compact wrappers. They keep only the
+PBS/SLURM resource header, module setup, repository `cd`, and a `bitir_pipeline.py
+--local` call. The detailed shell body is generated inside the allocation.
+
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py <task> <config.yml>
 ```

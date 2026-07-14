@@ -540,6 +540,46 @@ def build_script(machine_name, task, job, exports, module_use, modules, body):
     return "\n".join(header + ["", *lines, ""])
 
 
+def compact_invocation(args, config_path, repo_root, machine_name, campaign, bench, benches_file, site_id, bit_index, fault_model):
+    command = [
+        "python3",
+        str(Path(__file__).resolve()),
+        args.task,
+        str(config_path),
+        "--repo-root",
+        str(repo_root),
+        "--machine",
+        machine_name,
+        "--local",
+    ]
+    if campaign:
+        command.extend(["--campaign", campaign])
+    if bench:
+        command.extend(["--bench", bench])
+    if benches_file:
+        command.extend(["--benches-file", str(Path(benches_file).resolve())])
+    if site_id is not None:
+        command.extend(["--site-id", str(site_id)])
+    if bit_index is not None:
+        command.extend(["--bit-index", str(bit_index)])
+    if fault_model:
+        command.extend(["--fault-model", fault_model])
+    return command
+
+
+def build_compact_script(machine_name, task, job, command, repo_root, module_use, modules):
+    header = script_header(machine_name, task, job)
+    lines = [
+        "set -euo pipefail",
+        'echo "[trace] start $(date -u +%Y-%m-%dT%H:%M:%SZ)"',
+        'echo "[trace] host $(hostname)"',
+        *module_block(module_use, modules),
+        f"cd {shlex.quote(str(repo_root))}",
+        shlex.join(command),
+    ]
+    return "\n".join(header + ["", *lines, ""])
+
+
 def machine_env(machine):
     keep = {}
     for key, value in machine.items():
@@ -716,7 +756,8 @@ def main():
     args = parse_args()
     bitir_root = Path(__file__).resolve().parents[2]
     repo_root = Path(args.repo_root).resolve() if args.repo_root else bitir_root.parent
-    cfg = load_config(args.config)
+    config_path = Path(args.config).resolve()
+    cfg = load_config(config_path)
     run_cfg = cfg.get("run", {})
     method_cfg = cfg.get("methodology", {})
 
@@ -791,6 +832,19 @@ def main():
     module_use = [str(value) for value in machine.get("module_use", [])]
     modules = [str(value) for value in machine.get("modules", [])]
     body = task_body(args.task, machine)
+    compact_scripts = mode in {"write-script", "submit", "print-script"}
+    compact_command = compact_invocation(
+        args,
+        config_path,
+        repo_root,
+        machine_name,
+        campaign,
+        bench,
+        benches_file,
+        site_id,
+        bit_index,
+        fault_model,
+    )
     generated = []
 
     script_benches = benches if args.task != "inject-one" else [bench]
@@ -830,15 +884,18 @@ def main():
         job_values["stamp"] = stamp
         job_values["index"] = f"{index:02d}"
 
-        script = build_script(
-            machine_name,
-            args.task,
-            job_values,
-            [line for line in exports if line],
-            module_use,
-            modules,
-            body,
-        )
+        if compact_scripts:
+            script = build_compact_script(machine_name, args.task, job_values, compact_command, repo_root, module_use, modules)
+        else:
+            script = build_script(
+                machine_name,
+                args.task,
+                job_values,
+                [line for line in exports if line],
+                module_use,
+                modules,
+                body,
+            )
         suffix = f"_{bench_name}" if bench_name else ""
         file_ext = str(machine.get("script_extension", ".sh")).strip() or ".sh"
         if not file_ext.startswith("."):
