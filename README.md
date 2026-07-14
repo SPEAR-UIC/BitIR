@@ -217,6 +217,186 @@ fault_models:
 Use `site_list` when you want exact site/bit pairs instead of a generated
 worklist.
 
+## Options Reference
+
+This section lists the predefined options accepted by the current pipeline.
+Prefer changing YAML values over editing BitIR source code.
+
+### Launcher Tasks And Execution Modes
+
+Tasks:
+
+- `build`: configure and build all benchmarks in the selected campaign, then
+  generate golden outputs in one scheduler job
+- `golden`: same build/golden path as `build`
+- `deploy`: generate worklists, optionally run baseline checks, then run the
+  selected injections in one scheduler job
+- `baseline`: run baseline checks without a full deploy campaign
+- `inject-one`: run one benchmark/site/bit pair
+
+Execution modes:
+
+- `write-script`: default; write a PBS/SLURM wrapper under `.bitir_jobs/`
+- `submit`: write and submit the wrapper with `submit_command`
+- `local`: run immediately in the current shell; intended for inside scheduler
+  allocations or local debugging
+- `print-script`: print the generated wrapper to stdout
+
+CLI overrides:
+
+- `--machine`: override `run.machine`
+- `--campaign`: override `run.campaign`
+- `--bench`: run one benchmark instead of the campaign list
+- `--benches-file`: read benchmark names from a text file
+- `--fault-model`: override `run.fault_model`
+- `--site-id` and `--bit-index`: required for `inject-one`
+- `--repo-root`: use a repository root other than the parent of `bitir/`
+- `--submit`, `--local`, `--print-script`: force the execution mode
+
+### Fault Model Fields
+
+Common fields under `fault_models.<name>`:
+
+- `selection_mode`: predefined worklist modality; see below
+- `site_list`: CSV of exact sites/bits; takes precedence over generated
+  worklists when set
+- `phase`: result subdirectory label, usually `float`, `int`, or another
+  campaign-specific name
+- `max_injections`: maximum injections per benchmark; `0` means no explicit
+  limit
+- `max_pairs`: older alias used as a fallback when `max_injections` is absent
+- `run_baseline`: `1` runs a baseline check before injections
+- `skip_existing`: `1` skips site/bit runs with existing stdout/stderr files
+- `keep_dumps`: `1` preserves candidate dump files for non-baseline runs
+- `missing_only`: exported for custom run logic; use when a campaign should
+  only fill missing results
+- `runtime_env`: map of extra environment variables exported during deploy
+
+Worklist filter fields:
+
+- `inject_target`: low-level target, one of `result`, `operand`, `pointer`,
+  or `all`; normally inferred from `selection_mode`
+- `int_float_only`: `1` limits result/operand sites to int/float typed values
+- `include_constants`: `1` allows constant operands where supported
+- `type_kind`: optional type filter such as `int`, `float`, or `ptr`
+- `opcodes`: comma-separated opcode filter such as `add,fadd,zext`
+- `random_sample`: number of generated rows to keep for `selection_mode: random`
+- `random_seed`: deterministic shuffle seed for random sampling
+
+### Worklist Selection Modes
+
+Predefined `selection_mode` values:
+
+- `instruction_result`, `instruction_results`, `result`: LLVM instruction
+  result sites only
+- `all`, `all_bits`, `all_sites`: valid result, operand, and pointer sites
+- `random`: deterministic random subset of all valid sites; use with
+  `random_sample` and `random_seed`
+- `pointer`, `pointer_only`: pointer sites only
+- `int`, `int_only`: integer typed sites
+- `float`, `float_only`: floating point typed sites
+- `operand`, `operand_only`: instruction operand sites
+- `add`, `add_instructions`: `add,fadd`
+- `sub`, `sub_instructions`: `sub,fsub`
+- `mul`, `mul_instructions`: `mul,fmul`
+- `div`, `div_instructions`: `udiv,sdiv,fdiv`
+- `rem`, `remainder_instructions`: `urem,srem,frem`
+- `shift`, `shift_instructions`: `shl,lshr,ashr`
+- `bitwise`, `bitwise_instructions`: `and,or,xor`
+- `compare`, `compare_instructions`: `icmp,fcmp`
+- `cast`, `cast_instructions`: `trunc,zext,sext,fptrunc,fpext,fptoui,fptosi,uitofp,sitofp,ptrtoint,inttoptr,bitcast,addrspacecast`
+- individual opcode modes: `zext`, `sext`, `trunc`, `bitcast`, `select`,
+  `load`, `store`, `getelementptr`, `gep`, `call`, `phi`
+
+For any opcode not listed above, use `selection_mode: all` plus `opcodes`.
+
+### Debug And Trace Options
+
+`trace_level` controls how much per-site diagnostic data is saved under each
+result directory:
+
+- `off`: default; no trace directory is created
+- `basic`: saves manifest, command records, runtime environment, selected site
+  metadata, matching worklist row, source window, stdout/stderr, dumps, and
+  relevant IR/binary files
+- `machine`: includes `basic` data plus rendered injected LLVM IR,
+  `ldd` output, GPU query output when `gpu_query_command` is configured, and
+  files matching `trace_copy_globs`
+- `full`: includes `machine` data plus every regular file from the injection
+  scratch directory; use only for small targeted reruns because it can be large
+
+Recommended use:
+
+- Use `off` for normal campaigns.
+- Use `basic` when a site/bit gives an unexpected result and you need enough
+  context to inspect the run.
+- Use `machine` when the issue may depend on GPU state, dynamic libraries, or
+  generated IR.
+- Use `full` only for one or a few sites when lower levels are insufficient.
+
+Related trace fields:
+
+- `trace_repeats`: repeat each non-baseline injection N times; baseline always
+  runs once
+- `trace_source_window`: source lines to save before and after the selected
+  metadata line; default is `6`
+- `trace_metadata_dir`: directory containing `sites_metadata.csv` and
+  worklists; defaults to the current results directory
+
+Runtime debug environment variables can be set under `runtime_env` or machine
+dump env fields. Current HeCBench layout adapters recognize:
+
+- `HECBENCH_GPU_DEBUG=1`: print GPU/device diagnostics from layout adapters
+- `HECBENCH_LLFI_FORCE_DUMP=1`: force supported adapters to write dump outputs
+
+Scheduler debug queues, such as Polaris/Aurora `#PBS -q debug`, are configured
+in `machines.<name>.jobs.<task>.header` and are separate from `trace_level`.
+
+### Benchmark Output Options
+
+Benchmark fields under `benchmarks.<name>`:
+
+- `source_dirs`: map from backend key (`cuda`, `hip`, `sycl`) to source path
+  relative to the benchmark set root
+- `args`: command-line arguments passed to the benchmark
+- `env`: values used to format benchmark args and golden file names
+- `extra_includes`: backend-specific include paths for injection builds
+- `golden_file`: expected golden output name; defaults to `<benchmark>.bin`
+- `compare_mode`: `exact`, `float`, or `text`
+- `status`: free-form benchmark notes exported as `BITIR_STATUS_*`
+
+Compare modes:
+
+- `exact`: byte-for-byte binary comparison
+- `float`: floating point dump comparison using `methodology.float_abs_tol` and
+  `methodology.float_rel_tol`
+- `text`: compare normalized text signatures
+
+### Machine Options
+
+Common fields under `machines.<name>`:
+
+- `submit_command`: scheduler command, usually `qsub` or `sbatch`
+- `script_extension`: generated wrapper extension, such as `.pbs` or `.sbatch`
+- `module_use`: module search paths
+- `modules`: modules loaded by generated wrappers
+- `jobs.<task>.header`: literal PBS/SLURM header lines for each task
+- `source_key`: backend key used to select benchmark source directories
+- `binary_subdir`: backend binary directory, usually `cuda`, `hip`, or `sycl`
+- `source_file`: benchmark source filename or glob
+- `build_dir`, `golden_root`, `results_root`: run output locations
+- `build_configure`, `build_prepare`: build-stage shell commands
+- `build_run_dump_env`, `run_dump_env`: environment assignments used while
+  generating or comparing dumps
+- `worklist_build_ir`: command used to emit LLVM IR for site enumeration
+- `inject_build_baseline`, `inject_build_injected`: commands used for baseline
+  and injected binaries
+- `inject_build`: optional shared injection build command
+- `inject_prepare`: optional command run before injection builds
+- `gpu_query_command`: command captured by `trace_level: machine` or `full`
+- `trace_copy_globs`: files copied into trace directories at machine/full trace
+  levels
+
 ## Expanding To Other Machines
 
 Start from `bitir/config/runs/run_template.yml` when adding a new machine.

@@ -290,14 +290,25 @@ benchmarks:
 
 ## Debug studies
 
-Debug studies use the same path
+Debug studies use the same deploy path. Put a small benchmark set, `site_list`,
+and trace fields in the selected fault model; no separate debug runner is
+required.
 
-Put the following in your YAML if you want targeted trace reruns:
+Supported `trace_level` values:
 
-- a small benchmark set
-- `trace_level`
-- `trace_repeats`
-- `site_list`
-- runtime trace env vars under `runtime_env`
+- `off`: default; no per-site trace directory
+- `basic`: manifest, command records, runtime environment, selected metadata,
+  source window, worklist row, run stdout/stderr, dumps, and relevant IR/binary
+  files
+- `machine`: `basic` plus rendered injected LLVM IR, dynamic library listing,
+  configured GPU query output, and `trace_copy_globs`
+- `full`: `machine` plus all regular files from the injection scratch
+  directory; use only for small targeted reruns
 
-No separate debug runner is required
+Related options:
+
+- `trace_repeats`: repeat non-baseline injections
+- `trace_source_window`: source lines saved around the selected metadata line
+- `trace_metadata_dir`: alternate directory for `sites_metadata.csv` and
+  worklists
+- `runtime_env`: extra environment variables for the run
