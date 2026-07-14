@@ -1008,7 +1008,9 @@ def main():
 
     if mode == "local":
         for _, _, script in generated:
-            subprocess.run(["bash"], input=script, universal_newlines=True, check=True, cwd=repo_root)
+            result = subprocess.run(["bash"], input=script, universal_newlines=True, cwd=repo_root)
+            if result.returncode != 0:
+                raise SystemExit(result.returncode)
         return
 
     if mode == "submit":
