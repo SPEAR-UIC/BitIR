@@ -521,6 +521,12 @@ contract could not be inferred safely. The profiler is intentionally broad for
 classification, but conservative about allowing campaigns to continue without an
 adapter.
 
+For full-machine readiness work, use the temporary qualification harness in
+`bitir/qualification/`. It discovers backend variants, generates chunked
+campaign YAMLs, and summarizes source-profile, build, and no-flip baseline
+results into a support matrix. Treat benchmarks as campaign-ready only after the
+target machine passes build/golden and baseline validation.
+
 ### Common Issues
 
 - `ModuleNotFoundError: No module named 'yaml'`

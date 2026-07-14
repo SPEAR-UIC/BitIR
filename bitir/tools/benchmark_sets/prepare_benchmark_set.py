@@ -163,6 +163,34 @@ def find_device_to_host_copies(text, model):
     return calls
 
 
+def dump_insertion_point(text, calls, model):
+    latest_copy = max(call["insert_after"] for call in calls)
+    cleanup_api = r"cudaFree|cudaFreeHost" if model == "cuda" else r"hipFree|hipHostFree"
+    pattern = re.compile(rf"\b(?:{cleanup_api}|free|delete)\b|\breturn\b")
+    match = pattern.search(text, latest_copy)
+    if not match:
+        return latest_copy
+    line_start = text.rfind("\n", 0, match.start()) + 1
+    return line_start if line_start >= latest_copy else match.start()
+
+
+def copied_value_name(dest):
+    match = re.match(r"\s*&?\s*([A-Za-z_][A-Za-z0-9_]*)", dest)
+    return match.group(1) if match else ""
+
+
+def select_dump_calls(text, calls, insertion):
+    used = []
+    for call in calls:
+        name = copied_value_name(call["dest"])
+        if not name:
+            continue
+        after_copy = text[call["insert_after"]:insertion]
+        if re.search(rf"\b{re.escape(name)}\b", after_copy):
+            used.append(call)
+    return used or calls
+
+
 def patch_argc_for_dump(text):
     matches = list(re.finditer(r"argc\s*!=\s*(\d+)", text))
     main_match = re.search(r"\bmain\s*\([^)]*\)\s*\{", text)
@@ -274,7 +302,8 @@ def generate_dump_adapter(source_dir, model):
     best_calls = find_device_to_host_copies(text, model)
     if not best_calls:
         return False
-    insertion = max(call["insert_after"] for call in best_calls)
+    insertion = dump_insertion_point(text, best_calls, model)
+    best_calls = select_dump_calls(text, best_calls, insertion)
     text = text[:insertion] + dump_block(best_calls) + text[insertion:]
     best.write_text(text, encoding="utf-8")
     return True

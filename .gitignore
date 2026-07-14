@@ -10,6 +10,7 @@ smoke_language_scope/build/
 research_outputs/
 *.bin
 bitir/results/
+bitir/qualification/work/
 bitir/tools/llvm17_inject/libfi_inject.so
 bitir/tools/llvm17_inject/libfi_inject.so.tmp.*
 bitir/tools/llvm17_inject/.libfi_inject.lock
