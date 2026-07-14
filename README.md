@@ -63,8 +63,9 @@ fields.
 ## Quickstart
 
 These toy demos are the first hardware tests to run on each supported machine.
-Before submitting, edit the `#PBS -A {ADD ACCOUNT HERE}` or
-`#SBATCH -A {ADD ACCOUNT HERE}` lines in the matching toy YAML.
+Pass your scheduler project/account with `--account <account>`. If omitted, the
+generated script keeps an editable `{ADD ACCOUNT HERE}` placeholder in the `-A`
+line.
 
 Each toy config builds the `layout` benchmark for that machine backend,
 generates a golden output, creates an instruction-result worklist, runs a
@@ -76,21 +77,23 @@ Run from the repository root on Polaris:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  build bitir/config/runs/polaris_toy.yml
+  build bitir/config/runs/polaris_toy.yml \
+  --account <account>
 ```
 
-Inspect the generated `.bitir_jobs/polaris_build_*.pbs` file, edit the account
-line if needed, then submit it with `qsub`.
+Inspect the generated `.bitir_jobs/polaris_build_*.pbs` file, edit resource
+lines if needed, then submit it with `qsub`.
 
 After the build/golden job finishes:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  deploy bitir/config/runs/polaris_toy.yml
+  deploy bitir/config/runs/polaris_toy.yml \
+  --account <account>
 ```
 
-Inspect the generated `.bitir_jobs/polaris_deploy_*.pbs` file, edit the account
-line if needed, then submit it with `qsub`.
+Inspect the generated `.bitir_jobs/polaris_deploy_*.pbs` file, edit resource
+lines if needed, then submit it with `qsub`.
 
 Expected backend: `layout-cuda`.
 
@@ -100,21 +103,23 @@ Run from the repository root on Aurora:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  build bitir/config/runs/aurora_toy.yml
+  build bitir/config/runs/aurora_toy.yml \
+  --account <account>
 ```
 
-Inspect the generated `.bitir_jobs/aurora_build_*.pbs` file, edit the account
-line if needed, then submit it with `qsub`.
+Inspect the generated `.bitir_jobs/aurora_build_*.pbs` file, edit resource
+lines if needed, then submit it with `qsub`.
 
 After the build/golden job finishes:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  deploy bitir/config/runs/aurora_toy.yml
+  deploy bitir/config/runs/aurora_toy.yml \
+  --account <account>
 ```
 
-Inspect the generated `.bitir_jobs/aurora_deploy_*.pbs` file, edit the account
-line if needed, then submit it with `qsub`.
+Inspect the generated `.bitir_jobs/aurora_deploy_*.pbs` file, edit resource
+lines if needed, then submit it with `qsub`.
 
 Expected backend: `layout-sycl`.
 
@@ -124,21 +129,23 @@ Run from the repository root on Frontier:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  build bitir/config/runs/frontier_toy.yml
+  build bitir/config/runs/frontier_toy.yml \
+  --account <account>
 ```
 
-Inspect the generated `.bitir_jobs/frontier_build_*.sbatch` file, edit the
-account line if needed, then submit it with `sbatch`.
+Inspect the generated `.bitir_jobs/frontier_build_*.sbatch` file, edit resource
+lines if needed, then submit it with `sbatch`.
 
 After the build/golden job finishes:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  deploy bitir/config/runs/frontier_toy.yml
+  deploy bitir/config/runs/frontier_toy.yml \
+  --account <account>
 ```
 
-Inspect the generated `.bitir_jobs/frontier_deploy_*.sbatch` file, edit the
-account line if needed, then submit it with `sbatch`.
+Inspect the generated `.bitir_jobs/frontier_deploy_*.sbatch` file, edit resource
+lines if needed, then submit it with `sbatch`.
 
 Expected backend: `layout-hip`.
 
@@ -269,6 +276,8 @@ CLI overrides:
 - `--bench`: run one benchmark instead of the campaign list
 - `--benches-file`: read benchmark names from a text file
 - `--fault-model`: override `run.fault_model`
+- `--account`: render scheduler `-A` account/project fields in generated
+  PBS/SLURM headers
 - `--site-id` and `--bit-index`: required for `inject-one`
 - `--repo-root`: use a repository root other than the parent of `bitir/`
 - `--submit`, `--local`, `--print-script`: force the execution mode

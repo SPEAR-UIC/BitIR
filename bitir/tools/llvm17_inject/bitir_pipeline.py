@@ -24,6 +24,10 @@ def parse_args():
     parser.add_argument("--site-id", type=int)
     parser.add_argument("--bit-index", type=int)
     parser.add_argument("--fault-model")
+    parser.add_argument(
+        "--account",
+        help="Scheduler account/project to render into scheduler header account placeholders",
+    )
     parser.add_argument("--execution-mode")
     parser.add_argument("--submit", action="store_true")
     parser.add_argument("--local", action="store_true")
@@ -115,12 +119,14 @@ def script_header(machine_name, task, job):
         "bench": str(job.get("bench", "all")).strip() or "all",
         "stamp": str(job.get("stamp", "")).strip(),
         "index": str(job.get("index", "00")).strip() or "00",
+        "account": str(job.get("account", "{ADD ACCOUNT HERE}")).strip() or "{ADD ACCOUNT HERE}",
     }
     header = ["#!/bin/bash"]
     for line in job.get("header", []):
         rendered = str(line)
         for key, value in values.items():
             rendered = rendered.replace("{" + key + "}", value)
+        rendered = rendered.replace("{ADD ACCOUNT HERE}", values["account"])
         header.append(rendered)
     return header
 
@@ -620,7 +626,7 @@ def simple_module_block(module_use, modules):
     return lines
 
 
-def compact_invocation(args, config_path, repo_root, machine_name, campaign, bench, benches_file, site_id, bit_index, fault_model):
+def compact_invocation(args, config_path, repo_root, machine_name, campaign, bench, benches_file, site_id, bit_index, fault_model, account):
     command = [
         "python3",
         str(Path(__file__).resolve()),
@@ -644,6 +650,8 @@ def compact_invocation(args, config_path, repo_root, machine_name, campaign, ben
         command.extend(["--bit-index", str(bit_index)])
     if fault_model:
         command.extend(["--fault-model", fault_model])
+    if account:
+        command.extend(["--account", account])
     return command
 
 
@@ -848,6 +856,7 @@ def main():
     site_id = args.site_id if args.site_id is not None else run_cfg.get("site_id")
     bit_index = args.bit_index if args.bit_index is not None else run_cfg.get("bit_index")
     fault_model = args.fault_model or str(run_cfg.get("fault_model", "")).strip()
+    account = args.account or str(run_cfg.get("account", "")).strip()
     mode = resolve_mode(args, run_cfg)
     benchmark_set_name = (
         str(run_cfg.get("benchmark_set", "")).strip()
@@ -924,6 +933,7 @@ def main():
         site_id,
         bit_index,
         fault_model,
+        account,
     )
     generated = []
 
@@ -963,6 +973,7 @@ def main():
         job_values["bench"] = bench_suffix or "all"
         job_values["stamp"] = stamp
         job_values["index"] = f"{index:02d}"
+        job_values["account"] = account or str(job_values.get("account", "")).strip() or "{ADD ACCOUNT HERE}"
 
         if compact_scripts:
             script = build_compact_script(machine_name, args.task, job_values, compact_command, repo_root, module_use, modules)
