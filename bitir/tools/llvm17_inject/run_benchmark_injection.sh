@@ -194,10 +194,24 @@ print_file_tail() {
   fi
 }
 
-print_failure_debug() {
-  case "${RESULT}" in
-    BASELINE|MASKED|SDC|DUE) return 0 ;;
-  esac
+write_trace_results() {
+  [[ -n "${TRACE_DIR:-}" ]] || return 0
+  {
+    echo "result=${RESULT}"
+    echo "exit_code=${RUN_STATUS}"
+    echo "bench=${BENCH}"
+    echo "baseline=${BASELINE}"
+    echo "site_id=${SITE_ID}"
+    echo "bit_index=${BIT_INDEX}"
+    echo "stdout=${RUN_OUT}"
+    echo "stderr=${RUN_ERR}"
+    echo "scratch=${OUT_DIR}"
+    echo "dump=${RUN_DUMP}"
+    echo "trace_dir=${TRACE_DIR}"
+  } > "${TRACE_DIR}/trace_results.txt"
+}
+
+print_failure_debug_body() {
   echo "[debug] failure bench=${BENCH} baseline=${BASELINE} site=${SITE_ID} bit=${BIT_INDEX}"
   echo "[debug] result=${RESULT} exit=${RUN_STATUS}"
   echo "[debug] stdout=${RUN_OUT}"
@@ -208,6 +222,17 @@ print_failure_debug() {
   [[ -f "${RUN_DUMP}" ]] || echo "[debug] dump was not produced"
   print_file_tail stdout "${RUN_OUT}"
   print_file_tail stderr "${RUN_ERR}"
+}
+
+print_failure_debug() {
+  case "${RESULT}" in
+    BASELINE|MASKED|SDC|DUE) return 0 ;;
+  esac
+  if [[ -n "${TRACE_DIR:-}" ]]; then
+    print_failure_debug_body | tee -a "${TRACE_DIR}/trace_results.txt"
+    return
+  fi
+  print_failure_debug_body
 }
 
 common_run() {
@@ -409,6 +434,7 @@ finalize_run() {
   fi
 
   trace_finalize
+  write_trace_results
 
   if [[ -f "${RUN_DUMP}" && "${KEEP_DUMPS:-0}" == "1" && "${BASELINE}" != "1" ]]; then
     local dump_final="${RESULTS_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.bin"

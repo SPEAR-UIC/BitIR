@@ -17,6 +17,8 @@ Generated PBS/SLURM files are intentionally thin wrappers: they contain the
 resource header, direct module commands from the YAML, then call the BitIR
 launcher in local mode inside the allocation. The detailed build/deploy shell is
 fed directly to `bash` internally so submitted scheduler scripts stay readable.
+Scheduler stdout and stderr are merged into the generated `OUT_*.out` file; the
+templates do not create separate `ERROR_*.err` files.
 
 ## Repository Layout
 
@@ -347,6 +349,10 @@ Related trace fields:
   metadata line; default is `6`
 - `trace_metadata_dir`: directory containing `sites_metadata.csv` and
   worklists; defaults to the current results directory
+
+Each trace directory contains `trace_results.txt`, a compact summary of the
+result, exit code, stdout/stderr paths, scratch directory, dump path, and failure
+tails when applicable.
 
 Runtime debug environment variables can be set under `runtime_env` or machine
 dump env fields. Current HeCBench layout adapters recognize:

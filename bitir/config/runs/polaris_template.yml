@@ -136,7 +136,7 @@ machines:
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:20:00"
           - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#PBS -j oe"
       golden:
         header:
           - "#PBS -N bitir_{machine}_{task}"
@@ -146,7 +146,7 @@ machines:
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:20:00"
           - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#PBS -j oe"
       baseline:
         header:
           - "#PBS -N bitir_{machine}_{task}"
@@ -156,7 +156,7 @@ machines:
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:30:00"
           - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#PBS -j oe"
       inject_one:
         header:
           - "#PBS -N bitir_{machine}_{task}"
@@ -166,7 +166,7 @@ machines:
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:30:00"
           - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#PBS -j oe"
       deploy:
         header:
           - "#PBS -N bitir_{machine}_{task}"
@@ -176,7 +176,7 @@ machines:
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=01:00:00"
           - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#PBS -j oe"
 
 benchmarks:
   layout:

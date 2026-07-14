@@ -98,7 +98,7 @@ machines:
           - "#SBATCH --mem=32G"
           - "#SBATCH --time=00:30:00"
           - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
       golden:
         header:
           - "#SBATCH -J bitir_{machine}_{task}"
@@ -111,7 +111,7 @@ machines:
           - "#SBATCH --mem=32G"
           - "#SBATCH --time=00:30:00"
           - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
       baseline:
         header:
           - "#SBATCH -J bitir_{machine}_{task}"
@@ -124,7 +124,7 @@ machines:
           - "#SBATCH --mem=32G"
           - "#SBATCH --time=01:00:00"
           - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
       inject_one:
         header:
           - "#SBATCH -J bitir_{machine}_{task}"
@@ -137,7 +137,7 @@ machines:
           - "#SBATCH --mem=32G"
           - "#SBATCH --time=01:00:00"
           - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
       deploy:
         header:
           - "#SBATCH -J bitir_{machine}_{task}"
@@ -150,7 +150,7 @@ machines:
           - "#SBATCH --mem=32G"
           - "#SBATCH --time=01:00:00"
           - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
 
 benchmarks:
   layout:

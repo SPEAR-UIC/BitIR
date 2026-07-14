@@ -5,6 +5,7 @@ The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs 
 Written and submitted scheduler scripts are compact wrappers. They keep only the
 PBS/SLURM resource header, module setup, repository `cd`, and a `bitir_pipeline.py
 --local` call. The detailed shell body is generated inside the allocation.
+Scheduler stdout and stderr are merged into the generated `OUT_*.out` file.
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py <task> <config.yml>
@@ -301,6 +302,9 @@ Supported `trace_level` values:
   configured GPU query output, and `trace_copy_globs`
 - `full`: `machine` plus all regular files from the injection scratch
   directory; use only for small targeted reruns
+
+Each trace directory includes `trace_results.txt` with the result, exit code,
+stdout/stderr paths, scratch path, dump path, and failure tails when applicable.
 
 Related options:
 
