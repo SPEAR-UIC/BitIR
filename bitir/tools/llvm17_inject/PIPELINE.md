@@ -160,14 +160,13 @@ Polaris:
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/polaris_toy.yml
 
-qsub .bitir_jobs/polaris_build_<timestamp>_00.pbs
-
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/polaris_toy.yml \
   --fault-model smoke8
-
-qsub .bitir_jobs/polaris_deploy_<timestamp>_00.pbs
 ```
+
+Inspect and edit generated `.pbs` account/resource lines before submitting with
+`qsub`.
 
 Aurora:
 
@@ -175,14 +174,13 @@ Aurora:
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/aurora_toy.yml
 
-qsub .bitir_jobs/aurora_build_<timestamp>_00.pbs
-
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/aurora_toy.yml \
   --fault-model smoke8
-
-qsub .bitir_jobs/aurora_deploy_<timestamp>_00.pbs
 ```
+
+Inspect and edit generated `.pbs` account/resource lines before submitting with
+`qsub`.
 
 Frontier:
 
@@ -190,14 +188,13 @@ Frontier:
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/frontier_toy.yml
 
-sbatch .bitir_jobs/frontier_build_<timestamp>_00.sbatch
-
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/frontier_toy.yml \
   --fault-model smoke8
-
-sbatch .bitir_jobs/frontier_deploy_<timestamp>_00.sbatch
 ```
+
+Inspect and edit generated `.sbatch` account/resource lines before submitting
+with `sbatch`.
 
 ## New machine checklist
 

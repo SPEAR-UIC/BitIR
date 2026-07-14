@@ -75,18 +75,20 @@ Run from the repository root on Polaris:
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/polaris_toy.yml
-
-qsub "$(ls -t .bitir_jobs/polaris_build_*.pbs | head -n 1)"
 ```
+
+Inspect the generated `.bitir_jobs/polaris_build_*.pbs` file, edit the account
+line if needed, then submit it with `qsub`.
 
 After the build/golden job finishes:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/polaris_toy.yml
-
-qsub "$(ls -t .bitir_jobs/polaris_deploy_*.pbs | head -n 1)"
 ```
+
+Inspect the generated `.bitir_jobs/polaris_deploy_*.pbs` file, edit the account
+line if needed, then submit it with `qsub`.
 
 Expected backend: `layout-cuda`.
 
@@ -97,18 +99,20 @@ Run from the repository root on Aurora:
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/aurora_toy.yml
-
-qsub "$(ls -t .bitir_jobs/aurora_build_*.pbs | head -n 1)"
 ```
+
+Inspect the generated `.bitir_jobs/aurora_build_*.pbs` file, edit the account
+line if needed, then submit it with `qsub`.
 
 After the build/golden job finishes:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/aurora_toy.yml
-
-qsub "$(ls -t .bitir_jobs/aurora_deploy_*.pbs | head -n 1)"
 ```
+
+Inspect the generated `.bitir_jobs/aurora_deploy_*.pbs` file, edit the account
+line if needed, then submit it with `qsub`.
 
 Expected backend: `layout-sycl`.
 
@@ -119,18 +123,20 @@ Run from the repository root on Frontier:
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/frontier_toy.yml
-
-sbatch "$(ls -t .bitir_jobs/frontier_build_*.sbatch | head -n 1)"
 ```
+
+Inspect the generated `.bitir_jobs/frontier_build_*.sbatch` file, edit the
+account line if needed, then submit it with `sbatch`.
 
 After the build/golden job finishes:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   deploy bitir/config/runs/frontier_toy.yml
-
-sbatch "$(ls -t .bitir_jobs/frontier_deploy_*.sbatch | head -n 1)"
 ```
+
+Inspect the generated `.bitir_jobs/frontier_deploy_*.sbatch` file, edit the
+account line if needed, then submit it with `sbatch`.
 
 Expected backend: `layout-hip`.
 
@@ -154,26 +160,24 @@ Edit the copied YAML rather than the template. At minimum, update:
 - output directories: `build_dir`, `golden_root`, `results_root`
 - benchmark args, golden file names, and compare mode under `benchmarks`
 
-Generate and submit the build job:
+Generate the build job:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py build my_polaris_campaign.yml
-qsub "$(ls -t .bitir_jobs/polaris_build_*.pbs | head -n 1)"
 ```
 
-For Aurora, use the same shape with `my_aurora_campaign.yml` and
-`.bitir_jobs/aurora_build_*.pbs`. For Frontier, use `sbatch` and
-`.bitir_jobs/frontier_build_*.sbatch`.
+Inspect the generated scheduler script, edit the account/resource lines if
+needed, then submit it with the scheduler command for that machine. For Aurora,
+use the same generation command shape with `my_aurora_campaign.yml`; for
+Frontier, use `my_frontier_campaign.yml`.
 
-After the build/golden job finishes, generate and submit deploy:
+After the build/golden job finishes, generate deploy:
 
 ```bash
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py deploy my_polaris_campaign.yml
-qsub "$(ls -t .bitir_jobs/polaris_deploy_*.pbs | head -n 1)"
 ```
 
-For Aurora, use the matching Aurora PBS path. For Frontier, use `sbatch` and
-the Frontier SLURM path.
+Again, inspect/edit the generated scheduler script before submitting it.
 
 ### Fault Models And Worklists
 
