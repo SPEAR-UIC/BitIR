@@ -170,8 +170,7 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/polaris_toy.yml
 
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  deploy bitir/config/runs/polaris_toy.yml \
-  --fault-model polaris_toy_float_8
+  deploy bitir/config/runs/polaris_toy.yml
 ```
 
 Inspect and edit generated `.pbs` account/resource lines before submitting with
@@ -184,8 +183,7 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/aurora_toy.yml
 
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  deploy bitir/config/runs/aurora_toy.yml \
-  --fault-model aurora_toy_float_8
+  deploy bitir/config/runs/aurora_toy.yml
 ```
 
 Inspect and edit generated `.pbs` account/resource lines before submitting with
@@ -198,8 +196,7 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
   build bitir/config/runs/frontier_toy.yml
 
 python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
-  deploy bitir/config/runs/frontier_toy.yml \
-  --fault-model frontier_toy_float_8
+  deploy bitir/config/runs/frontier_toy.yml
 ```
 
 Inspect and edit generated `.sbatch` account/resource lines before submitting

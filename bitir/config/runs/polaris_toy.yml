@@ -11,10 +11,19 @@ run:
   machine: polaris
   benchmark_set: hecbench
   campaign: toy
-  fault_model: polaris_toy_float_8
+  fault_model: polaris_toy_pointer_8
   execution_mode: write-script
 
 fault_models:
+  polaris_toy_pointer_8:
+    selection_mode: instruction_pointer
+    phase: pointer
+    max_injections: 8
+    run_baseline: 1
+    skip_existing: 0
+    trace_level: basic
+    trace_source_window: 8
+
   polaris_toy_float_8:
     selection_mode: instruction_result
     phase: float
