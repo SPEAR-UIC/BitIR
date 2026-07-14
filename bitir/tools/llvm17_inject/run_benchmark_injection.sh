@@ -181,6 +181,35 @@ write_summary() {
   echo "${SITE_ID},${BIT_INDEX},${TRIAL_INDEX},${RESULT},${RUN_STATUS},${RUN_OUT},${RUN_ERR},${DUMP_RECORD}" >> "${SUMMARY_CSV}"
 }
 
+print_file_tail() {
+  local label="$1"
+  local path="$2"
+  [[ -f "${path}" ]] || return 0
+  echo "[debug] ${label}: ${path}"
+  if [[ -s "${path}" ]]; then
+    echo "[debug] tail ${label}:"
+    tail -n 40 "${path}" || true
+  else
+    echo "[debug] ${label} is empty"
+  fi
+}
+
+print_failure_debug() {
+  case "${RESULT}" in
+    BASELINE|MASKED|SDC|DUE) return 0 ;;
+  esac
+  echo "[debug] failure bench=${BENCH} baseline=${BASELINE} site=${SITE_ID} bit=${BIT_INDEX}"
+  echo "[debug] result=${RESULT} exit=${RUN_STATUS}"
+  echo "[debug] stdout=${RUN_OUT}"
+  echo "[debug] stderr=${RUN_ERR}"
+  echo "[debug] scratch=${OUT_DIR}"
+  echo "[debug] expected_dump=${RUN_DUMP}"
+  [[ -n "${TRACE_DIR:-}" ]] && echo "[debug] trace=${TRACE_DIR}"
+  [[ -f "${RUN_DUMP}" ]] || echo "[debug] dump was not produced"
+  print_file_tail stdout "${RUN_OUT}"
+  print_file_tail stderr "${RUN_ERR}"
+}
+
 common_run() {
   mkdir -p "${RESULTS_DIR}" "${OUT_DIR}"
   TRIAL_INDEX="${TRIAL_INDEX:-1}"
@@ -385,7 +414,12 @@ finalize_run() {
 
   echo "Result: ${RESULT} (exit ${RUN_STATUS})" >> "${RUN_OUT}"
   echo "Result: ${RESULT} (exit ${RUN_STATUS})"
+  print_failure_debug
   write_summary
+  if [[ "${BASELINE}" == "1" && "${RESULT}" != "BASELINE" ]]; then
+    echo "[debug] baseline failed; stopping before injection campaign" >&2
+    exit 1
+  fi
 }
 
 setup_common
