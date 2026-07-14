@@ -14,9 +14,9 @@ The supported workflow has two scheduler-facing phases:
 Build and deploy jobs are not split per benchmark.
 
 Generated PBS/SLURM files are intentionally thin wrappers: they contain the
-resource header, load the configured modules, then call the BitIR launcher in
-local mode inside the allocation. The detailed build/deploy shell is generated
-and executed internally so submitted scheduler scripts stay readable.
+resource header, direct module commands from the YAML, then call the BitIR
+launcher in local mode inside the allocation. The detailed build/deploy shell is
+fed directly to `bash` internally so submitted scheduler scripts stay readable.
 
 ## Repository Layout
 

@@ -540,6 +540,17 @@ def build_script(machine_name, task, job, exports, module_use, modules, body):
     return "\n".join(header + ["", *lines, ""])
 
 
+def simple_module_block(module_use, modules):
+    lines = []
+    if module_use or modules:
+        lines.append("module purge")
+    for path in module_use:
+        lines.append(f"module use {shlex.quote(str(path))}")
+    for mod in modules:
+        lines.append(f"module load {shlex.quote(str(mod))}")
+    return lines
+
+
 def compact_invocation(args, config_path, repo_root, machine_name, campaign, bench, benches_file, site_id, bit_index, fault_model):
     command = [
         "python3",
@@ -573,7 +584,7 @@ def build_compact_script(machine_name, task, job, command, repo_root, module_use
         "set -euo pipefail",
         'echo "[trace] start $(date -u +%Y-%m-%dT%H:%M:%SZ)"',
         'echo "[trace] host $(hostname)"',
-        *module_block(module_use, modules),
+        *simple_module_block(module_use, modules),
         f"cd {shlex.quote(str(repo_root))}",
         shlex.join(command),
     ]
@@ -901,8 +912,9 @@ def main():
         if not file_ext.startswith("."):
             file_ext = f".{file_ext}"
         path = jobs_dir / f"{machine_name}_{job_key}{suffix}_{stamp}_{index:02d}{file_ext}"
-        path.write_text(script, encoding="utf-8")
-        os.chmod(path, 0o755)
+        if mode != "local":
+            path.write_text(script, encoding="utf-8")
+            os.chmod(path, 0o755)
         generated.append((bench_name, path, script))
 
     if mode == "print-script":
@@ -915,8 +927,8 @@ def main():
         return
 
     if mode == "local":
-        for _, path, _ in generated:
-            subprocess.run(["bash", str(path)], check=True, cwd=repo_root)
+        for _, _, script in generated:
+            subprocess.run(["bash"], input=script, universal_newlines=True, check=True, cwd=repo_root)
         return
 
     if mode == "submit":
