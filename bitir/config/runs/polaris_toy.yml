@@ -131,7 +131,7 @@ machines:
         header:
           - "#PBS -N bitir_{machine}_{task}"
           - "#PBS -A {ADD ACCOUNT HERE}"
-          - "#PBS -q preemptable"
+          - "#PBS -q debug"
           - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:20:00"
@@ -141,7 +141,7 @@ machines:
         header:
           - "#PBS -N bitir_{machine}_{task}"
           - "#PBS -A {ADD ACCOUNT HERE}"
-          - "#PBS -q preemptable"
+          - "#PBS -q debug"
           - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:20:00"
@@ -151,7 +151,7 @@ machines:
         header:
           - "#PBS -N bitir_{machine}_{task}"
           - "#PBS -A {ADD ACCOUNT HERE}"
-          - "#PBS -q preemptable"
+          - "#PBS -q debug"
           - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:30:00"
@@ -161,7 +161,7 @@ machines:
         header:
           - "#PBS -N bitir_{machine}_{task}"
           - "#PBS -A {ADD ACCOUNT HERE}"
-          - "#PBS -q preemptable"
+          - "#PBS -q debug"
           - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=00:30:00"
@@ -171,7 +171,7 @@ machines:
         header:
           - "#PBS -N bitir_{machine}_{task}"
           - "#PBS -A {ADD ACCOUNT HERE}"
-          - "#PBS -q preemptable"
+          - "#PBS -q debug"
           - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
           - "#PBS -l filesystems=home:eagle"
           - "#PBS -l walltime=01:00:00"
