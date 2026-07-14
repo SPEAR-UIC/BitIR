@@ -119,7 +119,11 @@ Supported `selection_mode` values:
 - `float_only`: floating point sites only
 - `operand_only`, `instruction_operand`: operand sites only
 - instruction families: `add`, `sub`, `mul`, `div`, `rem`, `shift`, `bitwise`, `compare`, `cast`
-- individual opcodes: `zext`, `sext`, `trunc`, `bitcast`, `select`, `load`, `store`, `getelementptr`, `gep`, `call`, `phi`
+- individual LLVM opcodes such as `add`, `fadd`, `mul`, `fmul`, `zext`,
+  `sext`, `trunc`, `bitcast`, `select`, `load`, `store`, `getelementptr`,
+  `gep`, `call`, or `phi`
+- opcode aliases of the form `<opcode>_instruction` or
+  `<opcode>_instructions`
 
 Examples:
 

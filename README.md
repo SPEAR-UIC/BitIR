@@ -217,9 +217,13 @@ Supported `selection_mode` values:
 - `float_only`
 - `operand_only`, `instruction_operand`
 - instruction families: `add`, `sub`, `mul`, `div`, `rem`, `shift`, `bitwise`, `compare`, `cast`
-- individual opcodes: `zext`, `sext`, `trunc`, `bitcast`, `select`, `load`, `store`, `getelementptr`, `gep`, `call`, `phi`
+- individual LLVM opcodes such as `add`, `fadd`, `mul`, `fmul`, `zext`,
+  `sext`, `trunc`, `bitcast`, `select`, `load`, `store`, `getelementptr`,
+  `gep`, `call`, or `phi`
+- opcode aliases of the form `<opcode>_instruction` or
+  `<opcode>_instructions`, such as `zext_instructions`
 
-For opcodes not listed above, use an explicit opcode list:
+For comma-separated opcode sets, use an explicit opcode list:
 
 ```yaml
 fault_models:
@@ -322,10 +326,13 @@ Predefined `selection_mode` values:
 - `bitwise`, `bitwise_instructions`: `and,or,xor`
 - `compare`, `compare_instructions`: `icmp,fcmp`
 - `cast`, `cast_instructions`: `trunc,zext,sext,fptrunc,fpext,fptoui,fptosi,uitofp,sitofp,ptrtoint,inttoptr,bitcast,addrspacecast`
-- individual opcode modes: `zext`, `sext`, `trunc`, `bitcast`, `select`,
-  `load`, `store`, `getelementptr`, `gep`, `call`, `phi`
+- individual LLVM opcode modes such as `add`, `fadd`, `mul`, `fmul`, `zext`,
+  `sext`, `trunc`, `bitcast`, `select`, `load`, `store`, `getelementptr`,
+  `gep`, `call`, or `phi`
+- opcode aliases of the form `<opcode>_instruction` or
+  `<opcode>_instructions`
 
-For any opcode not listed above, use `selection_mode: all` plus `opcodes`.
+For comma-separated opcode sets, use `selection_mode: all` plus `opcodes`.
 
 ### Debug And Trace Options
 

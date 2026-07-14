@@ -375,9 +375,21 @@ DEPLOY_BODY = dedent(
             WORKLIST_OPCODES="${WORKLIST_OPCODES:-${WORKLIST_MODE}}"
           fi
           ;;
+        *_instruction|*_instructions)
+          INJECT_TARGET=all
+          opcode_mode="${WORKLIST_MODE%_instructions}"
+          opcode_mode="${opcode_mode%_instruction}"
+          [[ "${opcode_mode}" == "gep" ]] && opcode_mode="getelementptr"
+          WORKLIST_OPCODES="${WORKLIST_OPCODES:-${opcode_mode}}"
+          ;;
         *)
-          echo "unknown worklist selection mode: ${WORKLIST_MODE}" >&2
-          exit 1
+          if [[ "${WORKLIST_MODE}" =~ ^[A-Za-z][A-Za-z0-9_.-]*$ ]]; then
+            INJECT_TARGET=all
+            WORKLIST_OPCODES="${WORKLIST_OPCODES:-${WORKLIST_MODE}}"
+          else
+            echo "unknown worklist selection mode: ${WORKLIST_MODE}" >&2
+            exit 1
+          fi
           ;;
       esac
     }
