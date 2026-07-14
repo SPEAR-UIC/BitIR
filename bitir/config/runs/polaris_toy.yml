@@ -39,7 +39,7 @@ campaigns:
   toy:
     benchmarks:
       - layout
-      - stencil1d
+      - topk
 
 machines:
   polaris:
@@ -47,7 +47,7 @@ machines:
     script_extension: .pbs
     source_key: cuda
     binary_subdir: cuda
-    source_file: "*.cu"
+    source_file: main.cu
     build_dir: bitir/build/cuda-polaris-toy
     golden_root: Polaris_Golden_Outputs_toy
     results_root: bitir/results/llvm17_inject_toy
@@ -203,14 +203,14 @@ benchmarks:
     source_dirs:
       cuda: src/layout-cuda
 
-  stencil1d:
+  topk:
     compare_mode: exact
-    golden_file: stencil1d.bin
+    golden_file: topk.bin
     args:
-      - "{STENCIL1D_LENGTH}"
-      - "{STENCIL1D_REPEAT}"
+      - "{TOPK_BATCH_SIZE}"
+      - "{TOPK_REPEAT}"
     env:
-      STENCIL1D_LENGTH: "256"
-      STENCIL1D_REPEAT: "1"
+      TOPK_BATCH_SIZE: "1"
+      TOPK_REPEAT: "1"
     source_dirs:
-      cuda: src/stencil1d-cuda
+      cuda: src/topk-cuda
