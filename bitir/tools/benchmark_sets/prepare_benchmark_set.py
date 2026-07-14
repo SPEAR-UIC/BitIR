@@ -76,6 +76,43 @@ def split_top_level_args(text):
     return args
 
 
+def find_statement_end(text, start):
+    in_string = None
+    escape = False
+    in_line_comment = False
+    in_block_comment = False
+    pos = start
+    while pos < len(text):
+        char = text[pos]
+        nxt = text[pos + 1] if pos + 1 < len(text) else ""
+        if in_line_comment:
+            if char == "\n":
+                in_line_comment = False
+        elif in_block_comment:
+            if char == "*" and nxt == "/":
+                in_block_comment = False
+                pos += 1
+        elif in_string:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == in_string:
+                in_string = None
+        elif char == "/" and nxt == "/":
+            in_line_comment = True
+            pos += 1
+        elif char == "/" and nxt == "*":
+            in_block_comment = True
+            pos += 1
+        elif char in ("'", '"'):
+            in_string = char
+        elif char == ";":
+            return pos + 1
+        pos += 1
+    return start
+
+
 def find_device_to_host_copies(text, model):
     api = r"cudaMemcpy(?:Async)?" if model == "cuda" else r"hipMemcpy(?:Async)?"
     direction = "cudaMemcpyDeviceToHost" if model == "cuda" else "hipMemcpyDeviceToHost"
@@ -110,7 +147,9 @@ def find_device_to_host_copies(text, model):
         end = pos
         while end < len(text) and text[end].isspace():
             end += 1
-        if end < len(text) and text[end] == ";":
+        if end < len(text) and text[end] != ";":
+            end = find_statement_end(text, end)
+        elif end < len(text):
             end += 1
         if len(args) >= 4 and args[3].strip() == direction:
             calls.append(
@@ -235,9 +274,8 @@ def generate_dump_adapter(source_dir, model):
     best_calls = find_device_to_host_copies(text, model)
     if not best_calls:
         return False
-    last_call = max(best_calls, key=lambda call: call["insert_after"])
-    insertion = last_call["insert_after"]
-    text = text[:insertion] + dump_block([last_call]) + text[insertion:]
+    insertion = max(call["insert_after"] for call in best_calls)
+    text = text[:insertion] + dump_block(best_calls) + text[insertion:]
     best.write_text(text, encoding="utf-8")
     return True
 
@@ -248,7 +286,7 @@ def materialize_source_dir(output_root, adapter_root, bench, model, source_dir, 
     if adapter_dir.is_dir():
         if materialized.exists():
             shutil.rmtree(materialized)
-        shutil.copytree(source_dir, materialized)
+        shutil.copytree(source_dir, materialized, symlinks=True)
         for path in adapter_dir.rglob("*"):
             rel = path.relative_to(adapter_dir)
             dest = materialized / rel
@@ -261,7 +299,7 @@ def materialize_source_dir(output_root, adapter_root, bench, model, source_dir, 
     if generate_adapters and model in GENERATED_DUMP_MODELS:
         if materialized.exists():
             shutil.rmtree(materialized)
-        shutil.copytree(source_dir, materialized)
+        shutil.copytree(source_dir, materialized, symlinks=True)
         if generate_dump_adapter(materialized, model):
             return materialized, "generated_dump_adapter"
         shutil.rmtree(materialized)
