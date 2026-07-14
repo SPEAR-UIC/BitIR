@@ -338,6 +338,10 @@ build_binary() {
     run_shell_block inject_prepare "${BITIR_MACHINE_INJECT_PREPARE}"
   fi
   if [[ "${BASELINE}" == "1" ]]; then
+    if [[ "${SITE_ID}" == "-1" ]]; then
+      run_shell_block inject_build_baseline_no_flip "${BITIR_MACHINE_INJECT_BUILD_INJECTED:-${BITIR_MACHINE_INJECT_BUILD:-}}"
+      return
+    fi
     run_shell_block inject_build_baseline "${BITIR_MACHINE_INJECT_BUILD_BASELINE:-${BITIR_MACHINE_INJECT_BUILD:-}}"
     return
   fi

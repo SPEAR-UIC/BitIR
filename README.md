@@ -229,8 +229,8 @@ Tasks:
 - `build`: configure and build all benchmarks in the selected campaign, then
   generate golden outputs in one scheduler job
 - `golden`: same build/golden path as `build`
-- `deploy`: generate worklists, optionally run baseline checks, then run the
-  selected injections in one scheduler job
+- `deploy`: generate worklists, optionally run no-flip baseline checks through
+  the injected-build path, then run the selected injections in one scheduler job
 - `baseline`: run baseline checks without a full deploy campaign
 - `inject-one`: run one benchmark/site/bit pair
 
@@ -265,7 +265,8 @@ Common fields under `fault_models.<name>`:
 - `max_injections`: maximum injections per benchmark; `0` means no explicit
   limit
 - `max_pairs`: older alias used as a fallback when `max_injections` is absent
-- `run_baseline`: `1` runs a baseline check before injections
+- `run_baseline`: `1` runs a no-flip baseline through the injected-build path
+  before injections
 - `skip_existing`: `1` skips site/bit runs with existing stdout/stderr files
 - `keep_dumps`: `1` preserves candidate dump files for non-baseline runs
 - `missing_only`: exported for custom run logic; use when a campaign should

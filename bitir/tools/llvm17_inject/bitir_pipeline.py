@@ -279,7 +279,7 @@ BASELINE_BODY = dedent(
       set_benchmark_config "${bench}"
       RESULTS_DIR="${BENCH_RESULTS_ROOT}/${bench}"
       mkdir -p "${RESULTS_DIR}"
-      BASELINE=1 BENCH="${bench}" SITE_ID=1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_DIR}" bash "${RUNNER}"
+      BASELINE=1 BENCH="${bench}" SITE_ID=-1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_DIR}" bash "${RUNNER}"
     done
     """
 ).strip()
@@ -478,10 +478,8 @@ DEPLOY_BODY = dedent(
       [[ -s "${WORKLIST}" ]] || { echo "empty worklist: ${WORKLIST}" >&2; exit 1; }
 
       if [[ "${RUN_BASELINE}" == "1" ]]; then
-        IFS=, read -r _ baseline_site baseline_bit _ < <(tail -n +2 "${WORKLIST}" | head -n 1)
-        [[ -n "${baseline_site:-}" && -n "${baseline_bit:-}" ]] || { echo "failed to read first site from ${WORKLIST}" >&2; exit 1; }
-        echo "[deploy] baseline site=${baseline_site} bit=${baseline_bit}"
-        BASELINE=1 SITE_ID="${baseline_site}" BIT_INDEX="${baseline_bit}" RESULTS_DIR="${RESULTS_DIR}" bash "${RUNNER}"
+        echo "[deploy] baseline no-flip site=-1 bit=0"
+        BASELINE=1 SITE_ID=-1 BIT_INDEX=0 RESULTS_DIR="${RESULTS_DIR}" bash "${RUNNER}"
       fi
 
       INPUT_LIST="${WORKLIST}"

@@ -1,6 +1,6 @@
 # BitIR Pipeline
 
-The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs render one scheduler script for the selected benchmark set. `inject-one` remains a targeted single benchmark/site helper.
+The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs render one scheduler script for the selected benchmark set. `inject-one` remains a targeted single benchmark/site helper. Deploy baselines use the injected-build path with no bit flip before real injections start.
 
 Written and submitted scheduler scripts are compact wrappers. They keep only the
 PBS/SLURM resource header, module setup, repository `cd`, and a `bitir_pipeline.py
