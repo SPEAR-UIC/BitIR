@@ -450,6 +450,7 @@ DEPLOY_BODY = dedent(
     }
 
     BITIR_DEPLOY_SOURCE_ROOT="${REPO_ROOT}/bitir/build/benchmark_sets/${BITIR_BENCHMARK_SET}/${BITIR_MACHINE_BINARY_SUBDIR}"
+    BITIR_DEPLOY_VARIANTS="${BITIR_DEPLOY_SOURCE_ROOT}/benchmark_variants.csv"
     python3 "${BITIR_ROOT}/tools/benchmark_sets/prepare_benchmark_set.py" \
       --benchmark-set "${BITIR_BENCHMARK_SET}" \
       --benchmark-root "${BITIR_BENCHMARK_ROOT}" \
@@ -457,15 +458,19 @@ DEPLOY_BODY = dedent(
       --output-root "${BITIR_DEPLOY_SOURCE_ROOT}" \
       --benchmarks "${benchmarks_cmake}" \
       --models "${BITIR_MACHINE_BINARY_SUBDIR}"
-    BITIR_BENCHMARK_ROOT="${BITIR_DEPLOY_SOURCE_ROOT}"
-    BITIR_BENCHMARK_SOURCE_ROOT="${BITIR_DEPLOY_SOURCE_ROOT}/src"
-    export BITIR_BENCHMARK_ROOT BITIR_BENCHMARK_SOURCE_ROOT
+    prepared_source_dir() {
+      awk -F, -v bench="$1" -v model="${BITIR_MACHINE_BINARY_SUBDIR}" \
+        'NR > 1 && $1 == bench && $2 == model { print $3; found = 1; exit } END { if (!found) exit 1 }' \
+        "${BITIR_DEPLOY_VARIANTS}"
+    }
 
     bash "${PLUGIN_BUILD}"
 
     total_count=0
     for bench in "${BENCH_LIST[@]}"; do
       set_benchmark_config "${bench}"
+      BITIR_SOURCE_DIR="$(prepared_source_dir "${BENCH}")" || { echo "missing prepared source for ${BENCH}-${BITIR_MACHINE_BINARY_SUBDIR}" >&2; exit 1; }
+      export BITIR_SOURCE_DIR
       apply_golden_key_config
       need BENCH
       need BITIR_SOURCE_DIR
