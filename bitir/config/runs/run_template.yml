@@ -1,0 +1,19 @@
+extends: ../bitir.yml
+
+run:
+  machine: ""
+  benchmark_set: hecbench
+  task: ""
+  bench: ""
+  campaign: ""
+  benches_file: ""
+  fault_model: ""
+  execution_mode: ""
+  site_id:
+  bit_index:
+
+campaigns: {}
+
+machines: {}
+
+benchmarks: {}

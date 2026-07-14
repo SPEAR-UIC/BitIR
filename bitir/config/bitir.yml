@@ -1,0 +1,25 @@
+methodology:
+  default_campaign: ""
+
+benchmark_sets:
+  hecbench:
+    root: HeCBench
+    source_root: src
+    build_system: cmake
+
+fault_models: {}
+
+run:
+  machine: ""
+  benchmark_set: ""
+  task: ""
+  campaign: ""
+  execution_mode: ""
+  site_id:
+  bit_index:
+
+campaigns: {}
+
+machines: {}
+
+benchmarks: {}

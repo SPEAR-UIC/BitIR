@@ -1,0 +1,199 @@
+extends: ../bitir.yml
+
+methodology:
+  default_campaign: toy
+  float_abs_tol: 1e-5
+  float_rel_tol: 0.0
+
+run:
+  machine: aurora
+  benchmark_set: hecbench
+  campaign: toy
+  fault_model: smoke8
+  execution_mode: write-script
+
+fault_models:
+  smoke8:
+    selection_mode: instruction_result
+    phase: float
+    int_float_only: 1
+    include_constants: 0
+    max_injections: 8
+    run_baseline: 1
+    skip_existing: 0
+
+campaigns:
+  toy:
+    benchmarks:
+      - layout
+
+machines:
+  aurora:
+    submit_command: qsub
+    script_extension: .pbs
+    source_key: sycl
+    binary_subdir: sycl
+    source_file: main.cpp
+    build_dir: bitir/build/sycl-aurora-toy
+    golden_root: Aurora_Sycl_Golden_Outputs_toy
+    results_root: bitir/results/llvm17_inject_toy
+    module_use:
+      - /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core
+      - /opt/aurora/25.190.0/modulefiles
+    modules:
+      - cmake/3.31.8
+      - ninja/1.12.1
+      - oneapi/release/2025.2.0
+    compiler_driver: icpx
+    icpx: icpx
+    llvm_config: llvm-config
+    opt_bin: opt
+    clang_offload_bundler: clang-offload-bundler
+    sycl_post_link: sycl-post-link
+    llvm_spirv: llvm-spirv
+    clang_offload_wrapper: clang-offload-wrapper
+    tool_search_roots:
+      - /opt/aurora/25.190.0/oneapi/compiler/latest/bin
+      - /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler
+      - /opt/aurora/25.190.0/oneapi/compiler/2025.2/bin
+      - /opt/aurora/25.190.0/oneapi/compiler/2025.2/bin/compiler
+    llvm_search_root: /opt/aurora/25.190.0/spack/unified
+    sycl_target: spir64
+    sycl_host_triple: x86_64-unknown-linux-gnu
+    sycl_offload_target: sycl-spir64-unknown-unknown
+    build_configure: >
+      cmake -S "${BITIR_CMAKE_SOURCE_ROOT}" -B "${BUILD_DIR}"
+      -G Ninja
+      -DHECBENCH_ENABLE_CUDA=OFF
+      -DHECBENCH_ENABLE_HIP=OFF
+      -DHECBENCH_ENABLE_SYCL=ON
+      -DHECBENCH_ENABLE_OPENMP=OFF
+    build_run_dump_env: HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1
+    run_dump_env: HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1
+    gpu_query_command: xpu-smi dump
+    worklist_build_ir: >
+      "${BITIR_MACHINE_ICPX}" -fsycl -fsycl-targets="${BITIR_MACHINE_SYCL_TARGET}"
+      -O0 -g0 -DUSE_GPU
+      -I "${SRC_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
+      -c "${SRC}" -o "${OUT_DIR}/bundle.o"
+      && "${BITIR_MACHINE_CLANG_OFFLOAD_BUNDLER}" --unbundle --type=o
+      --input="${OUT_DIR}/bundle.o"
+      --output="${OUT_DIR}/host.o"
+      --output="${IR_BC}"
+      --targets="host-${BITIR_MACHINE_SYCL_HOST_TRIPLE},${BITIR_MACHINE_SYCL_OFFLOAD_TARGET}"
+    inject_build_baseline: >
+      "${BITIR_MACHINE_ICPX}" -fsycl -fsycl-targets="${BITIR_MACHINE_SYCL_TARGET}"
+      -O0 -g0 -DUSE_GPU
+      -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
+      -c "${SRC}" -o "${OUT_DIR}/bundle.o"
+      && "${BITIR_MACHINE_CLANG_OFFLOAD_BUNDLER}" --unbundle --type=o
+      --input="${OUT_DIR}/bundle.o"
+      --output="${OUT_DIR}/host.o"
+      --output="${IR_BC}"
+      --targets="host-${BITIR_MACHINE_SYCL_HOST_TRIPLE},${BITIR_MACHINE_SYCL_OFFLOAD_TARGET}"
+      && "${BITIR_MACHINE_SYCL_POST_LINK}" --split=kernel --symbols --properties -o "${POSTLINK_TABLE}" "${IR_BC}"
+      && while IFS= read -r row; do
+      [[ -z "${row}" || "${row}" == \[* ]] && continue;
+      bc="${row%%|*}";
+      rest="${row#*|}";
+      prop="${rest%%|*}";
+      sym="${row##*|}";
+      base="$(basename "${bc}" .bc)";
+      "${BITIR_MACHINE_LLVM_SPIRV}" --spirv-ext=+SPV_INTEL_subgroups,+SPV_EXT_shader_atomic_float_add "${bc}" -o "${OUT_DIR}/${base}.spv" &&
+      "${BITIR_MACHINE_CLANG_OFFLOAD_WRAPPER}" -host "${BITIR_MACHINE_SYCL_HOST_TRIPLE}" -kind=sycl -target="${BITIR_MACHINE_SYCL_TARGET}" -format=spirv -entries="${sym}" -properties="${prop}" "${OUT_DIR}/${base}.spv" -o "${OUT_DIR}/${base}.wrapper.bc" || exit 1;
+      done < "${POSTLINK_TABLE}"
+      && "${BITIR_MACHINE_ICPX}" -fsycl -fsycl-targets="${BITIR_MACHINE_SYCL_TARGET}"
+      "${OUT_DIR}/host.o" "${OUT_DIR}"/*.wrapper.bc -o "${BIN_PATH}"
+    inject_build_injected: >
+      "${BITIR_MACHINE_ICPX}" -fsycl -fsycl-targets="${BITIR_MACHINE_SYCL_TARGET}"
+      -O0 -g0 -DUSE_GPU
+      -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
+      -c "${SRC}" -o "${OUT_DIR}/bundle.o"
+      && "${BITIR_MACHINE_CLANG_OFFLOAD_BUNDLER}" --unbundle --type=o
+      --input="${OUT_DIR}/bundle.o"
+      --output="${OUT_DIR}/host.o"
+      --output="${IR_BC}"
+      --targets="host-${BITIR_MACHINE_SYCL_HOST_TRIPLE},${BITIR_MACHINE_SYCL_OFFLOAD_TARGET}"
+      && "${BITIR_MACHINE_OPT_BIN}" -load-pass-plugin "${PLUGIN}"
+      -passes=fi-inject
+      -fi-site="${SITE_ID}"
+      -fi-bit="${BIT_INDEX}"
+      -fi-target="${INJECT_TARGET}"
+      -fi-int-float-only="${INT_FLOAT_ONLY}"
+      -fi-include-constants="${INCLUDE_CONSTANTS}"
+      "${IR_BC}" -o "${IR_INJ_BC}"
+      && "${BITIR_MACHINE_SYCL_POST_LINK}" --split=kernel --symbols --properties -o "${POSTLINK_TABLE}" "${IR_INJ_BC}"
+      && while IFS= read -r row; do
+      [[ -z "${row}" || "${row}" == \[* ]] && continue;
+      bc="${row%%|*}";
+      rest="${row#*|}";
+      prop="${rest%%|*}";
+      sym="${row##*|}";
+      base="$(basename "${bc}" .bc)";
+      "${BITIR_MACHINE_LLVM_SPIRV}" --spirv-ext=+SPV_INTEL_subgroups,+SPV_EXT_shader_atomic_float_add "${bc}" -o "${OUT_DIR}/${base}.spv" &&
+      "${BITIR_MACHINE_CLANG_OFFLOAD_WRAPPER}" -host "${BITIR_MACHINE_SYCL_HOST_TRIPLE}" -kind=sycl -target="${BITIR_MACHINE_SYCL_TARGET}" -format=spirv -entries="${sym}" -properties="${prop}" "${OUT_DIR}/${base}.spv" -o "${OUT_DIR}/${base}.wrapper.bc" || exit 1;
+      done < "${POSTLINK_TABLE}"
+      && "${BITIR_MACHINE_ICPX}" -fsycl -fsycl-targets="${BITIR_MACHINE_SYCL_TARGET}"
+      "${OUT_DIR}/host.o" "${OUT_DIR}"/*.wrapper.bc -o "${BIN_PATH}"
+    jobs:
+      build:
+        header:
+          - "#PBS -N bitir_{machine}_{task}"
+          - "#PBS -A {ADD ACCOUNT HERE}"
+          - "#PBS -q debug"
+          - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
+          - "#PBS -l filesystems=home"
+          - "#PBS -l walltime=00:30:00"
+          - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
+          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+      golden:
+        header:
+          - "#PBS -N bitir_{machine}_{task}"
+          - "#PBS -A {ADD ACCOUNT HERE}"
+          - "#PBS -q debug"
+          - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
+          - "#PBS -l filesystems=home"
+          - "#PBS -l walltime=00:30:00"
+          - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
+          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+      baseline:
+        header:
+          - "#PBS -N bitir_{machine}_{task}"
+          - "#PBS -A {ADD ACCOUNT HERE}"
+          - "#PBS -q debug"
+          - "#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb"
+          - "#PBS -l filesystems=home"
+          - "#PBS -l walltime=01:00:00"
+          - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
+          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+      inject_one:
+        header:
+          - "#PBS -N bitir_{machine}_{task}"
+          - "#PBS -A {ADD ACCOUNT HERE}"
+          - "#PBS -q debug"
+          - "#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb"
+          - "#PBS -l filesystems=home"
+          - "#PBS -l walltime=01:00:00"
+          - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
+          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+      deploy:
+        header:
+          - "#PBS -N bitir_{machine}_{task}"
+          - "#PBS -A {ADD ACCOUNT HERE}"
+          - "#PBS -q debug"
+          - "#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb"
+          - "#PBS -l filesystems=home"
+          - "#PBS -l walltime=01:00:00"
+          - "#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
+          - "#PBS -e ERROR_{machine}_{task}_{bench}_{stamp}_{index}.err"
+
+benchmarks:
+  layout:
+    compare_mode: exact
+    golden_file: layout.bin
+    args:
+      - "{LAYOUT_REPEAT}"
+    env:
+      LAYOUT_REPEAT: "1"
+    source_dirs:
+      sycl: src/layout-sycl

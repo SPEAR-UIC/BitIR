@@ -1,0 +1,11 @@
+# Keep generated experiment data out of language statistics.
+HeCBench/results/** linguist-generated linguist-detectable=false
+HeCBench/job_tracking/** linguist-generated linguist-detectable=false
+
+# Compressed archives and generated figures are artifacts, not implementation.
+*.zip linguist-generated linguist-detectable=false
+paper_results_figures/** linguist-generated linguist-detectable=false
+
+# Scheduler scripts are operational entry points, but not the primary language
+# signal for this repository.
+*.pbs linguist-generated linguist-detectable=false
