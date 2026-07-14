@@ -61,6 +61,7 @@ machines:
       - cudatoolkit-standalone/11.8.0
       - llvm/release-17.0.0
     runtime_home: /soft/compilers/cudatoolkit/cuda-11.8.0
+    cuda_host_compiler: ""
     cuda_arch: "80"
     cuda_arch_name: sm_80
     compiler_driver: nvcc
@@ -76,6 +77,7 @@ machines:
       -DHECBENCH_ENABLE_SYCL=OFF
       -DHECBENCH_ENABLE_OPENMP=OFF
       -DCMAKE_CUDA_FLAGS=--allow-unsupported-compiler
+      ${BITIR_MACHINE_CUDA_HOST_COMPILER:+-DCMAKE_CUDA_HOST_COMPILER="${BITIR_MACHINE_CUDA_HOST_COMPILER}"}
       -DHECBENCH_CUDA_ARCH="${BITIR_MACHINE_CUDA_ARCH}"
     build_run_dump_env: HECBENCH_LLFI_FORCE_DUMP=1
     run_dump_env: HECBENCH_LLFI_FORCE_DUMP=1
@@ -85,6 +87,7 @@ machines:
       --cuda-device-only
       --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}"
       --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}"
+      -std=c++17
       -Xclang -emit-llvm -S -O0 -g
       -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0
       -I "${SRC_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
@@ -95,6 +98,7 @@ machines:
       --cuda-device-only
       --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}"
       --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}"
+      -std=c++17
       -Xclang -emit-llvm -S -O0 -g
       -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0
       -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
@@ -106,6 +110,7 @@ machines:
       --cuda-host-only
       --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}"
       --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}"
+      -std=c++17
       -Xclang -fcuda-include-gpubinary -Xclang "${FATBIN_FILE}"
       -O0 -g
       -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0
@@ -116,6 +121,7 @@ machines:
       --cuda-device-only
       --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}"
       --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}"
+      -std=c++17
       -Xclang -emit-llvm -S -O0 -g
       -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0
       -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
@@ -135,6 +141,7 @@ machines:
       --cuda-host-only
       --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}"
       --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}"
+      -std=c++17
       -Xclang -fcuda-include-gpubinary -Xclang "${FATBIN_FILE}"
       -O0 -g
       -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0

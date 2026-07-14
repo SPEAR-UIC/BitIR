@@ -187,6 +187,30 @@ def build_body():
           env "${{env_parts[@]}}" "$@"
         }}
 
+        check_cuda_host_compiler() {{
+          [[ "${{DEVICE_BIN_SUBDIR}}" == "cuda" ]] || return 0
+          local nvcc_bin="${{BITIR_MACHINE_RUNTIME_HOME:-}}/bin/nvcc"
+          [[ -x "${{nvcc_bin}}" ]] || nvcc_bin="$(command -v nvcc || true)"
+          [[ -n "${{nvcc_bin}}" ]] || return 0
+          local host_cxx="${{BITIR_MACHINE_CUDA_HOST_COMPILER:-}}"
+          if [[ -z "${{host_cxx}}" ]]; then
+            host_cxx="$(command -v g++ || true)"
+          elif [[ "${{host_cxx}}" != /* ]]; then
+            host_cxx="$(command -v "${{host_cxx}}" || true)"
+          fi
+          [[ -n "${{host_cxx}}" ]] || return 0
+          local cuda_major gcc_major
+          cuda_major="$("${{nvcc_bin}}" --version | sed -n 's/.*release \\([0-9][0-9]*\\).*/\\1/p' | head -n 1)"
+          gcc_major="$("${{host_cxx}}" -dumpfullversion -dumpversion 2>/dev/null | cut -d. -f1)"
+          if [[ "${{cuda_major:-0}}" -le 11 && "${{gcc_major:-0}}" -ge 12 ]]; then
+            echo "unsupported CUDA host compiler combination detected:" >&2
+            echo "  nvcc=${{nvcc_bin}} CUDA major=${{cuda_major}}" >&2
+            echo "  host_cxx=${{host_cxx}} GCC major=${{gcc_major}}" >&2
+            echo "CUDA 11.x is not reliable with GCC 12+ libstdc++; set machines.<name>.cuda_host_compiler to a GCC 11-or-older g++." >&2
+            exit 2
+          fi
+        }}
+
         REPO_DIR="${{PWD}}"
         BUILD_DIR="${{REPO_DIR}}/${{BITIR_MACHINE_BUILD_DIR:?BITIR_MACHINE_BUILD_DIR is required}}"
         OUTPUT_ROOT="${{REPO_DIR}}/${{BITIR_MACHINE_GOLDEN_ROOT:?BITIR_MACHINE_GOLDEN_ROOT is required}}"
@@ -239,6 +263,7 @@ def build_body():
         if [[ -n "${{BITIR_MACHINE_BUILD_PREPARE:-}}" ]]; then
           eval "${{BITIR_MACHINE_BUILD_PREPARE}}"
         fi
+        check_cuda_host_compiler
         eval "${{BITIR_MACHINE_BUILD_CONFIGURE}}"
         cmake --build "${{BUILD_DIR}}" --target "${{targets[@]}}"
 
