@@ -84,6 +84,10 @@ def export_line(name, value):
     return f"export {name}={shlex.quote(str(value))}"
 
 
+def shell_join(command):
+    return " ".join(shlex.quote(str(part)) for part in command)
+
+
 def export_mapping(lines, prefix, value):
     if isinstance(value, dict):
         for key, subvalue in value.items():
@@ -586,7 +590,7 @@ def build_compact_script(machine_name, task, job, command, repo_root, module_use
         'echo "[trace] host $(hostname)"',
         *simple_module_block(module_use, modules),
         f"cd {shlex.quote(str(repo_root))}",
-        shlex.join(command),
+        shell_join(command),
     ]
     return "\n".join(header + ["", *lines, ""])
 
