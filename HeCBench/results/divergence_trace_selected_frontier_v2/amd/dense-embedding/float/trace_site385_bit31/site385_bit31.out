@@ -1,0 +1,70 @@
+Number of rows in the embedding table: 10000
+Batch size: 8
+
+Embedding dimension: 768
+block size: 128
+Average execution time of dense embedding kernel (k1): 81317.546875 (us)
+Average execution time of dense embedding kernel (k2): 116.470009 (us)
+Average execution time of dense embedding kernel (k3): 221.457016 (us)
+PASS
+block size: 256
+Average execution time of dense embedding kernel (k1): 86.603004 (us)
+Average execution time of dense embedding kernel (k2): 65.142006 (us)
+Average execution time of dense embedding kernel (k3): 128.001007 (us)
+PASS
+block size: 512
+Average execution time of dense embedding kernel (k1): 79.931007 (us)
+Average execution time of dense embedding kernel (k2): 55.725002 (us)
+Average execution time of dense embedding kernel (k3): 99.047005 (us)
+PASS
+block size: 1024
+Average execution time of dense embedding kernel (k1): 69.732002 (us)
+Average execution time of dense embedding kernel (k2): 50.364002 (us)
+Average execution time of dense embedding kernel (k3): 66.345001 (us)
+PASS
+
+Embedding dimension: 2048
+block size: 128
+Average execution time of dense embedding kernel (k1): 247.908005 (us)
+Average execution time of dense embedding kernel (k2): 220.475006 (us)
+Average execution time of dense embedding kernel (k3): 495.884033 (us)
+PASS
+block size: 256
+Average execution time of dense embedding kernel (k1): 164.009003 (us)
+Average execution time of dense embedding kernel (k2): 124.084007 (us)
+Average execution time of dense embedding kernel (k3): 285.147003 (us)
+PASS
+block size: 512
+Average execution time of dense embedding kernel (k1): 116.800003 (us)
+Average execution time of dense embedding kernel (k2): 90.020004 (us)
+Average execution time of dense embedding kernel (k3): 191.080002 (us)
+PASS
+block size: 1024
+Average execution time of dense embedding kernel (k1): 86.072006 (us)
+Average execution time of dense embedding kernel (k2): 80.282005 (us)
+Average execution time of dense embedding kernel (k3): 123.522003 (us)
+PASS
+
+Embedding dimension: 12288
+block size: 128
+Average execution time of dense embedding kernel (k1): 1289.541016 (us)
+Average execution time of dense embedding kernel (k2): 1202.977051 (us)
+Average execution time of dense embedding kernel (k3): 2838.349121 (us)
+PASS
+block size: 256
+Average execution time of dense embedding kernel (k1): 790.600037 (us)
+Average execution time of dense embedding kernel (k2): 640.137024 (us)
+Average execution time of dense embedding kernel (k3): 1566.763062 (us)
+PASS
+block size: 512
+Average execution time of dense embedding kernel (k1): 465.728027 (us)
+Average execution time of dense embedding kernel (k2): 421.394012 (us)
+Average execution time of dense embedding kernel (k3): 923.951050 (us)
+PASS
+block size: 1024
+Average execution time of dense embedding kernel (k1): 339.079010 (us)
+Average execution time of dense embedding kernel (k2): 271.923004 (us)
+Average execution time of dense embedding kernel (k3): 593.128052 (us)
+PASS
+dense-embedding snapshot written to /tmp/bitir_amd_dense-embedding_site385_bit31_trial1/dense-embedding_site385_bit31.bin
+compare_ok

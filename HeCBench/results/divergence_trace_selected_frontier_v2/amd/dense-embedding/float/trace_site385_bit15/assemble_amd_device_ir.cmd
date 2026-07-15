@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/llvm-as /tmp/bitir_amd_dense-embedding_site385_bit15_trial1/device.ll -o /tmp/bitir_amd_dense-embedding_site385_bit15_trial1/device.bc 

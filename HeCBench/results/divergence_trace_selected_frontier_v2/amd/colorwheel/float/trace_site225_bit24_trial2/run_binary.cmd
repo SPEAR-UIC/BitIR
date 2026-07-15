@@ -1,1 +1,0 @@
-run_env_bin HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_colorwheel_site225_bit24/colorwheel 10000 8 1 /tmp/bitir_colorwheel_site225_bit24/colorwheel_site225_bit24_trial2.bin 

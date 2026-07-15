@@ -1,2 +1,0 @@
-site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
-1,result,call,int,64,-1,__assert_fail,/opt/rocm-6.4.2/include/hip/amd_detail/hip_assert.h,68,14,1,__assert_fail|result|call|int|64|-1|/opt/rocm-6.4.2/include/hip/amd_detail/hip_assert.h|68|14|1

@@ -1,0 +1,2 @@
+site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
+381,result,load,float,32,-1,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi,/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/dense-embedding-hip/main.cu,85,22,2,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi|result|load|float|32|-1|/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/dense-embedding-hip/main.cu|85|22|2

@@ -1,0 +1,1 @@
+HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_amd_entropy_site474_bit30_trial1/entropy 10000 1024 1 /tmp/bitir_amd_entropy_site474_bit30_trial1/entropy_site474_bit30.bin 

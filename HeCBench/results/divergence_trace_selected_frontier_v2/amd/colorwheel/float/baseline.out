@@ -1,6 +1,0 @@
-Start execution on a device
-Average kernel execution time : 5.278947 (ms)
-PASS
-colorwheel snapshot written to /tmp/bitir_colorwheel_site1_bit0/colorwheel_baseline.bin
-compare_ok
-Result: BASELINE (exit 0)
