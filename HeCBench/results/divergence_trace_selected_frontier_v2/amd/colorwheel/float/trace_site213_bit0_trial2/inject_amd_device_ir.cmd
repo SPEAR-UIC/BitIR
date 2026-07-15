@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/opt -load-pass-plugin /ccs/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/libfi_inject.so -passes=fi-inject -fi-site=213 -fi-bit=0 -fi-target=result -fi-int-float-only=1 -fi-include-constants=0 /tmp/bitir_amd_colorwheel_site213_bit0_trial2/device.bc -o /tmp/bitir_amd_colorwheel_site213_bit0_trial2/device.injected.bc 

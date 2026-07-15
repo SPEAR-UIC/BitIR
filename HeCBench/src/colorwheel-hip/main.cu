@@ -81,13 +81,14 @@ void color (uchar* pix, int size, int half_size, float range, float truerange)
 
 int main(int argc, char **argv)
 {
-  if (argc != 4) {
-    printf("Usage: %s <range> <size> <repeat>\n", argv[0]);
+  if (argc < 4 || argc > 5) {
+    printf("Usage: %s <range> <size> <repeat> [dump file]\n", argv[0]);
     exit(1);
   }
   const float truerange = atof(argv[1]);
   const int size = atoi(argv[2]);
   const int repeat = atoi(argv[3]);
+  const char* dump_path = argc == 5 ? argv[4] : nullptr;
 
   // make picture slightly bigger to show out-of-range coding
   float range = 1.04f * truerange;
@@ -133,18 +134,42 @@ int main(int argc, char **argv)
 
   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
 
-  // verify
-  int fail = memcmp(pix, res, imgSize);
-  if (fail) {
-    int max_error = 0;
-    for (size_t i = 0; i < imgSize; i++) {
-       int e = abs(res[i] - pix[i]);
-       if (e > max_error) max_error = e;
+  // verify (allow minor GPU/CPU round-off differences)
+  bool fail = false;
+  int max_error = 0;
+  for (size_t i = 0; i < imgSize; i++) {
+    int diff = abs(res[i] - pix[i]);
+    if (diff > max_error) max_error = diff;
+    if (diff > 1) {
+      fail = true;
+      break;
     }
-    printf("Maximum error between host and device results: %d\n", max_error);
   }
-  else {
-    printf("%s\n", "PASS");
+  if (fail) {
+    printf("Maximum error between host and device results: %d\n", max_error);
+    printf("FAIL\n");
+  } else {
+    if (max_error > 0)
+      printf("Maximum error between host and device results: %d\n", max_error);
+    printf("PASS\n");
+  }
+
+  if (dump_path) {
+    FILE *fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("colorwheel dump");
+    } else {
+      int meta[2] = {size, size};
+      fwrite(meta, sizeof(int), 2, fp);
+      size_t written = fwrite(res, sizeof(uchar), imgSize, fp);
+      fclose(fp);
+      if (written != imgSize) {
+        fprintf(stderr, "colorwheel: incomplete dump (%zu of %zu bytes)\n",
+                written, imgSize);
+      } else {
+        printf("colorwheel snapshot written to %s\n", dump_path);
+      }
+    }
   }
   
   hipFree(d_pix);

@@ -165,7 +165,7 @@ EOF
     } > "${TRACE_DIR}/worklist_row.csv"
   fi
 
-  for file in "${IR_LL:-}" "${IR_BC:-}" "${IR_INJ_BC:-}" "${RUN_OUT}" "${RUN_ERR}" "${RUN_DUMP:-}"; do
+  for file in "${IR_LL:-}" "${IR_BC:-}" "${IR_INJ_BC:-}" "${RUN_OUT}" "${RUN_ERR}"; do
     [[ -f "${file}" ]] || continue
     cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
   done
@@ -192,9 +192,28 @@ EOF
     fi
   fi
 
+  if [[ -f "${TRACE_DIR}/device.ll" && ! -f "${TRACE_DIR}/pre_injection.ll" ]]; then
+    cp -f "${TRACE_DIR}/device.ll" "${TRACE_DIR}/pre_injection.ll"
+  fi
+  if [[ -f "${TRACE_DIR}/device.injected.ll" && ! -f "${TRACE_DIR}/post_injection.ll" ]]; then
+    cp -f "${TRACE_DIR}/device.injected.ll" "${TRACE_DIR}/post_injection.ll"
+  fi
+
+  if [[ -f "${REPO_ROOT}/HeCBench/tools/llvm17_inject/write_trace_diagnostics.py" ]]; then
+    python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/write_trace_diagnostics.py" "${TRACE_DIR}" >/dev/null 2>&1 || true
+  fi
+
   if [[ "${TRACE_RANK}" -ge 3 ]]; then
+    local skip_name
     for file in "${OUT_DIR}"/*; do
       [[ -f "${file}" ]] || continue
+      skip_name="$(basename "${file}")"
+      if [[ -n "${RUN_DUMP:-}" && "${skip_name}" == "$(basename "${RUN_DUMP}")" ]]; then
+        continue
+      fi
+      if [[ -n "${BIN_PATH:-}" && "${skip_name}" == "$(basename "${BIN_PATH}")" ]]; then
+        continue
+      fi
       cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
     done
   fi
@@ -557,6 +576,9 @@ prepare_amd() {
   CLANG="$(tool_or_fail "${CLANG:-}" clang++ \
     "${HIP_HOME}/lib/llvm/bin/clang++" \
     "${HIP_HOME}/llvm/bin/clang++")"
+  LLVM_AS="$(tool_or_fail "${LLVM_AS:-}" llvm-as \
+    "${HIP_HOME}/lib/llvm/bin/llvm-as" \
+    "${HIP_HOME}/llvm/bin/llvm-as")"
   OPT_BIN="$(tool_or_fail "${OPT_BIN:-}" opt \
     "${HIP_HOME}/lib/llvm/bin/opt" \
     "${HIP_HOME}/llvm/bin/opt")"
@@ -567,6 +589,9 @@ prepare_amd() {
     export "${BITIR_MACHINE_DEVICE_VISIBLE_ENV}=${BITIR_MACHINE_DEVICE_VISIBLE_VALUE}"
   fi
 
+  IR_LL="${OUT_DIR}/device.ll"
+  IR_BC="${OUT_DIR}/device.bc"
+  IR_INJ_BC="${OUT_DIR}/device.injected.bc"
   BIN_PATH="${OUT_DIR}/${BENCH}"
 }
 
@@ -579,12 +604,43 @@ build_amd_binary() {
     -g
     "${INCLUDE_ARGS[@]}"
   )
+  local analysis_flags=(
+    -x hip
+    --offload-device-only
+    --offload-arch="${BITIR_MACHINE_HIP_ARCH}"
+    --hip-path="${HIP_HOME}"
+    -Xclang -emit-llvm
+    -S
+    -O0
+    -g
+    -D__STRICT_ANSI__
+    -D_GLIBCXX_USE_FLOAT128=0
+    "${INCLUDE_ARGS[@]}"
+  )
+
+  trace_record_command build_amd_device_ir "${CLANG}" "${analysis_flags[@]}" "${SRC}" -o "${IR_LL}"
+  "${CLANG}" "${analysis_flags[@]}" "${SRC}" -o "${IR_LL}"
+  trace_record_command assemble_amd_device_ir "${LLVM_AS}" "${IR_LL}" -o "${IR_BC}"
+  "${LLVM_AS}" "${IR_LL}" -o "${IR_BC}"
 
   if [[ "${BASELINE}" == "1" ]]; then
     trace_record_command build_amd_binary "${CLANG}" "${common_flags[@]}" "${SRC}" -o "${BIN_PATH}"
     "${CLANG}" "${common_flags[@]}" "${SRC}" -o "${BIN_PATH}"
     return
   fi
+
+  trace_record_command inject_amd_device_ir \
+    "${OPT_BIN}" -load-pass-plugin "${PLUGIN}" -passes=fi-inject -fi-site="${SITE_ID}" \
+    -fi-bit="${BIT_INDEX}" -fi-target="${INJECT_TARGET}" -fi-int-float-only="${INT_FLOAT_ONLY}" \
+    -fi-include-constants="${INCLUDE_CONSTANTS}" "${IR_BC}" -o "${IR_INJ_BC}"
+  "${OPT_BIN}" -load-pass-plugin "${PLUGIN}" \
+    -passes=fi-inject \
+    -fi-site="${SITE_ID}" \
+    -fi-bit="${BIT_INDEX}" \
+    -fi-target="${INJECT_TARGET}" \
+    -fi-int-float-only="${INT_FLOAT_ONLY}" \
+    -fi-include-constants="${INCLUDE_CONSTANTS}" \
+    "${IR_BC}" -o "${IR_INJ_BC}"
 
   trace_record_command build_amd_binary \
     env LLFI_SITE="${SITE_ID}" LLFI_BIT="${BIT_INDEX}" LLFI_TARGET="${INJECT_TARGET}" \
