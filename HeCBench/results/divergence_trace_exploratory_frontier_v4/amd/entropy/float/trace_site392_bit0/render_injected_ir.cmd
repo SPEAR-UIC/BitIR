@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/opt -S /tmp/bitir_exploratory_v4_amd_entropy_site392_bit0_trial1/device.injected.bc -o /autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/entropy/float/trace_site392_bit0/device.injected.ll 

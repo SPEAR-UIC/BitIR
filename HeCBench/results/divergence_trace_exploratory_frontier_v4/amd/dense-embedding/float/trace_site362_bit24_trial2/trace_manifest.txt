@@ -1,0 +1,16 @@
+trace_level=full
+backend=amd
+bench=dense-embedding
+source=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu
+source_dir=HeCBench/src/dense-embedding-hip
+site_id=362
+bit_index=24
+inject_target=result
+compare_mode=exact
+phase=
+results_dir=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/dense-embedding/float
+out_dir=/tmp/bitir_exploratory_v4_amd_dense-embedding_site362_bit24_trial2
+run_out=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/dense-embedding/float/site362_bit24_trial2.out
+run_err=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/dense-embedding/float/site362_bit24_trial2.err
+run_dump=/tmp/bitir_exploratory_v4_amd_dense-embedding_site362_bit24_trial2/dense-embedding_site362_bit24_trial2.bin
+run_timeout=90s

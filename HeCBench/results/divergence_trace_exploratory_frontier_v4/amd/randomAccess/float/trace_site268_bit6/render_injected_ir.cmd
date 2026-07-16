@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/opt -S /tmp/bitir_exploratory_v4_amd_randomAccess_site268_bit6_trial1/device.injected.bc -o /autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/randomAccess/float/trace_site268_bit6/device.injected.ll 

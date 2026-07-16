@@ -1,0 +1,4 @@
+PWD=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI
+HIP_TRACE_API=1
+HSA_ENABLE_DEBUG=1
+ROCR_VISIBLE_DEVICES=0

@@ -1,0 +1,11 @@
+bench,site_id,bit_index,site_class,opcode,type_kind,bitwidth,function,source_line,source_column,signature_ordinal,compare_mode
+colorwheel,103,3,result,load,int,32,_Z7setcolsPA3_iiiii,26,14,1,exact
+randomAccess,268,4,result,mul,int,32,_Z9initTablePyy,60,22,1,exact
+colorwheel,439,2,operand,sitofp,int,32,_Z5colorPhiiff,74,34,2,exact
+randomAccess,268,6,result,mul,int,32,_Z9initTablePyy,60,22,1,exact
+dense-embedding,362,24,result,load,int,32,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi,85,28,13,exact
+colorwheel,103,0,result,load,int,32,_Z7setcolsPA3_iiiii,26,14,1,exact
+dense-embedding,362,0,result,load,int,32,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi,85,28,13,exact
+entropy,392,0,pointer,load,ptr,64,_Z11entropy_optILi16ELi16EEvPfPKcPKfii,70,37,14,exact
+colorwheel,481,3,result,load,int,32,_Z5colorPhiiff,76,27,11,exact
+entropy,482,0,operand,sitofp,int,8,_Z11entropy_optILi16ELi16EEvPfPKcPKfii,81,37,1,exact

@@ -1,0 +1,16 @@
+trace_level=full
+backend=amd
+bench=colorwheel
+source=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu
+source_dir=HeCBench/src/colorwheel-hip
+site_id=481
+bit_index=3
+inject_target=result
+compare_mode=exact
+phase=
+results_dir=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/colorwheel/float
+out_dir=/tmp/bitir_exploratory_v4_amd_colorwheel_site481_bit3_trial2
+run_out=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/colorwheel/float/site481_bit3_trial2.out
+run_err=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/colorwheel/float/site481_bit3_trial2.err
+run_dump=/tmp/bitir_exploratory_v4_amd_colorwheel_site481_bit3_trial2/colorwheel_site481_bit3_trial2.bin
+run_timeout=90s

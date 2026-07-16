@@ -200,7 +200,7 @@ EOF
     cp -f "${TRACE_DIR}/selected_manifest_row.csv" "${TRACE_DIR}/expected_site.csv"
   fi
 
-  for file in "${IR_LL:-}" "${IR_BC:-}" "${IR_INJ_BC:-}" "${RUN_OUT}" "${RUN_ERR}"; do
+  for file in "${IR_LL:-}" "${RUN_OUT}" "${RUN_ERR}"; do
     [[ -f "${file}" ]] || continue
     cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
   done
@@ -249,6 +249,11 @@ EOF
       if [[ -n "${BIN_PATH:-}" && "${skip_name}" == "$(basename "${BIN_PATH}")" ]]; then
         continue
       fi
+      case "${skip_name}" in
+        *.bc|*.o|*.hipfb|device.out|*.fatbin)
+          continue
+          ;;
+      esac
       cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
     done
   fi
@@ -622,6 +627,15 @@ prepare_amd() {
   OPT_BIN="$(tool_or_fail "${OPT_BIN:-}" opt \
     "${HIP_HOME}/lib/llvm/bin/opt" \
     "${HIP_HOME}/llvm/bin/opt")"
+  LLC_BIN="$(tool_or_fail "${LLC_BIN:-}" llc \
+    "${HIP_HOME}/lib/llvm/bin/llc" \
+    "${HIP_HOME}/llvm/bin/llc")"
+  LLD_BIN="$(tool_or_fail "${LLD_BIN:-}" lld \
+    "${HIP_HOME}/lib/llvm/bin/lld" \
+    "${HIP_HOME}/llvm/bin/lld")"
+  CLANG_OFFLOAD_BUNDLER="$(tool_or_fail "${CLANG_OFFLOAD_BUNDLER:-}" clang-offload-bundler \
+    "${HIP_HOME}/lib/llvm/bin/clang-offload-bundler" \
+    "${HIP_HOME}/llvm/bin/clang-offload-bundler")"
 
   export PATH="${HIP_HOME}/bin:${HIP_HOME}/lib/llvm/bin:${PATH}"
   export LD_LIBRARY_PATH="${HIP_HOME}/lib:${HIP_HOME}/lib64:${LD_LIBRARY_PATH:-}"
@@ -632,6 +646,9 @@ prepare_amd() {
   IR_LL="${OUT_DIR}/device.ll"
   IR_BC="${OUT_DIR}/device.bc"
   IR_INJ_BC="${OUT_DIR}/device.injected.bc"
+  AMD_DEVICE_OBJ="${OUT_DIR}/device.o"
+  AMD_DEVICE_SO="${OUT_DIR}/device.out"
+  AMD_FATBIN="${OUT_DIR}/device.hipfb"
   BIN_PATH="${OUT_DIR}/${BENCH}"
 }
 
@@ -682,19 +699,38 @@ build_amd_binary() {
     -fi-include-constants="${INCLUDE_CONSTANTS}" \
     "${IR_BC}" -o "${IR_INJ_BC}"
 
+  trace_record_command lower_amd_device_obj \
+    "${LLC_BIN}" -march=amdgcn -mcpu="${BITIR_MACHINE_HIP_ARCH}" -filetype=obj \
+    "${IR_INJ_BC}" -o "${AMD_DEVICE_OBJ}"
+  "${LLC_BIN}" -march=amdgcn -mcpu="${BITIR_MACHINE_HIP_ARCH}" -filetype=obj \
+    "${IR_INJ_BC}" -o "${AMD_DEVICE_OBJ}"
+
+  trace_record_command link_amd_device_code_object \
+    "${LLD_BIN}" -flavor gnu -m elf64_amdgpu --no-undefined -shared \
+    -plugin-opt=-amdgpu-internalize-symbols -plugin-opt=mcpu="${BITIR_MACHINE_HIP_ARCH}" \
+    -plugin-opt=O0 --lto-CGO0 -plugin-opt=-amdgpu-spill-cfi-saved-regs \
+    --whole-archive -o "${AMD_DEVICE_SO}" "${AMD_DEVICE_OBJ}" --no-whole-archive
+  "${LLD_BIN}" -flavor gnu -m elf64_amdgpu --no-undefined -shared \
+    -plugin-opt=-amdgpu-internalize-symbols -plugin-opt=mcpu="${BITIR_MACHINE_HIP_ARCH}" \
+    -plugin-opt=O0 --lto-CGO0 -plugin-opt=-amdgpu-spill-cfi-saved-regs \
+    --whole-archive -o "${AMD_DEVICE_SO}" "${AMD_DEVICE_OBJ}" --no-whole-archive
+
+  trace_record_command bundle_amd_device_code_object \
+    "${CLANG_OFFLOAD_BUNDLER}" -type=o -bundle-align=4096 \
+    -targets="host-x86_64-unknown-linux-gnu,hipv4-amdgcn-amd-amdhsa--${BITIR_MACHINE_HIP_ARCH}" \
+    -input=/dev/null -input="${AMD_DEVICE_SO}" -output="${AMD_FATBIN}"
+  "${CLANG_OFFLOAD_BUNDLER}" -type=o -bundle-align=4096 \
+    -targets="host-x86_64-unknown-linux-gnu,hipv4-amdgcn-amd-amdhsa--${BITIR_MACHINE_HIP_ARCH}" \
+    -input=/dev/null -input="${AMD_DEVICE_SO}" -output="${AMD_FATBIN}"
+
   trace_record_command build_amd_binary \
-    env LLFI_SITE="${SITE_ID}" LLFI_BIT="${BIT_INDEX}" LLFI_TARGET="${INJECT_TARGET}" \
-    LLFI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}" LLFI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}" \
-    "${CLANG}" "${common_flags[@]}" -fpass-plugin="${PLUGIN}" \
-    "${SRC}" -o "${BIN_PATH}"
-  LLFI_SITE="${SITE_ID}" \
-  LLFI_BIT="${BIT_INDEX}" \
-  LLFI_TARGET="${INJECT_TARGET}" \
-  LLFI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}" \
-  LLFI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}" \
-  "${CLANG}" "${common_flags[@]}" \
-    -fpass-plugin="${PLUGIN}" \
-    "${SRC}" -o "${BIN_PATH}"
+    "${CLANG}" -x hip --offload-host-only --offload-arch="${BITIR_MACHINE_HIP_ARCH}" \
+    --hip-path="${HIP_HOME}" -O0 -g -Xclang -fcuda-include-gpubinary -Xclang "${AMD_FATBIN}" \
+    "${INCLUDE_ARGS[@]}" "${SRC}" -o "${BIN_PATH}"
+  "${CLANG}" -x hip --offload-host-only --offload-arch="${BITIR_MACHINE_HIP_ARCH}" \
+    --hip-path="${HIP_HOME}" -O0 -g \
+    -Xclang -fcuda-include-gpubinary -Xclang "${AMD_FATBIN}" \
+    "${INCLUDE_ARGS[@]}" "${SRC}" -o "${BIN_PATH}"
 }
 
 build_intel_binary() {

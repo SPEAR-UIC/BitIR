@@ -1,0 +1,1333 @@
+== 2026-07-16T11:04:05-04:00 colorwheel site103 bit3 result trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: SDC (exit 0)
+== 2026-07-16T11:04:14-04:00 colorwheel site103 bit3 result trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: SDC (exit 0)
+== 2026-07-16T11:04:20-04:00 randomAccess site268 bit4 result trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:04:40-04:00 randomAccess site268 bit4 result trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:05:02-04:00 colorwheel site439 bit2 operand trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:05:10-04:00 colorwheel site439 bit2 operand trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:05:17-04:00 randomAccess site268 bit6 result trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:05:38-04:00 randomAccess site268 bit6 result trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:114:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  114 |   hipMalloc((void**)&d_Table, TableSize * sizeof(u64Int));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:126:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  126 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:131:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  131 |   hipMemcpy(Table, d_Table, TableSize * sizeof(u64Int), hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/randomAccess-hip/main.cu:167:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  167 |   hipFree(d_Table);
+      |   ^~~~~~~ ~~~~~~~
+4 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:05:59-04:00 dense-embedding site362 bit24 result trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:06:38-04:00 dense-embedding site362 bit24 result trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:07:20-04:00 colorwheel site103 bit0 result trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: SDC (exit 0)
+== 2026-07-16T11:07:26-04:00 colorwheel site103 bit0 result trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: SDC (exit 0)
+== 2026-07-16T11:07:31-04:00 dense-embedding site362 bit0 result trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:08:12-04:00 dense-embedding site362 bit0 result trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:159:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  159 |     hipMalloc((void**)&d_input, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:160:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  160 |     hipMemcpy(d_input, input, input_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:162:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  162 |     hipMalloc((void**)&d_dense, dense_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:163:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  163 |     hipMemcpy(d_dense, dense, dense_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:165:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  165 |     hipMalloc((void**)&d_output, input_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:168:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  168 |     hipMalloc((void**)&d_input_offset, batch_size_bytes);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:169:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  169 |     hipMemcpy(d_input_offset, input_offset, batch_size_bytes, hipMemcpyHostToDevice);
+      |     ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:174:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  174 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:175:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:181:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  181 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:185:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  185 |       hipMemcpy(output_k1, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:187:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  187 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:188:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  188 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:194:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  194 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:198:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  198 |       hipMemcpy(output_k2, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:200:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  200 |       hipMemset(d_output, 0, input_size_bytes);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:201:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  201 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:207:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  207 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:211:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  211 |       hipMemcpy(output_k3, d_output, input_size_bytes, hipMemcpyDeviceToHost);
+      |       ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:233:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |     hipFree(d_input);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:234:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  234 |     hipFree(d_dense);
+      |     ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:235:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  235 |     hipFree(d_output);
+      |     ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-hip/main.cu:236:5: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  236 |     hipFree(d_input_offset);
+      |     ^~~~~~~ ~~~~~~~~~~~~~~
+23 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:08:55-04:00 entropy site392 bit0 pointer trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:6:10: fatal error: 'reference.h' file not found
+    6 | #include "reference.h"
+      |          ^~~~~~~~~~~~~
+1 error generated when compiling for gfx90a.
+== 2026-07-16T11:09:27-04:00 entropy site392 bit0 pointer trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:09:36-04:00 entropy site392 bit0 pointer trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:09:53-04:00 colorwheel site481 bit3 result trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:10:04-04:00 colorwheel site481 bit3 result trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:117:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  117 |   hipMalloc((void**)&d_pix, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipMemset(d_pix, 0, imgSize);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:123:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  123 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:130:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  130 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(res, d_pix, imgSize, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu:175:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  175 |   hipFree(d_pix);
+      |   ^~~~~~~ ~~~~~
+6 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:10:13-04:00 entropy site482 bit0 operand trial1 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for host.
+Result: MASKED (exit 0)
+== 2026-07-16T11:10:24-04:00 entropy site482 bit0 operand trial2 ==
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for gfx90a.
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:108:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  108 |   hipMalloc((void**)&d_input, input_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:109:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  109 |   hipMemcpy(d_input, input, input_bytes, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:112:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  112 |   hipMalloc((void**)&d_output, output_bytes);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:118:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  118 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:124:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  124 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:134:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  134 |   hipMalloc((void**)&d_logTable, sizeof(logTable));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:135:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  135 |   hipMemcpy(d_logTable, logTable, sizeof(logTable), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:137:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  137 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:143:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  143 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:148:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  148 |   hipMemcpy(output, d_output, output_bytes, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:150:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  150 |   hipFree(d_input);
+      |   ^~~~~~~ ~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:151:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  151 |   hipFree(d_output);
+      |   ^~~~~~~ ~~~~~~~~
+/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu:152:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  152 |   hipFree(d_logTable);
+      |   ^~~~~~~ ~~~~~~~~~~
+13 warnings generated when compiling for host.
+Result: MASKED (exit 0)

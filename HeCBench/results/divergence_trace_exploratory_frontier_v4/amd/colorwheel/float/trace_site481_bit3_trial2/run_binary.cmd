@@ -1,0 +1,1 @@
+env HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_exploratory_v4_amd_colorwheel_site481_bit3_trial2/colorwheel 10000 8 1 /tmp/bitir_exploratory_v4_amd_colorwheel_site481_bit3_trial2/colorwheel_site481_bit3_trial2.bin 

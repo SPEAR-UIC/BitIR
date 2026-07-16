@@ -1,0 +1,16 @@
+trace_level=full
+backend=amd
+bench=entropy
+source=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu
+source_dir=HeCBench/src/entropy-hip
+site_id=482
+bit_index=0
+inject_target=operand
+compare_mode=exact
+phase=
+results_dir=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/entropy/float
+out_dir=/tmp/bitir_exploratory_v4_amd_entropy_site482_bit0_trial2
+run_out=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/entropy/float/site482_bit0_trial2.out
+run_err=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v4/amd/entropy/float/site482_bit0_trial2.err
+run_dump=/tmp/bitir_exploratory_v4_amd_entropy_site482_bit0_trial2/entropy_site482_bit0_trial2.bin
+run_timeout=90s
