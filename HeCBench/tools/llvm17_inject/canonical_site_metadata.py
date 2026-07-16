@@ -4,7 +4,6 @@
 import csv
 import hashlib
 import re
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
@@ -26,13 +25,13 @@ QUALIFIER_PATTERNS = (
 )
 
 
-@dataclass
-class SourceIndex:
-    relpath: str
-    stem_relpath: str
-    lines: List[str]
-    normalized_lines: List[str]
-    symbol_by_line: List[str]
+class SourceIndex(object):
+    def __init__(self, relpath: str, stem_relpath: str, lines: List[str], normalized_lines: List[str], symbol_by_line: List[str]):
+        self.relpath = relpath
+        self.stem_relpath = stem_relpath
+        self.lines = lines
+        self.normalized_lines = normalized_lines
+        self.symbol_by_line = symbol_by_line
 
 
 def sha12(parts: Iterable[str]) -> str:
