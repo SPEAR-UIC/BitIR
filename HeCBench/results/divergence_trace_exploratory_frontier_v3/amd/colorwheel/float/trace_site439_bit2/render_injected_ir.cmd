@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/opt -S /tmp/bitir_exploratory_amd_colorwheel_site439_bit2_trial1/device.injected.bc -o /ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/colorwheel/float/trace_site439_bit2/device.injected.ll 

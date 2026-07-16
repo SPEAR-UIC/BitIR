@@ -1,0 +1,225 @@
+:3:rocdevice.cpp            :465 : 4393458693240 us: [pid:4152413 tid: 0x7f43c4a32200] Initializing HSA stack.
+:3:rocdevice.cpp            :551 : 4393459119986 us: [pid:4152413 tid: 0x7f43c4a32200] Enumerated GPU agents = 1
+:3:rocdevice.cpp            :230 : 4393459120069 us: [pid:4152413 tid: 0x7f43c4a32200] Numa selects cpu agent[0]=0x1b6e8bd0(fine=0x1b767150,coarse=0x1b768ae0) for gpu agent=0x1b8138a0 CPU<->GPU XGMI=0
+:3:rocsettings.cpp          :284 : 4393459120096 us: [pid:4152413 tid: 0x7f43c4a32200] Using dev kernel arg wa = 0
+:3:comgrctx.cpp             :33  : 4393459120109 us: [pid:4152413 tid: 0x7f43c4a32200] Loading COMGR library.
+:3:comgrctx.cpp             :128 : 4393459120143 us: [pid:4152413 tid: 0x7f43c4a32200] Loaded COMGR library version 3.0.
+:3:rocdevice.cpp            :1785: 4393459120735 us: [pid:4152413 tid: 0x7f43c4a32200] Gfx Major/Minor/Stepping: 9/0/10
+:3:rocdevice.cpp            :1787: 4393459120748 us: [pid:4152413 tid: 0x7f43c4a32200] HMM support: 1, XNACK: 0, Direct host access: 0
+:3:rocdevice.cpp            :1789: 4393459120757 us: [pid:4152413 tid: 0x7f43c4a32200] Max SDMA Read Mask: 0x1e, Max SDMA Write Mask: 0x1f
+:4:rocdevice.cpp            :2210: 4393459121135 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa host memory 0x7f4391e00000, size 0x100000, numa_node = 0
+:4:rocdevice.cpp            :2210: 4393459190255 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa host memory 0x7f4391800000, size 0x400000, numa_node = 0
+:4:rocdevice.cpp            :2210: 4393459190416 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa host memory 0x7f43cec73000, size 0x38, numa_node = 0
+:3:hip_context.cpp          :54  : 4393459190444 us: [pid:4152413 tid: 0x7f43c4a32200] Direct Dispatch: 1
+:3:hip_fatbin.cpp           :427 : 4393459191026 us: [pid:4152413 tid: 0x7f43c4a32200] Searching for code objects, HIP_FORCE_SPIRV_CODEOBJECT: 0
+:3:hip_fatbin.cpp           :435 : 4393459191317 us: [pid:4152413 tid: 0x7f43c4a32200] Using Native code object: gfx90a:sramecc+:xnack-
+:3:hip_memory.cpp           :756 : 4393459191390 us: [pid:4152413 tid: 0x7f43c4a32200] [32m hipMalloc ( 0x7fff5c4593a0, 536870912 ) [0m
+:4:rocdevice.cpp            :2371: 4393459191496 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa device memory 0x7f4259800000, size 0x20000000, hsa_mem_flags 0x0h
+:3:rocdevice.cpp            :2411: 4393459192275 us: [pid:4152413 tid: 0x7f43c4a32200] Device=0x1b85c130, freeMem_ = 0xfdf000000
+:3:hip_memory.cpp           :758 : 4393459192303 us: [pid:4152413 tid: 0x7f43c4a32200] hipMalloc: Returned hipSuccess : 0x7f4259800000: duration: 913 us
+:3:hip_platform.cpp         :237 : 4393459192335 us: [pid:4152413 tid: 0x7f43c4a32200] [32m __hipPushCallConfiguration ( {262144,1,1}, {256,1,1}, 0, stream:<null> ) [0m
+:3:hip_platform.cpp         :241 : 4393459192350 us: [pid:4152413 tid: 0x7f43c4a32200] __hipPushCallConfiguration: Returned hipSuccess : 
+:3:hip_platform.cpp         :246 : 4393459192674 us: [pid:4152413 tid: 0x7f43c4a32200] [32m __hipPopCallConfiguration ( {0,0,1548064056}, {256,1,1548064024}, 0x7fff5c459278, 0x7fff5c459270 ) [0m
+:3:hip_platform.cpp         :255 : 4393459192685 us: [pid:4152413 tid: 0x7f43c4a32200] __hipPopCallConfiguration: Returned hipSuccess : 
+:3:hip_module.cpp           :744 : 4393459192735 us: [pid:4152413 tid: 0x7f43c4a32200] [32m hipLaunchKernel ( 0x200c70, {262144,1,1}, {256,1,1}, 0x7fff5c459240, 0, stream:<null> ) [0m
+:3:devprogram.cpp           :2658: 4393459193249 us: [pid:4152413 tid: 0x7f43c4a32200] Using Code Object V5.
+:3:rocdevice.cpp            :3048: 4393459200082 us: [pid:4152413 tid: 0x7f43c4a32200] Number of allocated hardware queues with low priority: 0, with normal priority: 0, with high priority: 0, maximum per priority is: 4
+:3:rocdevice.cpp            :3129: 4393459206271 us: [pid:4152413 tid: 0x7f43c4a32200] Created SWq=0x7f43c4a1e000 to map on HWq=0x7f4391600000 with size 16384 with priority 1, cooperative: 0
+:3:rocdevice.cpp            :3222: 4393459206792 us: [pid:4152413 tid: 0x7f43c4a32200] acquireQueue refCount: 0x7f4391600000 (1)
+:4:rocdevice.cpp            :2210: 4393459207248 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa host memory 0x7f4391400000, size 0x100000, numa_node = 0
+:3:devprogram.cpp           :2658: 4393459567766 us: [pid:4152413 tid: 0x7f43c4a32200] Using Code Object V5.
+:4:rocdevice.cpp            :2210: 4393461466879 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa host memory 0x7f4390e00000, size 0x400000, numa_node = 0
+:4:command.cpp              :359 : 4393461467220 us: [pid:4152413 tid: 0x7f43c4a32200] Command (KernelExecution) enqueued: 0x1be86fa0
+:3:rocvirtual.cpp           :762 : 4393461467503 us: [pid:4152413 tid: 0x7f43c4a32200] Arg0:   = ptr:0x7f4259800000
+:3:rocvirtual.cpp           :778 : 4393461467519 us: [pid:4152413 tid: 0x7f43c4a32200] Arg0:   = ptr:0x7f4259800000 obj:[0x7f4259800000-0x7f4279800000]
+:3:rocvirtual.cpp           :853 : 4393461467532 us: [pid:4152413 tid: 0x7f43c4a32200] Arg1:   = val:67108864
+:3:rocvirtual.cpp           :3236: 4393461467558 us: [pid:4152413 tid: 0x7f43c4a32200] ShaderName : initTable(unsigned long long*, unsigned long long)
+:4:rocdevice.cpp            :2210: 4393463462634 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa host memory 0x7f4242600000, size 0xd13838, numa_node = 0
+:3:rocdevice.cpp            :3322: 4393463463732 us: [pid:4152413 tid: 0x7f43c4a32200] Created hostcall buffer 0x7f4242600000 for hardware queue 0x7f4391600000
+:4:rocsignal.cpp            :38  : 4393463464320 us: [pid:4152413 tid: 0x7f43c4a32200] Initialize Hostcall signal=0x7f43a45fd380
+:3:devhostcall.cpp          :428 : 4393463464380 us: [pid:4152413 tid: 0x7f43c4a32200] Launched hostcall listener at 0x1befeeb0
+:3:devhostcall.cpp          :441 : 4393463464395 us: [pid:4152413 tid: 0x7f43c4a32200] Registered hostcall buffer 0x7f4242600000 with listener 0x1befeeb0
+:4:rocdevice.cpp            :2371: 4393463464964 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa device memory 0x7f4390a00000, size 0x20000, hsa_mem_flags 0x0h
+:4:rocdevice.cpp            :2371: 4393463465543 us: [pid:4152413 tid: 0x7f43c4a32200] Allocate hsa device memory 0x7f4241c00000, size 0x800000, hsa_mem_flags 0x0h
+:3:rocvirtual.cpp           :853 : 4393463465571 us: [pid:4152413 tid: 0x7f43c4a32200] Arg0: ulong heap_to_initialize = val:139928165941248
+:3:rocvirtual.cpp           :853 : 4393463465590 us: [pid:4152413 tid: 0x7f43c4a32200] Arg1: ulong initial_blocks = val:139922547671040
+:3:rocvirtual.cpp           :853 : 4393463465618 us: [pid:4152413 tid: 0x7f43c4a32200] Arg2: uint heap_size = val:131072
+:3:rocvirtual.cpp           :853 : 4393463466053 us: [pid:4152413 tid: 0x7f43c4a32200] Arg3: uint number_of_initial_blocks = val:4
+:3:rocvirtual.cpp           :3236: 4393463466069 us: [pid:4152413 tid: 0x7f43c4a32200] ShaderName : __amd_rocclr_initHeap
+:3:rocvirtual.cpp           :3449: 4393463466080 us: [pid:4152413 tid: 0x7f43c4a32200] KernargSegmentByteSize = 24 KernargSegmentAlignment = 128
+:4:rocvirtual.cpp           :965 : 4393463466115 us: [pid:4152413 tid: 0x7f43c4a32200] SWq=0x7f43c4a1e000, HWq=0x7f4391600000, id=1, Dispatch Header = 0xb02 (type=2, barrier=1, acquire=1, release=1), setup=1, grid=[256, 1, 1], workgroup=[256, 1, 1], private_seg_size=0, group_seg_size=0, kernel_obj=0x7f43a47b60c0, kernarg_address=0x7f4391400000, completion_signal=0x0, correlation_id=0, rptr=0, wptr=0
+:4:rocvirtual.cpp           :1147: 4393463466146 us: [pid:4152413 tid: 0x7f43c4a32200] SWq=0x7f43c4a1e000, HWq=0x7f4391600000, id=1, BarrierAND Header = 0x1503 (type=3, barrier=1, acquire=2, release=2), dep_signal=[0x0, 0x0, 0x0, 0x0, 0x0], completion_signal=0x7f43a45ff780
+:4:rocvirtual.cpp           :622 : 4393463466163 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff780
+:3:rocvirtual.hpp           :56  : 4393463466179 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff780) for -1 ns
+:3:rocvirtual.cpp           :3449: 4393463468164 us: [pid:4152413 tid: 0x7f43c4a32200] KernargSegmentByteSize = 272 KernargSegmentAlignment = 128
+:4:rocvirtual.cpp           :965 : 4393463468194 us: [pid:4152413 tid: 0x7f43c4a32200] SWq=0x7f43c4a1e000, HWq=0x7f4391600000, id=1, Dispatch Header = 0xb02 (type=2, barrier=1, acquire=1, release=1), setup=3, grid=[67108864, 1, 1], workgroup=[256, 1, 1], private_seg_size=76, group_seg_size=0, kernel_obj=0x7f43a47e1040, kernarg_address=0x7f4391400000, completion_signal=0x0, correlation_id=0, rptr=2, wptr=2
+:3:hip_module.cpp           :745 : 4393463468234 us: [pid:4152413 tid: 0x7f43c4a32200] hipLaunchKernel: Returned hipSuccess : : duration: 4275499 us
+:3:hip_platform.cpp         :237 : 4393463468257 us: [pid:4152413 tid: 0x7f43c4a32200] [32m __hipPushCallConfiguration ( {1,1,1}, {128,1,1}, 0, stream:<null> ) [0m
+:3:hip_platform.cpp         :241 : 4393463468267 us: [pid:4152413 tid: 0x7f43c4a32200] __hipPushCallConfiguration: Returned hipSuccess : 
+:3:hip_platform.cpp         :246 : 4393463468283 us: [pid:4152413 tid: 0x7f43c4a32200] [32m __hipPopCallConfiguration ( {0,0,1548064056}, {128,1,1548064024}, 0x7fff5c459278, 0x7fff5c459270 ) [0m
+:3:hip_platform.cpp         :255 : 4393463469043 us: [pid:4152413 tid: 0x7f43c4a32200] __hipPopCallConfiguration: Returned hipSuccess : 
+:3:hip_module.cpp           :744 : 4393463469066 us: [pid:4152413 tid: 0x7f43c4a32200] [32m hipLaunchKernel ( 0x200c78, {1,1,1}, {128,1,1}, 0x7fff5c459240, 0, stream:<null> ) [0m
+:4:command.cpp              :359 : 4393463469085 us: [pid:4152413 tid: 0x7f43c4a32200] Command (KernelExecution) enqueued: 0x1bf0f260
+:3:rocvirtual.cpp           :762 : 4393463469095 us: [pid:4152413 tid: 0x7f43c4a32200] Arg0:   = ptr:0x7f4259800000
+:3:rocvirtual.cpp           :778 : 4393463469100 us: [pid:4152413 tid: 0x7f43c4a32200] Arg0:   = ptr:0x7f4259800000 obj:[0x7f4259800000-0x7f4279800000]
+:3:rocvirtual.cpp           :853 : 4393463469115 us: [pid:4152413 tid: 0x7f43c4a32200] Arg1:   = val:67108864
+:3:rocvirtual.cpp           :3236: 4393463469143 us: [pid:4152413 tid: 0x7f43c4a32200] ShaderName : update(unsigned long long*, unsigned long long)
+:3:rocvirtual.cpp           :3449: 4393463469609 us: [pid:4152413 tid: 0x7f43c4a32200] KernargSegmentByteSize = 272 KernargSegmentAlignment = 128
+:4:rocvirtual.cpp           :965 : 4393463469626 us: [pid:4152413 tid: 0x7f43c4a32200] SWq=0x7f43c4a1e000, HWq=0x7f4391600000, id=1, Dispatch Header = 0xb02 (type=2, barrier=1, acquire=1, release=1), setup=3, grid=[128, 1, 1], workgroup=[128, 1, 1], private_seg_size=1024, group_seg_size=0, kernel_obj=0x7f43a47e1080, kernarg_address=0x7f4391400180, completion_signal=0x0, correlation_id=0, rptr=2, wptr=3
+:3:hip_module.cpp           :745 : 4393463469642 us: [pid:4152413 tid: 0x7f43c4a32200] hipLaunchKernel: Returned hipSuccess : : duration: 576 us
+:3:hip_device_runtime.cpp   :641 : 4393463469661 us: [pid:4152413 tid: 0x7f43c4a32200] [32m hipDeviceSynchronize (  ) [0m
+:4:commandqueue.cpp         :161 : 4393463469667 us: [pid:4152413 tid: 0x7f43c4a32200] Marker queued to ensure finish
+:4:command.cpp              :359 : 4393463469671 us: [pid:4152413 tid: 0x7f43c4a32200] Command (InternalMarker) enqueued: 0x1bd34b70
+:3:rocvirtual.cpp           :533 : 4393463469689 us: [pid:4152413 tid: 0x7f43c4a32200] Set Handler: handle(0x7f43a45fd600), timestamp(0x1bfa35d0)
+:4:rocvirtual.cpp           :1147: 4393463470094 us: [pid:4152413 tid: 0x7f43c4a32200] SWq=0x7f43c4a1e000, HWq=0x7f4391600000, id=1, BarrierAND Header = 0x1503 (type=3, barrier=1, acquire=2, release=2), dep_signal=[0x0, 0x0, 0x0, 0x0, 0x0], completion_signal=0x7f43a45fd600
+:3:rocvirtual.hpp           :56  : 4393463470124 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45fd600) for -1 ns
+:4:commandqueue.cpp         :184 : 4393471957934 us: [pid:4152413 tid: 0x7f43c4a32200] All commands finished
+:3:rocvirtual.cpp           :226 : 4393471957960 us: [pid:4152413 tid: 0x7f42559ff6c0] Handler: value(0), timestamp(0x1be103c0), handle(0x7f43a45fd600)
+:3:hip_device_runtime.cpp   :645 : 4393471957992 us: [pid:4152413 tid: 0x7f43c4a32200] hipDeviceSynchronize: Returned hipSuccess : 
+:4:command.cpp              :169 : 4393471958010 us: [pid:4152413 tid: 0x7f42559ff6c0] Command 0x1be86fa0 complete
+:4:command.cpp              :169 : 4393471958051 us: [pid:4152413 tid: 0x7f42559ff6c0] Command 0x1bf0f260 complete
+:3:hip_memory.cpp           :795 : 4393471958051 us: [pid:4152413 tid: 0x7f43c4a32200] [32m hipMemcpy ( 0x7f43a47ff400, 0x7f4259800000, 536870912, hipMemcpyDeviceToHost ) [0m
+:4:command.cpp              :163 : 4393471958068 us: [pid:4152413 tid: 0x7f42559ff6c0] Command 0x1bd34b70 complete (Wall: 4393471958066, CPU: 0, GPU: 8488385 us)
+:4:command.cpp              :359 : 4393471958104 us: [pid:4152413 tid: 0x7f43c4a32200] Command (CopyDeviceToHost) enqueued: 0x1bfc92d0
+:4:rocblit.cpp              :1673: 4393471958126 us: [pid:4152413 tid: 0x7f43c4a32200] Unpinned read path, Async = 0
+:4:rocmemory.cpp            :1018: 4393471969940 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43a47ff000, DevPtr = 0x7f43a47ff000
+:4:rocblit.cpp              :623 : 4393471969981 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393471969991 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393471970001 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x0
+:4:rocblit.cpp              :509 : 4393471970009 us: [pid:4152413 tid: 0x7f43c4a32200] Query copy engine status 0, free_engine mask 0x1e
+:4:rocblit.cpp              :520 : 4393471970018 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43a47ff400, src=0x7f4259800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff680
+:4:rocvirtual.cpp           :622 : 4393471982176 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff680
+:3:rocvirtual.hpp           :56  : 4393471982205 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff680) for -1 ns
+:4:rocmemory.cpp            :1018: 4393471994214 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43a67ff000, DevPtr = 0x7f43a67ff000
+:4:rocblit.cpp              :623 : 4393471994233 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393471994242 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393471994248 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393471994254 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43a67ff400, src=0x7f425b800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff600
+:4:rocvirtual.cpp           :622 : 4393471994269 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff600
+:3:rocvirtual.hpp           :56  : 4393471994291 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff600) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472005682 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43a87ff000, DevPtr = 0x7f43a87ff000
+:4:rocblit.cpp              :623 : 4393472005701 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472005709 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472005714 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472005722 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43a87ff400, src=0x7f425d800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff580
+:4:rocvirtual.cpp           :622 : 4393472005734 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff580
+:3:rocvirtual.hpp           :56  : 4393472005742 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff580) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472017798 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43aa7ff000, DevPtr = 0x7f43aa7ff000
+:4:rocblit.cpp              :623 : 4393472017829 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472017840 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472017845 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472017850 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43aa7ff400, src=0x7f425f800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff500
+:4:rocvirtual.cpp           :622 : 4393472017866 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff500
+:3:rocvirtual.hpp           :56  : 4393472017874 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff500) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472029502 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43ac7ff000, DevPtr = 0x7f43ac7ff000
+:4:rocblit.cpp              :623 : 4393472029531 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472029546 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472029552 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472029559 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43ac7ff400, src=0x7f4261800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff480
+:4:rocvirtual.cpp           :622 : 4393472029575 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff480
+:3:rocvirtual.hpp           :56  : 4393472029587 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff480) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472041893 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43ae7ff000, DevPtr = 0x7f43ae7ff000
+:4:rocblit.cpp              :623 : 4393472041921 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472041930 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472041936 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472041941 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43ae7ff400, src=0x7f4263800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff400
+:4:rocvirtual.cpp           :622 : 4393472041952 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff400
+:3:rocvirtual.hpp           :56  : 4393472041959 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff400) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472054370 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43b07ff000, DevPtr = 0x7f43b07ff000
+:4:rocblit.cpp              :623 : 4393472054398 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472054407 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472054413 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472054418 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43b07ff400, src=0x7f4265800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff380
+:4:rocvirtual.cpp           :622 : 4393472054433 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff380
+:3:rocvirtual.hpp           :56  : 4393472054443 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff380) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472066732 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43b27ff000, DevPtr = 0x7f43b27ff000
+:4:rocblit.cpp              :623 : 4393472066761 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472066777 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472066782 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472066787 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43b27ff400, src=0x7f4267800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff300
+:4:rocvirtual.cpp           :622 : 4393472066800 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff300
+:3:rocvirtual.hpp           :56  : 4393472066810 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff300) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472078969 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43b47ff000, DevPtr = 0x7f43b47ff000
+:4:rocblit.cpp              :623 : 4393472078993 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472079003 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472079008 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472079013 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43b47ff400, src=0x7f4269800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff280
+:4:rocvirtual.cpp           :622 : 4393472079023 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff280
+:3:rocvirtual.hpp           :56  : 4393472079031 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff280) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472091170 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43b67ff000, DevPtr = 0x7f43b67ff000
+:4:rocblit.cpp              :623 : 4393472091187 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472091196 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472091202 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472091208 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43b67ff400, src=0x7f426b800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff200
+:4:rocvirtual.cpp           :622 : 4393472091224 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff200
+:3:rocvirtual.hpp           :56  : 4393472091231 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff200) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472103202 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43b87ff000, DevPtr = 0x7f43b87ff000
+:4:rocblit.cpp              :623 : 4393472103220 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472103229 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472103234 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472103239 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43b87ff400, src=0x7f426d800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff180
+:4:rocvirtual.cpp           :622 : 4393472103248 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff180
+:3:rocvirtual.hpp           :56  : 4393472103255 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff180) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472115711 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43ba7ff000, DevPtr = 0x7f43ba7ff000
+:4:rocblit.cpp              :623 : 4393472115727 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472115735 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472115741 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472115745 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43ba7ff400, src=0x7f426f800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff100
+:4:rocvirtual.cpp           :622 : 4393472115754 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff100
+:3:rocvirtual.hpp           :56  : 4393472115762 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff100) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472128387 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43bc7ff000, DevPtr = 0x7f43bc7ff000
+:4:rocblit.cpp              :623 : 4393472128411 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472128422 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472128429 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472128436 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43bc7ff400, src=0x7f4271800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff080
+:4:rocvirtual.cpp           :622 : 4393472128447 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff080
+:3:rocvirtual.hpp           :56  : 4393472128457 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff080) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472140911 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43be7ff000, DevPtr = 0x7f43be7ff000
+:4:rocblit.cpp              :623 : 4393472140937 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472140945 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472140955 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472140961 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43be7ff400, src=0x7f4273800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45ff000
+:4:rocvirtual.cpp           :622 : 4393472140971 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45ff000
+:3:rocvirtual.hpp           :56  : 4393472140979 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45ff000) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472153254 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43c07ff000, DevPtr = 0x7f43c07ff000
+:4:rocblit.cpp              :623 : 4393472153283 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472153293 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472153304 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472153309 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43c07ff400, src=0x7f4275800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45fef80
+:4:rocvirtual.cpp           :622 : 4393472153320 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45fef80
+:3:rocvirtual.hpp           :56  : 4393472153331 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45fef80) for -1 ns
+:4:rocmemory.cpp            :1018: 4393472164992 us: [pid:4152413 tid: 0x7f43c4a32200] Locking to pool 0x1b768ae0, size 0x2001000, HostPtr = 0x7f43c27ff000, DevPtr = 0x7f43c27ff000
+:4:rocblit.cpp              :623 : 4393472165013 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Copy Using Pinned resource size 33554432
+:4:rocblit.cpp              :687 : 4393472165023 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy staged D2H
+:4:rocblit.cpp              :503 : 4393472165029 us: [pid:4152413 tid: 0x7f43c4a32200] Last copy mask 0x2
+:4:rocblit.cpp              :520 : 4393472165034 us: [pid:4152413 tid: 0x7f43c4a32200] HSA Async Copy on copy_engine=0x2, dst=0x7f43c27ff400, src=0x7f4277800000, size=33554432, forceSDMA=0, wait_event=0x0, completion_signal=0x7f43a45fef00
+:4:rocvirtual.cpp           :622 : 4393472165044 us: [pid:4152413 tid: 0x7f43c4a32200] Host wait on completion_signal=0x7f43a45fef00
+:3:rocvirtual.hpp           :56  : 4393472165056 us: [pid:4152413 tid: 0x7f43c4a32200] Host active wait for Signal = (0x7f43a45fef00) for -1 ns
+:4:commandqueue.cpp         :161 : 4393472166527 us: [pid:4152413 tid: 0x7f43c4a32200] Marker queued to ensure finish
+:4:command.cpp              :359 : 4393472166540 us: [pid:4152413 tid: 0x7f43c4a32200] Command (InternalMarker) enqueued: 0x1bd34b70
+:3:rocvirtual.cpp           :533 : 4393472166569 us: [pid:4152413 tid: 0x7f43c4a32200] Set Handler: handle(0x7f43a45fd680), timestamp(0x1bfa34c0)
+:4:rocvirtual.cpp           :1147: 4393472166590 us: [pid:4152413 tid: 0x7f43c4a32200] SWq=0x7f43c4a1e000, HWq=0x7f4391600000, id=1, BarrierAND Header = 0x1503 (type=3, barrier=1, acquire=2, release=2), dep_signal=[0x0, 0x0, 0x0, 0x0, 0x0], completion_signal=0x7f43a45fd680
+:4:commandqueue.cpp         :184 : 4393472166606 us: [pid:4152413 tid: 0x7f43c4a32200] All commands finished
+:3:hip_memory.cpp           :796 : 4393472166615 us: [pid:4152413 tid: 0x7f43c4a32200] hipMemcpy: Returned hipSuccess : : duration: 208564 us
+:3:rocvirtual.cpp           :226 : 4393472166635 us: [pid:4152413 tid: 0x7f42559ff6c0] Handler: value(0), timestamp(0x1bfcd0f0), handle(0x7f43a45fd680)
+:4:command.cpp              :169 : 4393472166649 us: [pid:4152413 tid: 0x7f42559ff6c0] Command 0x1bfc92d0 complete
+:4:command.cpp              :163 : 4393472166655 us: [pid:4152413 tid: 0x7f42559ff6c0] Command 0x1bd34b70 complete (Wall: 4393472166654, CPU: 0, GPU: 101 us)
+:3:hip_memory.cpp           :772 : 4393481171589 us: [pid:4152413 tid: 0x7f43c4a32200] [32m hipFree ( 0x7f4259800000 ) [0m
+:4:commandqueue.cpp         :167 : 4393481171633 us: [pid:4152413 tid: 0x7f43c4a32200] HW Event not ready, awaiting completion instead
+:4:commandqueue.cpp         :184 : 4393481171658 us: [pid:4152413 tid: 0x7f43c4a32200] All commands finished
+:4:rocdevice.cpp            :2388: 4393481173147 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4259800000
+:3:rocdevice.cpp            :2411: 4393481173178 us: [pid:4152413 tid: 0x7f43c4a32200] Device=0x1b85c130, freeMem_ = 0xfff000000
+:3:hip_memory.cpp           :774 : 4393481173200 us: [pid:4152413 tid: 0x7f43c4a32200] hipFree: Returned hipSuccess : 
+:4:rocdevice.cpp            :2388: 4393481196063 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory (nil)
+:3:rocdevice.cpp            :3254: 4393481196093 us: [pid:4152413 tid: 0x7f43c4a32200] releaseQueue refCount:0x7f4391600000 (0)
+:4:rocdevice.cpp            :2388: 4393481196305 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4391400000
+:4:rocdevice.cpp            :2388: 4393481197218 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4390e00000
+:4:rocdevice.cpp            :2388: 4393481197881 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4391800000
+:4:rocdevice.cpp            :2388: 4393481198031 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f43cec73000
+:3:rocdevice.cpp            :278 : 4393481198380 us: [pid:4152413 tid: 0x7f43c4a32200] Deleting hostcall buffer 0x7f4242600000 for hardware queue 0x7f4391600000
+:3:devhostcall.cpp          :460 : 4393481198420 us: [pid:4152413 tid: 0x7f43c4a32200] Terminated hostcall listener
+:4:rocdevice.cpp            :2388: 4393481199835 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4242600000
+:3:rocdevice.cpp            :283 : 4393481199848 us: [pid:4152413 tid: 0x7f43c4a32200] Deleting hardware queue 0x7f4391600000 with refCount 0
+:4:rocdevice.cpp            :2388: 4393481204379 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4391e00000
+:4:rocdevice.cpp            :2388: 4393481204730 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4390a00000
+:4:rocdevice.cpp            :2388: 4393481205029 us: [pid:4152413 tid: 0x7f43c4a32200] Free hsa memory 0x7f4241c00000

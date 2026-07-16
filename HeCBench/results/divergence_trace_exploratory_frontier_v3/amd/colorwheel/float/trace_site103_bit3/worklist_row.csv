@@ -1,0 +1,2 @@
+index,site_id,bit_index,bitwidth,type_kind,opcode,site_class,operand_index
+1,103,3,32,int,load,result,-1

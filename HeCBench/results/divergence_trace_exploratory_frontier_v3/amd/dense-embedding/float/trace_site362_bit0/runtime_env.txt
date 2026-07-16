@@ -1,0 +1,5 @@
+PWD=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI
+HIP_LIB_PATH=/opt/rocm-6.4.2/lib
+HIP_TRACE_API=1
+HSA_ENABLE_DEBUG=1
+ROCR_VISIBLE_DEVICES=0

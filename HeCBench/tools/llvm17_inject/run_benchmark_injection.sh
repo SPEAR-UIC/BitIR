@@ -114,13 +114,25 @@ trace_gpu_state() {
   esac
 }
 
+run_with_optional_timeout() {
+  if [[ -n "${RUN_TIMEOUT:-}" ]]; then
+    timeout --kill-after="${RUN_TIMEOUT_KILL_AFTER:-15s}" "${RUN_TIMEOUT}" "$@"
+    return
+  fi
+  "$@"
+}
+
 trace_finalize() {
   [[ -n "${TRACE_DIR:-}" ]] || return 0
-  local bench_key metadata_dir metadata_csv worklist_csv source_line start end file
+  local bench_key metadata_dir metadata_csv worklist_csv source_line start end file site_list
   bench_key="$(basename "${BITIR_SOURCE_DIR}")"
   metadata_dir="${BITIR_TRACE_METADATA_DIR:-${REPO_ROOT}/${BITIR_MACHINE_RESULTS_ROOT}/${BENCH}}"
   metadata_csv="${metadata_dir}/sites_metadata.csv"
   worklist_csv="${metadata_dir}/${TRACE_WORKLIST_NAME}"
+  site_list="${BITIR_SITE_LIST:-}"
+  if [[ -n "${site_list}" && "${site_list}" != /* ]]; then
+    site_list="${REPO_ROOT}/${site_list}"
+  fi
 
   cat > "${TRACE_DIR}/trace_manifest.txt" <<EOF
 trace_level=${TRACE_LEVEL}
@@ -138,6 +150,7 @@ out_dir=${OUT_DIR}
 run_out=${RUN_OUT}
 run_err=${RUN_ERR}
 run_dump=${RUN_DUMP}
+run_timeout=${RUN_TIMEOUT:-}
 EOF
 
   trace_runtime_env
@@ -147,6 +160,7 @@ EOF
       head -n 1 "${metadata_csv}"
       awk -F, -v site="${SITE_ID}" '$1 == site { print }' "${metadata_csv}"
     } > "${TRACE_DIR}/site_metadata.csv"
+    cp -f "${TRACE_DIR}/site_metadata.csv" "${TRACE_DIR}/local_metadata_row.csv"
     source_line="$(awk -F, 'NR == 2 { print $8 }' "${TRACE_DIR}/site_metadata.csv" 2>/dev/null || true)"
     if [[ -n "${source_line}" && "${source_line}" =~ ^[0-9]+$ ]]; then
       start=$((source_line - TRACE_SOURCE_WINDOW))
@@ -163,6 +177,27 @@ EOF
       head -n 1 "${worklist_csv}"
       awk -F, -v site="${SITE_ID}" -v bit="${BIT_INDEX}" '$2 == site && $3 == bit { print }' "${worklist_csv}"
     } > "${TRACE_DIR}/worklist_row.csv"
+  fi
+
+  if [[ -f "${site_list}" ]]; then
+    {
+      head -n 1 "${site_list}"
+      awk -F, -v bench="${BENCH}" -v site="${SITE_ID}" -v bit="${BIT_INDEX}" '
+        NR == 1 {
+          for (i = 1; i <= NF; i++) {
+            idx[$i] = i
+          }
+          next
+        }
+        idx["site_id"] && idx["bit_index"] && $idx["site_id"] == site && $idx["bit_index"] == bit {
+          if (!idx["bench"] || $idx["bench"] == bench) {
+            print
+            exit
+          }
+        }
+      ' "${site_list}"
+    } > "${TRACE_DIR}/selected_manifest_row.csv"
+    cp -f "${TRACE_DIR}/selected_manifest_row.csv" "${TRACE_DIR}/expected_site.csv"
   fi
 
   for file in "${IR_LL:-}" "${IR_BC:-}" "${IR_INJ_BC:-}" "${RUN_OUT}" "${RUN_ERR}"; do
@@ -289,11 +324,13 @@ validate_site_semantics() {
 
   expected_row="$(awk -F, -v site="${SITE_ID}" -v bit="${BIT_INDEX}" -v compare="${COMPARE_MODE}" '
     NR == 1 {
+      sub(/\r$/, "")
       for (i = 1; i <= NF; i++) {
         idx[$i] = i
       }
       next
     }
+    { sub(/\r$/, "") }
     idx["site_id"] && idx["bit_index"] && $idx["site_id"] == site && $idx["bit_index"] == bit {
       print $idx["opcode"] "," $idx["source_line"] "," $idx["source_column"] "," $idx["function"] "," \
             $idx["site_class"] "," $idx["type_kind"] "," $idx["bitwidth"] "," $idx["signature_ordinal"] "," compare
@@ -304,11 +341,13 @@ validate_site_semantics() {
 
   actual_row="$(awk -F, -v site="${SITE_ID}" '
     NR == 1 {
+      sub(/\r$/, "")
       for (i = 1; i <= NF; i++) {
         idx[$i] = i
       }
       next
     }
+    { sub(/\r$/, "") }
     idx["site_id"] && $idx["site_id"] == site {
       print $idx["opcode"] "," $idx["source_line"] "," $idx["source_column"] "," $idx["function"] "," \
             $idx["site_class"] "," $idx["type_kind"] "," $idx["bitwidth"] "," $idx["signature_ordinal"] ",exact"
@@ -394,6 +433,7 @@ setup_common() {
   TRACE_LEVEL="${TRACE_LEVEL:-${BITIR_FAULT_MODEL_TRACE_LEVEL:-off}}"
   TRACE_RANK="$(trace_level_rank "${TRACE_LEVEL}")"
   TRACE_SOURCE_WINDOW="${TRACE_SOURCE_WINDOW:-${BITIR_FAULT_MODEL_TRACE_SOURCE_WINDOW:-6}}"
+  RUN_TIMEOUT="${BITIR_RUN_TIMEOUT:-${BITIR_FAULT_MODEL_RUN_TIMEOUT:-}}"
   TRACE_PHASE="${PHASE:-${BITIR_FAULT_MODEL_PHASE:-}}"
   TRACE_WORKLIST_NAME="worklist.csv"
   if [[ -n "${TRACE_PHASE}" ]]; then
@@ -741,16 +781,25 @@ run_binary() {
   trace_gpu_state before
   if [[ "${COMPARE_MODE}" == "text" ]]; then
     trace_record_command run_binary "${BIN_PATH}" "${RUN_ARGS[@]}"
-    "${BIN_PATH}" "${RUN_ARGS[@]}" > "${RUN_OUT}" 2> "${RUN_ERR}"
+    run_with_optional_timeout "${BIN_PATH}" "${RUN_ARGS[@]}" > "${RUN_OUT}" 2> "${RUN_ERR}"
     RUN_STATUS=$?
   elif [[ "${BACKEND}" == "intel" ]]; then
-    trace_record_command run_binary HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
-    HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
+    trace_record_command run_binary env HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
+    HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 run_with_optional_timeout "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
     RUN_STATUS=$?
   else
-    trace_record_command run_binary HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
-    HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
+    trace_record_command run_binary env HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}"
+    HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 run_with_optional_timeout "${BIN_PATH}" "${RUN_ARGS[@]}" "${RUN_DUMP}" > "${RUN_OUT}" 2> "${RUN_ERR}"
     RUN_STATUS=$?
+  fi
+  if [[ "${RUN_STATUS}" == "124" || "${RUN_STATUS}" == "137" ]]; then
+    {
+      echo "run_status=${RUN_STATUS}"
+      echo "run_timeout=${RUN_TIMEOUT:-}"
+      echo "run_timeout_kill_after=${RUN_TIMEOUT_KILL_AFTER:-15s}"
+      echo "run_out=${RUN_OUT}"
+      echo "run_err=${RUN_ERR}"
+    } > "${TRACE_DIR:-${RESULTS_DIR}}/timeout_diagnostics.txt" 2>/dev/null || true
   fi
   trace_gpu_state after
   set -e

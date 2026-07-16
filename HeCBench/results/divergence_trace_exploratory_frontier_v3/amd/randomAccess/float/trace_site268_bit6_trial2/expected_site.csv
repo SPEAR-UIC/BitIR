@@ -1,0 +1,2 @@
+bench,site_id,bit_index,site_class,opcode,type_kind,bitwidth,function,source_line,source_column,signature_ordinal,compare_mode
+randomAccess,268,6,result,mul,int,32,_Z9initTablePyy,60,22,1,exact
