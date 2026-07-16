@@ -11,6 +11,7 @@ Files:
 - `worklist_pointer.csv`: pointer-bit injections
 - `sites_operand.csv`: operand-site inventory
 - `sites_pointer.csv`: pointer-site inventory
+- `sites_canonical.csv`: canonical source-context metadata companion for cross-backend alignment
 
 ## Regenerating worklists and site inventories
 
@@ -33,6 +34,14 @@ python3 HeCBench/tools/llvm17_inject/build_bench_worklist.py --bench <bench> --b
 Optional flags:
 - `--include-constants` to include constant operands
 - `--int-float-only 0` to include non-float/int result bits
+- `--sites-canonical <path>` to override the canonical metadata companion output path
+
+Canonical metadata:
+- Every fresh metadata rebuild now emits `sites*_canonical.csv` alongside the raw `sites*.csv` and `sites*_metadata.csv` files.
+- The canonical file records source-context anchors and both strict and class-family keys.
+- Treat raw `sites_metadata.csv` as backend-local. Use the canonical companion for backend mapping, not as the shared inventory itself.
+- Build the shared source-stage inventory from NVIDIA canonical rows, then map AMD and Intel onto it.
+- When a cross-backend fallback must choose a reference method, prefer NVIDIA/CUDA conventions over AMD.
 
 ## Notes
 

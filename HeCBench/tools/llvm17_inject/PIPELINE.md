@@ -235,6 +235,14 @@ Expected outputs for the toy deploy:
 - `HeCBench/results/llvm17_inject_toy/ace/float/`
 - `HeCBench/results/llvm17_inject_toy/wordcount/float/`
 
+## Canonical metadata
+
+Raw `sites_metadata.csv` files are emitted from backend-local device IR and are not a shared cross-machine inventory.
+Each fresh worklist rebuild now also emits `sites_canonical.csv`, which derives a canonical source-context anchor and shared keys from the benchmark source tree.
+Use the canonical companion files to map backend-local rows into a source-stage shared inventory, and keep raw site ids as machine-local identifiers.
+The shared inventory should be built from NVIDIA canonical rows first, then AMD and Intel should map onto that inventory.
+If a fallback normalization needs a preferred backend method, use NVIDIA/CUDA as the reference before AMD.
+
 ## Current notes
 
 - The toy campaign uses text comparison because `ace` and `wordcount` do not take a dump-file argument

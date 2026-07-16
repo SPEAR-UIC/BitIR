@@ -5,7 +5,9 @@ import os
 import shlex
 import shutil
 import subprocess
+from pathlib import Path
 
+from canonical_site_metadata import write_canonical_metadata
 from worklist_exclusions import load_excluded_pairs
 
 
@@ -272,8 +274,6 @@ def write_sycl_worklist(worklist_path, sites_rich_path, bench_base, target, int_
                 opcode = row.get("opcode", "").strip()
                 kind = row.get("type_kind", "").strip()
                 site_class = row.get("site_class", "").strip() or "result"
-                if site_class == "base":
-                    site_class = "result"
                 operand_index = row.get("operand_index", "").strip() or "-1"
                 try:
                     bitwidth = int(row.get("bitwidth", "0"))
@@ -329,6 +329,7 @@ def main():
     parser.add_argument("--worklist", default="")
     parser.add_argument("--sites", default="")
     parser.add_argument("--sites-rich", default="")
+    parser.add_argument("--sites-canonical", default="")
     parser.add_argument("--metadata-only", action="store_true")
     parser.add_argument("--reuse", action="store_true")
     parser.add_argument("--extra-cflags", default="")
@@ -377,10 +378,13 @@ def main():
     suffix = "" if args.target in ("result", "all") else f"_{args.target}"
     sites_path = resolve_results_path(repo_root, results_dir, args.sites, f"sites{suffix}.csv")
     sites_rich_path = resolve_results_path(repo_root, results_dir, args.sites_rich, f"sites{suffix}_metadata.csv")
+    sites_canonical_path = resolve_results_path(repo_root, results_dir, args.sites_canonical, f"sites{suffix}_canonical.csv")
     if os.path.exists(sites_path):
         os.remove(sites_path)
     if os.path.exists(sites_rich_path):
         os.remove(sites_rich_path)
+    if os.path.exists(sites_canonical_path):
+        os.remove(sites_canonical_path)
 
     cmd = [
         opt_bin,
@@ -400,8 +404,17 @@ def main():
         print(out)
         return code
 
+    canonical_count = write_canonical_metadata(
+        Path(repo_root),
+        args.bench,
+        backend,
+        Path(sites_rich_path),
+        Path(sites_canonical_path),
+    )
+
     if args.metadata_only:
         print(f"Wrote rich site metadata to {sites_rich_path}")
+        print(f"Wrote canonical site metadata to {sites_canonical_path} ({canonical_count} rows)")
         return 0
 
     bench_base = args.bench
