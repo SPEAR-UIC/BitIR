@@ -1,2 +1,0 @@
-site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
-256,result,load,float,32,-1,_Z12computeColorffPh,/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/src/colorwheel-hip/main.cu,50,21,6,_Z12computeColorffPh|result|load|float|32|-1|/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/src/colorwheel-hip/main.cu|50|21|6

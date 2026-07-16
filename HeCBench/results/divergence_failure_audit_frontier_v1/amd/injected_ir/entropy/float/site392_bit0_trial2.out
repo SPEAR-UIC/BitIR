@@ -1,6 +1,0 @@
-Average kernel (baseline) execution time 0.039846 (s)
-Average kernel (optimized) execution time 0.012005 (s)
-PASS
-entropy snapshot written to /tmp/bitir_failure_audit_injected_ir_entropy_site392_bit0_trial2/entropy_site392_bit0_trial2.bin
-compare_ok
-Result: MASKED (exit 0)

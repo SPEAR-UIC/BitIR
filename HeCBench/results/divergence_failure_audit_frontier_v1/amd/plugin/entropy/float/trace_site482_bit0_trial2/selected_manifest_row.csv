@@ -1,2 +1,0 @@
-bench,site_id,bit_index,site_class,opcode,type_kind,bitwidth,function,source_line,source_column,signature_ordinal,compare_mode,prior_bucket,prior_result
-entropy,482,0,operand,sitofp,int,8,_Z11entropy_optILi16ELi16EEvPfPKcPKfii,81,37,1,exact,due_or_hang,FAILURE_HANG

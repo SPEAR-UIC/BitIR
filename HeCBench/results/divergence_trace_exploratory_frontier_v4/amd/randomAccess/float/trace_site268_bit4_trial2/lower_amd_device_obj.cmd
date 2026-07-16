@@ -1,1 +1,0 @@
-/opt/rocm-6.4.2/lib/llvm/bin/llc -march=amdgcn -mcpu=gfx90a -filetype=obj /tmp/bitir_exploratory_v4_amd_randomAccess_site268_bit4_trial2/device.injected.bc -o /tmp/bitir_exploratory_v4_amd_randomAccess_site268_bit4_trial2/device.o 

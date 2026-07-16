@@ -1,9 +1,0 @@
-start_utc=2026-07-16T16:13:58Z
-host=frontier08699
-repo=/ccs/home/mdunlavy/GPU_Fault_Injection
-manifest=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/config/sites/divergence_failure_audit_amd.csv
-results_root=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd
-modes=injected_ir plugin
-trials=2
-rocm=/opt/rocm-6.4.2
-hip_arch=gfx90a

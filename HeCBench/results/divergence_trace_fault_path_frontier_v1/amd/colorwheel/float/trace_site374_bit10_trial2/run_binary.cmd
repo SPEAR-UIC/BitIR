@@ -1,1 +1,0 @@
-env HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_fault_path_colorwheel_site374_bit10_trial2/colorwheel 10000 8 1 /tmp/bitir_fault_path_colorwheel_site374_bit10_trial2/colorwheel_site374_bit10_trial2.bin 

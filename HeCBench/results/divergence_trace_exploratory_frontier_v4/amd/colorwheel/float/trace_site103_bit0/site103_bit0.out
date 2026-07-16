@@ -1,6 +1,0 @@
-Start execution on a device
-Average kernel execution time : 763.964661 (ms)
-Maximum error between host and device results: 227
-FAIL
-colorwheel snapshot written to /tmp/bitir_exploratory_v4_amd_colorwheel_site103_bit0_trial1/colorwheel_site103_bit0.bin
-mismatch

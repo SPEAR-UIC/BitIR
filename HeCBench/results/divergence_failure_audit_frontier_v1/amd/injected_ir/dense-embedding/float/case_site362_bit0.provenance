@@ -1,7 +1,0 @@
-bench=dense-embedding
-site_id=362
-bit_index=0
-site_class=result
-prior_bucket=failure
-prior_result=FAILURE_NONHANG
-mode=injected_ir

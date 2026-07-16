@@ -1,7 +1,0 @@
-bench=randomAccess
-site_id=268
-bit_index=6
-site_class=result
-prior_bucket=sdc
-prior_result=SDC_FLAGGED
-mode=plugin

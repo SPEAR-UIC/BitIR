@@ -1,1 +1,0 @@
-/opt/rocm-6.4.2/lib/llvm/bin/opt -load-pass-plugin /ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/tools/llvm17_inject/libfi_inject.so -passes=fi-inject -fi-site=374 -fi-bit=10 -fi-target=all -fi-int-float-only=1 -fi-include-constants=0 /tmp/bitir_fault_path_colorwheel_site374_bit10_trial1/device.bc -o /tmp/bitir_fault_path_colorwheel_site374_bit10_trial1/device.injected.bc 

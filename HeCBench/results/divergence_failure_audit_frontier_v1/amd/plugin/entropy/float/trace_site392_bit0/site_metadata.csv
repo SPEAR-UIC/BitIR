@@ -1,2 +1,0 @@
-site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
-392,pointer,load,ptr,64,0,_Z11entropy_optILi16ELi16EEvPfPKcPKfii,/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu,70,37,14,_Z11entropy_optILi16ELi16EEvPfPKcPKfii|pointer|load|ptr|64|0|/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/entropy-hip/main.cu|70|37|14

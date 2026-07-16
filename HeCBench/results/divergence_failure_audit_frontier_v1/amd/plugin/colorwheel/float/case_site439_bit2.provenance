@@ -1,7 +1,0 @@
-bench=colorwheel
-site_id=439
-bit_index=2
-site_class=operand
-prior_bucket=sdc
-prior_result=SDC_NOT_FLAGGED
-mode=plugin

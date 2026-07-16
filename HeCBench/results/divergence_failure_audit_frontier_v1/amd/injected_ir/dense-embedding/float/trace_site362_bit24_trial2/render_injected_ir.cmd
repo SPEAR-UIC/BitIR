@@ -1,1 +1,0 @@
-/opt/rocm-6.4.2/lib/llvm/bin/opt -S /tmp/bitir_failure_audit_injected_ir_dense-embedding_site362_bit24_trial2/device.injected.bc -o /ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/injected_ir/dense-embedding/float/trace_site362_bit24_trial2/device.injected.ll 
