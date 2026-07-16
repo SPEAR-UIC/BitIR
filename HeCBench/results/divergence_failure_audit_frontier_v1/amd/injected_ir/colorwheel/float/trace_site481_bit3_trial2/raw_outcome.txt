@@ -1,0 +1,14 @@
+bench=colorwheel
+site_id=481
+bit_index=3
+trial=2
+result=MASKED
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=colorwheel,481,3,result,load,int,32,_Z5colorPhiiff,76,27,11,exact,due_or_hang,FAILURE_HANG
+local_metadata_row=481,result,load,int,32,-1,_Z5colorPhiiff,/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu,76,27,11,_Z5colorPhiiff|result|load|int|32|-1|/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu|76|27|11
+mutated_ir_instruction=%fi_flip = xor i32 %139, 8 || %140 = zext nneg i32 %fi_flip to i64

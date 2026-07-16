@@ -1,0 +1,17 @@
+trace_level=full
+backend=amd
+bench=entropy
+source=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/src/entropy-hip/main.cu
+source_dir=HeCBench/src/entropy-hip
+site_id=392
+bit_index=0
+inject_target=pointer
+compare_mode=exact
+amd_execution_mode=injected_ir
+phase=float
+results_dir=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/injected_ir/entropy/float
+out_dir=/tmp/bitir_failure_audit_injected_ir_entropy_site392_bit0_trial1
+run_out=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/injected_ir/entropy/float/site392_bit0.out
+run_err=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/injected_ir/entropy/float/site392_bit0.err
+run_dump=/tmp/bitir_failure_audit_injected_ir_entropy_site392_bit0_trial1/entropy_site392_bit0.bin
+run_timeout=220s

@@ -1,0 +1,7 @@
+bench=entropy
+site_id=392
+bit_index=0
+site_class=pointer
+prior_bucket=failure
+prior_result=FAILURE_NONHANG
+mode=plugin

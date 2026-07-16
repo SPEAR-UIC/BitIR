@@ -1,0 +1,8 @@
+mode,result,benchmark_status,process_exit,timeout,count
+injected_ir,MASKED,PASS,0,0,10
+injected_ir,MASKED,unknown,0,0,2
+injected_ir,SDC,FAIL,0,0,2
+injected_ir,SDC,unknown,137,1,2
+plugin,MASKED,PASS,0,0,12
+plugin,MASKED,unknown,0,0,2
+plugin,SDC,unknown,137,1,2

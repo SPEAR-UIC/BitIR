@@ -1,0 +1,1 @@
+env HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_failure_audit_plugin_randomAccess_site268_bit6_trial2/randomAccess 1 /tmp/bitir_failure_audit_plugin_randomAccess_site268_bit6_trial2/randomAccess_site268_bit6_trial2.bin 

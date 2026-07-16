@@ -1,0 +1,2 @@
+size_mismatch: golden=7249920192 candidate=368640000
+Result: SDC (exit 137)

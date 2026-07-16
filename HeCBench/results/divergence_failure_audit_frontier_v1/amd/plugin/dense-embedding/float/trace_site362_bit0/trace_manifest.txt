@@ -1,0 +1,17 @@
+trace_level=full
+backend=amd
+bench=dense-embedding
+source=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/src/dense-embedding-hip/main.cu
+source_dir=HeCBench/src/dense-embedding-hip
+site_id=362
+bit_index=0
+inject_target=result
+compare_mode=exact
+amd_execution_mode=plugin
+phase=float
+results_dir=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/plugin/dense-embedding/float
+out_dir=/tmp/bitir_failure_audit_plugin_dense-embedding_site362_bit0_trial1
+run_out=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/plugin/dense-embedding/float/site362_bit0.out
+run_err=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/plugin/dense-embedding/float/site362_bit0.err
+run_dump=/tmp/bitir_failure_audit_plugin_dense-embedding_site362_bit0_trial1/dense-embedding_site362_bit0.bin
+run_timeout=220s

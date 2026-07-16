@@ -1,0 +1,6 @@
+Start execution on a device
+Average kernel execution time : 3.106133 (ms)
+PASS
+colorwheel snapshot written to /tmp/bitir_failure_audit_injected_ir_colorwheel_site439_bit2_trial2/colorwheel_site439_bit2_trial2.bin
+compare_ok
+Result: MASKED (exit 0)

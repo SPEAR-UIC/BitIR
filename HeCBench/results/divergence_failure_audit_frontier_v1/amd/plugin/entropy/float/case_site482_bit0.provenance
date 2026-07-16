@@ -1,0 +1,7 @@
+bench=entropy
+site_id=482
+bit_index=0
+site_class=operand
+prior_bucket=due_or_hang
+prior_result=FAILURE_HANG
+mode=plugin

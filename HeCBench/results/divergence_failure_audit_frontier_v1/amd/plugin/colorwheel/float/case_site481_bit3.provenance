@@ -1,0 +1,7 @@
+bench=colorwheel
+site_id=481
+bit_index=3
+site_class=result
+prior_bucket=due_or_hang
+prior_result=FAILURE_HANG
+mode=plugin

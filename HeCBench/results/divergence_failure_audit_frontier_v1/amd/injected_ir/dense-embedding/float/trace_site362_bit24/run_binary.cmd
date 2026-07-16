@@ -1,0 +1,1 @@
+env HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_failure_audit_injected_ir_dense-embedding_site362_bit24_trial1/dense-embedding 10000 8 1 /tmp/bitir_failure_audit_injected_ir_dense-embedding_site362_bit24_trial1/dense-embedding_site362_bit24.bin 

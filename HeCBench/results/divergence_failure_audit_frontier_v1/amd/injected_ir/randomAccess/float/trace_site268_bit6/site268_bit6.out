@@ -1,0 +1,7 @@
+Table size = 67108864
+Main table size   = 2^26 = 67108864 words
+Number of updates = 268435456
+Average kernel execution time: 7.850787 (s)
+Found 0 errors in 67108864 locations (PASS).
+randomAccess snapshot written to /tmp/bitir_failure_audit_injected_ir_randomAccess_site268_bit6_trial1/randomAccess_site268_bit6.bin
+compare_ok

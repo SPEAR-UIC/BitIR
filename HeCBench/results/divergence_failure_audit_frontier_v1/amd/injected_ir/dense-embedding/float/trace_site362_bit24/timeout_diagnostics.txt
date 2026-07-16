@@ -1,0 +1,5 @@
+run_status=137
+run_timeout=220s
+run_timeout_kill_after=20s
+run_out=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/injected_ir/dense-embedding/float/site362_bit24.out
+run_err=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_failure_audit_frontier_v1/amd/injected_ir/dense-embedding/float/site362_bit24.err

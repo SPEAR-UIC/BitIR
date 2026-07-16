@@ -1,28 +1,32 @@
 # AMD Failure Audit Status
 
-Prepared focused AMD failure/SDC audit for the suspicious selected divergence rows, but no GPU trials completed in this session.
+Focused AMD failure/SDC audit completed under Slurm job `5010883`.
 
-Reason: Frontier Slurm was unreachable from `login10` during submission attempts:
+Slurm accounting:
 
 ```text
-sbatch: error: Batch job submission failed: Unable to contact slurm controller (connect failure)
+JobID    JobName                    State         ExitCode  Elapsed
+5010883  bitir_amd_failure_audit    OUT_OF_MEMORY 0:125     00:07:17
 ```
 
-Prepared rerun command once Slurm is reachable:
+The Slurm batch step reported OOM after the run, but the audit runner printed all planned trials and wrote the machine-readable summaries:
 
-```bash
-sbatch /tmp/bitir_failure_audit.sbatch
-```
+- `audit_summary.csv`
+- `audit_counts.csv`
+- 32 per-trace `raw_outcome.txt` records
 
-Equivalent in-repo runner entrypoint:
+The OOM marker is preserved as a caveat because dense-embedding rows with exit `137` may reflect memory pressure rather than only fault behavior.
 
-```bash
-cd /ccs/home/mdunlavy/GPU_Fault_Injection
-module load rocm/6.4.2 || true
-module load rocm-llvm-toolchain || true
-REPO_ROOT=/ccs/home/mdunlavy/GPU_Fault_Injection \
-BITIR_MACHINE_RUNTIME_HOME=/opt/rocm-6.4.2 \
-TRIALS=2 \
-MODES="injected_ir plugin" \
-bash HeCBench/tools/llvm17_inject/run_amd_failure_audit.sh
+Run matrix:
+
+- Modes: `injected_ir`, `plugin`
+- Cases: 8 selected historical failure/SDC/hang-oriented rows
+- Trials: 2 per case per mode
+
+Submission settings used after queue adjustment:
+
+```text
+Partition=batch
+QOS=debug
+TimeLimit=01:00:00
 ```
