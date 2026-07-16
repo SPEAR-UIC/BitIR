@@ -1,4 +1,5 @@
 HeCBench/build/*
+HeCBench/build-*/
 *.bin
 HeCBench/results/llvm17_inject/
 HeCBench/results/llvm17_inject/**
