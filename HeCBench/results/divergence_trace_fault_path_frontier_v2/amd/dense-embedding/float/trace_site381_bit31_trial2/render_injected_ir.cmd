@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/opt -S /tmp/bitir_fault_path_dense-embedding_site381_bit31_trial2/device.injected.bc -o /ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_fault_path_frontier_v2/amd/dense-embedding/float/trace_site381_bit31_trial2/device.injected.ll 

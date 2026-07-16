@@ -1,0 +1,5 @@
+bench,site_id,bit_index,trial,result,process_exit,consumer_class,mutated_value,first_direct_consumer,trace_dir
+dense-embedding,381,31,1,SDC,0,store_data,%fi_i2f,"store float %fi_i2f, ptr %43, align 4, !dbg !1937",/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_fault_path_frontier_v2/amd/dense-embedding/float/trace_site381_bit31
+dense-embedding,381,31,2,SDC,0,store_data,%fi_i2f,"store float %fi_i2f, ptr %43, align 4, !dbg !1937",/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_fault_path_frontier_v2/amd/dense-embedding/float/trace_site381_bit31_trial2
+dense-embedding,385,31,1,SDC,0,other,%fi_i2f,"%104 = fadd contract float %102, %fi_i2f, !dbg !1948",/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_fault_path_frontier_v2/amd/dense-embedding/float/trace_site385_bit31
+dense-embedding,385,31,2,SDC,0,other,%fi_i2f,"%104 = fadd contract float %102, %fi_i2f, !dbg !1948",/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_fault_path_frontier_v2/amd/dense-embedding/float/trace_site385_bit31_trial2

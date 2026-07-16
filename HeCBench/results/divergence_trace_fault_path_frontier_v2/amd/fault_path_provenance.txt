@@ -1,0 +1,10 @@
+start_utc=2026-07-16T17:37:44Z
+host=frontier00039
+repo=/ccs/home/mdunlavy/GPU_Fault_Injection
+manifest=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/config/sites/divergence_trace_fault_path_amd_dense_embedding_focus.csv
+results_root=/ccs/home/mdunlavy/GPU_Fault_Injection/HeCBench/results/divergence_trace_fault_path_frontier_v2/amd
+trials=2
+rocm=/opt/rocm-6.4.2
+hip_arch=gfx90a
+execution_mode=injected_ir
+inject_target=all

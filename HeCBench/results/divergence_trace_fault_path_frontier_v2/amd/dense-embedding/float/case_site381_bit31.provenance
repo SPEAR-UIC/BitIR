@@ -1,0 +1,13 @@
+bench=dense-embedding
+site_id=381
+bit_index=31
+site_class=result
+opcode=load
+type_kind=float
+bitwidth=32
+function=_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi
+source_line=85
+source_column=22
+signature_ordinal=2
+compare_mode=exact
+inject_target=all
