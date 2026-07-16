@@ -144,6 +144,7 @@ site_id=${SITE_ID}
 bit_index=${BIT_INDEX}
 inject_target=${INJECT_TARGET}
 compare_mode=${COMPARE_MODE}
+amd_execution_mode=${AMD_EXECUTION_MODE:-}
 phase=${TRACE_PHASE}
 results_dir=${RESULTS_DIR}
 out_dir=${OUT_DIR}
@@ -379,6 +380,72 @@ write_summary() {
   echo "${SITE_ID},${BIT_INDEX},${TRIAL_INDEX},${RESULT},${RUN_STATUS},${RUN_OUT},${RUN_ERR},${DUMP_RECORD}" >> "${SUMMARY_CSV}"
 }
 
+detect_benchmark_status() {
+  local file="$1"
+  if [[ ! -f "${file}" ]]; then
+    printf '%s\n' "missing_stdout"
+    return
+  fi
+  if grep -Eq '(^|[[:space:]])FAIL([[:space:]]|$)' "${file}"; then
+    printf '%s\n' "FAIL"
+    return
+  fi
+  if grep -Eq '(^|[[:space:]])PASS([[:space:]]|$)' "${file}"; then
+    printf '%s\n' "PASS"
+    return
+  fi
+  printf '%s\n' "unknown"
+}
+
+write_raw_outcome() {
+  [[ -n "${TRACE_DIR:-}" ]] || return 0
+  local benchmark_status timeout_status dump_exists mutated_line selected_row metadata_row
+  benchmark_status="$(detect_benchmark_status "${RUN_OUT}")"
+  timeout_status=0
+  if [[ "${RUN_STATUS}" == "124" || "${RUN_STATUS}" == "137" ]]; then
+    timeout_status=1
+  fi
+  dump_exists=0
+  if [[ -f "${RUN_DUMP}" ]]; then
+    dump_exists=1
+  fi
+  selected_row=""
+  metadata_row=""
+  if [[ -f "${TRACE_DIR}/selected_manifest_row.csv" ]]; then
+    selected_row="$(awk 'NR == 2 { print }' "${TRACE_DIR}/selected_manifest_row.csv" 2>/dev/null || true)"
+  fi
+  if [[ -f "${TRACE_DIR}/local_metadata_row.csv" ]]; then
+    metadata_row="$(awk 'NR == 2 { print }' "${TRACE_DIR}/local_metadata_row.csv" 2>/dev/null || true)"
+  fi
+  mutated_line=""
+  if [[ -f "${TRACE_DIR}/diag.json" ]]; then
+    mutated_line="$(python3 - "${TRACE_DIR}/diag.json" <<'PY' 2>/dev/null || true
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as f:
+    print(json.load(f).get("mutated_ir_instruction", ""))
+PY
+)"
+  fi
+  {
+    echo "bench=${BENCH}"
+    echo "site_id=${SITE_ID}"
+    echo "bit_index=${BIT_INDEX}"
+    echo "trial=${TRIAL_INDEX}"
+    echo "result=${RESULT}"
+    echo "process_exit=${RUN_STATUS}"
+    echo "timeout=${timeout_status}"
+    echo "benchmark_status=${benchmark_status}"
+    echo "dump_exists=${dump_exists}"
+    echo "dump_compare=${COMPARE_STATUS:-not_run}"
+    echo "amd_execution_mode=${AMD_EXECUTION_MODE:-}"
+    echo "selected_manifest_row=${selected_row}"
+    echo "local_metadata_row=${metadata_row}"
+    echo "mutated_ir_instruction=${mutated_line}"
+  } > "${TRACE_DIR}/raw_outcome.txt"
+}
+
 common_run() {
   mkdir -p "${RESULTS_DIR}" "${OUT_DIR}"
   TRIAL_INDEX="${TRIAL_INDEX:-1}"
@@ -439,6 +506,7 @@ setup_common() {
   TRACE_RANK="$(trace_level_rank "${TRACE_LEVEL}")"
   TRACE_SOURCE_WINDOW="${TRACE_SOURCE_WINDOW:-${BITIR_FAULT_MODEL_TRACE_SOURCE_WINDOW:-6}}"
   RUN_TIMEOUT="${BITIR_RUN_TIMEOUT:-${BITIR_FAULT_MODEL_RUN_TIMEOUT:-}}"
+  AMD_EXECUTION_MODE="${BITIR_AMD_EXECUTION_MODE:-injected_ir}"
   TRACE_PHASE="${PHASE:-${BITIR_FAULT_MODEL_PHASE:-}}"
   TRACE_WORKLIST_NAME="worklist.csv"
   if [[ -n "${TRACE_PHASE}" ]]; then
@@ -686,6 +754,25 @@ build_amd_binary() {
     return
   fi
 
+  if [[ "${AMD_EXECUTION_MODE}" == "plugin" ]]; then
+    trace_record_command build_amd_binary_plugin_mode env \
+      LLFI_SITE="${SITE_ID}" LLFI_BIT="${BIT_INDEX}" LLFI_TARGET="${INJECT_TARGET}" \
+      LLFI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}" LLFI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}" \
+      "${CLANG}" "${common_flags[@]}" -fpass-plugin="${PLUGIN}" "${SRC}" -o "${BIN_PATH}"
+    LLFI_SITE="${SITE_ID}" \
+      LLFI_BIT="${BIT_INDEX}" \
+      LLFI_TARGET="${INJECT_TARGET}" \
+      LLFI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}" \
+      LLFI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}" \
+      "${CLANG}" "${common_flags[@]}" -fpass-plugin="${PLUGIN}" "${SRC}" -o "${BIN_PATH}"
+    return
+  fi
+
+  if [[ "${AMD_EXECUTION_MODE}" != "injected_ir" ]]; then
+    echo "unsupported BITIR_AMD_EXECUTION_MODE=${AMD_EXECUTION_MODE}" >&2
+    exit 1
+  fi
+
   trace_record_command inject_amd_device_ir \
     "${OPT_BIN}" -load-pass-plugin "${PLUGIN}" -passes=fi-inject -fi-site="${SITE_ID}" \
     -fi-bit="${BIT_INDEX}" -fi-target="${INJECT_TARGET}" -fi-int-float-only="${INT_FLOAT_ONLY}" \
@@ -844,6 +931,7 @@ run_binary() {
 finalize_run() {
   RESULT="FAILURE"
   DUMP_RECORD=""
+  COMPARE_STATUS="not_run"
 
   if [[ "${BASELINE}" == "1" ]]; then
     if [[ "${COMPARE_MODE}" == "text" ]]; then
@@ -851,16 +939,20 @@ finalize_run() {
       TEXT_CANDIDATE="${RUN_OUT}"
       if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
         RESULT="BASELINE"
+        COMPARE_STATUS="pass"
         cp -f "${RUN_OUT}" "${RESULTS_DIR}/baseline.stdout"
       else
         RESULT="BASELINE_MISMATCH"
+        COMPARE_STATUS="fail"
       fi
     elif [[ -f "${RUN_DUMP}" ]]; then
       DUMP_CANDIDATE="${RUN_DUMP}"
       if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
         RESULT="BASELINE"
+        COMPARE_STATUS="pass"
       else
         RESULT="BASELINE_MISMATCH"
+        COMPARE_STATUS="fail"
       fi
     fi
   else
@@ -869,15 +961,19 @@ finalize_run() {
       TEXT_CANDIDATE="${RUN_OUT}"
       if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
         RESULT="MASKED"
+        COMPARE_STATUS="pass"
       else
         RESULT="SDC"
+        COMPARE_STATUS="fail"
       fi
     elif [[ -f "${RUN_DUMP}" ]]; then
       DUMP_CANDIDATE="${RUN_DUMP}"
       if compare_result >> "${RUN_OUT}" 2>> "${RUN_ERR}"; then
         RESULT="MASKED"
+        COMPARE_STATUS="pass"
       else
         RESULT="SDC"
+        COMPARE_STATUS="fail"
       fi
     elif [[ "${RUN_STATUS}" == "0" ]]; then
       RESULT="DUE"
@@ -887,6 +983,7 @@ finalize_run() {
   fi
 
   trace_finalize
+  write_raw_outcome
 
   if [[ -f "${RUN_DUMP}" && "${KEEP_DUMPS:-0}" == "1" && "${BASELINE}" != "1" ]]; then
     local dump_final="${RESULTS_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}${TRIAL_SUFFIX}.bin"
