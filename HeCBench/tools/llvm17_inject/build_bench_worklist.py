@@ -171,8 +171,8 @@ def build_sycl_ir(args, repo_root, src_dir, src, out_dir):
     if not sycl_target or not sycl_offload_target or not sycl_host_triple:
         print("missing SYCL target metadata")
         return "", 2
-    icpx = args.icpx or shutil.which("icpx") or ""
-    bundler = args.bundler or shutil.which("clang-offload-bundler") or ""
+    icpx = args.icpx or ""
+    bundler = args.bundler or ""
     if not icpx:
         for root in tool_search_roots:
             candidate = os.path.join(root, "icpx")
@@ -185,33 +185,95 @@ def build_sycl_ir(args, repo_root, src_dir, src, out_dir):
             if os.access(candidate, os.X_OK):
                 bundler = candidate
                 break
-    if not icpx or not bundler:
+    if not icpx:
+        icpx = shutil.which("icpx") or ""
+    if not bundler:
+        bundler = shutil.which("clang-offload-bundler") or ""
+    if not icpx:
         print("missing SYCL compiler tools")
         return "", 2
     bundle_obj = os.path.join(out_dir, "bundle.o")
     host_obj = os.path.join(out_dir, "host.o")
     ir_bc = os.path.join(out_dir, "device.bc")
-    cmd = [
-        icpx,
-        "-fsycl",
-        f"-fsycl-targets={sycl_target}",
+    for path in (bundle_obj, host_obj, ir_bc):
+        if os.path.exists(path):
+            os.remove(path)
+
+    base_args = [
         "-O0",
         "-g",
         "-DUSE_GPU",
         "-I", src_dir,
         "-I", os.path.join(repo_root, "HeCBench/src"),
-        "-c", src,
-        "-o", bundle_obj,
     ]
     extra_includes = str(os.environ.get("BITIR_EXTRA_INCLUDES", "")).split()
     for include_dir in extra_includes:
         include_path = include_dir if os.path.isabs(include_dir) else os.path.join(repo_root, include_dir)
-        cmd[1:1] = ["-I", include_path]
+        base_args[0:0] = ["-I", include_path]
     if args.extra_cflags:
-        cmd[1:1] = shlex.split(args.extra_cflags)
-    code, out = run_cmd(cmd)
-    if code != 0:
+        base_args[0:0] = shlex.split(args.extra_cflags)
+
+    direct_cmd = [
+        icpx,
+        "-fsycl",
+        "-fsycl-device-only",
+        "-emit-llvm",
+        "-c",
+        f"-fsycl-targets={sycl_target}",
+    ] + base_args + [src, "-o", ir_bc]
+    code, out = run_cmd(direct_cmd)
+    if code == 0 and os.path.isfile(ir_bc):
+        return ir_bc, 0
+    if out:
         print(out)
+
+    save_temps_dir = os.path.join(out_dir, "save-temps-device")
+    if os.path.isdir(save_temps_dir):
+        shutil.rmtree(save_temps_dir)
+    os.makedirs(save_temps_dir, exist_ok=True)
+    save_cmd = [
+        icpx,
+        "-fsycl",
+        f"-fsycl-targets={sycl_target}",
+        "-save-temps=obj",
+    ] + base_args + [
+        "-c", src,
+        "-o", os.path.join(save_temps_dir, "bundle.o"),
+    ]
+    save_code, save_out = run_cmd(save_cmd)
+    if save_code == 0:
+        direct_candidates = [
+            os.path.join(save_temps_dir, name)
+            for name in os.listdir(save_temps_dir)
+            if name.endswith(f"-{sycl_offload_target}.bc") or name.endswith(f"-{sycl_target}-unknown-unknown.bc") or (name.endswith('.bc') and 'sycl' in name)
+        ]
+        direct_candidates.sort()
+        if direct_candidates:
+            shutil.copyfile(direct_candidates[0], ir_bc)
+            return ir_bc, 0
+    if save_out:
+        print(save_out)
+
+    if not bundler:
+        print(out)
+        print("missing SYCL bundler for fallback path")
+        return "", code or 2
+
+    cmd = [
+        icpx,
+        "-fsycl",
+        f"-fsycl-targets={sycl_target}",
+    ] + base_args + [
+        "-c", src,
+        "-o", bundle_obj,
+    ]
+    code, bundle_out = run_cmd(cmd)
+    if code != 0:
+        print(bundle_out)
+        if out:
+            print(out)
+        if save_out:
+            print(save_out)
         return "", code
     cmd = [
         bundler,
@@ -222,9 +284,13 @@ def build_sycl_ir(args, repo_root, src_dir, src, out_dir):
         f"--output={ir_bc}",
         f"--targets=host-{sycl_host_triple},{sycl_offload_target}",
     ]
-    code, out = run_cmd(cmd)
+    code, bundle_out = run_cmd(cmd)
     if code != 0:
-        print(out)
+        print(bundle_out)
+        if out:
+            print(out)
+        if save_out:
+            print(save_out)
         return "", code
     return ir_bc, 0
 
