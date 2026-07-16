@@ -1,0 +1,63 @@
+:3:rocdevice.cpp            :465 : 1969388369589 us:  Initializing HSA stack.
+:3:rocdevice.cpp            :551 : 1969388460355 us:  Enumerated GPU agents = 1
+:3:rocdevice.cpp            :230 : 1969388460493 us:  Numa selects cpu agent[3]=0x2c27e0(fine=0x2c29f0,coarse=0x2c3530) for gpu agent=0x2c4300 CPU<->GPU XGMI=1
+:3:rocsettings.cpp          :284 : 1969388460730 us:  Using dev kernel arg wa = 0
+:3:comgrctx.cpp             :33  : 1969388460827 us:  Loading COMGR library.
+:3:comgrctx.cpp             :128 : 1969388460946 us:  Loaded COMGR library version 3.0.
+:3:rocdevice.cpp            :1785: 1969388470135 us:  Gfx Major/Minor/Stepping: 9/0/10
+:3:rocdevice.cpp            :1787: 1969388470242 us:  HMM support: 1, XNACK: 0, Direct host access: 1
+:3:rocdevice.cpp            :1789: 1969388470335 us:  Max SDMA Read Mask: 0x1e, Max SDMA Write Mask: 0x1f
+:3:hip_context.cpp          :54  : 1969388471374 us:  Direct Dispatch: 1
+:3:hip_fatbin.cpp           :427 : 1969388471541 us:  Searching for code objects, HIP_FORCE_SPIRV_CODEOBJECT: 0
+:3:hip_fatbin.cpp           :435 : 1969388471623 us:  Using Native code object: gfx90a:sramecc+:xnack-
+:3:hip_memory.cpp           :756 : 1969388471733 us:  [32m hipMalloc ( 0x7fffffff5de8, 192 ) [0m
+:3:rocdevice.cpp            :2411: 1969388471848 us:  Device=0x6db580, freeMem_ = 0xffeffff40
+:3:hip_memory.cpp           :758 : 1969388471932 us:  hipMalloc: Returned hipSuccess : 0x7ffece800000: duration: 199 us
+:3:hip_memory.cpp           :3476: 1969388472031 us:  [32m hipMemset ( 0x7ffece800000, 0, 192 ) [0m
+:3:rocdevice.cpp            :3048: 1969388472118 us:  Number of allocated hardware queues with low priority: 0, with normal priority: 0, with high priority: 0, maximum per priority is: 4
+:3:rocdevice.cpp            :3129: 1969388476626 us:  Created SWq=0x7fffe204a000 to map on HWq=0x7ffece600000 with size 16384 with priority 1, cooperative: 0
+:3:rocdevice.cpp            :3222: 1969388476827 us:  acquireQueue refCount: 0x7ffece600000 (1)
+:3:devprogram.cpp           :2658: 1969389103449 us:  Using Code Object V5.
+:3:rocvirtual.cpp           :762 : 1969389105206 us:  Arg0: void* buf = ptr:0x7ffece800000
+:3:rocvirtual.cpp           :778 : 1969389105308 us:  Arg0: void* buf = ptr:0x7ffece800000 obj:[0x7ffece800000-0x7ffece8000c0]
+:3:rocvirtual.cpp           :762 : 1969389105402 us:  Arg1: uchar* pattern = ptr:0x7ffece400000
+:3:rocvirtual.cpp           :853 : 1969389105492 us:  Arg2: uint pattern_size = val:1
+:3:rocvirtual.cpp           :853 : 1969389105571 us:  Arg3: uint alignment = val:16
+:3:rocvirtual.cpp           :853 : 1969389105653 us:  Arg4: ulong end_ptr = val:140732362916032
+:3:rocvirtual.cpp           :853 : 1969389105728 us:  Arg5: uint next_chunk = val:256
+:3:rocvirtual.cpp           :3236: 1969389105813 us:  ShaderName : __amd_rocclr_fillBufferAligned
+:3:rocvirtual.cpp           :3449: 1969389105893 us:  KernargSegmentByteSize = 296 KernargSegmentAlignment = 128
+:3:hip_memory.cpp           :3477: 1969389105983 us:  hipMemset: Returned hipSuccess : 
+:3:hip_device_runtime.cpp   :641 : 1969389106068 us:  [32m hipDeviceSynchronize (  ) [0m
+:3:rocvirtual.cpp           :533 : 1969389106162 us:  Set Handler: handle(0x7fffe1bfd600), timestamp(0x7223a0)
+:3:rocvirtual.hpp           :56  : 1969389106249 us:  Host active wait for Signal = (0x7fffe1bfd600) for -1 ns
+:3:rocvirtual.cpp           :226 : 1969389106292 us:  Handler: value(0), timestamp(0xefe000), handle(0x7fffe1bfd600)
+:3:hip_device_runtime.cpp   :645 : 1969389106343 us:  hipDeviceSynchronize: Returned hipSuccess : 
+:3:hip_platform.cpp         :237 : 1969389106546 us:  [32m __hipPushCallConfiguration ( {1,1,1}, {16,16,1}, 0, stream:<null> ) [0m
+:3:hip_platform.cpp         :241 : 1969389106708 us:  __hipPushCallConfiguration: Returned hipSuccess : 
+:3:hip_platform.cpp         :246 : 1969389106791 us:  [32m __hipPopCallConfiguration ( {4294926184,32767,0}, {3964667986,32767,16}, 0x7fffffff5ce0, 0x7fffffff5cd8 ) [0m
+:3:hip_platform.cpp         :255 : 1969389106946 us:  __hipPopCallConfiguration: Returned hipSuccess : 
+:3:hip_module.cpp           :744 : 1969389107046 us:  [32m hipLaunchKernel ( 0x200d38, {1,1,1}, {16,16,1}, 0x7fffffff5c90, 0, stream:<null> ) [0m
+:3:devprogram.cpp           :2658: 1969389107319 us:  Using Code Object V5.
+:3:rocvirtual.cpp           :762 : 1969389107677 us:  Arg0:   = ptr:0x7ffece800000
+:3:rocvirtual.cpp           :778 : 1969389107766 us:  Arg0:   = ptr:0x7ffece800000 obj:[0x7ffece800000-0x7ffece8000c0]
+:3:rocvirtual.cpp           :853 : 1969389107852 us:  Arg1:   = val:8
+:3:rocvirtual.cpp           :853 : 1969389107941 us:  Arg2:   = val:4
+:3:rocvirtual.cpp           :853 : 1969389108054 us:  Arg3:   = val:1176666112
+:3:rocvirtual.cpp           :853 : 1969389108134 us:  Arg4:   = val:1176256512
+:3:rocvirtual.cpp           :3236: 1969389108221 us:  ShaderName : color(unsigned char*, int, int, float, float)
+:3:rocdevice.cpp            :3322: 1969389110590 us:  Created hostcall buffer 0x7ffecd000000 for hardware queue 0x7ffece600000
+:3:devhostcall.cpp          :428 : 1969389110955 us:  Launched hostcall listener at 0xc82990
+:3:devhostcall.cpp          :441 : 1969389111062 us:  Registered hostcall buffer 0x7ffecd000000 with listener 0xc82990
+:3:rocvirtual.cpp           :853 : 1969389111199 us:  Arg0: ulong heap_to_initialize = val:140732362919936
+:3:rocvirtual.cpp           :853 : 1969389111328 us:  Arg1: ulong initial_blocks = val:140732327264256
+:3:rocvirtual.cpp           :853 : 1969389111429 us:  Arg2: uint heap_size = val:131072
+:3:rocvirtual.cpp           :853 : 1969389111521 us:  Arg3: uint number_of_initial_blocks = val:4
+:3:rocvirtual.cpp           :3236: 1969389111614 us:  ShaderName : __amd_rocclr_initHeap
+:3:rocvirtual.cpp           :3449: 1969389111718 us:  KernargSegmentByteSize = 24 KernargSegmentAlignment = 128
+:3:rocvirtual.hpp           :56  : 1969389111820 us:  Host active wait for Signal = (0x7fffe1bff700) for -1 ns
+:3:rocvirtual.cpp           :3449: 1969389111915 us:  KernargSegmentByteSize = 280 KernargSegmentAlignment = 128
+:3:hip_module.cpp           :745 : 1969389111995 us:  hipLaunchKernel: Returned hipSuccess : : duration: 4949 us
+:3:hip_device_runtime.cpp   :641 : 1969389112079 us:  [32m hipDeviceSynchronize (  ) [0m
+:3:rocvirtual.cpp           :533 : 1969389112166 us:  Set Handler: handle(0x7fffe1bfd680), timestamp(0x722290)
+:3:rocvirtual.hpp           :56  : 1969389112248 us:  Host active wait for Signal = (0x7fffe1bfd680) for -1 ns

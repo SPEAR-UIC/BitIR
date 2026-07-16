@@ -173,6 +173,13 @@ EOF
     fi
   fi
 
+  if [[ -f "${INJECTION_SITES_CSV:-}" ]]; then
+    {
+      head -n 1 "${INJECTION_SITES_CSV}"
+      awk -F, -v site="${SITE_ID}" '$1 == site { print }' "${INJECTION_SITES_CSV}"
+    } > "${TRACE_DIR}/injection_metadata_row.csv"
+  fi
+
   if [[ -f "${worklist_csv}" ]]; then
     {
       head -n 1 "${worklist_csv}"
@@ -219,6 +226,12 @@ EOF
     fi
     if [[ "${BACKEND}" == "intel" ]]; then
       for file in "${POSTLINK_TABLE:-}" "${OUT_DIR}"/*.spv "${OUT_DIR}"/*.wrapper.bc "${OUT_DIR}"/*.bc; do
+        [[ -f "${file}" ]] || continue
+        cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
+      done
+    fi
+    if [[ "${BACKEND}" == "amd" ]]; then
+      for file in "${AMD_DEVICE_OBJ_DISASM:-}" "${AMD_CODE_OBJECT_DISASM:-}"; do
         [[ -f "${file}" ]] || continue
         cp -f "${file}" "${TRACE_DIR}/$(basename "${file}")"
       done
@@ -444,6 +457,9 @@ PY
     echo "local_metadata_row=${metadata_row}"
     echo "mutated_ir_instruction=${mutated_line}"
   } > "${TRACE_DIR}/raw_outcome.txt"
+  if [[ -f "${REPO_ROOT}/HeCBench/tools/llvm17_inject/write_trace_diagnostics.py" ]]; then
+    python3 "${REPO_ROOT}/HeCBench/tools/llvm17_inject/write_trace_diagnostics.py" "${TRACE_DIR}" >/dev/null 2>&1 || true
+  fi
 }
 
 common_run() {
@@ -704,6 +720,9 @@ prepare_amd() {
   CLANG_OFFLOAD_BUNDLER="$(tool_or_fail "${CLANG_OFFLOAD_BUNDLER:-}" clang-offload-bundler \
     "${HIP_HOME}/lib/llvm/bin/clang-offload-bundler" \
     "${HIP_HOME}/llvm/bin/clang-offload-bundler")"
+  LLVM_OBJDUMP_BIN="$(tool_or_fail "${LLVM_OBJDUMP_BIN:-}" llvm-objdump \
+    "${HIP_HOME}/lib/llvm/bin/llvm-objdump" \
+    "${HIP_HOME}/llvm/bin/llvm-objdump")"
 
   export PATH="${HIP_HOME}/bin:${HIP_HOME}/lib/llvm/bin:${PATH}"
   export LD_LIBRARY_PATH="${HIP_HOME}/lib:${HIP_HOME}/lib64:${LD_LIBRARY_PATH:-}"
@@ -717,6 +736,9 @@ prepare_amd() {
   AMD_DEVICE_OBJ="${OUT_DIR}/device.o"
   AMD_DEVICE_SO="${OUT_DIR}/device.out"
   AMD_FATBIN="${OUT_DIR}/device.hipfb"
+  AMD_DEVICE_OBJ_DISASM="${OUT_DIR}/device.amdgpu.objdump.txt"
+  AMD_CODE_OBJECT_DISASM="${OUT_DIR}/device.amdgpu.code-object-objdump.txt"
+  INJECTION_SITES_CSV="${OUT_DIR}/injection_sites_metadata.csv"
   BIN_PATH="${OUT_DIR}/${BENCH}"
 }
 
@@ -753,6 +775,20 @@ build_amd_binary() {
     "${CLANG}" "${common_flags[@]}" "${SRC}" -o "${BIN_PATH}"
     return
   fi
+
+  trace_record_command dump_amd_injection_site_metadata \
+    "${OPT_BIN}" -load-pass-plugin "${PLUGIN}" -passes=fi-inject -fi-site=-1 \
+    -fi-target="${INJECT_TARGET}" -fi-int-float-only="${INT_FLOAT_ONLY}" \
+    -fi-include-constants="${INCLUDE_CONSTANTS}" -fi-dump-sites-rich="${INJECTION_SITES_CSV}" \
+    -disable-output "${IR_BC}"
+  "${OPT_BIN}" -load-pass-plugin "${PLUGIN}" \
+    -passes=fi-inject \
+    -fi-site=-1 \
+    -fi-target="${INJECT_TARGET}" \
+    -fi-int-float-only="${INT_FLOAT_ONLY}" \
+    -fi-include-constants="${INCLUDE_CONSTANTS}" \
+    -fi-dump-sites-rich="${INJECTION_SITES_CSV}" \
+    -disable-output "${IR_BC}"
 
   if [[ "${AMD_EXECUTION_MODE}" == "plugin" ]]; then
     trace_record_command build_amd_binary_plugin_mode env \
@@ -792,6 +828,11 @@ build_amd_binary() {
   "${LLC_BIN}" -march=amdgcn -mcpu="${BITIR_MACHINE_HIP_ARCH}" -filetype=obj \
     "${IR_INJ_BC}" -o "${AMD_DEVICE_OBJ}"
 
+  trace_record_command disassemble_amd_device_obj \
+    "${LLVM_OBJDUMP_BIN}" -d --mcpu="${BITIR_MACHINE_HIP_ARCH}" "${AMD_DEVICE_OBJ}"
+  "${LLVM_OBJDUMP_BIN}" -d --mcpu="${BITIR_MACHINE_HIP_ARCH}" \
+    "${AMD_DEVICE_OBJ}" > "${AMD_DEVICE_OBJ_DISASM}" 2>&1 || true
+
   trace_record_command link_amd_device_code_object \
     "${LLD_BIN}" -flavor gnu -m elf64_amdgpu --no-undefined -shared \
     -plugin-opt=-amdgpu-internalize-symbols -plugin-opt=mcpu="${BITIR_MACHINE_HIP_ARCH}" \
@@ -801,6 +842,11 @@ build_amd_binary() {
     -plugin-opt=-amdgpu-internalize-symbols -plugin-opt=mcpu="${BITIR_MACHINE_HIP_ARCH}" \
     -plugin-opt=O0 --lto-CGO0 -plugin-opt=-amdgpu-spill-cfi-saved-regs \
     --whole-archive -o "${AMD_DEVICE_SO}" "${AMD_DEVICE_OBJ}" --no-whole-archive
+
+  trace_record_command disassemble_amd_code_object \
+    "${LLVM_OBJDUMP_BIN}" -d --mcpu="${BITIR_MACHINE_HIP_ARCH}" "${AMD_DEVICE_SO}"
+  "${LLVM_OBJDUMP_BIN}" -d --mcpu="${BITIR_MACHINE_HIP_ARCH}" \
+    "${AMD_DEVICE_SO}" > "${AMD_CODE_OBJECT_DISASM}" 2>&1 || true
 
   trace_record_command bundle_amd_device_code_object \
     "${CLANG_OFFLOAD_BUNDLER}" -type=o -bundle-align=4096 \
@@ -1018,6 +1064,10 @@ case "${BACKEND}" in
     exit 1
     ;;
 esac
+
+if [[ "${TRACE_RANK}" -gt 0 ]]; then
+  trace_finalize
+fi
 
 run_binary
 finalize_run

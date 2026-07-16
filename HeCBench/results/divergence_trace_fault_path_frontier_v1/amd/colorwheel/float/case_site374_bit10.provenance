@@ -1,0 +1,13 @@
+bench=colorwheel
+site_id=374
+bit_index=10
+site_class=result
+opcode=fptosi
+type_kind=int
+bitwidth=32
+function=_Z12computeColorffPh
+source_line=63
+source_column=23
+signature_ordinal=2
+compare_mode=exact
+inject_target=all

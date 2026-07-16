@@ -1,0 +1,14 @@
+bench=colorwheel
+site_id=374
+bit_index=10
+trial=2
+result=MASKED
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=colorwheel,374,10,result,fptosi,int,32,_Z12computeColorffPh,63,23,2,exact
+local_metadata_row=374,result,fptosi,int,32,-1,_Z12computeColorffPh,/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu,63,23,2,_Z12computeColorffPh|result|fptosi|int|32|-1|/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/HeCBench/src/colorwheel-hip/main.cu|63|23|2
+mutated_ir_instruction=%fi_flip = xor i32 %207, 1024, !dbg !1979 || %208 = trunc i32 %fi_flip to i8, !dbg !1979

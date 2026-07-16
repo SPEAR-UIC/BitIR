@@ -1,0 +1,13 @@
+bench=colorwheel
+site_id=256
+bit_index=3
+site_class=result
+opcode=load
+type_kind=float
+bitwidth=32
+function=_Z12computeColorffPh
+source_line=50
+source_column=21
+signature_ordinal=6
+compare_mode=exact
+inject_target=all

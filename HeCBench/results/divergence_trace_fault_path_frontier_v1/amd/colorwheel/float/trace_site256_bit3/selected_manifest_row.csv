@@ -1,0 +1,2 @@
+bench,site_id,bit_index,site_class,opcode,type_kind,bitwidth,function,source_line,source_column,signature_ordinal,compare_mode
+colorwheel,256,3,result,load,float,32,_Z12computeColorffPh,50,21,6,exact

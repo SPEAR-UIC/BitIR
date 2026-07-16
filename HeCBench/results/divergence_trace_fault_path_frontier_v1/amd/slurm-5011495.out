@@ -1,0 +1,11 @@
+[fault-path] bench=colorwheel site=256 bit=3 trial=1
+Result: SDC (exit 0)
+[fault-path] bench=colorwheel site=256 bit=3 trial=2
+Result: SDC (exit 0)
+[fault-path] bench=colorwheel site=374 bit=10 trial=1
+Result: MASKED (exit 0)
+[fault-path] bench=colorwheel site=374 bit=10 trial=2
+Result: MASKED (exit 0)
+[fault-path] bench=colorwheel site=215 bit=31 trial=1
+Result: FAILURE (exit 124)
+[fault-path] bench=colorwheel site=215 bit=31 trial=2

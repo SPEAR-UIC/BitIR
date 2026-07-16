@@ -1,0 +1,7 @@
+bench,site_id,bit_index,trial,result,process_exit,consumer_class,mutated_value,first_direct_consumer,trace_dir
+colorwheel,215,31,1,FAILURE,124,branch,%fi_flip,"%115 = icmp slt i32 %fi_flip, 6, !dbg !1888",HeCBench/results/divergence_trace_fault_path_frontier_v1/amd/colorwheel/float/trace_site215_bit31
+colorwheel,215,31,2,FAILURE,124,branch,%fi_flip,"%115 = icmp slt i32 %fi_flip, 6, !dbg !1888",HeCBench/results/divergence_trace_fault_path_frontier_v1/amd/colorwheel/float/trace_site215_bit31_trial2
+colorwheel,256,3,1,SDC,0,other,%fi_i2f,"%140 = fneg contract float %fi_i2f, !dbg !1915",HeCBench/results/divergence_trace_fault_path_frontier_v1/amd/colorwheel/float/trace_site256_bit3
+colorwheel,256,3,2,SDC,0,other,%fi_i2f,"%140 = fneg contract float %fi_i2f, !dbg !1915",HeCBench/results/divergence_trace_fault_path_frontier_v1/amd/colorwheel/float/trace_site256_bit3_trial2
+colorwheel,374,10,1,MASKED,0,other,%fi_flip,"%208 = trunc i32 %fi_flip to i8, !dbg !1979",HeCBench/results/divergence_trace_fault_path_frontier_v1/amd/colorwheel/float/trace_site374_bit10
+colorwheel,374,10,2,MASKED,0,other,%fi_flip,"%208 = trunc i32 %fi_flip to i8, !dbg !1979",HeCBench/results/divergence_trace_fault_path_frontier_v1/amd/colorwheel/float/trace_site374_bit10_trial2

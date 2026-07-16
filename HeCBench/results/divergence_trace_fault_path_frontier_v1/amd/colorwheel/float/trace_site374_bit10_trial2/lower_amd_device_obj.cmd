@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/llc -march=amdgcn -mcpu=gfx90a -filetype=obj /tmp/bitir_fault_path_colorwheel_site374_bit10_trial2/device.injected.bc -o /tmp/bitir_fault_path_colorwheel_site374_bit10_trial2/device.o 
