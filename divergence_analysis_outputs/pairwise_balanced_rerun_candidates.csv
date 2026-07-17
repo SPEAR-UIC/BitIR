@@ -1,0 +1,53 @@
+priority_rank,comparison,bench,bit_index,nvidia_site_id,amd_site_id,intel_site_id,nvidia_result,amd_result,intel_result,match_tier,nvidia_opcode,amd_opcode,intel_opcode,nvidia_site_class,amd_site_class,intel_site_class,notes
+1,all_three_anchor,colorwheel,3,26,153,81,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,
+2,all_three_anchor,colorwheel,7,26,153,81,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,
+3,all_three_anchor,colorwheel,3,28,157,83,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,
+4,all_three_anchor,colorwheel,7,28,157,83,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,
+5,all_three_anchor,colorwheel,2,20,141,75,SDC,MASKED,SDC,family_full,icmp,icmp,icmp,result,result,base,
+6,all_three_anchor,colorwheel,6,20,141,75,SDC,MASKED,SDC,family_full,icmp,icmp,icmp,result,result,base,
+7,all_three_anchor,colorwheel,3,19,139,74,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,
+8,all_three_anchor,colorwheel,7,19,139,74,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,
+9,all_three_anchor,colorwheel,2,21,143,76,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,
+10,all_three_anchor,colorwheel,6,21,143,76,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,
+11,all_three_anchor,colorwheel,3,25,151,80,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,
+12,all_three_anchor,colorwheel,7,25,151,80,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,
+13,all_three_or_pairwise_anchor,randomAccess,0,100,316,59,MASKED,MASKED,SDC,family_full,mul,mul,mul,result,result,base,
+14,all_three_or_pairwise_anchor,randomAccess,1,102,320,61,MASKED,SDC,SDC,source_context_type_family,icmp,icmp,icmp,result,result,base,
+15,all_three_or_pairwise_anchor,randomAccess,2,102,320,61,MASKED,SDC,SDC,source_context_type_family,icmp,icmp,icmp,result,result,base,
+16,all_three_or_pairwise_anchor,randomAccess,0,117,354,76,DUE,SDC,SDC,family_full,add,add,add,result,result,base,
+17,all_three_or_pairwise_anchor,randomAccess,0,19,139,95,SDC,,MASKED,family_full,icmp,icmp,icmp,result,result,base,
+18,all_three_or_pairwise_anchor,randomAccess,0,16,133,92,SDC,,MASKED,family_full,load,load,load,result,result,base,
+19,all_three_or_pairwise_anchor,randomAccess,1,16,133,92,SDC,,MASKED,family_full,load,load,load,result,result,base,
+20,all_three_or_pairwise_anchor,randomAccess,7,18,137,94,MASKED,,SDC,family_full,load,load,load,result,result,base,
+21,all_three_or_pairwise_anchor,randomAccess,8,18,137,94,MASKED,,SDC,family_full,load,load,load,result,result,base,
+22,all_three_or_pairwise_anchor,randomAccess,0,22,145,98,SDC,,MASKED,family_full,xor,xor,xor,result,result,base,
+23,all_three_or_pairwise_anchor,randomAccess,1,22,145,98,SDC,,MASKED,family_full,xor,xor,xor,result,result,base,
+24,all_three_or_pairwise_anchor,randomAccess,0,20,141,96,MASKED,,SDC,family_full,zext,zext,zext,result,result,base,
+25,nvidia_vs_intel,pathfinder,3,137,395,153,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,
+26,nvidia_vs_intel,pathfinder,17,137,395,153,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,
+27,nvidia_vs_intel,pathfinder,3,116,350,132,SDC,,MASKED,source_text_type_family,mul,mul,mul,result,result,base,
+28,nvidia_vs_intel,pathfinder,17,116,350,132,SDC,,MASKED,source_text_type_family,mul,mul,mul,result,result,base,
+29,nvidia_vs_intel,pathfinder,3,9,123,25,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,
+30,nvidia_vs_intel,pathfinder,31,9,123,25,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,
+31,nvidia_vs_intel,pathfinder,3,64,240,80,MASKED,,SDC,source_context_type_family,zext,zext,zext,result,result,base,
+32,nvidia_vs_intel,pathfinder,17,64,240,80,MASKED,,SDC,source_context_type_family,zext,zext,zext,result,result,base,
+33,nvidia_vs_intel,pathfinder,3,53,217,69,SDC,,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,
+34,nvidia_vs_intel,pathfinder,17,53,217,69,SDC,,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,
+35,nvidia_vs_intel,pathfinder,62,56,224,72,SDC,,MASKED,source_context_type_family,phi,phi,phi,result,result,base,
+36,nvidia_vs_intel,pathfinder,63,56,224,72,SDC,,MASKED,source_context_type_family,phi,phi,phi,result,result,base,
+37,nvidia_vs_amd,dense-embedding,9,114,362,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+38,nvidia_vs_amd,dense-embedding,16,114,362,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+39,nvidia_vs_amd,dense-embedding,9,126,390,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+40,nvidia_vs_amd,dense-embedding,16,126,390,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+41,nvidia_vs_amd,dense-embedding,9,124,385,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+42,nvidia_vs_amd,dense-embedding,63,124,385,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+43,nvidia_vs_amd,dense-embedding,23,132,404,,SDC,DUE,,pairwise_normalized_metadata,add,add,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+44,nvidia_vs_amd,dense-embedding,18,132,404,,SDC,DUE,,pairwise_normalized_metadata,add,add,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+45,nvidia_vs_amd,dense-embedding,9,122,381,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+46,nvidia_vs_amd,dense-embedding,23,122,381,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+47,nvidia_vs_amd,dense-embedding,9,117,369,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+48,nvidia_vs_amd,dense-embedding,23,117,369,,SDC,DUE,,pairwise_normalized_metadata,load,load,,result,result,,pairwise AMD/NVIDIA metadata match; Intel not required for this candidate
+49,intel_vs_amd,entropy,17,156,443,226,,DUE,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,pairwise Intel/AMD divergence from three-machine alignment table
+50,intel_vs_amd,entropy,31,156,443,226,,DUE,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,pairwise Intel/AMD divergence from three-machine alignment table
+51,intel_vs_amd,entropy,4,156,443,226,,DUE,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,pairwise Intel/AMD divergence from three-machine alignment table
+52,intel_vs_amd,entropy,9,156,443,226,,DUE,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,pairwise Intel/AMD divergence from three-machine alignment table

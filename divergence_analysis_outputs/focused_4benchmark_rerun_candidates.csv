@@ -1,0 +1,61 @@
+priority_rank,evidence_level,bench,bit_index,nvidia_site_id,amd_site_id,intel_site_id,nvidia_result,amd_result,intel_result,match_tier,nvidia_opcode,amd_opcode,intel_opcode,nvidia_site_class,amd_site_class,intel_site_class,canonical_relpath,canonical_line
+1,all_three,colorwheel,3,26,153,81,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+2,all_three,colorwheel,7,26,153,81,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+3,all_three,colorwheel,3,28,157,83,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+4,all_three,colorwheel,7,28,157,83,SDC,MASKED,SDC,family_full,add,add,add,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+5,all_three,colorwheel,2,20,141,75,SDC,MASKED,SDC,family_full,icmp,icmp,icmp,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+6,all_three,colorwheel,6,20,141,75,SDC,MASKED,SDC,family_full,icmp,icmp,icmp,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+7,all_three,colorwheel,3,19,139,74,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+8,all_three,colorwheel,7,19,139,74,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+9,all_three,colorwheel,2,21,143,76,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+10,all_three,colorwheel,6,21,143,76,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+11,all_three,colorwheel,3,25,151,80,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+12,all_three,colorwheel,7,25,151,80,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+13,all_three,colorwheel,3,27,155,82,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+14,all_three,colorwheel,7,27,155,82,SDC,MASKED,SDC,family_full,load,load,load,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+15,all_three,colorwheel,2,22,145,77,SDC,MASKED,SDC,family_full,mul,mul,mul,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+16,all_three,colorwheel,6,22,145,77,SDC,MASKED,SDC,family_full,mul,mul,mul,result,result,base,main.src,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+17,all_three,randomAccess,0,100,316,59,MASKED,MASKED,SDC,family_full,mul,mul,mul,result,result,base,main.src,for (u64Int i=0; i<NUPDATE/128; i++) {
+18,all_three,randomAccess,1,102,320,61,MASKED,SDC,SDC,source_context_type_family,icmp,icmp,icmp,result,result,base,main.src,for (u64Int i=0; i<NUPDATE/128; i++) {
+19,all_three,randomAccess,2,102,320,61,MASKED,SDC,SDC,source_context_type_family,icmp,icmp,icmp,result,result,base,main.src,for (u64Int i=0; i<NUPDATE/128; i++) {
+20,all_three,randomAccess,0,117,354,76,DUE,SDC,SDC,family_full,add,add,add,result,result,base,main.src,for (u64Int i=0; i<NUPDATE/128; i++) {
+21,two_machine,randomAccess,0,19,139,95,SDC,,MASKED,family_full,icmp,icmp,icmp,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+22,two_machine,randomAccess,0,16,133,92,SDC,,MASKED,family_full,load,load,load,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+23,two_machine,randomAccess,1,16,133,92,SDC,,MASKED,family_full,load,load,load,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+24,two_machine,randomAccess,7,18,137,94,MASKED,,SDC,family_full,load,load,load,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+25,two_machine,randomAccess,8,18,137,94,MASKED,,SDC,family_full,load,load,load,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+26,two_machine,randomAccess,0,22,145,98,SDC,,MASKED,family_full,xor,xor,xor,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+27,two_machine,randomAccess,1,22,145,98,SDC,,MASKED,family_full,xor,xor,xor,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+28,two_machine,randomAccess,0,20,141,96,MASKED,,SDC,family_full,zext,zext,zext,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+29,two_machine,randomAccess,1,20,141,96,MASKED,,SDC,family_full,zext,zext,zext,result,result,base,main.src,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);
+30,two_machine,randomAccess,0,71,249,147,SDC,,MASKED,family_full,icmp,icmp,icmp,result,result,base,main.src,ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);
+31,two_machine,randomAccess,0,68,243,144,SDC,,MASKED,family_full,load,load,load,result,result,base,main.src,ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);
+32,two_machine,randomAccess,1,68,243,144,SDC,,MASKED,family_full,load,load,load,result,result,base,main.src,ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);
+33,two_machine,pathfinder,2,137,395,153,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,main.src,if(i==iteration-1)
+34,two_machine,pathfinder,3,137,395,153,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,main.src,if(i==iteration-1)
+35,two_machine,pathfinder,0,116,350,132,SDC,,MASKED,source_text_type_family,mul,mul,mul,result,result,base,main.src,int index = cols*(t+i)+xidx;
+36,two_machine,pathfinder,1,116,350,132,SDC,,MASKED,source_text_type_family,mul,mul,mul,result,result,base,main.src,int index = cols*(t+i)+xidx;
+37,two_machine,pathfinder,3,9,123,25,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,main.src,int small_block_cols = BLOCK_SIZE - (iteration*theHalo*2);
+38,two_machine,pathfinder,4,9,123,25,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,main.src,int small_block_cols = BLOCK_SIZE - (iteration*theHalo*2);
+39,two_machine,pathfinder,1,64,240,80,MASKED,,SDC,source_context_type_family,zext,zext,zext,result,result,base,main.src,"bool isValid = IN_RANGE(tx, validXmin, validXmax);"
+40,two_machine,pathfinder,2,64,240,80,MASKED,,SDC,source_context_type_family,zext,zext,zext,result,result,base,main.src,"bool isValid = IN_RANGE(tx, validXmin, validXmax);"
+41,two_machine,pathfinder,3,53,217,69,SDC,,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,main.src,E = (E > validXmax) ? validXmax : E;
+42,two_machine,pathfinder,4,53,217,69,SDC,,MASKED,source_context_type_family,icmp,icmp,icmp,result,result,base,main.src,E = (E > validXmax) ? validXmax : E;
+43,two_machine,pathfinder,62,56,224,72,SDC,,MASKED,source_context_type_family,phi,phi,phi,result,result,base,main.src,E = (E > validXmax) ? validXmax : E;
+44,two_machine,pathfinder,63,56,224,72,SDC,,MASKED,source_context_type_family,phi,phi,phi,result,result,base,main.src,E = (E > validXmax) ? validXmax : E;
+45,two_machine,pathfinder,1,147,416,163,SDC,,MASKED,source_context_type_family,add,add,add,result,result,base,main.src,for (int i = 0; i < iteration; i++)
+46,two_machine,pathfinder,2,147,416,163,SDC,,MASKED,source_context_type_family,add,add,add,result,result,base,main.src,for (int i = 0; i < iteration; i++)
+47,two_machine,pathfinder,3,69,250,85,MASKED,,SDC,source_context_type_family,sub,sub,sub,result,result,base,main.src,"if(IN_RANGE(xidx, 0, cols-1))"
+48,two_machine,pathfinder,4,69,250,85,MASKED,,SDC,source_context_type_family,sub,sub,sub,result,result,base,main.src,"if(IN_RANGE(xidx, 0, cols-1))"
+49,two_machine,layout,12,31,174,58,SDC,,MASKED,family_full,load,load,load,result,result,base,main.src,res += applesOnTrees[i].trees[gid];
+50,two_machine,layout,13,31,174,58,SDC,,MASKED,family_full,load,load,load,result,result,base,main.src,res += applesOnTrees[i].trees[gid];
+51,two_machine,layout,0,30,172,61,SDC,,MASKED,family_full,zext,zext,zext,result,result,base,main.src,res += applesOnTrees[i].trees[gid];
+52,two_machine,layout,1,30,172,61,SDC,,MASKED,family_full,zext,zext,zext,result,result,base,main.src,res += applesOnTrees[i].trees[gid];
+53,two_machine,layout,27,12,130,10,MASKED,,SDC,family_full,load,load,load,result,result,base,main.src,res += trees[gid].apples[i];
+54,two_machine,layout,28,12,130,10,MASKED,,SDC,family_full,load,load,load,result,result,base,main.src,res += trees[gid].apples[i];
+55,two_machine,layout,27,11,128,13,SDC,,MASKED,family_full,sext,sext,sext,result,result,base,main.src,res += trees[gid].apples[i];
+56,two_machine,layout,28,11,128,13,SDC,,MASKED,family_full,sext,sext,sext,result,result,base,main.src,res += trees[gid].apples[i];
+57,two_machine,layout,15,9,124,11,SDC,,MASKED,family_full,zext,zext,zext,result,result,base,main.src,res += trees[gid].apples[i];
+58,two_machine,layout,16,9,124,11,SDC,,MASKED,family_full,zext,zext,zext,result,result,base,main.src,res += trees[gid].apples[i];
+59,two_machine,layout,11,33,178,64,SDC,,MASKED,source_context_type_family,add,add,add,result,result,base,main.src,res += applesOnTrees[i].trees[gid];
+60,two_machine,layout,12,33,178,64,SDC,,MASKED,source_context_type_family,add,add,add,result,result,base,main.src,res += applesOnTrees[i].trees[gid];
