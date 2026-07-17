@@ -1,0 +1,17 @@
+bench,tier,consensus_sites,outcome_rows,sites_without_common_bits
+matrix-rotate,family_full,2,64,0
+jacobi,family_full,0,0,0
+layout,family_full,0,0,0
+dense-embedding,family_full,0,0,0
+pathfinder,family_full,0,0,0
+entropy,family_full,2,40,0
+colorwheel,family_full,103,3714,1
+randomAccess,family_full,0,0,0
+matrix-rotate,family_no_ordinal,2,1,1
+jacobi,family_no_ordinal,0,0,0
+layout,family_no_ordinal,0,0,0
+dense-embedding,family_no_ordinal,0,0,0
+pathfinder,family_no_ordinal,0,0,0
+entropy,family_no_ordinal,12,203,2
+colorwheel,family_no_ordinal,54,2000,2
+randomAccess,family_no_ordinal,14,453,1

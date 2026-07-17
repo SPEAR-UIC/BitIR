@@ -1,0 +1,2 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+matrix-rotate,family_no_ordinal,356221f091c4|load|int|32|value|-1,4,4,4

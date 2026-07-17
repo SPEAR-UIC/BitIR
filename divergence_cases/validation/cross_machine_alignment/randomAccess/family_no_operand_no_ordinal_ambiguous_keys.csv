@@ -1,0 +1,13 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+randomAccess,family_no_operand_no_ordinal,0f5454085771|load|int|64|value,2,1,2
+randomAccess,family_no_operand_no_ordinal,23c438b7c12e|load|int|64|value,2,1,2
+randomAccess,family_no_operand_no_ordinal,334670b6f4e4|load|int|32|value,1,2,1
+randomAccess,family_no_operand_no_ordinal,4873fbd895c6|load|int|64|value,2,2,2
+randomAccess,family_no_operand_no_ordinal,5b616bff232e|load|int|64|value,2,2,2
+randomAccess,family_no_operand_no_ordinal,7b6a6b3cea90|load|int|64|value,3,1,3
+randomAccess,family_no_operand_no_ordinal,7b6a6b3cea90|mul|int|64|value,1,2,1
+randomAccess,family_no_operand_no_ordinal,9361f12a7c61|load|int|32|value,1,2,1
+randomAccess,family_no_operand_no_ordinal,9f9bcad8b53c|load|int|64|value,1,2,1
+randomAccess,family_no_operand_no_ordinal,af9eff3aab03|load|int|32|value,1,2,1
+randomAccess,family_no_operand_no_ordinal,b3f04f80b3ce|load|int|64|value,2,1,2
+randomAccess,family_no_operand_no_ordinal,c63e44c5b03a|load|int|64|value,1,2,1
