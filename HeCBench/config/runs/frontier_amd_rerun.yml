@@ -11,7 +11,7 @@ fault_models:
     skip_existing: 0
     missing_only: 0
     worklist_queue: 0
-    trace_level: off
+    trace_level: "off"
 
 machines:
   amd:
