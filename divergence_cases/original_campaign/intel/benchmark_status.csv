@@ -1,0 +1,9 @@
+bench,files_copied,missing,metadata_regenerated,notes
+colorwheel,14,,false,"site inventory, worklist, and normalized outcomes from bench-sycl root; phase summaries from unsuffixed aggregate root when present"
+dense-embedding,14,,false,"site inventory, worklist, and normalized outcomes from bench-sycl root; phase summaries from unsuffixed aggregate root when present"
+entropy,13,,false,"site inventory, worklist, and normalized outcomes from bench-sycl root; phase summaries from unsuffixed aggregate root when present"
+jacobi,14,,false,"site inventory, worklist, and normalized outcomes from bench-sycl root; phase summaries from unsuffixed aggregate root when present"
+layout,7,"normalized_results*.csv (not copied: only candidate found was layout-sycl-debugscale-r1, treated as later/debug-scale evidence)",false,site inventory/worklist from layout-sycl; benchmark-local phase summaries copied; normalized SYCL source not found outside later/debug-scale roots
+matrix-rotate,18,,false,site inventory from matrix-rotate-sycl; normalized outcomes and prod_r1 worklists from matrix-rotate-sycl-prod-r1
+pathfinder,14,,false,"site inventory, worklist, and normalized outcomes from bench-sycl root; phase summaries from unsuffixed aggregate root when present"
+randomAccess,14,,false,"site inventory, worklist, and normalized outcomes from bench-sycl root; phase summaries from unsuffixed aggregate root when present"
