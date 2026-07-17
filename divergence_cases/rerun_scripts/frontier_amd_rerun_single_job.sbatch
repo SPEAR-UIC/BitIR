@@ -2,6 +2,7 @@
 #SBATCH -J frontier_amd_rerun
 #SBATCH -A csc707
 #SBATCH -p batch
+#SBATCH -q debug
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-node=1
