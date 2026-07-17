@@ -1,0 +1,8 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+layout,source_context_type_family,uint res = 0;|for(int i = 0; i < treeSize; i++)|{|add|int|32|value,2,2,2
+layout,source_context_type_family,uint res = 0;|for(int i = 0; i < treeSize; i++)|{|icmp|int|1|value,2,2,2
+layout,source_context_type_family,uint res = 0;|for(int i = 0; i < treeSize; i++)|{|load|int|32|value,4,4,6
+layout,source_context_type_family,{|res += applesOnTrees[i].trees[gid];|}|load|int|32|value,4,4,4
+layout,source_context_type_family,{|res += trees[gid].apples[i];|}|load|int|32|value,4,4,4
+layout,source_context_type_family,}|outBuf[gid] = res;|}|load|int|32|value,4,4,4
+layout,source_context_type_family,}|outBuf[gid] = res;|}|zext|int|64|value,2,2,2

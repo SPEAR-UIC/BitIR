@@ -1,0 +1,4 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+matrix-rotate,source_context_type_family,int first = layer;|int last = n - 1 - layer;|for(int i = first; i < last; ++i) {|load|int|32|value,2,2,2
+matrix-rotate,source_context_type_family,int first = layer;|int last = n - 1 - layer;|for(int i = first; i < last; ++i) {|sub|int|32|value,2,2,2
+matrix-rotate,source_context_type_family,int last = n - 1 - layer;|for(int i = first; i < last; ++i) {|int offset = i - first;|load|int|32|value,4,4,4

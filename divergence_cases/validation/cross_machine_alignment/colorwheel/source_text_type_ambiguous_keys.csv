@@ -1,0 +1,70 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+colorwheel,source_text_type,col *= .75f;|fmul|float|32,1,2,1
+colorwheel,source_text_type,col = 1.f - rad * (1.f - col);|fmul|float|32,1,3,1
+colorwheel,source_text_type,col = 1.f - rad * (1.f - col);|fsub|float|32,2,4,2
+colorwheel,source_text_type,col = 1.f - rad * (1.f - col);|load|float|32,2,2,2
+colorwheel,source_text_type,"computeColor(fx/truerange, fy/truerange, pix+idx);|load|float|32",4,4,4
+colorwheel,source_text_type,cw[k][0] = r;|load|int|32,2,2,2
+colorwheel,source_text_type,cw[k][1] = g;|load|int|32,2,2,2
+colorwheel,source_text_type,cw[k][2] = b;|load|int|32,2,2,2
+colorwheel,source_text_type,float col = (1.f - f) * col0 + f * col1;|fadd|float|32,1,3,1
+colorwheel,source_text_type,float col = (1.f - f) * col0 + f * col1;|fmul|float|32,2,6,2
+colorwheel,source_text_type,float col = (1.f - f) * col0 + f * col1;|fsub|float|32,1,2,1
+colorwheel,source_text_type,float col = (1.f - f) * col0 + f * col1;|load|float|32,4,4,4
+colorwheel,source_text_type,float col0 = cw[k0][b] / 255.f;|load|int|32,3,3,3
+colorwheel,source_text_type,float col0 = cw[k0][b] / 255.f;|sext|int|64,2,2,2
+colorwheel,source_text_type,float col1 = cw[k1][b] / 255.f;|load|int|32,3,3,3
+colorwheel,source_text_type,float col1 = cw[k1][b] / 255.f;|sext|int|64,2,2,2
+colorwheel,source_text_type,float f = fk - k0;|fsub|float|32,1,3,1
+colorwheel,source_text_type,float fk = (a + 1.f) / 2.f * (MAXCOLS-1);|fadd|float|32,1,2,1
+colorwheel,source_text_type,float fk = (a + 1.f) / 2.f * (MAXCOLS-1);|fmul|float|32,1,2,1
+colorwheel,source_text_type,float fx = (float)x / (float)half_size * range - range;|fmul|float|32,1,3,1
+colorwheel,source_text_type,float fx = (float)x / (float)half_size * range - range;|fsub|float|32,1,3,1
+colorwheel,source_text_type,float fx = (float)x / (float)half_size * range - range;|load|float|32,2,2,2
+colorwheel,source_text_type,float fx = (float)x / (float)half_size * range - range;|load|int|32,2,2,2
+colorwheel,source_text_type,float fx = (float)x / (float)half_size * range - range;|sitofp|float|32,2,2,2
+colorwheel,source_text_type,float fy = (float)y / (float)half_size * range - range;|fmul|float|32,1,3,1
+colorwheel,source_text_type,float fy = (float)y / (float)half_size * range - range;|fsub|float|32,1,3,1
+colorwheel,source_text_type,float fy = (float)y / (float)half_size * range - range;|load|float|32,2,2,2
+colorwheel,source_text_type,float fy = (float)y / (float)half_size * range - range;|load|int|32,2,2,2
+colorwheel,source_text_type,float fy = (float)y / (float)half_size * range - range;|sitofp|float|32,2,2,2
+colorwheel,source_text_type,"for (i = 0; i < BM; i++) setcols(cw, 255*i/BM, 0, 255, k++);|add|int|32",2,4,2
+colorwheel,source_text_type,"for (i = 0; i < BM; i++) setcols(cw, 255*i/BM, 0, 255, k++);|load|int|32",4,4,4
+colorwheel,source_text_type,"for (i = 0; i < BM; i++) setcols(cw, 255*i/BM, 0, 255, k++);|mul|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < BM; i++) setcols(cw, 255*i/BM, 0, 255, k++);|sdiv|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < CB; i++) setcols(cw, 0, 255-255*i/CB, 255, k++);|add|int|32",2,4,2
+colorwheel,source_text_type,"for (i = 0; i < CB; i++) setcols(cw, 0, 255-255*i/CB, 255, k++);|load|int|32",4,4,4
+colorwheel,source_text_type,"for (i = 0; i < CB; i++) setcols(cw, 0, 255-255*i/CB, 255, k++);|mul|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < CB; i++) setcols(cw, 0, 255-255*i/CB, 255, k++);|sdiv|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < CB; i++) setcols(cw, 0, 255-255*i/CB, 255, k++);|sub|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < GC; i++) setcols(cw, 0, 255, 255*i/GC, k++);|add|int|32",2,4,2
+colorwheel,source_text_type,"for (i = 0; i < GC; i++) setcols(cw, 0, 255, 255*i/GC, k++);|load|int|32",4,4,4
+colorwheel,source_text_type,"for (i = 0; i < GC; i++) setcols(cw, 0, 255, 255*i/GC, k++);|mul|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < GC; i++) setcols(cw, 0, 255, 255*i/GC, k++);|sdiv|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < MR; i++) setcols(cw, 255, 0, 255-255*i/MR, k++);|add|int|32",2,4,2
+colorwheel,source_text_type,"for (i = 0; i < MR; i++) setcols(cw, 255, 0, 255-255*i/MR, k++);|load|int|32",4,4,4
+colorwheel,source_text_type,"for (i = 0; i < MR; i++) setcols(cw, 255, 0, 255-255*i/MR, k++);|mul|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < MR; i++) setcols(cw, 255, 0, 255-255*i/MR, k++);|sdiv|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < MR; i++) setcols(cw, 255, 0, 255-255*i/MR, k++);|sub|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < RY; i++) setcols(cw, 255, 255*i/RY, 0, k++);|add|int|32",2,4,2
+colorwheel,source_text_type,"for (i = 0; i < RY; i++) setcols(cw, 255, 255*i/RY, 0, k++);|load|int|32",4,4,4
+colorwheel,source_text_type,"for (i = 0; i < RY; i++) setcols(cw, 255, 255*i/RY, 0, k++);|mul|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < RY; i++) setcols(cw, 255, 255*i/RY, 0, k++);|sdiv|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);|add|int|32",2,4,2
+colorwheel,source_text_type,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);|load|int|32",4,4,4
+colorwheel,source_text_type,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);|mul|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);|sdiv|int|32",1,2,1
+colorwheel,source_text_type,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);|sub|int|32",1,2,1
+colorwheel,source_text_type,for (int b = 0; b < 3; b++) {|add|int|32,1,2,1
+colorwheel,source_text_type,for (int b = 0; b < 3; b++) {|load|int|32,2,2,2
+colorwheel,source_text_type,if (x == half_size || y == half_size) return;|icmp|int|1,2,2,2
+colorwheel,source_text_type,if (x == half_size || y == half_size) return;|load|int|32,4,4,4
+colorwheel,source_text_type,if (y < size && x < size) {|icmp|int|1,2,2,2
+colorwheel,source_text_type,if (y < size && x < size) {|load|int|32,4,4,4
+colorwheel,source_text_type,int k1 = (k0 + 1) % MAXCOLS;|add|int|32,1,2,1
+colorwheel,source_text_type,int k1 = (k0 + 1) % MAXCOLS;|srem|int|32,1,2,1
+colorwheel,source_text_type,pix[2 - b] = (int)(255.f * col);|fmul|float|32,1,2,1
+colorwheel,source_text_type,pix[2 - b] = (int)(255.f * col);|sub|int|32,1,2,1
+colorwheel,source_text_type,size_t idx = (y * size + x) * 3;|add|int|32,1,3,1
+colorwheel,source_text_type,size_t idx = (y * size + x) * 3;|load|int|32,3,3,3
+colorwheel,source_text_type,size_t idx = (y * size + x) * 3;|mul|int|32,2,5,2

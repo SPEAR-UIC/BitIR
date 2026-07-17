@@ -1,0 +1,33 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+randomAccess,source_context_type,#pragma unroll|for (i=0; i<64; i++) {|m2[i] = temp;|add|int|32,1,2,1
+randomAccess,source_context_type,#pragma unroll|for (i=0; i<64; i++) {|m2[i] = temp;|load|int|32,2,2,2
+randomAccess,source_context_type,#pragma unroll|for (j=0; j<64; j++)|if ((ran >> j) & 1)|add|int|32,1,2,1
+randomAccess,source_context_type,#pragma unroll|for (j=0; j<64; j++)|if ((ran >> j) & 1)|load|int|32,2,2,2
+randomAccess,source_context_type,for (i=62; i>=0; i--)|if ((n >> i) & 1)|break;|and|int|64,1,2,1
+randomAccess,source_context_type,for (i=62; i>=0; i--)|if ((n >> i) & 1)|break;|ashr|int|64,1,3,1
+randomAccess,source_context_type,for (j=0; j<64; j++)|if ((ran >> j) & 1)|temp ^= m2[j];|and|int|64,1,2,1
+randomAccess,source_context_type,for (j=0; j<64; j++)|if ((ran >> j) & 1)|temp ^= m2[j];|lshr|int|64,1,3,1
+randomAccess,source_context_type,i -= 1;|if ((n >> i) & 1)|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|and|int|64,1,2,1
+randomAccess,source_context_type,i -= 1;|if ((n >> i) & 1)|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|ashr|int|64,1,3,1
+randomAccess,source_context_type,if ((n >> i) & 1)|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|}|load|int|64,2,2,2
+randomAccess,source_context_type,if ((n >> i) & 1)|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|}|shl|int|64,1,2,1
+randomAccess,source_context_type,if ((n >> i) & 1)|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|}|xor|int|64,1,3,1
+randomAccess,source_context_type,if ((ran >> j) & 1)|temp ^= m2[j];|ran = temp;|load|int|64,2,2,2
+randomAccess,source_context_type,if ((ran >> j) & 1)|temp ^= m2[j];|ran = temp;|xor|int|64,1,3,1
+randomAccess,source_context_type,m2[i] = temp;|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|load|int|64,2,2,2
+randomAccess,source_context_type,m2[i] = temp;|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|shl|int|64,1,2,1
+randomAccess,source_context_type,m2[i] = temp;|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|xor|int|64,1,3,1
+randomAccess,source_context_type,ran = temp;|i -= 1;|if ((n >> i) & 1)|sub|int|32,1,2,1
+randomAccess,source_context_type,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|}|load|int|64,2,2,2
+randomAccess,source_context_type,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|}|shl|int|64,1,2,1
+randomAccess,source_context_type,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|}|xor|int|64,1,3,1
+randomAccess,source_context_type,u64Int ran = HPCC_starts ((NUPDATE/128) * j);|for (u64Int i=0; i<NUPDATE/128; i++) {|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|add|int|64,1,2,1
+randomAccess,source_context_type,u64Int ran = HPCC_starts ((NUPDATE/128) * j);|for (u64Int i=0; i<NUPDATE/128; i++) {|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|load|int|64,3,3,3
+randomAccess,source_context_type,u64Int ran = HPCC_starts ((NUPDATE/128) * j);|for (u64Int i=0; i<NUPDATE/128; i++) {|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|mul|int|64,1,2,1
+randomAccess,source_context_type,u64Int ran = HPCC_starts ((NUPDATE/128) * j);|for (u64Int i=0; i<NUPDATE/128; i++) {|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|udiv|int|64,1,2,1
+randomAccess,source_context_type,"u64Int temp, ran;|while (n < 0) n += PERIOD;|while (n > PERIOD) n -= PERIOD;|add|int|64",1,2,1
+randomAccess,source_context_type,"u64Int temp, ran;|while (n < 0) n += PERIOD;|while (n > PERIOD) n -= PERIOD;|load|int|64",2,2,2
+randomAccess,source_context_type,while (n < 0) n += PERIOD;|while (n > PERIOD) n -= PERIOD;|if (n == 0) return 0x1;|load|int|64,2,2,2
+randomAccess,source_context_type,while (n < 0) n += PERIOD;|while (n > PERIOD) n -= PERIOD;|if (n == 0) return 0x1;|sub|int|64,1,2,1
+randomAccess,source_context_type,}|for (i=62; i>=0; i--)|if ((n >> i) & 1)|add|int|32,1,2,1
+randomAccess,source_context_type,}|for (i=62; i>=0; i--)|if ((n >> i) & 1)|load|int|32,2,2,2

@@ -1,0 +1,11 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+randomAccess,source_context_type_family,#pragma unroll|for (i=0; i<64; i++) {|m2[i] = temp;|load|int|32|value,2,2,2
+randomAccess,source_context_type_family,#pragma unroll|for (j=0; j<64; j++)|if ((ran >> j) & 1)|load|int|32|value,2,2,2
+randomAccess,source_context_type_family,if ((n >> i) & 1)|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|}|load|int|64|value,2,2,2
+randomAccess,source_context_type_family,if ((ran >> j) & 1)|temp ^= m2[j];|ran = temp;|load|int|64|value,2,2,2
+randomAccess,source_context_type_family,m2[i] = temp;|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|load|int|64|value,2,2,2
+randomAccess,source_context_type_family,temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|temp = (temp << 1) ^ ((s64Int) temp < 0 ? POLY : 0);|}|load|int|64|value,2,2,2
+randomAccess,source_context_type_family,u64Int ran = HPCC_starts ((NUPDATE/128) * j);|for (u64Int i=0; i<NUPDATE/128; i++) {|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|load|int|64|value,3,3,3
+randomAccess,source_context_type_family,"u64Int temp, ran;|while (n < 0) n += PERIOD;|while (n > PERIOD) n -= PERIOD;|load|int|64|value",2,2,2
+randomAccess,source_context_type_family,while (n < 0) n += PERIOD;|while (n > PERIOD) n -= PERIOD;|if (n == 0) return 0x1;|load|int|64|value,2,2,2
+randomAccess,source_context_type_family,}|for (i=62; i>=0; i--)|if ((n >> i) & 1)|load|int|32|value,2,2,2

@@ -1,0 +1,10 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+jacobi,source_text_type,err = df * df;|fmul|float|32,1,3,1
+jacobi,source_text_type,err = df * df;|load|float|32,2,2,2
+jacobi,source_text_type,for (int offset = 8; offset > 0; offset /= 2) {|icmp|int|1,2,2,2
+jacobi,source_text_type,for (int offset = 8; offset > 0; offset /= 2) {|load|int|32,4,4,4
+jacobi,source_text_type,for (int offset = 8; offset > 0; offset /= 2) {|sdiv|int|32,2,4,2
+jacobi,source_text_type,if (i >= 1 && i <= N-2) {|icmp|int|1,2,2,2
+jacobi,source_text_type,if (i >= 1 && i <= N-2) {|load|int|32,2,2,2
+jacobi,source_text_type,if (j >= 1 && j <= N-2) {|icmp|int|1,2,2,2
+jacobi,source_text_type,if (j >= 1 && j <= N-2) {|load|int|32,2,2,2

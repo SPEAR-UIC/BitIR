@@ -1,0 +1,31 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+pathfinder,source_text_type_family,E = (E > validXmax) ? validXmax : E;|load|int|32|value,4,4,4
+pathfinder,source_text_type_family,W = (W < validXmin) ? validXmin : W;|load|int|32|value,4,4,4
+pathfinder,source_text_type_family,"bool isValid = IN_RANGE(tx, validXmin, validXmax);|icmp|int|1|value",2,2,2
+pathfinder,source_text_type_family,"bool isValid = IN_RANGE(tx, validXmin, validXmax);|load|int|32|value",4,4,4
+pathfinder,source_text_type_family,for (int i = 0; i < iteration; i++)|load|int|32|value,3,3,3
+pathfinder,source_text_type_family,if (tx==11 && i==0)|icmp|int|1|value,2,2,2
+pathfinder,source_text_type_family,if (tx==11 && i==0)|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,"if( IN_RANGE(tx, i+1, BLOCK_SIZE-i-2) && isValid )|icmp|int|1|value",2,2,2
+pathfinder,source_text_type_family,"if( IN_RANGE(tx, i+1, BLOCK_SIZE-i-2) && isValid )|load|int|32|value",5,5,5
+pathfinder,source_text_type_family,"if( IN_RANGE(tx, i+1, BLOCK_SIZE-i-2) && isValid )|sub|int|32|value",2,2,2
+pathfinder,source_text_type_family,"if(IN_RANGE(xidx, 0, cols-1))|icmp|int|1|value",2,2,2
+pathfinder,source_text_type_family,"if(IN_RANGE(xidx, 0, cols-1))|load|int|32|value",3,3,3
+pathfinder,source_text_type_family,if(i==iteration-1)|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,int blkX = (small_block_cols*bx) - borderCols;|load|int|32|value,3,3,3
+pathfinder,source_text_type_family,int blkXmax = blkX+BLOCK_SIZE-1;|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,int index = cols*(t+i)+xidx;|add|int|32|value,2,2,2
+pathfinder,source_text_type_family,int index = cols*(t+i)+xidx;|load|int|32|value,4,4,4
+pathfinder,source_text_type_family,int left = prev[W];|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,int right = prev[E];|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,"int shortest = MIN(left, up);|load|int|32|value",4,4,4
+pathfinder,source_text_type_family,int small_block_cols = BLOCK_SIZE - (iteration*theHalo*2);|load|int|32|value,3,3,3
+pathfinder,source_text_type_family,int small_block_cols = BLOCK_SIZE - (iteration*theHalo*2);|mul|int|32|value,2,2,2
+pathfinder,source_text_type_family,int up = prev[tx];|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,int validXmax = (blkXmax > cols-1) ? BLOCK_SIZE-1-(blkXmax-cols+1) : BLOCK_SIZE-1;|load|int|32|value,6,6,6
+pathfinder,source_text_type_family,int validXmax = (blkXmax > cols-1) ? BLOCK_SIZE-1-(blkXmax-cols+1) : BLOCK_SIZE-1;|sub|int|32|value,5,5,5
+pathfinder,source_text_type_family,int validXmin = (blkX < 0) ? -blkX : 0;|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,int xidx = blkX+tx;|load|int|32|value,2,2,2
+pathfinder,source_text_type_family,prev[tx] = result[tx];|load|int|32|value,3,3,3
+pathfinder,source_text_type_family,prev[tx] = result[tx];|sext|int|64|value,2,2,2
+pathfinder,source_text_type_family,"shortest = MIN(shortest, right);|load|int|32|value",4,4,4

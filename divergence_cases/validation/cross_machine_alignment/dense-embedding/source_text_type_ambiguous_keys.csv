@@ -1,0 +1,19 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+dense-embedding,source_text_type,T dense_elem = dense[batch_idx * embedding_dim + idx % embedding_dim];|add|int|32,1,3,1
+dense-embedding,source_text_type,T dense_elem = dense[batch_idx * embedding_dim + idx % embedding_dim];|load|float|32,2,1,1
+dense-embedding,source_text_type,T dense_elem = dense[batch_idx * embedding_dim + idx % embedding_dim];|load|int|32,2,4,4
+dense-embedding,source_text_type,T dense_elem = dense[batch_idx * embedding_dim + idx];|add|int|32,2,6,2
+dense-embedding,source_text_type,T dense_elem = dense[batch_idx * embedding_dim + idx];|load|int|32,10,6,6
+dense-embedding,source_text_type,T input_elem = input[start + idx];|add|int|32,1,3,1
+dense-embedding,source_text_type,T input_elem = input[start + idx];|load|int|32,4,2,2
+dense-embedding,source_text_type,for (int idx = tid; idx < embedding_dim; idx += grain_size) {|add|int|32,1,3,1
+dense-embedding,source_text_type,for (int idx = tid; idx < embedding_dim; idx += grain_size) {|load|int|32,3,5,5
+dense-embedding,source_text_type,for (int nested_idx = idx; nested_idx < range; nested_idx += embedding_dim) {|add|int|32,4,6,2
+dense-embedding,source_text_type,for (int nested_idx = idx; nested_idx < range; nested_idx += embedding_dim) {|load|int|32,10,10,10
+dense-embedding,source_text_type,if (idx < range) {|load|int|32,2,2,2
+dense-embedding,source_text_type,int range = offset[batch_idx + 1] - offset[batch_idx];|add|int|32,1,2,1
+dense-embedding,source_text_type,int range = offset[batch_idx + 1] - offset[batch_idx];|load|int|32,5,4,4
+dense-embedding,source_text_type,int range = offset[batch_idx + 1] - start;|add|int|32,1,4,2
+dense-embedding,source_text_type,int range = offset[batch_idx + 1] - start;|load|int|32,3,6,6
+dense-embedding,source_text_type,int start = offset[batch_idx];|load|int|32,6,4,4
+dense-embedding,source_text_type,int start = offset[batch_idx];|sext|int|64,2,2,2

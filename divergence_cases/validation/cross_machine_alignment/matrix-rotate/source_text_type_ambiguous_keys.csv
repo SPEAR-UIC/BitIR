@@ -1,0 +1,9 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+matrix-rotate,source_text_type,for(int i = first; i < last; ++i) {|add|int|32,1,2,1
+matrix-rotate,source_text_type,for(int i = first; i < last; ++i) {|load|int|32,4,4,4
+matrix-rotate,source_text_type,if (layer < n/2) {|load|int|32,2,2,2
+matrix-rotate,source_text_type,if (layer < n/2) {|sdiv|int|32,1,2,1
+matrix-rotate,source_text_type,int last = n - 1 - layer;|load|int|32,2,2,2
+matrix-rotate,source_text_type,int last = n - 1 - layer;|sub|int|32,2,5,2
+matrix-rotate,source_text_type,int offset = i - first;|load|int|32,2,2,2
+matrix-rotate,source_text_type,int offset = i - first;|sub|int|32,1,3,1

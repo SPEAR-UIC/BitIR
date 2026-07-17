@@ -1,0 +1,9 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+jacobi,source_text_type_family,err = df * df;|load|float|32|value,2,2,2
+jacobi,source_text_type_family,for (int offset = 8; offset > 0; offset /= 2) {|icmp|int|1|value,2,2,2
+jacobi,source_text_type_family,for (int offset = 8; offset > 0; offset /= 2) {|load|int|32|value,4,4,4
+jacobi,source_text_type_family,for (int offset = 8; offset > 0; offset /= 2) {|sdiv|int|32|value,2,2,2
+jacobi,source_text_type_family,if (i >= 1 && i <= N-2) {|icmp|int|1|value,2,2,2
+jacobi,source_text_type_family,if (i >= 1 && i <= N-2) {|load|int|32|value,2,2,2
+jacobi,source_text_type_family,if (j >= 1 && j <= N-2) {|icmp|int|1|value,2,2,2
+jacobi,source_text_type_family,if (j >= 1 && j <= N-2) {|load|int|32|value,2,2,2

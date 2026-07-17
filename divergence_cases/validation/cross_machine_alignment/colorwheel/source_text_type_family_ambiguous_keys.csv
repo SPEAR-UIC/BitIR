@@ -1,0 +1,38 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+colorwheel,source_text_type_family,col = 1.f - rad * (1.f - col);|fsub|float|32|value,2,2,2
+colorwheel,source_text_type_family,col = 1.f - rad * (1.f - col);|load|float|32|value,2,2,2
+colorwheel,source_text_type_family,"computeColor(fx/truerange, fy/truerange, pix+idx);|load|float|32|value",4,4,4
+colorwheel,source_text_type_family,cw[k][0] = r;|load|int|32|value,2,2,2
+colorwheel,source_text_type_family,cw[k][1] = g;|load|int|32|value,2,2,2
+colorwheel,source_text_type_family,cw[k][2] = b;|load|int|32|value,2,2,2
+colorwheel,source_text_type_family,float col = (1.f - f) * col0 + f * col1;|fmul|float|32|value,2,2,2
+colorwheel,source_text_type_family,float col = (1.f - f) * col0 + f * col1;|load|float|32|value,4,4,4
+colorwheel,source_text_type_family,float col0 = cw[k0][b] / 255.f;|load|int|32|value,3,3,3
+colorwheel,source_text_type_family,float col0 = cw[k0][b] / 255.f;|sext|int|64|value,2,2,2
+colorwheel,source_text_type_family,float col1 = cw[k1][b] / 255.f;|load|int|32|value,3,3,3
+colorwheel,source_text_type_family,float col1 = cw[k1][b] / 255.f;|sext|int|64|value,2,2,2
+colorwheel,source_text_type_family,float fx = (float)x / (float)half_size * range - range;|load|float|32|value,2,2,2
+colorwheel,source_text_type_family,float fx = (float)x / (float)half_size * range - range;|load|int|32|value,2,2,2
+colorwheel,source_text_type_family,float fx = (float)x / (float)half_size * range - range;|sitofp|float|32|value,2,2,2
+colorwheel,source_text_type_family,float fy = (float)y / (float)half_size * range - range;|load|float|32|value,2,2,2
+colorwheel,source_text_type_family,float fy = (float)y / (float)half_size * range - range;|load|int|32|value,2,2,2
+colorwheel,source_text_type_family,float fy = (float)y / (float)half_size * range - range;|sitofp|float|32|value,2,2,2
+colorwheel,source_text_type_family,"for (i = 0; i < BM; i++) setcols(cw, 255*i/BM, 0, 255, k++);|add|int|32|value",2,2,2
+colorwheel,source_text_type_family,"for (i = 0; i < BM; i++) setcols(cw, 255*i/BM, 0, 255, k++);|load|int|32|value",4,4,4
+colorwheel,source_text_type_family,"for (i = 0; i < CB; i++) setcols(cw, 0, 255-255*i/CB, 255, k++);|add|int|32|value",2,2,2
+colorwheel,source_text_type_family,"for (i = 0; i < CB; i++) setcols(cw, 0, 255-255*i/CB, 255, k++);|load|int|32|value",4,4,4
+colorwheel,source_text_type_family,"for (i = 0; i < GC; i++) setcols(cw, 0, 255, 255*i/GC, k++);|add|int|32|value",2,2,2
+colorwheel,source_text_type_family,"for (i = 0; i < GC; i++) setcols(cw, 0, 255, 255*i/GC, k++);|load|int|32|value",4,4,4
+colorwheel,source_text_type_family,"for (i = 0; i < MR; i++) setcols(cw, 255, 0, 255-255*i/MR, k++);|add|int|32|value",2,2,2
+colorwheel,source_text_type_family,"for (i = 0; i < MR; i++) setcols(cw, 255, 0, 255-255*i/MR, k++);|load|int|32|value",4,4,4
+colorwheel,source_text_type_family,"for (i = 0; i < RY; i++) setcols(cw, 255, 255*i/RY, 0, k++);|add|int|32|value",2,2,2
+colorwheel,source_text_type_family,"for (i = 0; i < RY; i++) setcols(cw, 255, 255*i/RY, 0, k++);|load|int|32|value",4,4,4
+colorwheel,source_text_type_family,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);|add|int|32|value",2,2,2
+colorwheel,source_text_type_family,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);|load|int|32|value",4,4,4
+colorwheel,source_text_type_family,for (int b = 0; b < 3; b++) {|load|int|32|value,2,2,2
+colorwheel,source_text_type_family,if (x == half_size || y == half_size) return;|icmp|int|1|value,2,2,2
+colorwheel,source_text_type_family,if (x == half_size || y == half_size) return;|load|int|32|value,4,4,4
+colorwheel,source_text_type_family,if (y < size && x < size) {|icmp|int|1|value,2,2,2
+colorwheel,source_text_type_family,if (y < size && x < size) {|load|int|32|value,4,4,4
+colorwheel,source_text_type_family,size_t idx = (y * size + x) * 3;|load|int|32|value,3,3,3
+colorwheel,source_text_type_family,size_t idx = (y * size + x) * 3;|mul|int|32|value,2,2,2

@@ -1,0 +1,23 @@
+bench,tier,match_key,nvidia_candidates,amd_candidates,intel_candidates
+entropy,source_text_type_family,entropy -= d_logTable[sd_count[k][idx]];|load|float|32|value,2,2,2
+entropy,source_text_type_family,entropy -= d_logTable[sd_count[k][idx]];|load|int|32|value,3,3,3
+entropy,source_text_type_family,entropy -= d_logTable[sd_count[k][idx]];|sext|int|64|value,3,3,3
+entropy,source_text_type_family,for (int i = 0; i < 16; i++) count[i] = 0;|load|int|32|value,3,3,3
+entropy,source_text_type_family,for(int dx = -2; dx <= 2; dx++) {|add|int|32|value,2,2,2
+entropy,source_text_type_family,for(int dx = -2; dx <= 2; dx++) {|icmp|int|1|value,2,2,2
+entropy,source_text_type_family,for(int dx = -2; dx <= 2; dx++) {|load|int|32|value,4,4,4
+entropy,source_text_type_family,for(int dy = -2; dy <= 2; dy++) {|add|int|32|value,2,2,2
+entropy,source_text_type_family,for(int dy = -2; dy <= 2; dy++) {|icmp|int|1|value,2,2,2
+entropy,source_text_type_family,for(int dy = -2; dy <= 2; dy++) {|load|int|32|value,4,4,4
+entropy,source_text_type_family,for(int i = 0; i < 16;i++) sd_count[i][idx] = 0;|load|int|32|value,4,4,4
+entropy,source_text_type_family,for(int i = 0; i < 16;i++) sd_count[i][idx] = 0;|sext|int|64|value,2,2,2
+entropy,source_text_type_family,for(int k = 0; k < 16; k++)|load|int|32|value,2,2,2
+entropy,source_text_type_family,for(int k = 0; k < 16; k++) {|load|int|32|value,2,2,2
+entropy,source_text_type_family,if(xx >= 0 && yy >= 0 && yy < height && xx < width) {|icmp|int|1|value,8,4,8
+entropy,source_text_type_family,if(xx >= 0 && yy >= 0 && yy < height && xx < width) {|load|int|32|value,12,6,12
+entropy,source_text_type_family,"int xx = x + dx,|load|int|32|value",2,2,2
+entropy,source_text_type_family,int xx = x + dx;|load|int|32|value,2,2,2
+entropy,source_text_type_family,int yy = y + dy;|load|int|32|value,2,2,2
+entropy,source_text_type_family,total++;|add|int|8|value,2,2,2
+entropy,source_text_type_family,total++;|load|int|8|value,2,2,2
+entropy,source_text_type_family,yy = y + dy;|load|int|32|value,2,2,2
