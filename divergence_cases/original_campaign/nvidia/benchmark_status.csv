@@ -1,0 +1,9 @@
+benchmark,files_copied,missing,metadata_regenerated,notes
+matrix-rotate,11,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
+jacobi,11,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
+layout,9,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
+dense-embedding,10,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
+pathfinder,10,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
+entropy,10,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
+colorwheel,11,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
+randomAccess,11,worklist/alignment,false,copied from existing Polaris worktree CSV/TXT artifacts only; no injections rerun
