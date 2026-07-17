@@ -480,8 +480,9 @@ def main():
     if not job:
         raise SystemExit(f"missing machine.jobs.{job_key} in YAML")
 
-    jobs_dir = repo_root.parent / ".bitir_jobs"
+    jobs_dir = Path(os.environ.get("BITIR_JOBS_DIR", str(repo_root.parent / ".bitir_jobs")))
     jobs_dir.mkdir(parents=True, exist_ok=True)
+    work_root = Path(os.environ.get("BITIR_WORK_ROOT", str(repo_root.parent)))
     stamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     module_use = [str(value) for value in machine.get("module_use", [])]
     modules = [str(value) for value in machine.get("modules", [])]
@@ -493,7 +494,7 @@ def main():
         bench_cfg = dict(cfg.get("benchmarks", {}).get(bench_name, {})) if bench_name else {}
         bench_env = {str(key): str(value) for key, value in bench_cfg.get("env", {}).items()}
         exports = [
-            export_line("BITIR_WORKDIR", str(repo_root.parent)),
+            export_line("BITIR_WORKDIR", str(work_root)),
             export_line("BITIR_MACHINE", machine_name),
             export_line("BITIR_TIMEOUT_SEC", methods.get("timeout_sec", 200)),
             export_line("ABS_TOL", methods.get("float_abs_tol", "1e-5")),
@@ -568,7 +569,7 @@ def main():
 
     if mode == "local":
         for _, path, _ in generated:
-            subprocess.run(["bash", str(path)], check=True, cwd=repo_root.parent)
+            subprocess.run(["bash", str(path)], check=True, cwd=work_root)
         return
 
     if mode == "submit":

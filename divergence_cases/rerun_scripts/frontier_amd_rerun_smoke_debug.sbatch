@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J frontier_amd_rerun
+#SBATCH -J frontier_amd_smoke
 #SBATCH -A csc707
 #SBATCH -p batch
 #SBATCH --nodes=1
@@ -7,9 +7,9 @@
 #SBATCH --gpus-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
-#SBATCH --time=02:00:00
-#SBATCH --output=divergence_cases/slurm_frontier_amd_rerun_%j.out
-#SBATCH --error=divergence_cases/slurm_frontier_amd_rerun_%j.err
+#SBATCH --time=00:30:00
+#SBATCH --output=divergence_cases/slurm_frontier_amd_smoke_%j.out
+#SBATCH --error=divergence_cases/slurm_frontier_amd_smoke_%j.err
 
 set -euo pipefail
 
@@ -29,4 +29,6 @@ fi
 
 export JOB_SCRIPT_PATH="$SCRIPT_PATH"
 export RERUN_MODE="${RERUN_MODE:-run}"
+export MAX_BENCHES="${MAX_BENCHES:-2}"
+export MAX_ROWS="${MAX_ROWS:-1}"
 exec bash divergence_cases/rerun_scripts/frontier_amd_rerun_driver.sh
