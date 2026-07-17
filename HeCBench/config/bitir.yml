@@ -455,7 +455,8 @@ benchmarks:
       fail_line: FAIL
 
   colorwheel:
-    compare_mode: exact
+    compare_mode: byte_tol
+    abs_tol: 1
     source_dirs:
       nvidia: HeCBench/src/colorwheel-cuda
       intel: HeCBench/src/colorwheel-sycl

@@ -118,7 +118,7 @@ with bench_only_path.open('w', encoding='utf-8') as f:
 
 manifest_fields = [
     'bench', 'source_dir', 'golden_file', 'compare_mode', 'run_args',
-    'extra_includes', 'pass_line', 'fail_line', 'pass_regex', 'fail_regex'
+    'extra_includes', 'abs_tol', 'rel_tol', 'pass_line', 'fail_line', 'pass_regex', 'fail_regex'
 ]
 with manifest_path.open('w', encoding='utf-8', newline='') as f:
     f.write('\t'.join(manifest_fields) + '\n')
@@ -143,6 +143,8 @@ with manifest_path.open('w', encoding='utf-8', newline='') as f:
             'compare_mode': data.get('compare_mode', 'exact'),
             'run_args': ' '.join(rendered_args),
             'extra_includes': ' '.join(extra_includes),
+            'abs_tol': str(data.get('abs_tol', 0)),
+            'rel_tol': str(data.get('rel_tol', 0)),
             'pass_line': status.get('pass_line', ''),
             'fail_line': status.get('fail_line', ''),
             'pass_regex': status.get('pass_regex', ''),
@@ -231,14 +233,16 @@ bash "${PLUGIN_BUILD}" 2>&1 | tee -a "${HELPER_LOG}"
 
 BENCH_ONLY_FILE="${BENCH_ONLY_FILE}" bash "${HECBENCH_BUILD}" 2>&1 | tee -a "${HELPER_LOG}"
 
-declare -A SOURCE_DIR_MAP GOLDEN_FILE_MAP COMPARE_MODE_MAP RUN_ARGS_MAP EXTRA_INCLUDES_MAP
-while IFS=$'\t' read -r bench source_dir golden_file compare_mode run_args extra_includes pass_line fail_line pass_regex fail_regex; do
+declare -A SOURCE_DIR_MAP GOLDEN_FILE_MAP COMPARE_MODE_MAP RUN_ARGS_MAP EXTRA_INCLUDES_MAP ABS_TOL_MAP REL_TOL_MAP
+while IFS=$'\t' read -r bench source_dir golden_file compare_mode run_args extra_includes abs_tol rel_tol pass_line fail_line pass_regex fail_regex; do
   [[ "${bench}" == "bench" ]] && continue
   SOURCE_DIR_MAP["${bench}"]="${source_dir}"
   GOLDEN_FILE_MAP["${bench}"]="${golden_file}"
   COMPARE_MODE_MAP["${bench}"]="${compare_mode}"
   RUN_ARGS_MAP["${bench}"]="${run_args}"
   EXTRA_INCLUDES_MAP["${bench}"]="${extra_includes}"
+  ABS_TOL_MAP["${bench}"]="${abs_tol}"
+  REL_TOL_MAP["${bench}"]="${rel_tol}"
 done < "${BENCH_MANIFEST}"
 
 declare -A BENCH_BASELINE_STATUS BENCH_BASELINE_RESULT BENCH_GOLDEN_GENERATED
@@ -260,6 +264,12 @@ run_bench_baseline() {
   export BITIR_COMPARE_MODE="${COMPARE_MODE_MAP[${bench}]}"
   export BITIR_RUN_ARGS="${RUN_ARGS_MAP[${bench}]}"
   export BITIR_EXTRA_INCLUDES="${EXTRA_INCLUDES_MAP[${bench}]}"
+  export BITIR_ABS_TOL="${ABS_TOL_MAP[${bench}]}"
+  export BITIR_REL_TOL="${REL_TOL_MAP[${bench}]}"
+
+  {
+    echo "[benchmark:${bench}] compare_mode=${BITIR_COMPARE_MODE} abs_tol=${BITIR_ABS_TOL} rel_tol=${BITIR_REL_TOL}"
+  } >> "${bench_log}"
 
   echo "[benchmark:${bench}] baseline site=${baseline_site} bit=${baseline_bit}" | tee -a "${bench_log}" "${HELPER_LOG}"
 
@@ -296,6 +306,12 @@ run_bench_injection() {
   export BITIR_COMPARE_MODE="${COMPARE_MODE_MAP[${bench}]}"
   export BITIR_RUN_ARGS="${RUN_ARGS_MAP[${bench}]}"
   export BITIR_EXTRA_INCLUDES="${EXTRA_INCLUDES_MAP[${bench}]}"
+  export BITIR_ABS_TOL="${ABS_TOL_MAP[${bench}]}"
+  export BITIR_REL_TOL="${REL_TOL_MAP[${bench}]}"
+
+  {
+    echo "[benchmark:${bench}] compare_mode=${BITIR_COMPARE_MODE} abs_tol=${BITIR_ABS_TOL} rel_tol=${BITIR_REL_TOL}"
+  } >> "${bench_log}"
 
   echo "[benchmark:${bench}] injection worklist_id=${worklist_id} site=${site_id} bit=${bit_index}" | tee -a "${bench_log}" "${HELPER_LOG}"
 

@@ -321,6 +321,14 @@ compare_result() {
     python3 "${COMPARE_FLOAT}" "${GOLDEN_FILE}" "${DUMP_CANDIDATE}" --abs-tol "${ABS_TOL}" --rel-tol "${REL_TOL}"
     return
   fi
+  if [[ "${COMPARE_MODE}" == "byte_tol" ]]; then
+    if [[ ! -f "${GOLDEN_FILE}" ]]; then
+      echo "missing golden file: ${GOLDEN_FILE}" >&2
+      return 1
+    fi
+    python3 "${COMPARE_BYTE_TOL}" "${GOLDEN_FILE}" "${DUMP_CANDIDATE}" --abs-tol "${ABS_TOL}"
+    return
+  fi
   if [[ ! -f "${GOLDEN_FILE}" ]]; then
     echo "missing golden file: ${GOLDEN_FILE}" >&2
     return 1
@@ -510,8 +518,6 @@ setup_common() {
   need BENCH
   need SITE_ID
   need BIT_INDEX
-  need ABS_TOL
-  need REL_TOL
   need BITIR_COMPARE_MODE
 
   REPO_ROOT="${REPO_ROOT:-$(pwd)}"
@@ -525,6 +531,8 @@ setup_common() {
 
   BASELINE="${BASELINE:-0}"
   COMPARE_MODE="${BITIR_COMPARE_MODE}"
+  ABS_TOL="${BITIR_ABS_TOL:-${ABS_TOL:-0}}"
+  REL_TOL="${BITIR_REL_TOL:-${REL_TOL:-0}}"
   INJECT_TARGET="${INJECT_TARGET:-${BITIR_FAULT_MODEL_INJECT_TARGET:-result}}"
   INT_FLOAT_ONLY="${INT_FLOAT_ONLY:-${BITIR_FAULT_MODEL_INT_FLOAT_ONLY:-1}}"
   INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS:-${BITIR_FAULT_MODEL_INCLUDE_CONSTANTS:-0}}"
@@ -562,12 +570,19 @@ setup_common() {
 
   COMPARE_FLOAT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_matrix_dump.py"
   COMPARE_EXACT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_binary_exact.py"
+  COMPARE_BYTE_TOL="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_binary_u8_tolerance.py"
   COMPARE_TEXT="${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_text_signature.py"
 
   if [[ ! -f "${PLUGIN}" ]]; then
     echo "missing plugin: ${PLUGIN}" >&2
     exit 1
   fi
+
+  {
+    echo "compare_mode=${COMPARE_MODE}"
+    echo "abs_tol=${ABS_TOL}"
+    echo "rel_tol=${REL_TOL}"
+  } >> "${RESULTS_DIR}/run_config.log"
 }
 
 prepare_nvidia() {
