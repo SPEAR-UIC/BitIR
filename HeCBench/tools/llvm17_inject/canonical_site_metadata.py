@@ -139,8 +139,20 @@ def relative_source_path(source_file: str, source_root: Path, indexed: Dict[str,
             rel = source_path.relative_to(source_root)
             return (str(rel).replace("\\", "/"), True)
         except ValueError:
-            return ("", False)
+            # Metadata often records absolute paths from the machine that
+            # generated the artifact. When replaying on another checkout,
+            # fall through to suffix/name matching against the local source
+            # tree instead of treating the row as external.
+            pass
     normalized = str(source_path).replace("\\", "/")
+    marker = "/HeCBench/src/"
+    if marker in normalized:
+        source_tail = normalized.split(marker, 1)[1]
+        parts = source_tail.split("/", 1)
+        if len(parts) == 2:
+            candidate = parts[1]
+            if candidate in indexed:
+                return (candidate, True)
     if normalized in indexed:
         return (normalized, True)
     name_matches = [item for item in indexed.keys() if item.endswith("/" + source_path.name) or item == source_path.name]

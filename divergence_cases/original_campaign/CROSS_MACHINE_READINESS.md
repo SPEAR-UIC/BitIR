@@ -1,25 +1,16 @@
 # Cross-Machine Readiness Gate
 
-This tree is not yet certified as ready for cross-machine divergence experimentation.
+This branch now contains original campaign artifacts for NVIDIA, AMD, and Intel, plus derived validation artifacts under `divergence_cases/validation/`.
 
-The Intel artifacts under `divergence_cases/original_campaign/intel/` are original-campaign inputs with source provenance. They are not, by themselves, an aligned cross-machine semantic mapping.
+Readiness is split into two levels:
 
-Required before use as experiment input:
+- `strict_cross_machine_ready`: exact canonical site-key agreement, including `site_class`.
+- `class_family_cross_machine_usable`: unique three-machine match under the recorded value-family fallback, where `result` and `base` are treated as the same value family but the actual per-backend `site_class` is preserved in the mapping.
 
-- Add original NVIDIA campaign artifacts under `divergence_cases/original_campaign/nvidia/`.
-- Generate canonical metadata for NVIDIA, AMD, and Intel using `HeCBench/tools/llvm17_inject/canonical_site_metadata.py`.
-- Build NVIDIA-anchored shared semantic inventories with `HeCBench/tools/llvm17_inject/build_shared_semantic_inventory.py`.
-- Use only rows with explicit backend mappings; do not use raw Intel `site_id` values directly across machines.
-- Treat `match_mode=strict` as directly aligned. Treat `match_mode=class_family` as a recorded normalization fallback, not silent equality.
-- Exclude rows with `canonical_status=external_source` from shared source-site experiments unless a separate policy explicitly permits runtime/library source sites.
+Current result:
 
-Current blocking gaps:
+- No benchmark has strict three-machine consensus sites.
+- `matrix-rotate`, `entropy`, and `colorwheel` have outcome-backed class-family consensus rows.
+- `jacobi`, `layout`, `dense-embedding`, `pathfinder`, and `randomAccess` do not currently have outcome-backed three-machine consensus rows under these policies.
 
-- No original NVIDIA campaign artifact root is present in this branch. The only local NVIDIA path found is `HeCBench/results/debug_trace_top10/nvidia`, which is explicitly excluded from this reset.
-- Intel `layout` normalized SYCL outcome tables were not copied because the only local normalized candidate found was under `layout-sycl-debugscale-r1`, which is treated as later/debug-scale evidence.
-
-Current positive checks:
-
-- The durable metadata fixes from `aurora-debug-trace` are present on this branch.
-- All eight Intel `sites_metadata.csv` files parse with the fixed canonical metadata tool.
-- No Intel metadata files were regenerated, and no FI injections were rerun.
+Use `divergence_cases/validation/cross_machine_alignment/alignment_summary.csv` and `divergence_cases/validation/cross_machine_alignment/outcome_summary_status.csv` as the machine-readable source of truth. Do not use raw backend-local `site_id` values directly across machines.

@@ -1,9 +1,9 @@
-bench,intel_sites_canonicalized,intel_total_sites,intel_bench_source_match_sites,intel_external_source_sites,nvidia_original_artifacts_present,amd_original_artifacts_present,shared_inventory_built,cross_machine_ready,blocking_reason
-matrix-rotate,true,113,80,33,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built
-jacobi,true,308,178,130,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built
-layout,true,69,32,37,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built; missing acceptable Intel layout normalized outcomes
-dense-embedding,true,206,141,65,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built
-pathfinder,true,224,155,69,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built
-entropy,true,281,163,118,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built
-colorwheel,true,259,185,74,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built
-randomAccess,true,171,113,58,false,true,false,false,missing original NVIDIA artifacts; shared NVIDIA-anchored inventory not built
+bench,nvidia_original_artifacts_present,amd_original_artifacts_present,intel_original_artifacts_present,canonical_metadata_built,nvidia_anchored_mapping_built,amd_anchored_mapping_built,strict_consensus_sites,class_family_consensus_sites,class_family_outcome_rows,strict_cross_machine_ready,class_family_cross_machine_usable,blocking_reason
+matrix-rotate,true,true,true,true,true,true,0,2,64,false,true,
+jacobi,true,true,true,true,true,true,0,0,0,false,false,no outcome-backed three-machine consensus sites under current strict/class-family policies
+layout,true,true,true,true,true,true,0,0,0,false,false,no outcome-backed three-machine consensus sites under current strict/class-family policies
+dense-embedding,true,true,true,true,true,true,0,0,0,false,false,no outcome-backed three-machine consensus sites under current strict/class-family policies
+pathfinder,true,true,true,true,true,true,0,0,0,false,false,no outcome-backed three-machine consensus sites under current strict/class-family policies
+entropy,true,true,true,true,true,true,0,2,40,false,true,
+colorwheel,true,true,true,true,true,true,0,103,3714,false,true,
+randomAccess,true,true,true,true,true,true,0,0,0,false,false,no outcome-backed three-machine consensus sites under current strict/class-family policies

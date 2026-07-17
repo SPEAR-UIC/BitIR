@@ -1,0 +1,17 @@
+bench,anchor_backend,anchor_rows,all3_strict_unique,all3_family_unique,not_ready,strict_consensus_sites,class_family_consensus_sites
+matrix-rotate,nvidia,81,0,2,79,0,2
+matrix-rotate,amd,325,0,2,323,0,2
+jacobi,nvidia,149,0,0,149,0,0
+jacobi,amd,323,0,0,323,0,0
+layout,nvidia,32,0,0,32,0,0
+layout,amd,272,0,0,272,0,0
+dense-embedding,nvidia,118,0,0,118,0,0
+dense-embedding,amd,277,0,0,277,0,0
+pathfinder,nvidia,151,0,0,151,0,0
+pathfinder,amd,320,0,0,320,0,0
+entropy,nvidia,163,0,2,161,0,2
+entropy,amd,896,0,2,894,0,2
+colorwheel,nvidia,181,0,103,78,0,103
+colorwheel,amd,388,0,103,285,0,103
+randomAccess,nvidia,113,0,0,113,0,0
+randomAccess,amd,478,0,0,478,0,0
