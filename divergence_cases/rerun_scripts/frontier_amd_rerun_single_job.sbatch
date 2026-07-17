@@ -7,7 +7,7 @@
 #SBATCH --gpus-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
-#SBATCH --time=08:00:00
+#SBATCH --time=02:00:00
 #SBATCH --output=divergence_cases/slurm_frontier_amd_rerun_%j.out
 #SBATCH --error=divergence_cases/slurm_frontier_amd_rerun_%j.err
 
