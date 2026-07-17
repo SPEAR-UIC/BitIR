@@ -20,6 +20,11 @@ HECBENCH_BUILD="${REPO_ROOT}/HeCBench/build.sh"
 GOLDEN_ROOT="${REPO_ROOT}/Aurora_Sycl_Golden_Outputs"
 BUILD_DIR="${REPO_ROOT}/HeCBench/build/sycl-intel-golden"
 BIN_ROOT="${BUILD_DIR}/bin/sycl"
+DRY_RUN="${DRY_RUN:-0}"
+MAX_BENCHES="${MAX_BENCHES:-0}"
+MAX_ROWS_PER_BENCH="${MAX_ROWS_PER_BENCH:-0}"
+SELECT_BENCHES="${SELECT_BENCHES:-}"
+SKIP_GOLDEN_GEN="${SKIP_GOLDEN_GEN:-0}"
 
 need WORKLIST
 need ANCHOR_CSV
@@ -51,11 +56,12 @@ BASELINE_STATUS_CSV="${RESULTS_DIR}/benchmark_baseline_status.csv"
 PER_ROW_CSV="${RESULTS_DIR}/per_row_outcomes.csv"
 SUMMARY_TXT="${RESULTS_DIR}/rerun_summary.txt"
 HELPER_LOG="${RESULTS_DIR}/campaign.log"
+PLAN_TXT="${RESULTS_DIR}/execution_plan.txt"
 
-python3 - "${WORKLIST}" "${WORKLIST_TSV}" "${BENCH_MANIFEST}" "${BENCH_ONLY_FILE}" "${CONFIG_PATH}" <<'PY'
+python3 - "${WORKLIST}" "${WORKLIST_TSV}" "${BENCH_MANIFEST}" "${BENCH_ONLY_FILE}" "${CONFIG_PATH}" "${PLAN_TXT}" "${MAX_BENCHES}" "${MAX_ROWS_PER_BENCH}" "${SELECT_BENCHES}" <<'PY2'
 import csv
 import sys
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 from pathlib import Path
 
 import yaml
@@ -65,85 +71,101 @@ worklist_tsv = Path(sys.argv[2])
 manifest_path = Path(sys.argv[3])
 bench_only_path = Path(sys.argv[4])
 config_path = Path(sys.argv[5])
+plan_path = Path(sys.argv[6])
+max_benches = int(sys.argv[7])
+max_rows_per_bench = int(sys.argv[8])
+select_benches_raw = sys.argv[9].strip()
+selected = {item.strip() for item in select_benches_raw.split(',') if item.strip()}
 
-cfg = yaml.safe_load(config_path.read_text(encoding="utf-8"))
-bench_cfg = cfg["benchmarks"]
-
-rows = list(csv.DictReader(worklist_path.open(newline="", encoding="utf-8")))
+cfg = yaml.safe_load(config_path.read_text(encoding='utf-8'))
+bench_cfg = cfg['benchmarks']
+rows = list(csv.DictReader(worklist_path.open(newline='', encoding='utf-8')))
 if not rows:
-    raise SystemExit("empty Intel rerun worklist")
+    raise SystemExit('empty Intel rerun worklist')
 
 ordered_benches = OrderedDict()
+bench_rows = OrderedDict()
 for row in rows:
-    ordered_benches.setdefault(row["bench"], None)
+    bench = row['bench']
+    if selected and bench not in selected:
+        continue
+    if bench not in ordered_benches:
+        if max_benches and len(ordered_benches) >= max_benches:
+            continue
+        ordered_benches[bench] = None
+        bench_rows[bench] = []
+    if max_rows_per_bench and len(bench_rows[bench]) >= max_rows_per_bench:
+        continue
+    bench_rows[bench].append(row)
 
-with worklist_tsv.open("w", encoding="utf-8", newline="") as f:
-    fields = [
-        "worklist_id",
-        "bench",
-        "site_id",
-        "bit_index",
-        "comparison",
-        "expected_original_result",
-        "nvidia_site_id",
-        "amd_site_id",
-        "intel_site_id",
-        "nvidia_result",
-        "amd_result",
-        "intel_result",
-        "match_tier",
-        "notes",
-    ]
-    f.write("\t".join(fields) + "\n")
-    for row in rows:
-        f.write("\t".join(row.get(field, "") for field in fields) + "\n")
+filtered_rows = [row for bench in ordered_benches for row in bench_rows[bench]]
+if not filtered_rows:
+    raise SystemExit('filters produced an empty Intel rerun worklist')
 
-with bench_only_path.open("w", encoding="utf-8") as f:
+worklist_fields = [
+    'worklist_id', 'bench', 'site_id', 'bit_index', 'comparison',
+    'expected_original_result', 'nvidia_site_id', 'amd_site_id', 'intel_site_id',
+    'nvidia_result', 'amd_result', 'intel_result', 'match_tier', 'notes'
+]
+with worklist_tsv.open('w', encoding='utf-8', newline='') as f:
+    f.write('\t'.join(worklist_fields) + '\n')
+    for row in filtered_rows:
+        f.write('\t'.join(row.get(field, '') for field in worklist_fields) + '\n')
+
+with bench_only_path.open('w', encoding='utf-8') as f:
     for bench in ordered_benches:
-        f.write(f"{bench}\n")
+        f.write(f'{bench}\n')
 
-with manifest_path.open("w", encoding="utf-8", newline="") as f:
-    fields = [
-        "bench",
-        "source_dir",
-        "golden_file",
-        "compare_mode",
-        "run_args",
-        "extra_includes",
-        "pass_line",
-        "fail_line",
-        "pass_regex",
-        "fail_regex",
-    ]
-    f.write("\t".join(fields) + "\n")
+manifest_fields = [
+    'bench', 'source_dir', 'golden_file', 'compare_mode', 'run_args',
+    'extra_includes', 'pass_line', 'fail_line', 'pass_regex', 'fail_regex'
+]
+with manifest_path.open('w', encoding='utf-8', newline='') as f:
+    f.write('\t'.join(manifest_fields) + '\n')
     for bench in ordered_benches:
         data = bench_cfg[bench]
-        env = data.get("env", {})
+        env = data.get('env', {})
         rendered_args = []
-        for raw in data.get("args", []):
+        for raw in data.get('args', []):
             value = raw
             for key, env_value in env.items():
-                value = value.replace(f"{{{key}}}", str(env_value))
+                value = value.replace(f'{{{key}}}', str(env_value))
             rendered_args.append(value)
-        golden_name = data["golden_file"]
+        golden_name = data['golden_file']
         for key, env_value in env.items():
-            golden_name = golden_name.replace(f"{{{key}}}", str(env_value))
-        extra_includes = data.get("extra_includes", {}).get("intel", [])
-        status = data.get("status", {})
+            golden_name = golden_name.replace(f'{{{key}}}', str(env_value))
+        extra_includes = data.get('extra_includes', {}).get('intel', [])
+        status = data.get('status', {})
         record = {
-            "bench": bench,
-            "source_dir": data["source_dirs"]["intel"],
-            "golden_file": golden_name,
-            "compare_mode": data.get("compare_mode", "exact"),
-            "run_args": " ".join(rendered_args),
-            "extra_includes": " ".join(extra_includes),
-            "pass_line": status.get("pass_line", ""),
-            "fail_line": status.get("fail_line", ""),
-            "pass_regex": status.get("pass_regex", ""),
-            "fail_regex": status.get("fail_regex", ""),
+            'bench': bench,
+            'source_dir': data['source_dirs']['intel'],
+            'golden_file': golden_name,
+            'compare_mode': data.get('compare_mode', 'exact'),
+            'run_args': ' '.join(rendered_args),
+            'extra_includes': ' '.join(extra_includes),
+            'pass_line': status.get('pass_line', ''),
+            'fail_line': status.get('fail_line', ''),
+            'pass_regex': status.get('pass_regex', ''),
+            'fail_regex': status.get('fail_regex', ''),
         }
-        f.write("\t".join(record[field] for field in fields) + "\n")
-PY
+        f.write('\t'.join(record[field] for field in manifest_fields) + '\n')
+
+counts = Counter(row['bench'] for row in filtered_rows)
+with plan_path.open('w', encoding='utf-8') as f:
+    f.write('Execution plan\n')
+    f.write(f'total_rows={len(filtered_rows)}\n')
+    f.write(f'total_benches={len(ordered_benches)}\n')
+    f.write(f'max_benches={max_benches}\n')
+    f.write(f'max_rows_per_bench={max_rows_per_bench}\n')
+    f.write(f'select_benches={select_benches_raw or "<all>"}\n')
+    f.write('\n')
+    for bench in ordered_benches:
+        first = bench_rows[bench][0]
+        f.write(
+            f'{bench}: rows={counts[bench]} baseline_site={first["site_id"]} '
+            f'baseline_bit={first["bit_index"]} source_dir={bench_cfg[bench]["source_dirs"]["intel"]}\n'
+        )
+PY2
 
 export REPO_ROOT
 export BITIR_WORKDIR="${REPO_ROOT}"
@@ -173,7 +195,20 @@ export INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS:-0}"
   echo "results_dir=${RESULTS_DIR}"
   echo "worklist=${WORKLIST}"
   echo "anchor_csv=${ANCHOR_CSV}"
+  echo "dry_run=${DRY_RUN}"
+  echo "max_benches=${MAX_BENCHES}"
+  echo "max_rows_per_bench=${MAX_ROWS_PER_BENCH}"
+  echo "select_benches=${SELECT_BENCHES:-<all>}"
+  echo "skip_golden_gen=${SKIP_GOLDEN_GEN}"
 } > "${RESULTS_DIR}/campaign_context.txt"
+
+if [[ "${DRY_RUN}" == "1" ]]; then
+  {
+    echo "[campaign] dry run $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    cat "${PLAN_TXT}"
+  } | tee -a "${HELPER_LOG}"
+  exit 0
+fi
 
 echo "bench,baseline_status,baseline_result,generated_golden,baseline_site_id,baseline_bit_index,notes" > "${BASELINE_STATUS_CSV}"
 echo "worklist_id,bench,site_id,bit_index,comparison,expected_original_result,match_tier,baseline_status,runner_result,runner_exit_code,runner_stdout,runner_stderr,runner_dump,notes" > "${PER_ROW_CSV}"
@@ -184,6 +219,7 @@ mkdir -p "${GOLDEN_ROOT}"
   echo "[campaign] start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "[campaign] results_dir=${RESULTS_DIR}"
   echo "[campaign] building injection plugin"
+  cat "${PLAN_TXT}"
 } | tee -a "${HELPER_LOG}"
 
 bash "${PLUGIN_BUILD}" 2>&1 | tee -a "${HELPER_LOG}"
@@ -196,7 +232,6 @@ bash "${PLUGIN_BUILD}" 2>&1 | tee -a "${HELPER_LOG}"
 BENCH_ONLY_FILE="${BENCH_ONLY_FILE}" bash "${HECBENCH_BUILD}" 2>&1 | tee -a "${HELPER_LOG}"
 
 declare -A SOURCE_DIR_MAP GOLDEN_FILE_MAP COMPARE_MODE_MAP RUN_ARGS_MAP EXTRA_INCLUDES_MAP
-
 while IFS=$'\t' read -r bench source_dir golden_file compare_mode run_args extra_includes pass_line fail_line pass_regex fail_regex; do
   [[ "${bench}" == "bench" ]] && continue
   SOURCE_DIR_MAP["${bench}"]="${source_dir}"
@@ -226,16 +261,10 @@ run_bench_baseline() {
   export BITIR_RUN_ARGS="${RUN_ARGS_MAP[${bench}]}"
   export BITIR_EXTRA_INCLUDES="${EXTRA_INCLUDES_MAP[${bench}]}"
 
-  {
-    echo "[benchmark:${bench}] baseline site=${baseline_site} bit=${baseline_bit}"
-  } | tee -a "${bench_log}" "${HELPER_LOG}"
+  echo "[benchmark:${bench}] baseline site=${baseline_site} bit=${baseline_bit}" | tee -a "${bench_log}" "${HELPER_LOG}"
 
-  BASELINE=1 \
-  SITE_ID="${baseline_site}" \
-  BIT_INDEX="${baseline_bit}" \
-  RESULTS_DIR="${bench_dir}" \
-  SKIP_EXISTING=0 \
-  bash "${RUNNER}" 2>&1 | tee -a "${bench_log}" "${HELPER_LOG}"
+  BASELINE=1 SITE_ID="${baseline_site}" BIT_INDEX="${baseline_bit}" RESULTS_DIR="${bench_dir}" SKIP_EXISTING=0 \
+    bash "${RUNNER}" 2>&1 | tee -a "${bench_log}" "${HELPER_LOG}"
 
   summary_line="$(tail -n 1 "${summary_csv}")"
   IFS=, read -r _ _ _ result _ _ _ _ <<< "${summary_line}"
@@ -268,34 +297,17 @@ run_bench_injection() {
   export BITIR_RUN_ARGS="${RUN_ARGS_MAP[${bench}]}"
   export BITIR_EXTRA_INCLUDES="${EXTRA_INCLUDES_MAP[${bench}]}"
 
-  {
-    echo "[benchmark:${bench}] injection worklist_id=${worklist_id} site=${site_id} bit=${bit_index}"
-  } | tee -a "${bench_log}" "${HELPER_LOG}"
+  echo "[benchmark:${bench}] injection worklist_id=${worklist_id} site=${site_id} bit=${bit_index}" | tee -a "${bench_log}" "${HELPER_LOG}"
 
-  BASELINE=0 \
-  SITE_ID="${site_id}" \
-  BIT_INDEX="${bit_index}" \
-  RESULTS_DIR="${bench_dir}" \
-  SKIP_EXISTING=0 \
-  bash "${RUNNER}" 2>&1 | tee -a "${bench_log}" "${HELPER_LOG}"
+  BASELINE=0 SITE_ID="${site_id}" BIT_INDEX="${bit_index}" RESULTS_DIR="${bench_dir}" SKIP_EXISTING=0 \
+    bash "${RUNNER}" 2>&1 | tee -a "${bench_log}" "${HELPER_LOG}"
 
   summary_line="$(tail -n 1 "${summary_csv}")"
   IFS=, read -r _ _ _ result exit_code stdout_path stderr_path dump_path <<< "${summary_line}"
   printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
-    "${worklist_id}" \
-    "${bench}" \
-    "${site_id}" \
-    "${bit_index}" \
-    "${comparison}" \
-    "${expected_original_result}" \
-    "${match_tier}" \
-    "${BENCH_BASELINE_STATUS[${bench}]}" \
-    "${result}" \
-    "${exit_code}" \
-    "${stdout_path}" \
-    "${stderr_path}" \
-    "${dump_path}" \
-    "${notes}" >> "${PER_ROW_CSV}"
+    "${worklist_id}" "${bench}" "${site_id}" "${bit_index}" "${comparison}" \
+    "${expected_original_result}" "${match_tier}" "${BENCH_BASELINE_STATUS[${bench}]}" \
+    "${result}" "${exit_code}" "${stdout_path}" "${stderr_path}" "${dump_path}" "${notes}" >> "${PER_ROW_CSV}"
 }
 
 current_bench=""
@@ -316,12 +328,18 @@ while IFS=$'\t' read -r worklist_id bench site_id bit_index comparison expected_
     mkdir -p "${bench_dir}"
 
     if [[ ! -f "${golden_path}" ]]; then
-      {
-        echo "[benchmark:${bench}] generating missing golden ${golden_path}"
-      } | tee -a "${bench_log}" "${HELPER_LOG}"
-      bin_path="${BIN_ROOT}/${bench}"
-      if [[ ! -x "${bin_path}" ]]; then
-        echo "missing built benchmark binary: ${bin_path}" >&2
+      if [[ "${SKIP_GOLDEN_GEN}" == "1" ]]; then
+        echo "[benchmark:${bench}] missing golden ${golden_path} and SKIP_GOLDEN_GEN=1" | tee -a "${bench_log}" "${HELPER_LOG}"
+        BENCH_BASELINE_STATUS["${bench}"]="fail"
+        BENCH_BASELINE_RESULT["${bench}"]="MISSING_GOLDEN_SKIPPED"
+        printf '%s,%s,%s,%s,%s,%s,%s\n' \
+          "${bench}" "fail" "MISSING_GOLDEN_SKIPPED" "no" "${baseline_site}" "${baseline_bit}" "missing golden with SKIP_GOLDEN_GEN=1" >> "${BASELINE_STATUS_CSV}"
+        continue
+      fi
+      echo "[benchmark:${bench}] generating missing golden ${golden_path}" | tee -a "${bench_log}" "${HELPER_LOG}"
+      local_bin_path="${BIN_ROOT}/${bench}"
+      if [[ ! -x "${local_bin_path}" ]]; then
+        echo "missing built benchmark binary: ${local_bin_path}" >&2
         exit 1
       fi
       rm -f "${golden_path}"
@@ -330,49 +348,31 @@ while IFS=$'\t' read -r worklist_id bench site_id bit_index comparison expected_
       else
         bench_args=()
       fi
-      HECBENCH_LLFI_FORCE_DUMP=1 "${bin_path}" "${bench_args[@]}" "${golden_path}" \
-        > "${bench_dir}/golden_${bench}.out" 2> "${bench_dir}/golden_${bench}.err"
+      HECBENCH_LLFI_FORCE_DUMP=1 "${local_bin_path}" "${bench_args[@]}" "${golden_path}" > "${bench_dir}/golden_${bench}.out" 2> "${bench_dir}/golden_${bench}.err"
       BENCH_GOLDEN_GENERATED["${bench}"]="yes"
     else
-      {
-        echo "[benchmark:${bench}] reusing existing golden ${golden_path}"
-      } | tee -a "${bench_log}" "${HELPER_LOG}"
+      echo "[benchmark:${bench}] reusing existing golden ${golden_path}" | tee -a "${bench_log}" "${HELPER_LOG}"
     fi
 
-    run_bench_baseline "${bench}" "${baseline_site}" "${baseline_bit}"
-    printf '%s,%s,%s,%s,%s,%s,%s\n' \
-      "${bench}" \
-      "${BENCH_BASELINE_STATUS[${bench}]}" \
-      "${BENCH_BASELINE_RESULT[${bench}]}" \
-      "${BENCH_GOLDEN_GENERATED[${bench}]}" \
-      "${baseline_site}" \
-      "${baseline_bit}" \
-      "" >> "${BASELINE_STATUS_CSV}"
+    if [[ -z "${BENCH_BASELINE_STATUS[${bench}]:-}" ]]; then
+      run_bench_baseline "${bench}" "${baseline_site}" "${baseline_bit}"
+      printf '%s,%s,%s,%s,%s,%s,%s\n' \
+        "${bench}" "${BENCH_BASELINE_STATUS[${bench}]}" "${BENCH_BASELINE_RESULT[${bench}]}" \
+        "${BENCH_GOLDEN_GENERATED[${bench}]}" "${baseline_site}" "${baseline_bit}" "" >> "${BASELINE_STATUS_CSV}"
+    fi
   fi
 
-  if [[ "${BENCH_BASELINE_STATUS[${bench}]}" != "pass" ]]; then
+  if [[ "${BENCH_BASELINE_STATUS[${bench}]:-fail}" != "pass" ]]; then
     printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
-      "${worklist_id}" \
-      "${bench}" \
-      "${site_id}" \
-      "${bit_index}" \
-      "${comparison}" \
-      "${expected_original_result}" \
-      "${match_tier}" \
-      "${BENCH_BASELINE_STATUS[${bench}]}" \
-      "SKIPPED_BASELINE_FAILURE" \
-      "" \
-      "" \
-      "" \
-      "" \
-      "${notes}" >> "${PER_ROW_CSV}"
+      "${worklist_id}" "${bench}" "${site_id}" "${bit_index}" "${comparison}" "${expected_original_result}" \
+      "${match_tier}" "${BENCH_BASELINE_STATUS[${bench}]:-fail}" "SKIPPED_BASELINE_FAILURE" "" "" "" "" "${notes}" >> "${PER_ROW_CSV}"
     continue
   fi
 
   run_bench_injection "${worklist_id}" "${bench}" "${site_id}" "${bit_index}" "${comparison}" "${expected_original_result}" "${match_tier}" "${notes}"
 done < "${WORKLIST_TSV}"
 
-python3 - "${PER_ROW_CSV}" "${BASELINE_STATUS_CSV}" <<'PY' > "${SUMMARY_TXT}"
+python3 - "${PER_ROW_CSV}" "${BASELINE_STATUS_CSV}" <<'PY3' > "${SUMMARY_TXT}"
 import csv
 import sys
 from collections import Counter
@@ -380,10 +380,10 @@ from collections import Counter
 per_row_path = sys.argv[1]
 baseline_path = sys.argv[2]
 
-baseline_rows = list(csv.DictReader(open(baseline_path, newline="", encoding="utf-8")))
-per_rows = list(csv.DictReader(open(per_row_path, newline="", encoding="utf-8")))
+baseline_rows = list(csv.DictReader(open(baseline_path, newline='', encoding='utf-8')))
+per_rows = list(csv.DictReader(open(per_row_path, newline='', encoding='utf-8')))
 
-print("Baseline status by benchmark:")
+print('Baseline status by benchmark:')
 for row in baseline_rows:
     print(
         f"{row['bench']}: baseline_status={row['baseline_status']} "
@@ -391,17 +391,17 @@ for row in baseline_rows:
         f"site={row['baseline_site_id']} bit={row['baseline_bit_index']}"
     )
 
-counts = Counter(row["runner_result"] for row in per_rows)
-print("")
-print("Rerun result counts:")
+counts = Counter(row['runner_result'] for row in per_rows)
+print('')
+print('Rerun result counts:')
 for key in sorted(counts):
-    print(f"{key}: {counts[key]}")
+    print(f'{key}: {counts[key]}')
 
-print("")
-print(f"total_rows: {len(per_rows)}")
-print(f"baseline_passed_benches: {sum(row['baseline_status'] == 'pass' for row in baseline_rows)}")
-print(f"baseline_failed_benches: {sum(row['baseline_status'] != 'pass' for row in baseline_rows)}")
-PY
+print('')
+print(f'total_rows: {len(per_rows)}')
+print(f'baseline_passed_benches: {sum(row["baseline_status"] == "pass" for row in baseline_rows)}')
+print(f'baseline_failed_benches: {sum(row["baseline_status"] != "pass" for row in baseline_rows)}')
+PY3
 
 {
   echo "[campaign] completed $(date -u +%Y-%m-%dT%H:%M:%SZ)"
