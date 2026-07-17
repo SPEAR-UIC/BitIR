@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <chrono>
-#include <random>
 #include <cuda.h>
 
 template <typename T>
@@ -88,6 +87,11 @@ __global__ void dense_esuhm3(
   }
 }
 
+static float host_rand_unit()
+{
+  return -1.f + 2.f * (float) rand() / (float) RAND_MAX;
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -141,14 +145,12 @@ int main(int argc, char* argv[])
     for (int i = 1; i <= batch_size; i++)
       input_offset[i] = input_offset[i-1] + (rand() % batch_size + 1) * ncols;
 
-    std::default_random_engine g (123);
-    std::uniform_real_distribution<float> distr (-1.f, 1.f);
     for (int i = 0; i < dense_size; i++) {
-      dense[i] = distr(g);
+      dense[i] = host_rand_unit();
     }
 
     for (int i = 0; i < input_size; i++) {
-      input[i] = distr(g);
+      input[i] = host_rand_unit();
       output_ref[i] = 0;
     }
 
