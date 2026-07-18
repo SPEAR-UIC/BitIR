@@ -57,6 +57,8 @@ export BITIR_MACHINE_TOOL_SEARCH_ROOTS="/opt/rocm-6.4.2/lib/llvm/bin"
 export BITIR_MACHINE_MODULES="rocm/6.4.2 rocm-llvm-toolchain"
 export BITIR_JOBS_DIR="$RESULTS_ROOT/.bitir_jobs"
 export BITIR_WORK_ROOT="$REPO_ROOT"
+export SUMMARY_INCLUDE_PATHS="${SUMMARY_INCLUDE_PATHS:-0}"
+export CLEAN_RUN_ARTIFACTS="${CLEAN_RUN_ARTIFACTS:-1}"
 
 baseline_csv="$RESULTS_ROOT/baseline_status.csv"
 runner_failures_csv="$RESULTS_ROOT/runner_failures.csv"
@@ -64,17 +66,23 @@ master_summary_csv="$RESULTS_ROOT/rerun_summary.csv"
 execution_plan_csv="$RESULTS_ROOT/execution_plan.csv"
 execution_plan_summary_csv="$RESULTS_ROOT/execution_plan_summary.csv"
 
+if [[ ! -f "$baseline_csv" ]]; then
 cat > "$baseline_csv" <<'EOF'
 bench,status,result,site_id,bit_index,summary_csv,notes
 EOF
+fi
 
+if [[ ! -f "$runner_failures_csv" ]]; then
 cat > "$runner_failures_csv" <<'EOF'
 bench,site_id,bit_index,return_code,notes
 EOF
+fi
 
+if [[ ! -f "$master_summary_csv" ]]; then
 cat > "$master_summary_csv" <<'EOF'
 worklist_id,bench,site_id,bit_index,comparison,expected_original_result,nvidia_site_id,amd_site_id,intel_site_id,nvidia_result,amd_result,intel_result,match_tier,notes,rerun_trial,rerun_result,rerun_exit_code,rerun_stdout,rerun_stderr,rerun_dump
 EOF
+fi
 
 bench_args() {
   local bench="$1"
@@ -265,6 +273,115 @@ with open(plan_path, newline="", encoding="utf-8") as infh, open(out_path, "a", 
 PY
 }
 
+baseline_status_for_bench() {
+  local bench="$1"
+  python3 - "$baseline_csv" "$bench" <<'PY'
+import csv
+import sys
+path, bench = sys.argv[1:3]
+try:
+    rows = list(csv.DictReader(open(path, newline="", encoding="utf-8")))
+except FileNotFoundError:
+    print("")
+    raise SystemExit(0)
+for row in rows:
+    if row["bench"] == bench:
+        print(row["status"])
+        raise SystemExit(0)
+print("")
+PY
+}
+
+write_missing_work_items() {
+  local bench="$1"
+  local summary_csv="$2"
+  local out_csv="$3"
+  python3 - "$execution_plan_csv" "$bench" "$summary_csv" "$out_csv" <<'PY'
+import csv
+import os
+import sys
+
+plan_path, bench, summary_path, out_path = sys.argv[1:5]
+completed = set()
+if os.path.exists(summary_path):
+    with open(summary_path, newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            if row.get("result"):
+                completed.add((row["site_id"], row["bit_index"]))
+
+rows = []
+with open(plan_path, newline="", encoding="utf-8") as fh:
+    for row in csv.DictReader(fh):
+        if row["bench"] != bench:
+            continue
+        if (row["site_id"], row["bit_index"]) in completed:
+            continue
+        rows.append(row)
+
+if not rows:
+    try:
+        os.remove(out_path)
+    except FileNotFoundError:
+        pass
+    raise SystemExit(0)
+
+with open(out_path, "w", newline="", encoding="utf-8") as out:
+    writer = csv.DictWriter(out, fieldnames=rows[0].keys())
+    writer.writeheader()
+    writer.writerows(rows)
+PY
+}
+
+rebuild_master_summary() {
+  python3 - "$execution_plan_csv" "$RESULTS_ROOT/benchmarks" "$master_summary_csv" <<'PY'
+import csv
+import os
+import sys
+
+plan_path, bench_root, out_path = sys.argv[1:4]
+summary_by_bench = {}
+for bench in os.listdir(bench_root):
+    summary_path = os.path.join(bench_root, bench, "summary.csv")
+    if not os.path.exists(summary_path):
+        continue
+    with open(summary_path, newline="", encoding="utf-8") as fh:
+        summary_by_bench[bench] = {
+            (row["site_id"], row["bit_index"]): row
+            for row in csv.DictReader(fh)
+            if row.get("result")
+        }
+
+with open(out_path, "w", newline="", encoding="utf-8") as outfh:
+    writer = csv.writer(outfh)
+    writer.writerow([
+        "worklist_id","bench","site_id","bit_index","comparison","expected_original_result",
+        "nvidia_site_id","amd_site_id","intel_site_id","nvidia_result","amd_result",
+        "intel_result","match_tier","notes","rerun_trial","rerun_result","rerun_exit_code",
+        "rerun_stdout","rerun_stderr","rerun_dump"
+    ])
+    with open(plan_path, newline="", encoding="utf-8") as infh:
+        for row in csv.DictReader(infh):
+            match = summary_by_bench.get(row["bench"], {}).get((row["site_id"], row["bit_index"]))
+            if match is None:
+                writer.writerow([
+                    row["worklist_id"], row["bench"], row["site_id"], row["bit_index"],
+                    row["comparison"], row["expected_original_result"], row["nvidia_site_id"],
+                    row["amd_site_id"], row["intel_site_id"], row["nvidia_result"],
+                    row["amd_result"], row["intel_result"], row["match_tier"], row["notes"],
+                    "", "MISSING_SUMMARY_ROW", "", "", "", "",
+                ])
+            else:
+                writer.writerow([
+                    row["worklist_id"], row["bench"], row["site_id"], row["bit_index"],
+                    row["comparison"], row["expected_original_result"], row["nvidia_site_id"],
+                    row["amd_site_id"], row["intel_site_id"], row["nvidia_result"],
+                    row["amd_result"], row["intel_result"], row["match_tier"], row["notes"],
+                    match.get("trial", ""), match.get("result", ""), match.get("exit_code", ""),
+                    match.get("stdout", ""), match.get("stderr", ""), match.get("dump", ""),
+                ])
+PY
+}
+
 write_execution_plan
 
 mapfile -t benches < <(python3 - "$execution_plan_summary_csv" <<'PY'
@@ -311,6 +428,20 @@ fi
 
 for bench in "${benches[@]}"; do
   benchdir="$RESULTS_ROOT/benchmarks/$bench"
+  summary_csv="$benchdir/summary.csv"
+  work_items_csv="$benchdir/work_items.csv"
+  existing_baseline_status="$(baseline_status_for_bench "$bench")"
+  if [[ "$existing_baseline_status" == "failed" ]]; then
+    echo "[rerun] skip bench=$bench due to prior baseline failure"
+    continue
+  fi
+  write_missing_work_items "$bench" "$summary_csv" "$work_items_csv" || true
+  if [[ ! -f "$work_items_csv" ]]; then
+    if [[ "$existing_baseline_status" == "passed" ]]; then
+      echo "[rerun] skip bench=$bench all planned rows already completed"
+      continue
+    fi
+  fi
   read -r baseline_site baseline_bit < <(python3 - "$execution_plan_summary_csv" "$bench" <<'PY'
 import csv
 import sys
@@ -324,24 +455,28 @@ raise SystemExit(1)
 PY
   )
 
-  echo "[rerun] baseline bench=$bench site=$baseline_site bit=$baseline_bit"
-  set +e
-  BASELINE=1 \
-  RESULTS_DIR="$benchdir" \
-  CSV="$benchdir/baseline_summary.csv" \
-  OUT_DIR="$RESULTS_ROOT/tmp/${bench}_baseline" \
-  BITIR_TRACE_METADATA_DIR="$METADATA_ROOT/$bench" \
-  python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
-    inject-one "$RUN_CONFIG" \
-    --repo-root "$REPO_ROOT" \
-    --machine amd \
-    --bench "$bench" \
-    --site-id "$baseline_site" \
-    --bit-index "$baseline_bit" \
-    --fault-model amd_rerun_result \
-    --local
-  baseline_rc=$?
-  set -e
+  baseline_result=""
+  baseline_rc=0
+  if [[ "$existing_baseline_status" != "passed" ]]; then
+    echo "[rerun] baseline bench=$bench site=$baseline_site bit=$baseline_bit"
+    set +e
+    BASELINE=1 \
+    RESULTS_DIR="$benchdir" \
+    CSV="$benchdir/baseline_summary.csv" \
+    OUT_DIR="$RESULTS_ROOT/tmp/${bench}_baseline" \
+    BITIR_TRACE_METADATA_DIR="$METADATA_ROOT/$bench" \
+    python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
+      inject-one "$RUN_CONFIG" \
+      --repo-root "$REPO_ROOT" \
+      --machine amd \
+      --bench "$bench" \
+      --site-id "$baseline_site" \
+      --bit-index "$baseline_bit" \
+      --fault-model amd_rerun_result \
+      --local
+    baseline_rc=$?
+    set -e
+  fi
 
   baseline_result="$(python3 - "$benchdir/baseline_summary.csv" <<'PY'
 import csv
@@ -362,30 +497,48 @@ PY
     continue
   fi
 
-  echo "$bench,passed,$baseline_result,$baseline_site,$baseline_bit,$benchdir/baseline_summary.csv," >> "$baseline_csv"
-
-  : > "$benchdir/summary.csv"
-  echo "site_id,bit_index,trial,result,exit_code,stdout,stderr,dump" > "$benchdir/summary.csv"
-
-  python3 - "$execution_plan_csv" "$bench" <<'PY' > "$benchdir/work_items.csv"
+  if [[ "$existing_baseline_status" != "passed" ]]; then
+    python3 - "$baseline_csv" "$bench" "$baseline_result" "$baseline_site" "$baseline_bit" "$benchdir/baseline_summary.csv" <<'PY'
 import csv
 import sys
-plan, bench = sys.argv[1], sys.argv[2]
-with open(plan, newline="", encoding="utf-8") as fh:
-    rows = [r for r in csv.DictReader(fh) if r["bench"] == bench]
-if not rows:
-    raise SystemExit(0)
-with open("/dev/stdout", "w", newline="", encoding="utf-8") as out:
-    writer = csv.DictWriter(out, fieldnames=rows[0].keys())
+path, bench, result, site, bit, summary = sys.argv[1:7]
+rows = []
+try:
+    with open(path, newline="", encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+except FileNotFoundError:
+    pass
+rows = [r for r in rows if r["bench"] != bench]
+rows.append({
+    "bench": bench,
+    "status": "passed",
+    "result": result,
+    "site_id": site,
+    "bit_index": bit,
+    "summary_csv": summary,
+    "notes": "",
+})
+with open(path, "w", newline="", encoding="utf-8") as fh:
+    writer = csv.DictWriter(fh, fieldnames=["bench","status","result","site_id","bit_index","summary_csv","notes"])
     writer.writeheader()
     writer.writerows(rows)
 PY
+  fi
 
-  tail -n +2 "$benchdir/work_items.csv" | while IFS=, read -r worklist_id bench_name site_id bit_index comparison expected_original_result nvidia_site_id amd_site_id intel_site_id nvidia_result amd_result intel_result match_tier notes plan_row baseline_site_id baseline_bit_index; do
+  if [[ ! -f "$summary_csv" ]]; then
+    echo "site_id,bit_index,trial,result,exit_code,stdout,stderr,dump" > "$summary_csv"
+  fi
+  write_missing_work_items "$bench" "$summary_csv" "$work_items_csv" || true
+  if [[ ! -f "$work_items_csv" ]]; then
+    echo "[rerun] bench=$bench no remaining rows after baseline"
+    continue
+  fi
+
+  tail -n +2 "$work_items_csv" | while IFS=, read -r worklist_id bench_name site_id bit_index comparison expected_original_result nvidia_site_id amd_site_id intel_site_id nvidia_result amd_result intel_result match_tier notes plan_row baseline_site_id baseline_bit_index; do
     echo "[rerun] inject bench=$bench_name site=$site_id bit=$bit_index worklist_id=$worklist_id"
     set +e
     RESULTS_DIR="$benchdir" \
-    CSV="$benchdir/summary.csv" \
+    CSV="$summary_csv" \
     OUT_DIR="$RESULTS_ROOT/tmp/${bench_name}_site${site_id}_bit${bit_index}" \
     BITIR_TRACE_METADATA_DIR="$METADATA_ROOT/$bench_name" \
     python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
@@ -403,9 +556,9 @@ PY
       echo "$bench_name,$site_id,$bit_index,$row_rc,inject_one_returned_nonzero" >> "$runner_failures_csv"
     fi
   done
-
-  append_master_summary "$bench" "$benchdir"
 done
+
+rebuild_master_summary
 
 python3 - "$master_summary_csv" "$RESULTS_ROOT/rerun_result_counts.csv" <<'PY'
 import csv

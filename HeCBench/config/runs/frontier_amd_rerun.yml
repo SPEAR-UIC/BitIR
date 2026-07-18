@@ -6,7 +6,7 @@ fault_models:
     phase: float
     int_float_only: 1
     include_constants: 0
-    keep_dumps: 1
+    keep_dumps: 0
     run_baseline: 0
     skip_existing: 0
     missing_only: 0

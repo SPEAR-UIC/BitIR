@@ -390,7 +390,17 @@ write_summary() {
   if [[ ! -f "${SUMMARY_CSV}" ]]; then
     echo "site_id,bit_index,trial,result,exit_code,stdout,stderr,dump" > "${SUMMARY_CSV}"
   fi
-  echo "${SITE_ID},${BIT_INDEX},${TRIAL_INDEX},${RESULT},${RUN_STATUS},${RUN_OUT},${RUN_ERR},${DUMP_RECORD}" >> "${SUMMARY_CSV}"
+  local summary_stdout summary_stderr summary_dump
+  if [[ "${SUMMARY_INCLUDE_PATHS:-1}" == "1" ]]; then
+    summary_stdout="${RUN_OUT}"
+    summary_stderr="${RUN_ERR}"
+    summary_dump="${DUMP_RECORD}"
+  else
+    summary_stdout=""
+    summary_stderr=""
+    summary_dump=""
+  fi
+  echo "${SITE_ID},${BIT_INDEX},${TRIAL_INDEX},${RESULT},${RUN_STATUS},${summary_stdout},${summary_stderr},${summary_dump}" >> "${SUMMARY_CSV}"
 }
 
 detect_benchmark_status() {
@@ -1040,6 +1050,14 @@ finalize_run() {
   echo "Result: ${RESULT} (exit ${RUN_STATUS})" >> "${RUN_OUT}"
   echo "Result: ${RESULT} (exit ${RUN_STATUS})"
   write_summary
+
+  if [[ "${CLEAN_RUN_ARTIFACTS:-0}" == "1" ]]; then
+    rm -f "${RUN_DUMP}" 2>/dev/null || true
+    rm -f "${RUN_OUT}" "${RUN_ERR}" 2>/dev/null || true
+    if [[ -n "${OUT_DIR:-}" && -d "${OUT_DIR}" ]]; then
+      rm -rf "${OUT_DIR}" 2>/dev/null || true
+    fi
+  fi
 }
 
 setup_common
