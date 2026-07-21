@@ -225,9 +225,14 @@ struct FiInjectPass : public PassInfoMixin<FiInjectPass> {
                        << "," << csvEscape(semanticKey) << "\n";
             }
             if (curId == fiSite && fiSite >= 1) {
-              Instruction *insertPt = I.getNextNode();
-              if (!insertPt) {
+              Instruction *insertPt = nullptr;
+              if (isa<PHINode>(&I)) {
                 insertPt = insertAfterPhi ? insertAfterPhi->getNextNode() : nullptr;
+              } else {
+                insertPt = I.getNextNode();
+                if (!insertPt) {
+                  insertPt = insertAfterPhi ? insertAfterPhi->getNextNode() : nullptr;
+                }
               }
               if (!insertPt) {
                 return PreservedAnalyses::none();

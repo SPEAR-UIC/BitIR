@@ -83,7 +83,11 @@ fi
 
 mkdir -p "${OUT_DIR}"
 exec 9>"${LOCK_PATH}"
-flock 9
+if command -v flock >/dev/null 2>&1; then
+  if ! flock 9; then
+    echo "warning: unable to lock ${LOCK_PATH}; continuing without file lock" >&2
+  fi
+fi
 
 TMP_OUT="$(mktemp "${PLUGIN_PATH}.tmp.XXXXXX")"
 read -r -a LLVM_CXXFLAGS <<< "$(${LLVM_CONFIG} --cxxflags)"
