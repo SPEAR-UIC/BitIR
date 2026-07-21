@@ -1,0 +1,2 @@
+bench,status,result,exit_code,golden,details
+pathfinder,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/pathfinder.bin,no-flip output matched golden

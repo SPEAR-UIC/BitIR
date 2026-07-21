@@ -1,0 +1,8 @@
+commit=7480fc0b2bb0dce998a2e052cb7c30b944533356
+started_utc=2026-07-21T22:21:31Z
+host=x3001c0s7b0n0
+dry_run=0
+max_benches=0
+max_rows_per_bench=0
+bench_filter=pathfinder
+finished_utc=2026-07-21T22:21:47Z

@@ -1,0 +1,4 @@
+[setup] building injection plugin
+[baseline] bench=pathfinder site=9 bit=31
+[inject] bench=pathfinder worklist_id=TRACE029 site=9 bit=31
+[done] results=/home/mdunlavy/GPU_FI/divergence_analysis_outputs/nvidia_trace_TRACE029_20260721_221541

@@ -1,0 +1,8 @@
+Total kernel execution time: 0.144153 (s)
+Device offloading time = 0.494091 (s)
+Pathfinder mismatch count: 10000
+Pathfinder max abs diff: 1403
+FAIL
+pathfinder snapshot written to /var/tmp/pbs.7268012.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_pathfinder_baseline_7268012.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/pathfinder_baseline.bin
+compare_ok
+Result: BASELINE (exit 0)

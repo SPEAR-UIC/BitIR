@@ -1,0 +1,2 @@
+sequence,bench,worklist_id,nvidia_site_id,bit_index,expected_result
+1,pathfinder,TRACE029,9,31,MASKED

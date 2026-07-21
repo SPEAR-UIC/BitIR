@@ -1,0 +1,23 @@
+
+Lmod is automatically replacing "nvidia/25.5" with "gcc-native/14".
+
+
+Lmod is automatically replacing "PrgEnv-nvidia/8.6.0" with "PrgEnv-gnu/8.6.0".
+
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) cray-mpich/9.0.1
+
+
+The following have been reloaded with a version change:
+  1) gcc-native/14 => gcc-native/12.3
+
+Lmod Warning: Some features of the current Cray PE are built on top of newer
+CUDA versions and may cause incompatibility issue.
+You may still use this version of CUDA toolkit after carefully validating your
+application. 
+While processing the following module(s):
+    Module fullname                Module Filename
+    ---------------                ---------------
+    cudatoolkit-standalone/11.8.0  /soft/modulefiles/cudatoolkit-standalone/11.8.0.lua
+

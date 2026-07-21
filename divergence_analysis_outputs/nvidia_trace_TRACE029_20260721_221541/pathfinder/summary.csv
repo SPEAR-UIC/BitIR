@@ -1,0 +1,3 @@
+site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
+9,31,1,BASELINE,0,/home/mdunlavy/GPU_FI/divergence_analysis_outputs/nvidia_trace_TRACE029_20260721_221541/pathfinder/baseline.out,/home/mdunlavy/GPU_FI/divergence_analysis_outputs/nvidia_trace_TRACE029_20260721_221541/pathfinder/baseline.err,
+9,31,1,MASKED,0,/home/mdunlavy/GPU_FI/divergence_analysis_outputs/nvidia_trace_TRACE029_20260721_221541/pathfinder/site9_bit31.out,/home/mdunlavy/GPU_FI/divergence_analysis_outputs/nvidia_trace_TRACE029_20260721_221541/pathfinder/site9_bit31.err,/home/mdunlavy/GPU_FI/divergence_analysis_outputs/nvidia_trace_TRACE029_20260721_221541/pathfinder/pathfinder_site9_bit31.bin

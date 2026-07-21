@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/llvm-as /var/tmp/pbs.7268012.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_pathfinder_9_31_7268012.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.ll -o /var/tmp/pbs.7268012.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_pathfinder_9_31_7268012.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.bc 
