@@ -442,6 +442,8 @@ benchmarks:
       - "{ENTROPY_HEIGHT}"
       - "{ENTROPY_REPEAT}"
     extra_includes:
+      amd:
+        - HeCBench/src/entropy-cuda
       intel:
         - HeCBench/src/entropy-cuda
     env:

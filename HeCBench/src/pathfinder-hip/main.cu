@@ -157,16 +157,19 @@ int main(int argc, char** argv)
   int** wall;
   int*  result;
   int   pyramid_height;
+  const char* dump_path = nullptr;
+  const bool force_dump = getenv("HECBENCH_FI_FORCE_DUMP") != nullptr;
 
-  if (argc == 4)
+  if (argc == 4 || argc == 5)
   {
     cols = atoi(argv[1]);
     rows = atoi(argv[2]);
     pyramid_height = atoi(argv[3]);
+    dump_path = (argc == 5) ? argv[4] : nullptr;
   }
   else
   {
-    printf("Usage: %s <column length> <row length> <pyramid_height>\n", argv[0]);
+    printf("Usage: %s <column length> <row length> <pyramid_height> [dump file]\n", argv[0]);
     exit(0);
   }
 
@@ -279,6 +282,22 @@ int main(int argc, char** argv)
     printf("%d ", result[i]);
   printf("\n");
 #endif
+
+  if (dump_path && force_dump) {
+    FILE* fp = fopen(dump_path, "wb");
+    if (!fp) {
+      perror("pathfinder dump");
+    } else {
+      size_t elements = (size_t)cols;
+      size_t written = fwrite(result, sizeof(int), elements, fp);
+      fclose(fp);
+      if (written != elements) {
+        fprintf(stderr, "pathfinder: incomplete dump (%zu of %zu elements)\n", written, elements);
+      } else {
+        printf("pathfinder snapshot written to %s\n", dump_path);
+      }
+    }
+  }
 
   // Memory cleanup here.
   delete[] data;
