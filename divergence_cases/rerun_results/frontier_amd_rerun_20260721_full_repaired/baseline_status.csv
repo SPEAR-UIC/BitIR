@@ -1,0 +1,6 @@
+bench,status,result,site_id,bit_index,summary_csv,notes
+colorwheel,passed,BASELINE,153,3,/ccs/home/mdunlavy/GPU_FI/divergence_cases/rerun_results/frontier_amd_rerun_20260721_full_repaired/benchmarks/colorwheel/baseline_summary.csv,
+randomAccess,passed,BASELINE,316,0,/ccs/home/mdunlavy/GPU_FI/divergence_cases/rerun_results/frontier_amd_rerun_20260721_full_repaired/benchmarks/randomAccess/baseline_summary.csv,
+pathfinder,passed,BASELINE,395,3,/ccs/home/mdunlavy/GPU_FI/divergence_cases/rerun_results/frontier_amd_rerun_20260721_full_repaired/benchmarks/pathfinder/baseline_summary.csv,
+dense-embedding,passed,BASELINE,362,9,/ccs/home/mdunlavy/GPU_FI/divergence_cases/rerun_results/frontier_amd_rerun_20260721_full_repaired/benchmarks/dense-embedding/baseline_summary.csv,
+entropy,passed,BASELINE,443,17,/ccs/home/mdunlavy/GPU_FI/divergence_cases/rerun_results/frontier_amd_rerun_20260721_full_repaired/benchmarks/entropy/baseline_summary.csv,

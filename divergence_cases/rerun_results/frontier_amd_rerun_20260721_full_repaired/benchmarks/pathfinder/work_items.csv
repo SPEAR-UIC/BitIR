@@ -1,0 +1,13 @@
+worklist_id,bench,site_id,bit_index,comparison,expected_original_result,nvidia_site_id,amd_site_id,intel_site_id,nvidia_result,amd_result,intel_result,match_tier,notes,plan_row,baseline_site_id,baseline_bit_index
+49,pathfinder,395,3,nvidia_vs_intel,,137,395,153,MASKED,,SDC,source_text_type_family,,1,395,3
+50,pathfinder,395,17,nvidia_vs_intel,,137,395,153,MASKED,,SDC,source_text_type_family,,2,395,3
+51,pathfinder,350,3,nvidia_vs_intel,,116,350,132,SDC,,MASKED,source_text_type_family,,3,395,3
+52,pathfinder,350,17,nvidia_vs_intel,,116,350,132,SDC,,MASKED,source_text_type_family,,4,395,3
+53,pathfinder,123,3,nvidia_vs_intel,,9,123,25,MASKED,,SDC,source_text_type_family,,5,395,3
+54,pathfinder,123,31,nvidia_vs_intel,,9,123,25,MASKED,,SDC,source_text_type_family,,6,395,3
+55,pathfinder,240,3,nvidia_vs_intel,,64,240,80,MASKED,,SDC,source_context_type_family,,7,395,3
+56,pathfinder,240,17,nvidia_vs_intel,,64,240,80,MASKED,,SDC,source_context_type_family,,8,395,3
+57,pathfinder,217,3,nvidia_vs_intel,,53,217,69,SDC,,MASKED,source_context_type_family,,9,395,3
+58,pathfinder,217,17,nvidia_vs_intel,,53,217,69,SDC,,MASKED,source_context_type_family,,10,395,3
+59,pathfinder,224,62,nvidia_vs_intel,,56,224,72,SDC,,MASKED,source_context_type_family,,11,395,3
+60,pathfinder,224,63,nvidia_vs_intel,,56,224,72,SDC,,MASKED,source_context_type_family,,12,395,3

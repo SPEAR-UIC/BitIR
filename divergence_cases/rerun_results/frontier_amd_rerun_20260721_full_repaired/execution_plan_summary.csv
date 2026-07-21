@@ -1,0 +1,6 @@
+bench,rows_planned,baseline_site_id,baseline_bit_index
+colorwheel,24,153,3
+randomAccess,24,316,0
+pathfinder,12,395,3
+dense-embedding,12,362,9
+entropy,4,443,17

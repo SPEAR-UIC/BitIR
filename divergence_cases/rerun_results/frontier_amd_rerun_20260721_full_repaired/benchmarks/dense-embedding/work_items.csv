@@ -1,0 +1,13 @@
+worklist_id,bench,site_id,bit_index,comparison,expected_original_result,nvidia_site_id,amd_site_id,intel_site_id,nvidia_result,amd_result,intel_result,match_tier,notes,plan_row,baseline_site_id,baseline_bit_index
+61,dense-embedding,362,9,nvidia_vs_amd,DUE,114,362,,SDC,DUE,,pairwise_normalized_metadata,,1,362,9
+62,dense-embedding,362,16,nvidia_vs_amd,DUE,114,362,,SDC,DUE,,pairwise_normalized_metadata,,2,362,9
+63,dense-embedding,390,9,nvidia_vs_amd,DUE,126,390,,SDC,DUE,,pairwise_normalized_metadata,,3,362,9
+64,dense-embedding,390,16,nvidia_vs_amd,DUE,126,390,,SDC,DUE,,pairwise_normalized_metadata,,4,362,9
+65,dense-embedding,385,9,nvidia_vs_amd,DUE,124,385,,SDC,DUE,,pairwise_normalized_metadata,,5,362,9
+66,dense-embedding,385,63,nvidia_vs_amd,DUE,124,385,,SDC,DUE,,pairwise_normalized_metadata,,6,362,9
+67,dense-embedding,404,23,nvidia_vs_amd,DUE,132,404,,SDC,DUE,,pairwise_normalized_metadata,,7,362,9
+68,dense-embedding,404,18,nvidia_vs_amd,DUE,132,404,,SDC,DUE,,pairwise_normalized_metadata,,8,362,9
+69,dense-embedding,381,9,nvidia_vs_amd,DUE,122,381,,SDC,DUE,,pairwise_normalized_metadata,,9,362,9
+70,dense-embedding,381,23,nvidia_vs_amd,DUE,122,381,,SDC,DUE,,pairwise_normalized_metadata,,10,362,9
+71,dense-embedding,369,9,nvidia_vs_amd,DUE,117,369,,SDC,DUE,,pairwise_normalized_metadata,,11,362,9
+72,dense-embedding,369,23,nvidia_vs_amd,DUE,117,369,,SDC,DUE,,pairwise_normalized_metadata,,12,362,9

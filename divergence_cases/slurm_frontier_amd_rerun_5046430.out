@@ -1,0 +1,760 @@
+[rerun] start 2026-07-21T20:06:23Z
+[rerun] repo_root=/ccs/home/mdunlavy/GPU_FI
+[rerun] results_root=/ccs/home/mdunlavy/GPU_FI/divergence_cases/rerun_results/frontier_amd_rerun_20260721_full_repaired
+[rerun] mode=run
+[rerun] worklist=/ccs/home/mdunlavy/GPU_FI/divergence_analysis_outputs/amd_rerun_worklist.csv
+[rerun] anchor_candidates=/ccs/home/mdunlavy/GPU_FI/divergence_analysis_outputs/expanded_pairwise_anchor_rerun_candidates.csv
+[rerun] config=/ccs/home/mdunlavy/GPU_FI/HeCBench/config/runs/frontier_amd_rerun.yml
+[rerun] git_head=2ce77f996b4c5bb24105d1d1902f701060dd29b9
+[rerun] host=frontier07052
+[rerun] max_benches=0
+[rerun] max_rows_per_bench=0
+[rerun] benches=colorwheel randomAccess pathfinder dense-embedding entropy
+[rerun] grouped execution plan
+bench,rows_planned,baseline_site_id,baseline_bit_index
+colorwheel,24,153,3
+randomAccess,24,316,0
+pathfinder,12,395,3
+dense-embedding,12,362,9
+entropy,4,443,17
+[rerun] existing worklist /ccs/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject_amd/colorwheel/float/worklist.csv
+[rerun] existing golden /ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/colorwheel.bin
+[rerun] existing worklist /ccs/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject_amd/randomAccess/float/worklist.csv
+[rerun] existing golden /ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/randomAccess.bin
+[rerun] existing worklist /ccs/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject_amd/pathfinder/float/worklist.csv
+[rerun] existing golden /ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/pathfinder.bin
+[rerun] existing worklist /ccs/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject_amd/dense-embedding/float/worklist.csv
+[rerun] existing golden /ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/dense-embedding.bin
+[rerun] existing worklist /ccs/home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject_amd/entropy/float/worklist.csv
+[rerun] existing golden /ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/entropy.bin
+[rerun] baseline bench=colorwheel site=153 bit=3
+[trace] start 2026-07-21T20:06:25Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:25Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: BASELINE (exit 0)
+[rerun] inject bench=colorwheel site=153 bit=3 worklist_id=1
+[trace] start 2026-07-21T20:06:31Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:31Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=153 bit=7 worklist_id=2
+[trace] start 2026-07-21T20:06:35Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:36Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=157 bit=3 worklist_id=3
+[trace] start 2026-07-21T20:06:38Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:39Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=157 bit=7 worklist_id=4
+[trace] start 2026-07-21T20:06:41Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:42Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=141 bit=2 worklist_id=5
+[trace] start 2026-07-21T20:06:44Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:45Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=colorwheel site=141 bit=6 worklist_id=6
+[trace] start 2026-07-21T20:06:47Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:48Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=colorwheel site=139 bit=3 worklist_id=7
+[trace] start 2026-07-21T20:06:50Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:51Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=139 bit=7 worklist_id=8
+[trace] start 2026-07-21T20:06:54Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:54Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=143 bit=2 worklist_id=9
+[trace] start 2026-07-21T20:06:57Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:06:57Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=143 bit=6 worklist_id=10
+[trace] start 2026-07-21T20:07:00Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:00Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=151 bit=3 worklist_id=11
+[trace] start 2026-07-21T20:07:03Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:03Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=151 bit=7 worklist_id=12
+[trace] start 2026-07-21T20:07:06Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:06Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=155 bit=3 worklist_id=13
+[trace] start 2026-07-21T20:07:09Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:09Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=155 bit=7 worklist_id=14
+[trace] start 2026-07-21T20:07:12Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:12Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=145 bit=2 worklist_id=15
+[trace] start 2026-07-21T20:07:15Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:15Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=145 bit=6 worklist_id=16
+[trace] start 2026-07-21T20:07:18Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:19Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=147 bit=0 worklist_id=17
+[trace] start 2026-07-21T20:07:21Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:22Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=147 bit=4 worklist_id=18
+[trace] start 2026-07-21T20:07:24Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:25Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=149 bit=0 worklist_id=19
+[trace] start 2026-07-21T20:07:27Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:28Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=colorwheel site=149 bit=4 worklist_id=20
+[trace] start 2026-07-21T20:07:30Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:31Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=colorwheel site=293 bit=2 worklist_id=21
+[trace] start 2026-07-21T20:07:33Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:34Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=colorwheel site=293 bit=6 worklist_id=22
+[trace] start 2026-07-21T20:07:38Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:38Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=295 bit=7 worklist_id=23
+[trace] start 2026-07-21T20:07:41Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:41Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=colorwheel site=115 bit=1 worklist_id=24
+[trace] start 2026-07-21T20:07:44Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:44Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] baseline bench=randomAccess site=316 bit=0
+[trace] start 2026-07-21T20:07:47Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:07:47Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: BASELINE (exit 0)
+[rerun] inject bench=randomAccess site=316 bit=0 worklist_id=25
+[trace] start 2026-07-21T20:08:05Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:08:06Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=320 bit=1 worklist_id=26
+[trace] start 2026-07-21T20:08:22Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:08:23Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=320 bit=2 worklist_id=27
+[trace] start 2026-07-21T20:08:40Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:08:40Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=354 bit=0 worklist_id=28
+[trace] start 2026-07-21T20:08:57Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:08:57Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=139 bit=0 worklist_id=29
+[trace] start 2026-07-21T20:09:14Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:09:15Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=133 bit=0 worklist_id=30
+[trace] start 2026-07-21T20:09:31Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:09:31Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 1)
+[rerun] inject bench=randomAccess site=133 bit=1 worklist_id=31
+[trace] start 2026-07-21T20:09:48Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:09:48Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 1)
+[rerun] inject bench=randomAccess site=137 bit=7 worklist_id=32
+[trace] start 2026-07-21T20:10:04Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:10:04Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 1)
+[rerun] inject bench=randomAccess site=137 bit=8 worklist_id=33
+[trace] start 2026-07-21T20:10:20Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:10:21Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 1)
+[rerun] inject bench=randomAccess site=145 bit=0 worklist_id=34
+[trace] start 2026-07-21T20:10:37Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:10:38Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=randomAccess site=145 bit=1 worklist_id=35
+[trace] start 2026-07-21T20:10:54Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:10:54Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: SDC (exit 0)
+[rerun] inject bench=randomAccess site=141 bit=0 worklist_id=36
+[trace] start 2026-07-21T20:11:11Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:11:11Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=141 bit=1 worklist_id=37
+[trace] start 2026-07-21T20:11:28Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:11:29Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=249 bit=0 worklist_id=38
+[trace] start 2026-07-21T20:11:45Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:11:46Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=243 bit=0 worklist_id=39
+[trace] start 2026-07-21T20:12:02Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:12:03Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=243 bit=1 worklist_id=40
+[trace] start 2026-07-21T20:12:20Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:12:20Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=247 bit=63 worklist_id=41
+[trace] start 2026-07-21T20:12:36Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:12:37Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=253 bit=0 worklist_id=42
+[trace] start 2026-07-21T20:12:54Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:12:54Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=253 bit=1 worklist_id=43
+[trace] start 2026-07-21T20:13:10Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:13:11Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=245 bit=0 worklist_id=44
+[trace] start 2026-07-21T20:13:26Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:13:27Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=245 bit=1 worklist_id=45
+[trace] start 2026-07-21T20:13:44Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:13:44Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=255 bit=0 worklist_id=46
+[trace] start 2026-07-21T20:14:01Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:14:02Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=255 bit=1 worklist_id=47
+[trace] start 2026-07-21T20:14:19Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:14:19Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=randomAccess site=129 bit=0 worklist_id=48
+[trace] start 2026-07-21T20:14:37Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:14:37Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] baseline bench=pathfinder site=395 bit=3
+[trace] start 2026-07-21T20:14:54Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:14:54Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: BASELINE (exit 0)
+[rerun] inject bench=pathfinder site=395 bit=3 worklist_id=49
+[trace] start 2026-07-21T20:14:58Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:14:59Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=395 bit=17 worklist_id=50
+[trace] start 2026-07-21T20:15:02Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:02Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=350 bit=3 worklist_id=51
+[trace] start 2026-07-21T20:15:05Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:06Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=350 bit=17 worklist_id=52
+[trace] start 2026-07-21T20:15:09Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:09Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=123 bit=3 worklist_id=53
+[trace] start 2026-07-21T20:15:12Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:13Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=123 bit=31 worklist_id=54
+[trace] start 2026-07-21T20:15:16Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:16Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=240 bit=3 worklist_id=55
+[trace] start 2026-07-21T20:15:19Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:20Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=240 bit=17 worklist_id=56
+[trace] start 2026-07-21T20:15:23Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:23Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=217 bit=3 worklist_id=57
+[trace] start 2026-07-21T20:15:26Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:27Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=217 bit=17 worklist_id=58
+[trace] start 2026-07-21T20:15:30Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:30Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=224 bit=62 worklist_id=59
+[trace] start 2026-07-21T20:15:34Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:34Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=pathfinder site=224 bit=63 worklist_id=60
+[trace] start 2026-07-21T20:15:37Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:38Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] baseline bench=dense-embedding site=362 bit=9
+[trace] start 2026-07-21T20:15:41Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:15:41Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: BASELINE (exit 0)
+[rerun] inject bench=dense-embedding site=362 bit=9 worklist_id=61
+[trace] start 2026-07-21T20:18:08Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:18:09Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=362 bit=16 worklist_id=62
+[trace] start 2026-07-21T20:19:46Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:19:46Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=390 bit=9 worklist_id=63
+[trace] start 2026-07-21T20:20:50Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:20:50Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=390 bit=16 worklist_id=64
+[trace] start 2026-07-21T20:21:54Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:21:54Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=385 bit=9 worklist_id=65
+[trace] start 2026-07-21T20:22:44Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:22:44Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=385 bit=63 worklist_id=66
+[trace] start 2026-07-21T20:23:31Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:23:32Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=404 bit=23 worklist_id=67
+[trace] start 2026-07-21T20:24:20Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:24:20Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=404 bit=18 worklist_id=68
+[trace] start 2026-07-21T20:25:57Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:25:57Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=381 bit=9 worklist_id=69
+[trace] start 2026-07-21T20:27:21Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:27:21Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=381 bit=23 worklist_id=70
+[trace] start 2026-07-21T20:28:22Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:28:22Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=369 bit=9 worklist_id=71
+[trace] start 2026-07-21T20:29:12Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:29:13Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=dense-embedding site=369 bit=23 worklist_id=72
+[trace] start 2026-07-21T20:30:00Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:30:00Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] baseline bench=entropy site=443 bit=17
+[trace] start 2026-07-21T20:31:45Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:31:45Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: BASELINE (exit 0)
+[rerun] inject bench=entropy site=443 bit=17 worklist_id=73
+[trace] start 2026-07-21T20:31:52Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:31:53Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=entropy site=443 bit=31 worklist_id=74
+[trace] start 2026-07-21T20:31:59Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:31:59Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=entropy site=443 bit=4 worklist_id=75
+[trace] start 2026-07-21T20:32:05Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:32:05Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] inject bench=entropy site=443 bit=9 worklist_id=76
+[trace] start 2026-07-21T20:32:11Z
+[trace] host frontier07052
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T20:32:12Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[rerun] finish 2026-07-21T20:32:17Z
+[rerun] results_root=/ccs/home/mdunlavy/GPU_FI/divergence_cases/rerun_results/frontier_amd_rerun_20260721_full_repaired
