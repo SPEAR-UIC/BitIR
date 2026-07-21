@@ -1,0 +1,11 @@
+trace_case_id,bench,bit_index,comparison,match_tier,divergence_pattern,nvidia_site_id,intel_site_id,amd_site_id,nvidia_rerun_result,intel_rerun_result,amd_rerun_result,nvidia_original_result,intel_original_result,amd_original_result,selection_reason,notes
+TRACE001,colorwheel,2,all_three_anchor,family_full,NVIDIA=SDC;INTEL=SDC;AMD=MASKED,20,75,141,SDC,SDC,MASKED,SDC,SDC,MASKED,clean_three_machine_divergent_rerun,
+TRACE003,colorwheel,2,all_three_anchor,family_full,NVIDIA=SDC;INTEL=MASKED;AMD=SDC,22,77,145,SDC,MASKED,SDC,SDC,SDC,MASKED,clean_three_machine_divergent_rerun,
+TRACE005,colorwheel,0,all_three_anchor,family_full,NVIDIA=SDC;INTEL=MASKED;AMD=MASKED,24,79,149,SDC,MASKED,MASKED,SDC,SDC,MASKED,clean_three_machine_divergent_rerun,
+TRACE009,colorwheel,1,all_three_anchor,family_full,NVIDIA=SDC;INTEL=SDC;AMD=MASKED,7,210,115,SDC,SDC,MASKED,SDC,SDC,MASKED,clean_three_machine_divergent_rerun,
+TRACE010,randomAccess,1,all_three_or_pairwise_anchor,source_context_type_family,NVIDIA=SDC;INTEL=SDC;AMD=MASKED,102,61,320,SDC,SDC,MASKED,MASKED,SDC,SDC,clean_three_machine_divergent_rerun,
+TRACE012,randomAccess,0,all_three_or_pairwise_anchor,family_full,NVIDIA=SDC;INTEL=SDC;AMD=MASKED,19,95,139,SDC,SDC,MASKED,SDC,MASKED,,clean_three_machine_divergent_rerun,
+TRACE013,randomAccess,7,all_three_or_pairwise_anchor,family_full,NVIDIA=MASKED;INTEL=MASKED;AMD=SDC,18,94,137,MASKED,MASKED,SDC,MASKED,SDC,,clean_three_machine_divergent_rerun,
+TRACE018,randomAccess,63,all_three_or_pairwise_anchor,family_full,NVIDIA=SDC;INTEL=SDC;AMD=MASKED,70,146,247,SDC,SDC,MASKED,SDC,MASKED,,clean_three_machine_divergent_rerun,
+TRACE026,pathfinder,3,nvidia_vs_intel,source_text_type_family,NVIDIA=MASKED;INTEL=SDC;AMD=MASKED,116,132,350,MASKED,SDC,MASKED,SDC,MASKED,,clean_three_machine_divergent_rerun,
+TRACE028,pathfinder,3,nvidia_vs_intel,source_text_type_family,NVIDIA=MASKED;INTEL=SDC;AMD=MASKED,9,25,123,MASKED,SDC,MASKED,MASKED,SDC,,clean_three_machine_divergent_rerun,

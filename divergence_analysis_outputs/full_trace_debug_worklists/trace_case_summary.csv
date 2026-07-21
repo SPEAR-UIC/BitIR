@@ -1,0 +1,12 @@
+metric,value
+total_trace_cases,31
+batch01_survey_10_cases,10
+batch01_survey_10_bench_counts,colorwheel:4;pathfinder:2;randomAccess:4
+batch01_survey_10_pattern_counts,NVIDIA=MASKED;INTEL=MASKED;AMD=SDC:1;NVIDIA=MASKED;INTEL=SDC;AMD=MASKED:2;NVIDIA=SDC;INTEL=MASKED;AMD=MASKED:1;NVIDIA=SDC;INTEL=MASKED;AMD=SDC:1;NVIDIA=SDC;INTEL=SDC;AMD=MASKED:5
+batch02_followup_10_cases,10
+batch02_followup_10_bench_counts,colorwheel:5;randomAccess:5
+batch02_followup_10_pattern_counts,NVIDIA=MASKED;INTEL=MASKED;AMD=SDC:1;NVIDIA=SDC;INTEL=MASKED;AMD=SDC:2;NVIDIA=SDC;INTEL=SDC;AMD=MASKED:7
+batch03_followup_11_cases,11
+batch03_followup_11_bench_counts,pathfinder:4;randomAccess:7
+batch03_followup_11_pattern_counts,NVIDIA=MASKED;INTEL=SDC;AMD=MASKED:4;NVIDIA=SDC;INTEL=SDC;AMD=MASKED:7
+recommended_execution,Run one batch at a time; one scheduler job per machine per batch; extract compact summaries before deleting bulky trace artifacts.
