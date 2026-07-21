@@ -21,7 +21,6 @@ benchmarks:
       PATHFINDER_COLS: "10000"
       PATHFINDER_ROWS: "1000"
       PATHFINDER_PYRAMID: "5"
-      BITIR_SITE_LIST: divergence_analysis_outputs/full_trace_debug_worklists/batch00_single_case_trace029/amd_batch00_single_case_trace029_full_trace_worklist.csv
 
 machines:
   amd:
