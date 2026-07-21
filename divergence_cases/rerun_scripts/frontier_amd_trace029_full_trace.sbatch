@@ -215,7 +215,7 @@ if [[ -f "$PATHFINDER_GOLDEN" ]]; then
 else
   echo "[trace029] missing golden, building pathfinder and generating $PATHFINDER_GOLDEN"
   BENCH_ONLY="$BENCH" REPO_ROOT="$REPO_ROOT" BUILD_DIR="$BUILD_ROOT" bash HeCBench/build.sh 2>&1 | tee "$RESULTS_ROOT/golden_build.log"
-  HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "$BUILD_ROOT/bin/hip/$BENCH" 10000 1000 5 "$PATHFINDER_GOLDEN" \
+  HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "$BUILD_ROOT/bin/hip/$BENCH" 10000 1000 1000 "$PATHFINDER_GOLDEN" \
     > "$RESULTS_ROOT/golden_generate.out" 2> "$RESULTS_ROOT/golden_generate.err"
   ls -lh "$PATHFINDER_GOLDEN"
 fi

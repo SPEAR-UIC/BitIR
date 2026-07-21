@@ -20,7 +20,7 @@ benchmarks:
     env:
       PATHFINDER_COLS: "10000"
       PATHFINDER_ROWS: "1000"
-      PATHFINDER_PYRAMID: "5"
+      PATHFINDER_PYRAMID: "1000"
 
 machines:
   amd:
