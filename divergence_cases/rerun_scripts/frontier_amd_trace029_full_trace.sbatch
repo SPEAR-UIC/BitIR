@@ -43,6 +43,7 @@ INJECTED_TRACE_DIR="${TRACE_RESULTS_DIR}/trace_site${SITE_ID}_bit${BIT_INDEX}"
 EVIDENCE_SCRIPT="${EVIDENCE_SCRIPT:-$REPO_ROOT/divergence_cases/rerun_scripts/collect_trace029_evidence.py}"
 SBATCH_STDOUT_SRC="${REPO_ROOT}/divergence_cases/slurm_frontier_amd_trace029_${SLURM_JOB_ID:-manual}.out"
 SBATCH_STDERR_SRC="${REPO_ROOT}/divergence_cases/slurm_frontier_amd_trace029_${SLURM_JOB_ID:-manual}.err"
+VALIDATION_SITE_LIST="${RESULTS_ROOT}/trace029_validation_site_list.csv"
 
 cd "$REPO_ROOT"
 mkdir -p "$RESULTS_ROOT" "$TRACE_RESULTS_DIR" "$TRACE_TMP_ROOT" "$RESULTS_ROOT/.bitir_jobs" "$GOLDEN_ROOT"
@@ -109,6 +110,65 @@ cp -f "$WORKLIST" "$RESULTS_ROOT/amd_batch00_single_case_trace029_full_trace_wor
 cp -f "$CASE_CSV" "$RESULTS_ROOT/batch00_single_case_trace029_trace_case.csv"
 cp -f "$SCRIPT_PATH" "$RESULTS_ROOT/frontier_amd_trace029_full_trace.sbatch"
 
+python3 - "$WORKLIST" "$METADATA_CSV" "$BENCH" "$SITE_ID" "$BIT_INDEX" "$VALIDATION_SITE_LIST" <<'PY'
+import csv
+import sys
+
+worklist_csv, metadata_csv, bench, site_id, bit_index, out_csv = sys.argv[1:7]
+
+with open(worklist_csv, newline="", encoding="utf-8") as f:
+    work_rows = list(csv.DictReader(f))
+work_row = None
+for row in work_rows:
+    if row.get("bench") == bench and row.get("site_id") == site_id and row.get("bit_index") == bit_index:
+        work_row = row
+        break
+if work_row is None:
+    raise SystemExit(f"missing worklist row for bench={bench} site_id={site_id} bit_index={bit_index}")
+
+with open(metadata_csv, newline="", encoding="utf-8") as f:
+    meta_rows = list(csv.DictReader(f))
+meta_row = None
+for row in meta_rows:
+    if row.get("site_id") == site_id:
+        meta_row = row
+        break
+if meta_row is None:
+    raise SystemExit(f"missing metadata row for site_id={site_id}")
+
+fieldnames = [
+    "bench",
+    "site_id",
+    "bit_index",
+    "opcode",
+    "source_line",
+    "source_column",
+    "function",
+    "site_class",
+    "type_kind",
+    "bitwidth",
+    "signature_ordinal",
+]
+row = {
+    "bench": bench,
+    "site_id": site_id,
+    "bit_index": bit_index,
+    "opcode": meta_row.get("opcode", ""),
+    "source_line": meta_row.get("source_line", ""),
+    "source_column": meta_row.get("source_column", ""),
+    "function": meta_row.get("function", ""),
+    "site_class": meta_row.get("site_class", ""),
+    "type_kind": meta_row.get("type_kind", ""),
+    "bitwidth": meta_row.get("bitwidth", ""),
+    "signature_ordinal": meta_row.get("signature_ordinal", ""),
+}
+
+with open(out_csv, "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerow(row)
+PY
+
 if ! command -v module >/dev/null 2>&1 && [[ -f /etc/profile.d/modules.sh ]]; then
   source /etc/profile.d/modules.sh
 fi
@@ -141,7 +201,7 @@ export BITIR_MACHINE_LLVM_SEARCH_ROOT="/opt/rocm-6.4.2/lib/llvm"
 export BITIR_MACHINE_TOOL_SEARCH_ROOTS="/opt/rocm-6.4.2/lib/llvm/bin"
 export BITIR_MACHINE_MODULES="rocm/6.4.2 rocm-llvm-toolchain"
 export BITIR_TRACE_METADATA_DIR="$REPO_ROOT/HeCBench/results/llvm17_inject_amd/${BENCH}"
-export BITIR_SITE_LIST="$WORKLIST"
+export BITIR_SITE_LIST="$VALIDATION_SITE_LIST"
 export SUMMARY_INCLUDE_PATHS=1
 export CLEAN_RUN_ARTIFACTS=0
 export FORCE_REBUILD=1
