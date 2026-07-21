@@ -1,0 +1,6 @@
+repo_root=/home/mdunlavy/GPU_FI
+results_dir=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z
+job_id=8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+queue=debug
+walltime=01:00:00
+commit=7e62ea8f41bebec4c7cbb047bc23f92c7a9fa662

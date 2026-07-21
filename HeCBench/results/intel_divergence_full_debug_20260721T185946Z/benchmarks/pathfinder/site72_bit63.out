@@ -1,0 +1,5 @@
+Total kernel execution time: 3.566348 (s)
+Device offloading time = 3.627670 (s)
+pathfinder snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_pathfinder_site72_bit63/pathfinder_site72_bit63.bin
+compare_ok
+Result: MASKED (exit 0)

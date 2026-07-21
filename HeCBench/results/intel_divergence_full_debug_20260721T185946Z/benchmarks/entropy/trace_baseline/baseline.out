@@ -1,0 +1,5 @@
+Average kernel (baseline) execution time 0.093461 (s)
+Average kernel (optimized) execution time 0.294933 (s)
+PASS
+entropy snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_entropy_site226_bit17/entropy_baseline.bin
+compare_ok

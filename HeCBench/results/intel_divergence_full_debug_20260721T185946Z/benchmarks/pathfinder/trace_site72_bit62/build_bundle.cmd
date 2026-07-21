@@ -1,0 +1,1 @@
+/opt/aurora/25.190.0/oneapi/compiler/latest/bin/icpx -fsycl -fsycl-targets=spir64 -O0 -g0 -DUSE_GPU -I /home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-sycl -I /home/mdunlavy/GPU_FI/HeCBench/src -c /home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-sycl/main.cpp -o /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_pathfinder_site72_bit62/bundle.o 

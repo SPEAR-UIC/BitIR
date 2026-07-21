@@ -1,0 +1,11 @@
+bench=pathfinder
+site_id=25
+bit_index=31
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=
+mutated_value=
+flipped_bit=31
+first_direct_consumer=
+consumer_class=
+final_observed_outcome=SDC

@@ -1,0 +1,78 @@
+[benchmark:pathfinder] reusing existing golden /home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/pathfinder.bin
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] baseline site=153 bit=3
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: BASELINE (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=49 site=153 bit=3
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: MASKED (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=50 site=153 bit=17
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: MASKED (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=51 site=132 bit=3
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=52 site=132 bit=17
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 134)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=53 site=25 bit=3
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=54 site=25 bit=31
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=55 site=80 bit=3
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: MASKED (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=56 site=80 bit=17
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: MASKED (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=57 site=69 bit=3
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=58 site=69 bit=17
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=59 site=72 bit=62
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: MASKED (exit 0)
+[benchmark:pathfinder] compare_mode=exact abs_tol=0 rel_tol=0
+[benchmark:pathfinder] injection worklist_id=60 site=72 bit=63
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: MASKED (exit 0)

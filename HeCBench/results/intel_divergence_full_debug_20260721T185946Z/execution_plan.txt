@@ -1,0 +1,11 @@
+Execution plan
+total_rows=64
+total_benches=4
+max_benches=0
+max_rows_per_bench=0
+select_benches=<all>
+
+colorwheel: rows=24 baseline_site=81 baseline_bit=3 source_dir=HeCBench/src/colorwheel-sycl
+randomAccess: rows=24 baseline_site=59 baseline_bit=0 source_dir=HeCBench/src/randomAccess-sycl
+pathfinder: rows=12 baseline_site=153 baseline_bit=3 source_dir=HeCBench/src/pathfinder-sycl
+entropy: rows=4 baseline_site=226 baseline_bit=17 source_dir=HeCBench/src/entropy-sycl

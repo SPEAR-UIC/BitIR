@@ -1,0 +1,1 @@
+/opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler/llvm-spirv --spirv-ext=+SPV_INTEL_subgroups\,+SPV_EXT_shader_atomic_float_add /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit4/postlink_0.bc -o /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit4/postlink_0.spv 

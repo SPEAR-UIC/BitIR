@@ -1,0 +1,16 @@
+Average kernel (baseline) execution time 0.093200 (s)
+Average kernel (optimized) execution time 0.244140 (s)
+FAIL
+entropy snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_entropy_site226_bit17/entropy_site226_bit17.bin
+compare_mismatch
+idx=0 golden=2.50326 candidate=3.16992 diff=0.666667 tol=0.001
+idx=1 golden=2.9183 candidate=3.58496 diff=0.666667 tol=0.001
+idx=2 golden=3.37356 candidate=3.90689 diff=0.533333 tol=0.001
+idx=3 golden=3.37356 candidate=3.90689 diff=0.533333 tol=0.001
+idx=4 golden=3.1899 candidate=3.90689 diff=0.716993 tol=0.001
+idx=5 golden=3.27291 candidate=3.90689 diff=0.633985 tol=0.001
+idx=6 golden=3.00624 candidate=3.90689 diff=0.900652 tol=0.001
+idx=7 golden=2.68925 candidate=3.90689 diff=1.21764 tol=0.001
+idx=8 golden=2.82258 candidate=3.90689 diff=1.08431 tol=0.001
+idx=9 golden=2.87291 candidate=3.90689 diff=1.03398 tol=0.001
+Result: SDC (exit 0)

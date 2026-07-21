@@ -1,0 +1,9 @@
+repo_root=/home/mdunlavy/GPU_FI
+results_dir=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z
+worklist=/home/mdunlavy/GPU_FI/divergence_analysis_outputs/intel_rerun_worklist.csv
+anchor_csv=/home/mdunlavy/GPU_FI/divergence_analysis_outputs/expanded_pairwise_anchor_rerun_candidates.csv
+dry_run=0
+max_benches=0
+max_rows_per_bench=0
+select_benches=<all>
+skip_golden_gen=1

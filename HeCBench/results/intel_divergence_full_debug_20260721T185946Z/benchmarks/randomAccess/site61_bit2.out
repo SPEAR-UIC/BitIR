@@ -1,0 +1,8 @@
+Table size = 67108864
+Main table size   = 2^26 = 67108864 words
+Number of updates = 268435456
+Average kernel execution time: 0.158766 (s)
+Found 65817635 errors in 67108864 locations (FAIL).
+randomAccess snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_randomAccess_site61_bit2/randomAccess_site61_bit2.bin
+mismatch
+Result: SDC (exit 1)

@@ -1,0 +1,14 @@
+bench=randomAccess
+site_id=145
+bit_index=1
+trial=1
+result=SDC
+process_exit=1
+timeout=0
+benchmark_status=unknown
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=

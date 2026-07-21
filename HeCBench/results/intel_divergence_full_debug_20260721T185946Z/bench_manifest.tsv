@@ -1,0 +1,5 @@
+bench	source_dir	golden_file	compare_mode	run_args	extra_includes	abs_tol	rel_tol	pass_line	fail_line	pass_regex	fail_regex
+colorwheel	HeCBench/src/colorwheel-sycl	colorwheel.bin	byte_tol	10000 8 1		1	0	PASS	FAIL		
+randomAccess	HeCBench/src/randomAccess-sycl	randomAccess.bin	exact	1		0	0			Found[[:space:]]+0[[:space:]]+errors?[[:space:]]+in[[:space:]]+[0-9]+[[:space:]]+locations[[:space:]]+\(PASS\)\.	Found[[:space:]]+[1-9][0-9]*[[:space:]]+errors?[[:space:]]+in[[:space:]]+[0-9]+[[:space:]]+locations[[:space:]]+\((PASS|FAIL)\)\.
+pathfinder	HeCBench/src/pathfinder-sycl	pathfinder.bin	exact	10000 1000 5		0	0				
+entropy	HeCBench/src/entropy-sycl	entropy.bin	float	10000 1024 1	HeCBench/src/entropy-cuda	1e-3	0	PASS	FAIL		

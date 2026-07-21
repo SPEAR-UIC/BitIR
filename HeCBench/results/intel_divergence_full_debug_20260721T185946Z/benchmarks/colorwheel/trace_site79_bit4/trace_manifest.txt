@@ -1,0 +1,17 @@
+trace_level=basic
+backend=intel
+bench=colorwheel
+source=/home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-sycl/main.cpp
+source_dir=HeCBench/src/colorwheel-sycl
+site_id=79
+bit_index=4
+inject_target=result
+compare_mode=byte_tol
+amd_execution_mode=injected_ir
+phase=
+results_dir=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/colorwheel
+out_dir=/var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit4
+run_out=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/colorwheel/site79_bit4.out
+run_err=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/colorwheel/site79_bit4.err
+run_dump=/var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit4/colorwheel_site79_bit4.bin
+run_timeout=200

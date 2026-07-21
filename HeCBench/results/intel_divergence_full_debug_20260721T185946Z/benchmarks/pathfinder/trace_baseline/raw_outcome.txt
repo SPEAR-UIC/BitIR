@@ -1,0 +1,14 @@
+bench=pathfinder
+site_id=153
+bit_index=3
+trial=1
+result=BASELINE
+process_exit=0
+timeout=0
+benchmark_status=unknown
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=

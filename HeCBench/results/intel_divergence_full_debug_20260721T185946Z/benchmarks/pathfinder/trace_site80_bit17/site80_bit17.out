@@ -1,0 +1,4 @@
+Total kernel execution time: 3.576828 (s)
+Device offloading time = 3.637294 (s)
+pathfinder snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_pathfinder_site80_bit17/pathfinder_site80_bit17.bin
+compare_ok

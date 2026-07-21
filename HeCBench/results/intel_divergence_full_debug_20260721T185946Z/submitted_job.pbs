@@ -1,0 +1,45 @@
+#!/bin/bash
+#PBS -N intel_div_rerun
+#PBS -A UIC-HPC
+#PBS -q debug
+#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb
+#PBS -l filesystems=home
+#PBS -l walltime=00:10:00
+#PBS -j oe
+
+set -euo pipefail
+
+if ! command -v module >/dev/null 2>&1 && [[ -f /etc/profile.d/modules.sh ]]; then
+  source /etc/profile.d/modules.sh
+fi
+
+if command -v module >/dev/null 2>&1; then
+  module purge || true
+  module use /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core 2>/dev/null || true
+  module use /opt/aurora/25.190.0/modulefiles 2>/dev/null || true
+  module load cmake/3.31.8 2>/dev/null || true
+  module load ninja/1.12.1 2>/dev/null || true
+  module load oneapi/release/2025.2.0 2>/dev/null || true
+fi
+
+REPO_ROOT="${PBS_O_WORKDIR:-$HOME/GPU_FI}"
+RESULTS_DIR="${RESULTS_DIR:?RESULTS_DIR is required}"
+
+mkdir -p "${RESULTS_DIR}"
+exec > >(tee -a "${RESULTS_DIR}/pbs_stdout.log") 2>&1
+
+{
+  echo "[pbs] start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "[pbs] host $(hostname)"
+  echo "[pbs] repo_root=${REPO_ROOT}"
+  echo "[pbs] results_dir=${RESULTS_DIR}"
+  echo "[pbs] job_id=${PBS_JOBID:-}"
+} | tee "${RESULTS_DIR}/pbs_environment.log"
+
+cp -f "${REPO_ROOT}/HeCBench/intel_divergence_rerun_campaign.pbs" "${RESULTS_DIR}/submitted_job.pbs"
+
+cd "${REPO_ROOT}"
+
+RESULTS_DIR="${RESULTS_DIR}" \
+REPO_ROOT="${REPO_ROOT}" \
+bash "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_intel_divergence_rerun_campaign.sh"

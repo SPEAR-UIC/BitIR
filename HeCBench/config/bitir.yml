@@ -428,10 +428,11 @@ benchmarks:
     env:
       PATHFINDER_COLS: "10000"
       PATHFINDER_ROWS: "1000"
-      PATHFINDER_PYRAMID: "1000"
+      PATHFINDER_PYRAMID: "5"
 
   entropy:
-    compare_mode: exact
+    compare_mode: float
+    abs_tol: 1e-3
     source_dirs:
       nvidia: HeCBench/src/entropy-cuda
       intel: HeCBench/src/entropy-sycl

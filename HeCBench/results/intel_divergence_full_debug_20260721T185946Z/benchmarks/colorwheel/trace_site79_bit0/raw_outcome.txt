@@ -1,0 +1,14 @@
+bench=colorwheel
+site_id=79
+bit_index=0
+trial=1
+result=MASKED
+process_exit=0
+timeout=0
+benchmark_status=unknown
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=

@@ -1,0 +1,6 @@
+site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
+226,17,1,BASELINE,0,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/baseline.out,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/baseline.err,
+226,17,1,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit17.out,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit17.err,
+226,31,1,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit31.out,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit31.err,
+226,4,1,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit4.out,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit4.err,
+226,9,1,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit9.out,/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/entropy/site226_bit9.err,

@@ -1,0 +1,1 @@
+env HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_entropy_site226_bit4/entropy 10000 1024 1 /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_entropy_site226_bit4/entropy_site226_bit4.bin 

@@ -1,0 +1,40 @@
+[benchmark:entropy] reusing existing golden /home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/entropy.bin
+[benchmark:entropy] compare_mode=float abs_tol=1e-3 rel_tol=0
+[benchmark:entropy] baseline site=226 bit=17
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: BASELINE (exit 0)
+[benchmark:entropy] compare_mode=float abs_tol=1e-3 rel_tol=0
+[benchmark:entropy] injection worklist_id=61 site=226 bit=17
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:entropy] compare_mode=float abs_tol=1e-3 rel_tol=0
+[benchmark:entropy] injection worklist_id=62 site=226 bit=31
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:entropy] compare_mode=float abs_tol=1e-3 rel_tol=0
+[benchmark:entropy] injection worklist_id=63 site=226 bit=4
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
+[benchmark:entropy] compare_mode=float abs_tol=1e-3 rel_tol=0
+[benchmark:entropy] injection worklist_id=64 site=226 bit=9
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)
