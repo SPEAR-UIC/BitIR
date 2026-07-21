@@ -1,0 +1,42 @@
+[trace029] start 2026-07-21T23:38:18Z
+[trace029] repo_root=/ccs/home/mdunlavy/GPU_FI
+[trace029] results_root=/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818
+[trace029] run_config=/ccs/home/mdunlavy/GPU_FI/HeCBench/config/runs/frontier_amd_trace029_full_trace.yml
+[trace029] worklist=/ccs/home/mdunlavy/GPU_FI/divergence_analysis_outputs/full_trace_debug_worklists/batch00_single_case_trace029/amd_batch00_single_case_trace029_full_trace_worklist.csv
+[trace029] case_csv=/ccs/home/mdunlavy/GPU_FI/divergence_analysis_outputs/full_trace_debug_worklists/batch00_single_case_trace029/batch00_single_case_trace029_trace_case.csv
+[trace029] git_head=e9ced90e3b358d132fb4b31c835d30cd76b9f8f2
+[trace029] host=frontier04739
+
+Currently Loaded Modules:
+  1) rocm/6.4.2   2) rocm-llvm-toolchain
+
+ 
+
+[trace029] rebuilding fi_inject plugin
+flock: 9: Unknown error 524
+warning: unable to lock /ccs/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/.libfi_inject.lock; continuing without file lock
+Built /ccs/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/libfi_inject.so
+[trace029] existing golden /ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/pathfinder.bin
+-rw-r--r-- 1 mdunlavy mdunlavy 40K Jul 21 15:12 /ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/pathfinder.bin
+[trace029] baseline run bench=pathfinder site=123 bit=31 expected=MASKED
+[trace] start 2026-07-21T23:38:26Z
+[trace] host frontier04739
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T23:38:26Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: BASELINE (exit 0)
+[trace029] injection run bench=pathfinder site=123 bit=31 expected=MASKED
+[trace] start 2026-07-21T23:38:32Z
+[trace] host frontier04739
+[trace] pwd /ccs/home/mdunlavy/GPU_FI
+[trace] after modules 2026-07-21T23:38:32Z
+[trace] cmake /usr/bin/cmake
+[trace] python3 /usr/bin/python3
+[trace] workdir /ccs/home/mdunlavy/GPU_FI
+Result: MASKED (exit 0)
+[trace029] summary result=MASKED exit_code=0
+[trace029] finish 2026-07-21T23:38:37Z
+[trace029] trace_results_dir=/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818/pathfinder
+[trace029] finalize rc=0 2026-07-21T23:38:37Z

@@ -1,0 +1,1 @@
+env HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818/tmp/pathfinder_site123_bit31_baseline/pathfinder 10000 1000 1000 /ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818/tmp/pathfinder_site123_bit31_baseline/pathfinder_baseline.bin 

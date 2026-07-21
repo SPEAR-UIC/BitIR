@@ -1,0 +1,11 @@
+bench=pathfinder
+site_id=123
+bit_index=31
+selected_site=result,sub,int,32,_Z10pathfinderPKiS0_PiS1_iiiii,66,37,1
+injection_site=result,sext,int,64,_Z10pathfinderPKiS0_PiS1_iiiii,92,5,2
+mutated_instruction=%fi_flip = xor i64 %191, 2147483648, !dbg !1840
+mutated_value=%fi_flip
+flipped_bit=31
+first_direct_consumer=%192 = getelementptr inbounds [250 x i32], ptr addrspacecast (ptr addrspace(3) @_ZZ10pathfinderPKiS0_PiS1_iiiiiE4prev to ptr), i64 0, i64 %fi_flip, !dbg !1840
+consumer_class=address_calc
+final_observed_outcome=MASKED

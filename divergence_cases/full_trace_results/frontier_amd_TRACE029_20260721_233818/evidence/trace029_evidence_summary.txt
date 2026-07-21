@@ -1,0 +1,66 @@
+trace_case_id=TRACE029
+
+bench=pathfinder
+
+site_id=123
+
+bit_index=31
+
+golden_path=/ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/pathfinder.bin
+
+baseline_dump_path=/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818/pathfinder/pathfinder_baseline.bin
+
+injected_dump_path=/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818/pathfinder/pathfinder_site123_bit31.bin
+
+metadata_row_found=True
+
+sites_row_found=True
+
+alignment_row_found=True
+
+pairwise_row_found=True
+
+[injected_compare]
+golden={'exists': True, 'path': '/ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/pathfinder.bin', 'bytes': 40000, 'sha256': 'e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305'}
+candidate={'exists': True, 'path': '/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818/pathfinder/pathfinder_site123_bit31.bin', 'bytes': 40000, 'sha256': 'e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305'}
+dump_exists=True
+byte_count=40000
+mismatch_count=0
+first_differing_byte_offset=None
+size_match=True
+numeric_compare_applicable=True
+element_count=10000
+element_mismatch_count=0
+first_differing_index=None
+max_absolute_difference=0
+
+[baseline_compare]
+golden={'exists': True, 'path': '/ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/pathfinder.bin', 'bytes': 40000, 'sha256': 'e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305'}
+candidate={'exists': True, 'path': '/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260721_233818/pathfinder/pathfinder_baseline.bin', 'bytes': 40000, 'sha256': 'e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305'}
+dump_exists=True
+byte_count=40000
+mismatch_count=0
+first_differing_byte_offset=None
+size_match=True
+numeric_compare_applicable=True
+element_count=10000
+element_mismatch_count=0
+first_differing_index=None
+max_absolute_difference=0
+
+[site_semantics]
+opcode=sub
+type_kind=int
+bitwidth=32
+function=_Z10pathfinderPKiS0_PiS1_iiiii
+source_file=/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/pathfinder-hip/main.cu
+source_line=66
+source_column=37
+
+[aligned_sites]
+nvidia_site_id=9
+intel_site_id=25
+amd_site_id=123
+match_tier=source_text_type_family
+canonical_line=int small_block_cols = BLOCK_SIZE - (iteration*theHalo*2);
+

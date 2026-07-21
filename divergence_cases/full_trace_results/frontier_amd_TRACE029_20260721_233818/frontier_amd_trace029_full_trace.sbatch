@@ -69,15 +69,6 @@ finalize_trace029_artifacts() {
   if [[ -f "$BASELINE_DUMP" ]]; then
     cp -f "$BASELINE_DUMP" "$TRACE_RESULTS_DIR/${BENCH}_baseline.bin" || true
   fi
-  for d in "$BASELINE_TRACE_DIR" "$INJECTED_TRACE_DIR"; do
-    [[ -d "$d" ]] || continue
-    if [[ -f "$d/gpu_before.txt" && ! -f "$d/gpu_state.before.txt" ]]; then
-      cp -f "$d/gpu_before.txt" "$d/gpu_state.before.txt" || true
-    fi
-    if [[ -f "$d/gpu_after.txt" && ! -f "$d/gpu_state.after.txt" ]]; then
-      cp -f "$d/gpu_after.txt" "$d/gpu_state.after.txt" || true
-    fi
-  done
   if [[ -f "$EVIDENCE_SCRIPT" ]]; then
     python3 "$EVIDENCE_SCRIPT" \
       --results-root "$RESULTS_ROOT" \

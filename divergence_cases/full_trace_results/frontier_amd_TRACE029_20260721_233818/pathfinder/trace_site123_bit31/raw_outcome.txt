@@ -1,0 +1,14 @@
+bench=pathfinder
+site_id=123
+bit_index=31
+trial=1
+result=MASKED
+process_exit=0
+timeout=0
+benchmark_status=unknown
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=pathfinder,123,31,sub,66,37,_Z10pathfinderPKiS0_PiS1_iiiii,result,int,32,1
+local_metadata_row=123,result,sub,int,32,-1,_Z10pathfinderPKiS0_PiS1_iiiii,/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/pathfinder-hip/main.cu,66,37,1,_Z10pathfinderPKiS0_PiS1_iiiii|result|sub|int|32|-1|/autofs/nccs-svm1_home2/mdunlavy/GPU_Fault_Injection/HeCBench/src/pathfinder-hip/main.cu|66|37|1
+mutated_ir_instruction=%fi_flip = xor i64 %191, 2147483648, !dbg !1840 || %192 = getelementptr inbounds [250 x i32], ptr addrspacecast (ptr addrspace(3) @_ZZ10pathfinderPKiS0_PiS1_iiiiiE4prev to ptr), i64 0, i64 %fi_flip, !dbg !1840

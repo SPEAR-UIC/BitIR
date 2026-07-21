@@ -1,0 +1,11 @@
+bench=pathfinder
+site_id=123
+bit_index=31
+selected_site=result,sub,int,32,_Z10pathfinderPKiS0_PiS1_iiiii,66,37,1
+injection_site=,,,,,,,
+mutated_instruction=
+mutated_value=
+flipped_bit=31
+first_direct_consumer=
+consumer_class=
+final_observed_outcome=BASELINE

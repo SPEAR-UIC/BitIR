@@ -1,0 +1,2 @@
+priority_rank,comparison,bench,bit_index,nvidia_site_id,amd_site_id,intel_site_id,nvidia_result,amd_result,intel_result,match_tier,nvidia_opcode,amd_opcode,intel_opcode,nvidia_site_class,amd_site_class,intel_site_class,notes
+54,nvidia_vs_intel,pathfinder,31,9,123,25,MASKED,,SDC,source_text_type_family,sub,sub,sub,result,result,base,mixed evidence; rerun all mapped machine sites to fill missing/unstable outcomes
