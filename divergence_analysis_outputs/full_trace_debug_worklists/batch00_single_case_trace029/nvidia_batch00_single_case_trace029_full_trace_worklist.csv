@@ -1,0 +1,2 @@
+trace_case_id,batch_id,machine,bench,site_id,bit_index,expected_rerun_result,divergence_pattern,nvidia_site_id,intel_site_id,amd_site_id,nvidia_rerun_result,intel_rerun_result,amd_rerun_result,trace_level,debug_level,run_mode,notes
+TRACE029,batch00_single_case_trace029,nvidia,pathfinder,9,31,MASKED,NVIDIA=MASKED;INTEL=SDC;AMD=MASKED,9,25,123,MASKED,SDC,MASKED,fullest_available,fullest_available,single_case_full_trace,Run only this one case first. Use local golden output if present; rebuild only if missing. Preserve all debug artifacts until we decide which are useful.
