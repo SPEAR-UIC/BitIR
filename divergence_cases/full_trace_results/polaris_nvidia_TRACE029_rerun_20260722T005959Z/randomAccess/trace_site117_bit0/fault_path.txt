@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=117
+bit_index=0
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i64 %inc, 1, !dbg !1349
+mutated_value=%fi_flip
+flipped_bit=0
+first_direct_consumer=store i64 %fi_flip, ptr %i, align 8, !dbg !1349
+consumer_class=store_data
+final_observed_outcome=FAILURE

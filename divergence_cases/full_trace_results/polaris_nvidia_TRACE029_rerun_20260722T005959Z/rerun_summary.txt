@@ -1,0 +1,6 @@
+total_rows=76
+completed_rows=76
+DUE=4
+FAILURE=1
+MASKED=17
+SDC=54

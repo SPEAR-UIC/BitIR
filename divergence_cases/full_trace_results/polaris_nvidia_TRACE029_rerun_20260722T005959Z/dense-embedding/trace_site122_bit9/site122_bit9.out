@@ -1,0 +1,70 @@
+Number of rows in the embedding table: 10000
+Batch size: 8
+
+Embedding dimension: 768
+block size: 128
+Average execution time of dense embedding kernel (k1): 421.691010 (us)
+Average execution time of dense embedding kernel (k2): 184.326004 (us)
+Average execution time of dense embedding kernel (k3): 325.671021 (us)
+PASS
+block size: 256
+Average execution time of dense embedding kernel (k1): 106.139008 (us)
+Average execution time of dense embedding kernel (k2): 92.814003 (us)
+Average execution time of dense embedding kernel (k3): 164.008011 (us)
+PASS
+block size: 512
+Average execution time of dense embedding kernel (k1): 75.242004 (us)
+Average execution time of dense embedding kernel (k2): 67.406006 (us)
+Average execution time of dense embedding kernel (k3): 92.053001 (us)
+PASS
+block size: 1024
+Average execution time of dense embedding kernel (k1): 47.068001 (us)
+Average execution time of dense embedding kernel (k2): 43.712002 (us)
+Average execution time of dense embedding kernel (k3): 56.787003 (us)
+PASS
+
+Embedding dimension: 2048
+block size: 128
+Average execution time of dense embedding kernel (k1): 484.568024 (us)
+Average execution time of dense embedding kernel (k2): 419.487030 (us)
+Average execution time of dense embedding kernel (k3): 801.683044 (us)
+PASS
+block size: 256
+Average execution time of dense embedding kernel (k1): 253.786011 (us)
+Average execution time of dense embedding kernel (k2): 219.061005 (us)
+Average execution time of dense embedding kernel (k3): 410.660034 (us)
+PASS
+block size: 512
+Average execution time of dense embedding kernel (k1): 138.089005 (us)
+Average execution time of dense embedding kernel (k2): 119.684006 (us)
+Average execution time of dense embedding kernel (k3): 215.865005 (us)
+PASS
+block size: 1024
+Average execution time of dense embedding kernel (k1): 80.982002 (us)
+Average execution time of dense embedding kernel (k2): 71.814003 (us)
+Average execution time of dense embedding kernel (k3): 120.325005 (us)
+PASS
+
+Embedding dimension: 12288
+block size: 128
+Average execution time of dense embedding kernel (k1): 2862.489258 (us)
+Average execution time of dense embedding kernel (k2): 2478.148193 (us)
+Average execution time of dense embedding kernel (k3): 4853.183105 (us)
+PASS
+block size: 256
+Average execution time of dense embedding kernel (k1): 1409.674072 (us)
+Average execution time of dense embedding kernel (k2): 1221.040039 (us)
+Average execution time of dense embedding kernel (k3): 2388.781006 (us)
+PASS
+block size: 512
+Average execution time of dense embedding kernel (k1): 738.385010 (us)
+Average execution time of dense embedding kernel (k2): 640.391052 (us)
+Average execution time of dense embedding kernel (k3): 1246.869019 (us)
+PASS
+block size: 1024
+Average execution time of dense embedding kernel (k1): 396.554016 (us)
+Average execution time of dense embedding kernel (k2): 339.336029 (us)
+Average execution time of dense embedding kernel (k3): 651.041016 (us)
+PASS
+dense-embedding snapshot written to /var/tmp/pbs.7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_dense-embedding_122_9_7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/dense-embedding_site122_bit9.bin
+mismatch

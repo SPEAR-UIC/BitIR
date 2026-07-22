@@ -1,0 +1,3 @@
+Average kernel (baseline) execution time 0.012631 (s)
+Average kernel (optimized) execution time 0.012575 (s)
+FAIL

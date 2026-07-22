@@ -1,0 +1,14 @@
+bench=pathfinder
+site_id=9
+bit_index=3
+trial=1
+result=MASKED
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=%fi_flip = xor i32 %sub, 8, !dbg !1646 || store i32 %fi_flip, ptr %small_block_cols, align 4, !dbg !1646

@@ -1,0 +1,11 @@
+bench=pathfinder
+site_id=137
+bit_index=17
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %sub82, 131072, !dbg !1806
+mutated_value=%fi_flip
+flipped_bit=17
+first_direct_consumer=%cmp83 = icmp eq i32 %81, %fi_flip, !dbg !1806
+consumer_class=branch
+final_observed_outcome=MASKED

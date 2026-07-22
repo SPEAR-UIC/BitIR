@@ -1,0 +1,11 @@
+bench=colorwheel
+site_id=146
+bit_index=7
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_fx = xor i32 %fi_f2i, 128, !dbg !1579
+mutated_value=%fi_i2f
+flipped_bit=7
+first_direct_consumer=%sub64 = fsub contract float %97, %fi_i2f, !dbg !1579
+consumer_class=other
+final_observed_outcome=SDC

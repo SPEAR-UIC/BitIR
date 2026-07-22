@@ -1,0 +1,11 @@
+bench=entropy
+site_id=156
+bit_index=31
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i1 %cmp49, true, !dbg !1484
+mutated_value=%fi_flip
+flipped_bit=31
+first_direct_consumer=br i1 %fi_flip, label %for.body50, label %for.end59, !dbg !1484
+consumer_class=branch
+final_observed_outcome=DUE

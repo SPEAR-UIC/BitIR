@@ -1,0 +1,14 @@
+bench=dense-embedding
+site_id=126
+bit_index=16
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=%fi_flip = xor i32 %27, 65536, !dbg !1381 || %add13 = add nsw i32 %fi_flip, %28, !dbg !1382

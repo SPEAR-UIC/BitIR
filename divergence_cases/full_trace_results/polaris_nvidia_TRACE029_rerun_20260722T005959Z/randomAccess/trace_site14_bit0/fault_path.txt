@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=14
+bit_index=0
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %7, 1, !dbg !1178
+mutated_value=%fi_flip
+flipped_bit=0
+first_direct_consumer=%idxprom = sext i32 %fi_flip to i64, !dbg !1178
+consumer_class=other
+final_observed_outcome=SDC

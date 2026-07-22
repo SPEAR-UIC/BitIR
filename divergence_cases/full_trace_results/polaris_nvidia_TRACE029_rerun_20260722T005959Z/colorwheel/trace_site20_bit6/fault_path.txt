@@ -1,0 +1,11 @@
+bench=colorwheel
+site_id=20
+bit_index=6
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i1 %cmp3, true, !dbg !1450
+mutated_value=%fi_flip
+flipped_bit=6
+first_direct_consumer=br i1 %fi_flip, label %for.body4, label %for.end11, !dbg !1450
+consumer_class=branch
+final_observed_outcome=SDC

@@ -1,0 +1,14 @@
+bench=entropy
+site_id=156
+bit_index=4
+trial=1
+result=DUE
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=0
+dump_compare=not_run
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=%fi_flip = xor i1 %cmp49, true, !dbg !1484 || br i1 %fi_flip, label %for.body50, label %for.end59, !dbg !1484

@@ -1,0 +1,14 @@
+bench=colorwheel
+site_id=26
+bit_index=3
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=%fi_flip = xor i32 %inc8, 8, !dbg !1456 || store i32 %fi_flip, ptr %k, align 4, !dbg !1456

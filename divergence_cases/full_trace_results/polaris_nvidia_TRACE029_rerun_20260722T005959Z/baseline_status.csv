@@ -1,0 +1,6 @@
+bench,status,result,exit_code,golden,details
+colorwheel,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/colorwheel.bin,no-flip output matched golden
+randomAccess,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/randomAccess.bin,no-flip output matched golden
+pathfinder,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/pathfinder.bin,no-flip output matched golden
+dense-embedding,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/dense-embedding.bin,no-flip output matched golden
+entropy,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/entropy.bin,no-flip output matched golden

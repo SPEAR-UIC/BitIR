@@ -1,0 +1,6 @@
+Start execution on a device
+Average kernel execution time : 0.752572 (ms)
+Maximum error between host and device results: 4
+FAIL
+colorwheel snapshot written to /var/tmp/pbs.7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_colorwheel_23_4_7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/colorwheel_site23_bit4.bin
+mismatch

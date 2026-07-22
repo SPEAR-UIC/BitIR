@@ -1,0 +1,14 @@
+bench=colorwheel
+site_id=146
+bit_index=7
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=%fi_f2i = bitcast float %conv63 to i32, !dbg !1579 || %fi_fx = xor i32 %fi_f2i, 128, !dbg !1579 || %fi_i2f = bitcast i32 %fi_fx to float, !dbg !1579 || %sub64 = fsub contract float %97, %fi_i2f, !dbg !1579

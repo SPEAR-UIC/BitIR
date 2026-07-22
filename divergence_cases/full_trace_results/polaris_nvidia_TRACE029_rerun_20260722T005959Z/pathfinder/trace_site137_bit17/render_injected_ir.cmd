@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/opt -S /var/tmp/pbs.7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_pathfinder_137_17_7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.injected.bc -o /home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/polaris_nvidia_TRACE029_rerun_20260722T005959Z/pathfinder/trace_site137_bit17/device.injected.ll 

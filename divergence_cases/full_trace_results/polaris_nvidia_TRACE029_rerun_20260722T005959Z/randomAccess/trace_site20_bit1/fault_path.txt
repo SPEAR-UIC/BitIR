@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=20
+bit_index=1
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i64 %10, 2, !dbg !1184
+mutated_value=%fi_flip
+flipped_bit=1
+first_direct_consumer=
+consumer_class=
+final_observed_outcome=MASKED

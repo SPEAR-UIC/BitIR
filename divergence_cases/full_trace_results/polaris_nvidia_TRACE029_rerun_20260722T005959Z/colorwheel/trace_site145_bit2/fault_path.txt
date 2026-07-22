@@ -1,0 +1,11 @@
+bench=colorwheel
+site_id=145
+bit_index=2
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %98, 4, !dbg !1578
+mutated_value=%fi_flip
+flipped_bit=2
+first_direct_consumer=%conv63 = sitofp i32 %fi_flip to float, !dbg !1578
+consumer_class=other
+final_observed_outcome=SDC

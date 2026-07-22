@@ -1,0 +1,7 @@
+Start execution on a device
+Average kernel execution time : 0.706195 (ms)
+Maximum error between host and device results: 39
+FAIL
+colorwheel snapshot written to /var/tmp/pbs.7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_colorwheel_19_7_7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/colorwheel_site19_bit7.bin
+mismatch
+Result: SDC (exit 0)

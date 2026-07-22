@@ -1,0 +1,17 @@
+trace_level=full
+backend=nvidia
+bench=colorwheel
+source=/home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-cuda/main.cu
+source_dir=HeCBench/src/colorwheel-cuda
+site_id=26
+bit_index=3
+inject_target=result
+compare_mode=exact
+amd_execution_mode=injected_ir
+phase=
+results_dir=/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/polaris_nvidia_TRACE029_rerun_20260722T005959Z/colorwheel
+out_dir=/var/tmp/pbs.7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_colorwheel_26_3_7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov
+run_out=/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/polaris_nvidia_TRACE029_rerun_20260722T005959Z/colorwheel/site26_bit3.out
+run_err=/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/polaris_nvidia_TRACE029_rerun_20260722T005959Z/colorwheel/site26_bit3.err
+run_dump=/var/tmp/pbs.7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_colorwheel_26_3_7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/colorwheel_site26_bit3.bin
+run_timeout=1200

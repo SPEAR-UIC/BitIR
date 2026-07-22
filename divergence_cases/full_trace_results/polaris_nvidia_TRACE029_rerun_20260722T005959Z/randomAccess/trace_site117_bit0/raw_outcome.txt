@@ -1,0 +1,14 @@
+bench=randomAccess
+site_id=117
+bit_index=0
+trial=1
+result=FAILURE
+process_exit=124
+timeout=1
+benchmark_status=unknown
+dump_exists=0
+dump_compare=not_run
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=%fi_flip = xor i64 %inc, 1, !dbg !1349 || store i64 %fi_flip, ptr %i, align 8, !dbg !1349

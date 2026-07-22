@@ -1,0 +1,11 @@
+bench=pathfinder
+site_id=64
+bit_index=17
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i8 %frombool, -128, !dbg !1717
+mutated_value=%fi_flip
+flipped_bit=17
+first_direct_consumer=store i8 %fi_flip, ptr %isValid, align 1, !dbg !1717
+consumer_class=store_data
+final_observed_outcome=MASKED

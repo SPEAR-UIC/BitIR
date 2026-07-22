@@ -1,0 +1,11 @@
+bench=pathfinder
+site_id=116
+bit_index=17
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %mul65, 131072, !dbg !1775
+mutated_value=%fi_flip
+flipped_bit=17
+first_direct_consumer=%add66 = add nsw i32 %fi_flip, %68, !dbg !1776
+consumer_class=other
+final_observed_outcome=MASKED

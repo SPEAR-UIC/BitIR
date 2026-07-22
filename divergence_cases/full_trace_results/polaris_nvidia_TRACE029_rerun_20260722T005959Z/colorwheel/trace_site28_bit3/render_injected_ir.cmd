@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/opt -S /var/tmp/pbs.7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_colorwheel_28_3_7268173.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.injected.bc -o /home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/polaris_nvidia_TRACE029_rerun_20260722T005959Z/colorwheel/trace_site28_bit3/device.injected.ll 

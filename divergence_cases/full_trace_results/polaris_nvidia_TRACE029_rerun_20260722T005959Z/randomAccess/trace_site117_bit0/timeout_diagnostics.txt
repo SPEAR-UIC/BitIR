@@ -1,0 +1,5 @@
+run_status=124
+run_timeout=1200
+run_timeout_kill_after=15s
+run_out=/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/polaris_nvidia_TRACE029_rerun_20260722T005959Z/randomAccess/site117_bit0.out
+run_err=/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/polaris_nvidia_TRACE029_rerun_20260722T005959Z/randomAccess/site117_bit0.err

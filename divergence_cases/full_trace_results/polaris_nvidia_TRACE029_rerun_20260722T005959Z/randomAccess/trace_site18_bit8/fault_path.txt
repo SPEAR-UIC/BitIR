@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=18
+bit_index=8
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i64 %9, 256, !dbg !1183
+mutated_value=%fi_flip
+flipped_bit=8
+first_direct_consumer=%cmp7 = icmp slt i64 %fi_flip, 0, !dbg !1183
+consumer_class=other
+final_observed_outcome=MASKED

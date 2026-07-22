@@ -1,0 +1,11 @@
+bench=dense-embedding
+site_id=126
+bit_index=9
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %27, 512, !dbg !1381
+mutated_value=%fi_flip
+flipped_bit=9
+first_direct_consumer=%add13 = add nsw i32 %fi_flip, %28, !dbg !1382
+consumer_class=other
+final_observed_outcome=SDC
