@@ -1,0 +1,3 @@
+CUDA/SYCL pathfinder dumps: cols header + cols int32 values (40004 bytes for cols=10000)
+AMD pathfinder dumps: cols int32 values only (40000 bytes for cols=10000)
+Cross-backend comparisons must normalize format before comparing bytes.

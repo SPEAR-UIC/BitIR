@@ -1,0 +1,215 @@
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:222:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  222 |   hipMalloc((void**)&d_gpuWall, sizeof(int)*(size-cols));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:223:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  223 |   hipMemcpy(d_gpuWall, data+cols, sizeof(int)*(size-cols), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:226:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  226 |   hipMalloc((void**)&d_gpuSrc, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:227:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  227 |   hipMemcpy(d_gpuSrc, data, sizeof(int)*cols, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:230:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  230 |   hipMalloc((void**)&d_gpuResult, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:233:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |   hipMalloc((void**)&d_outputBuffer, sizeof(int)*16384);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:243:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  243 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:259:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  259 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:263:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  263 |   hipMemcpy(result, d_gpuSrc, sizeof(int)*cols, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:264:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  264 |   hipMemcpy(outputBuffer, d_outputBuffer, sizeof(int)*16348, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:266:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  266 |   hipFree(d_gpuResult);
+      |   ^~~~~~~ ~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:267:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  267 |   hipFree(d_gpuSrc);
+      |   ^~~~~~~ ~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:268:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  268 |   hipFree(d_gpuWall);
+      |   ^~~~~~~ ~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:269:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  269 |   hipFree(d_outputBuffer);
+      |   ^~~~~~~ ~~~~~~~~~~~~~~
+14 warnings generated when compiling for gfx90a.
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:222:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  222 |   hipMalloc((void**)&d_gpuWall, sizeof(int)*(size-cols));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:223:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  223 |   hipMemcpy(d_gpuWall, data+cols, sizeof(int)*(size-cols), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:226:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  226 |   hipMalloc((void**)&d_gpuSrc, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:227:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  227 |   hipMemcpy(d_gpuSrc, data, sizeof(int)*cols, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:230:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  230 |   hipMalloc((void**)&d_gpuResult, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:233:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |   hipMalloc((void**)&d_outputBuffer, sizeof(int)*16384);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:243:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  243 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:259:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  259 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:263:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  263 |   hipMemcpy(result, d_gpuSrc, sizeof(int)*cols, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:264:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  264 |   hipMemcpy(outputBuffer, d_outputBuffer, sizeof(int)*16348, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:266:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  266 |   hipFree(d_gpuResult);
+      |   ^~~~~~~ ~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:267:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  267 |   hipFree(d_gpuSrc);
+      |   ^~~~~~~ ~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:268:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  268 |   hipFree(d_gpuWall);
+      |   ^~~~~~~ ~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:269:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  269 |   hipFree(d_outputBuffer);
+      |   ^~~~~~~ ~~~~~~~~~~~~~~
+14 warnings generated when compiling for gfx90a.
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:222:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  222 |   hipMalloc((void**)&d_gpuWall, sizeof(int)*(size-cols));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:223:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  223 |   hipMemcpy(d_gpuWall, data+cols, sizeof(int)*(size-cols), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:226:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  226 |   hipMalloc((void**)&d_gpuSrc, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:227:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  227 |   hipMemcpy(d_gpuSrc, data, sizeof(int)*cols, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:230:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  230 |   hipMalloc((void**)&d_gpuResult, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:233:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |   hipMalloc((void**)&d_outputBuffer, sizeof(int)*16384);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:243:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  243 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:259:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  259 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:263:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  263 |   hipMemcpy(result, d_gpuSrc, sizeof(int)*cols, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:264:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  264 |   hipMemcpy(outputBuffer, d_outputBuffer, sizeof(int)*16348, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:266:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  266 |   hipFree(d_gpuResult);
+      |   ^~~~~~~ ~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:267:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  267 |   hipFree(d_gpuSrc);
+      |   ^~~~~~~ ~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:268:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  268 |   hipFree(d_gpuWall);
+      |   ^~~~~~~ ~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:269:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  269 |   hipFree(d_outputBuffer);
+      |   ^~~~~~~ ~~~~~~~~~~~~~~
+14 warnings generated when compiling for host.
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:222:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  222 |   hipMalloc((void**)&d_gpuWall, sizeof(int)*(size-cols));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:223:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  223 |   hipMemcpy(d_gpuWall, data+cols, sizeof(int)*(size-cols), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:226:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  226 |   hipMalloc((void**)&d_gpuSrc, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:227:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  227 |   hipMemcpy(d_gpuSrc, data, sizeof(int)*cols, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:230:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  230 |   hipMalloc((void**)&d_gpuResult, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:233:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |   hipMalloc((void**)&d_outputBuffer, sizeof(int)*16384);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:243:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  243 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:259:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  259 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:263:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  263 |   hipMemcpy(result, d_gpuSrc, sizeof(int)*cols, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:264:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  264 |   hipMemcpy(outputBuffer, d_outputBuffer, sizeof(int)*16348, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:266:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  266 |   hipFree(d_gpuResult);
+      |   ^~~~~~~ ~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:267:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  267 |   hipFree(d_gpuSrc);
+      |   ^~~~~~~ ~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:268:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  268 |   hipFree(d_gpuWall);
+      |   ^~~~~~~ ~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:269:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  269 |   hipFree(d_outputBuffer);
+      |   ^~~~~~~ ~~~~~~~~~~~~~~
+14 warnings generated when compiling for gfx90a.
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:222:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  222 |   hipMalloc((void**)&d_gpuWall, sizeof(int)*(size-cols));
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:223:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  223 |   hipMemcpy(d_gpuWall, data+cols, sizeof(int)*(size-cols), hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:226:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  226 |   hipMalloc((void**)&d_gpuSrc, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:227:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  227 |   hipMemcpy(d_gpuSrc, data, sizeof(int)*cols, hipMemcpyHostToDevice);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:230:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  230 |   hipMalloc((void**)&d_gpuResult, sizeof(int)*cols);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:233:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  233 |   hipMalloc((void**)&d_outputBuffer, sizeof(int)*16384);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:243:7: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  243 |       hipDeviceSynchronize();
+      |       ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:259:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  259 |   hipDeviceSynchronize();
+      |   ^~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:263:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  263 |   hipMemcpy(result, d_gpuSrc, sizeof(int)*cols, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:264:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  264 |   hipMemcpy(outputBuffer, d_outputBuffer, sizeof(int)*16348, hipMemcpyDeviceToHost);
+      |   ^~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:266:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  266 |   hipFree(d_gpuResult);
+      |   ^~~~~~~ ~~~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:267:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  267 |   hipFree(d_gpuSrc);
+      |   ^~~~~~~ ~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:268:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  268 |   hipFree(d_gpuWall);
+      |   ^~~~~~~ ~~~~~~~~~
+/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu:269:3: warning: ignoring return value of function declared with 'nodiscard' attribute [-Wunused-result]
+  269 |   hipFree(d_outputBuffer);
+      |   ^~~~~~~ ~~~~~~~~~~~~~~
+14 warnings generated when compiling for host.

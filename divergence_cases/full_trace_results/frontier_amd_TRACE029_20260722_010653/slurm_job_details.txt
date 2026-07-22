@@ -1,0 +1,31 @@
+JobId=5048348 JobName=frontier_amd_trace029
+   UserId=mdunlavy(20468) GroupId=mdunlavy(33540) MCS_label=N/A
+   Priority=43372800 Nice=0 Account=csc707 QOS=debug
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:00:36 TimeLimit=00:10:00 TimeMin=N/A
+   SubmitTime=2026-07-21T21:06:45 EligibleTime=2026-07-21T21:06:45
+   AccrueTime=2026-07-21T21:06:45
+   StartTime=2026-07-21T21:06:51 EndTime=2026-07-21T21:16:51 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-07-21T21:06:51 Scheduler=Backfill
+   Partition=batch AllocNode:Sid=login09:3137184
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=frontier00897
+   BatchHost=frontier00897
+   NumNodes=1 NumCPUs=112 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:1
+   ReqTRES=cpu=8,mem=32G,node=1,billing=8
+   AllocTRES=cpu=112,mem=32G,node=1,billing=112
+   Socks/Node=* NtasksPerN:B:S:C=1:0:*:* CoreSpec=*
+   MinCPUsNode=8 MinMemoryNode=32G MinTmpDiskNode=0
+   Features=(null) DelayBoot=00:00:00
+   OverSubscribe=NO Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)
+   Command=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/divergence_cases/rerun_scripts/frontier_amd_trace029_full_trace.sbatch
+   SubmitLine=sbatch divergence_cases/rerun_scripts/frontier_amd_trace029_full_trace.sbatch
+   WorkDir=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI
+   AdminComment=GPU_SRANGE_SRC=default,GPU_POWER_CAP=560,GPU_POWER_CAP_SRC=default,GPU_COUNTERS=0,GPU_COUNTERS_SRC=default,GPU_SRANGE=500-1700
+   StdErr=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/divergence_cases/slurm_frontier_amd_trace029_5048348.err
+   StdIn=/dev/null
+   StdOut=/autofs/nccs-svm1_home2/mdunlavy/GPU_FI/divergence_cases/slurm_frontier_amd_trace029_5048348.out
+   TresPerNode=gres/gpu:1
+   TresPerTask=cpu=8
+

@@ -1,0 +1,18 @@
+{
+  "benchmark": "pathfinder",
+  "comparison_policy": "Do not directly compare headered CUDA/SYCL dumps against raw AMD dumps without normalization.",
+  "dump_formats": {
+    "amd": {
+      "bytes_for_10000_cols": 40000,
+      "layout": "raw_int32_values"
+    },
+    "cuda": {
+      "bytes_for_10000_cols": 40004,
+      "layout": "cols_header_plus_int32_values"
+    },
+    "sycl": {
+      "bytes_for_10000_cols": 40004,
+      "layout": "cols_header_plus_int32_values"
+    }
+  }
+}

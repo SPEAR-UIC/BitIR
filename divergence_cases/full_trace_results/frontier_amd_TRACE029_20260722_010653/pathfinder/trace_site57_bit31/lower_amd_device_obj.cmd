@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/llc -march=amdgcn -mcpu=gfx90a -filetype=obj /ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/tmp/pathfinder_site57_bit31/device.injected.bc -o /ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/tmp/pathfinder_site57_bit31/device.o 

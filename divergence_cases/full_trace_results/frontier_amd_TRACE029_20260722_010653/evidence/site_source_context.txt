@@ -1,0 +1,9 @@
+  62:   // it is the non-overlapping small blocks that cover
+  63:   // all the input data
+  64: 
+  65:   // calculate the small block size.
+> 66:   int small_block_cols = BLOCK_SIZE - (iteration*theHalo*2);
+  67: 
+  68:   // calculate the boundary for the block according to
+  69:   // the boundary of its small block
+  70:   int blkX = (small_block_cols*bx) - borderCols;

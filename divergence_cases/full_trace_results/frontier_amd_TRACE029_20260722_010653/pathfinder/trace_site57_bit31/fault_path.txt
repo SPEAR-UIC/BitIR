@@ -1,0 +1,11 @@
+bench=pathfinder
+site_id=57
+bit_index=31
+selected_site=result,sub,int,32,_Z10pathfinderPKiS0_PiS1_iiiii,66,37,1
+injection_site=result,sub,int,32,_Z10pathfinderPKiS0_PiS1_iiiii,66,37,1
+mutated_instruction=%fi_flip = xor i32 %107, -2147483648, !dbg !1767
+mutated_value=%fi_flip
+flipped_bit=31
+first_direct_consumer=store i32 %fi_flip, ptr %65, align 4, !dbg !1767
+consumer_class=store_data
+final_observed_outcome=MASKED

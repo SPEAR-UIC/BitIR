@@ -1,0 +1,13 @@
+{
+  "baseline_cpu_reference_match": false,
+  "baseline_dump_match": false,
+  "baseline_exit_code": "0",
+  "baseline_result": "BASELINE",
+  "expected_previous_amd_result": "MASKED",
+  "final_classification": "INCONSISTENT",
+  "golden_cpu_reference_match": false,
+  "injected_cpu_reference_match": false,
+  "injected_dump_match": true,
+  "injected_exit_code": "0",
+  "injected_result": "MASKED"
+}

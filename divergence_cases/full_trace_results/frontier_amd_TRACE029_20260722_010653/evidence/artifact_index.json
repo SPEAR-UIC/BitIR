@@ -1,0 +1,66 @@
+{
+  "baseline_dump": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/pathfinder_baseline.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "baseline_stderr": {
+    "bytes": 0,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/baseline.err",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "baseline_stdout": {
+    "bytes": 318,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/baseline.out",
+    "sha256": "f7ee091c54120250f355ac611ed92e44994f99b21d52f76f324710f74fcdf555"
+  },
+  "baseline_summary_csv": {
+    "bytes": 328,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/baseline_summary.csv",
+    "sha256": "683d417ddd92d73bd7b1f4455e6e29f9c1f38a22a2e8ed73070ab756cf9d6c99"
+  },
+  "baseline_trace_dir": {
+    "exists": false,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/trace_baseline"
+  },
+  "golden": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/pathfinder.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "injected_dump": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/pathfinder_site57_bit31.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "injected_stderr": {
+    "bytes": 0,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/site57_bit31.err",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "injected_stdout": {
+    "bytes": 311,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/site57_bit31.out",
+    "sha256": "e44beb0e1159aac7ccf4cc52442a9e808f4ef896d3dc2877188520df3013ebd0"
+  },
+  "injected_trace_dir": {
+    "exists": false,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/trace_site57_bit31"
+  },
+  "results_root": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653",
+  "summary_csv": {
+    "bytes": 472,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/summary.csv",
+    "sha256": "8628877ac1626b37d0682c6ae5639d0f7be575060fa65bfb989a0bedd408e43d"
+  },
+  "trace_results_dir": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder"
+}

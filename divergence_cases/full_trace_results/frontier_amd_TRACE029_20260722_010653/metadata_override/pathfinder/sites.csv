@@ -1,0 +1,2 @@
+site_id,opcode,type_kind,bitwidth,operand_index,function
+57,sub,int,32,-1,_Z10pathfinderPKiS0_PiS1_iiiii

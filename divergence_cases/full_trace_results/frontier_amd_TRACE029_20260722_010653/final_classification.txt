@@ -1,0 +1,11 @@
+expected_previous_amd_result=MASKED
+baseline_result=BASELINE
+injected_result=MASKED
+baseline_exit_code=0
+injected_exit_code=0
+baseline_dump_match=False
+injected_dump_match=True
+golden_cpu_reference_match=False
+baseline_cpu_reference_match=False
+injected_cpu_reference_match=False
+final_classification=INCONSISTENT
