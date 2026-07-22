@@ -166,6 +166,13 @@ for required in baseline_runtime_summary.csv injected_runtime_summary.csv \
   [[ -f "${RUNTIME_DIR}/${required}" ]] || { echo "missing runtime artifact: ${required}" >&2; exit 1; }
 done
 
+for phase in baseline injected; do
+  python3 "${SCRIPT_DIR}/write_frontier_runtime_csv.py" \
+    --summary "${RUNTIME_DIR}/${phase}_runtime_summary.csv" \
+    --records "${RUNTIME_DIR}/${phase}_runtime_records.csv" \
+    --output "${RUNTIME_DIR}/${phase}_runtime.csv"
+done
+
 python3 - "${BENCH_DIR}/summary.csv" "${RUNTIME_DIR}" "${RESULTS_DIR}/outcomes.csv" <<'PY'
 import csv
 import sys
