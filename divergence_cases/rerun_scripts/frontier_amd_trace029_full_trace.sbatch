@@ -21,6 +21,7 @@ WORKLIST="${WORKLIST:-$REPO_ROOT/divergence_analysis_outputs/full_trace_debug_wo
 CASE_CSV="${CASE_CSV:-$REPO_ROOT/divergence_analysis_outputs/full_trace_debug_worklists/batch00_single_case_trace029/batch00_single_case_trace029_trace_case.csv}"
 TRACE_CASE_ID="${TRACE_CASE_ID:-TRACE029}"
 BENCH="${BENCH:-pathfinder}"
+ORIGINAL_SITE_ID="${ORIGINAL_SITE_ID:-123}"
 SITE_ID="${SITE_ID:-57}"
 BIT_INDEX="${BIT_INDEX:-31}"
 EXPECTED_RESULT="${EXPECTED_RESULT:-MASKED}"
@@ -44,6 +45,19 @@ EVIDENCE_SCRIPT="${EVIDENCE_SCRIPT:-$REPO_ROOT/divergence_cases/rerun_scripts/co
 SBATCH_STDOUT_SRC="${REPO_ROOT}/divergence_cases/slurm_frontier_amd_trace029_${SLURM_JOB_ID:-manual}.out"
 SBATCH_STDERR_SRC="${REPO_ROOT}/divergence_cases/slurm_frontier_amd_trace029_${SLURM_JOB_ID:-manual}.err"
 VALIDATION_SITE_LIST="${RESULTS_ROOT}/trace029_validation_site_list.csv"
+OVERRIDE_METADATA_DIR="${RESULTS_ROOT}/metadata_override/${BENCH}"
+OVERRIDE_METADATA_CSV="${OVERRIDE_METADATA_DIR}/sites_metadata.csv"
+OVERRIDE_SITES_CSV="${OVERRIDE_METADATA_DIR}/sites.csv"
+EXPECTED_OPCODE="${EXPECTED_OPCODE:-sub}"
+EXPECTED_TYPE_KIND="${EXPECTED_TYPE_KIND:-int}"
+EXPECTED_BITWIDTH="${EXPECTED_BITWIDTH:-32}"
+EXPECTED_SOURCE_LINE="${EXPECTED_SOURCE_LINE:-66}"
+EXPECTED_SOURCE_COLUMN="${EXPECTED_SOURCE_COLUMN:-37}"
+EXPECTED_SIGNATURE_ORDINAL="${EXPECTED_SIGNATURE_ORDINAL:-1}"
+EXPECTED_FUNCTION="${EXPECTED_FUNCTION:-_Z10pathfinderPKiS0_PiS1_iiiii}"
+EXPECTED_SITE_CLASS="${EXPECTED_SITE_CLASS:-result}"
+EXPECTED_OPERAND_INDEX="${EXPECTED_OPERAND_INDEX:--1}"
+EXPECTED_SOURCE_FILE="${EXPECTED_SOURCE_FILE:-$REPO_ROOT/HeCBench/src/pathfinder-hip/main.cu}"
 
 cd "$REPO_ROOT"
 mkdir -p "$RESULTS_ROOT" "$TRACE_RESULTS_DIR" "$TRACE_TMP_ROOT" "$RESULTS_ROOT/.bitir_jobs" "$GOLDEN_ROOT"
@@ -118,34 +132,34 @@ cp -f "$RUN_CONFIG" "$RESULTS_ROOT/frontier_amd_trace029_full_trace.yml"
 cp -f "$WORKLIST" "$RESULTS_ROOT/amd_batch00_single_case_trace029_full_trace_worklist.csv"
 cp -f "$CASE_CSV" "$RESULTS_ROOT/batch00_single_case_trace029_trace_case.csv"
 cp -f "$SCRIPT_PATH" "$RESULTS_ROOT/frontier_amd_trace029_full_trace.sbatch"
+mkdir -p "$OVERRIDE_METADATA_DIR"
 
-python3 - "$WORKLIST" "$METADATA_CSV" "$BENCH" "$SITE_ID" "$BIT_INDEX" "$VALIDATION_SITE_LIST" <<'PY'
+python3 - "$BENCH" "$SITE_ID" "$BIT_INDEX" "$VALIDATION_SITE_LIST" "$OVERRIDE_METADATA_CSV" "$OVERRIDE_SITES_CSV" \
+  "$EXPECTED_OPCODE" "$EXPECTED_SOURCE_LINE" "$EXPECTED_SOURCE_COLUMN" "$EXPECTED_FUNCTION" "$EXPECTED_SITE_CLASS" \
+  "$EXPECTED_TYPE_KIND" "$EXPECTED_BITWIDTH" "$EXPECTED_SIGNATURE_ORDINAL" "$EXPECTED_OPERAND_INDEX" "$EXPECTED_SOURCE_FILE" <<'PY'
 import csv
 import sys
 
-worklist_csv, metadata_csv, bench, site_id, bit_index, out_csv = sys.argv[1:7]
+(
+    bench,
+    site_id,
+    bit_index,
+    validation_csv,
+    metadata_csv,
+    sites_csv,
+    opcode,
+    source_line,
+    source_column,
+    function,
+    site_class,
+    type_kind,
+    bitwidth,
+    signature_ordinal,
+    operand_index,
+    source_file,
+) = sys.argv[1:17]
 
-with open(worklist_csv, newline="", encoding="utf-8") as f:
-    work_rows = list(csv.DictReader(f))
-work_row = None
-for row in work_rows:
-    if row.get("bench") == bench and row.get("site_id") == site_id and row.get("bit_index") == bit_index:
-        work_row = row
-        break
-if work_row is None:
-    raise SystemExit(f"missing worklist row for bench={bench} site_id={site_id} bit_index={bit_index}")
-
-with open(metadata_csv, newline="", encoding="utf-8") as f:
-    meta_rows = list(csv.DictReader(f))
-meta_row = None
-for row in meta_rows:
-    if row.get("site_id") == site_id:
-        meta_row = row
-        break
-if meta_row is None:
-    raise SystemExit(f"missing metadata row for site_id={site_id}")
-
-fieldnames = [
+validation_fields = [
     "bench",
     "site_id",
     "bit_index",
@@ -158,24 +172,84 @@ fieldnames = [
     "bitwidth",
     "signature_ordinal",
 ]
-row = {
+validation_row = {
     "bench": bench,
     "site_id": site_id,
     "bit_index": bit_index,
-    "opcode": meta_row.get("opcode", ""),
-    "source_line": meta_row.get("source_line", ""),
-    "source_column": meta_row.get("source_column", ""),
-    "function": meta_row.get("function", ""),
-    "site_class": meta_row.get("site_class", ""),
-    "type_kind": meta_row.get("type_kind", ""),
-    "bitwidth": meta_row.get("bitwidth", ""),
-    "signature_ordinal": meta_row.get("signature_ordinal", ""),
+    "opcode": opcode,
+    "source_line": source_line,
+    "source_column": source_column,
+    "function": function,
+    "site_class": site_class,
+    "type_kind": type_kind,
+    "bitwidth": bitwidth,
+    "signature_ordinal": signature_ordinal,
 }
+with open(validation_csv, "w", newline="", encoding="utf-8") as f:
+    w = csv.DictWriter(f, fieldnames=validation_fields)
+    w.writeheader()
+    w.writerow(validation_row)
 
-with open(out_csv, "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(f, fieldnames=fieldnames)
-    writer.writeheader()
-    writer.writerow(row)
+metadata_fields = [
+    "site_id",
+    "site_class",
+    "opcode",
+    "type_kind",
+    "bitwidth",
+    "operand_index",
+    "function",
+    "source_file",
+    "source_line",
+    "source_column",
+    "signature_ordinal",
+    "semantic_key",
+]
+semantic_key = "|".join(
+    [
+        function,
+        site_class,
+        opcode,
+        type_kind,
+        bitwidth,
+        operand_index,
+        source_file,
+        source_line,
+        source_column,
+        signature_ordinal,
+    ]
+)
+metadata_row = {
+    "site_id": site_id,
+    "site_class": site_class,
+    "opcode": opcode,
+    "type_kind": type_kind,
+    "bitwidth": bitwidth,
+    "operand_index": operand_index,
+    "function": function,
+    "source_file": source_file,
+    "source_line": source_line,
+    "source_column": source_column,
+    "signature_ordinal": signature_ordinal,
+    "semantic_key": semantic_key,
+}
+with open(metadata_csv, "w", newline="", encoding="utf-8") as f:
+    w = csv.DictWriter(f, fieldnames=metadata_fields)
+    w.writeheader()
+    w.writerow(metadata_row)
+
+sites_fields = ["site_id", "opcode", "type_kind", "bitwidth", "operand_index", "function"]
+sites_row = {
+    "site_id": site_id,
+    "opcode": opcode,
+    "type_kind": type_kind,
+    "bitwidth": bitwidth,
+    "operand_index": operand_index,
+    "function": function,
+}
+with open(sites_csv, "w", newline="", encoding="utf-8") as f:
+    w = csv.DictWriter(f, fieldnames=sites_fields)
+    w.writeheader()
+    w.writerow(sites_row)
 PY
 
 if ! command -v module >/dev/null 2>&1 && [[ -f /etc/profile.d/modules.sh ]]; then
@@ -209,18 +283,18 @@ export BITIR_MACHINE_HIP_ARCH="gfx90a"
 export BITIR_MACHINE_LLVM_SEARCH_ROOT="/opt/rocm-6.4.2/lib/llvm"
 export BITIR_MACHINE_TOOL_SEARCH_ROOTS="/opt/rocm-6.4.2/lib/llvm/bin"
 export BITIR_MACHINE_MODULES="rocm/6.4.2 rocm-llvm-toolchain"
-export BITIR_TRACE_METADATA_DIR="$REPO_ROOT/HeCBench/results/llvm17_inject_amd/${BENCH}"
+export BITIR_TRACE_METADATA_DIR="$OVERRIDE_METADATA_DIR"
 export BITIR_SITE_LIST="$VALIDATION_SITE_LIST"
 export SUMMARY_INCLUDE_PATHS=1
 export CLEAN_RUN_ARTIFACTS=0
 export FORCE_REBUILD=1
-export EXPECT_INJECTION_OPCODE="sub"
-export EXPECT_INJECTION_TYPE_KIND="int"
-export EXPECT_INJECTION_BITWIDTH="32"
-export EXPECT_INJECTION_SOURCE_LINE="66"
-export EXPECT_INJECTION_SOURCE_COLUMN="37"
-export EXPECT_INJECTION_SIGNATURE_ORDINAL="1"
-export EXPECT_INJECTION_FUNCTION="_Z10pathfinderPKiS0_PiS1_iiiii"
+export EXPECT_INJECTION_OPCODE="$EXPECTED_OPCODE"
+export EXPECT_INJECTION_TYPE_KIND="$EXPECTED_TYPE_KIND"
+export EXPECT_INJECTION_BITWIDTH="$EXPECTED_BITWIDTH"
+export EXPECT_INJECTION_SOURCE_LINE="$EXPECTED_SOURCE_LINE"
+export EXPECT_INJECTION_SOURCE_COLUMN="$EXPECTED_SOURCE_COLUMN"
+export EXPECT_INJECTION_SIGNATURE_ORDINAL="$EXPECTED_SIGNATURE_ORDINAL"
+export EXPECT_INJECTION_FUNCTION="$EXPECTED_FUNCTION"
 
 echo "[trace029] rebuilding fi_inject plugin"
 bash HeCBench/tools/llvm17_inject/build.sh 2>&1 | tee "$RESULTS_ROOT/plugin_build.log"
