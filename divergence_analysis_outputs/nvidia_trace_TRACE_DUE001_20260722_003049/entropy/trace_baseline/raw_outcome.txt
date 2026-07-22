@@ -1,0 +1,14 @@
+bench=entropy
+site_id=156
+bit_index=31
+trial=1
+result=BASELINE
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=

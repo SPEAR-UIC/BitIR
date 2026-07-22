@@ -1,0 +1,329 @@
+#!/bin/bash
+#PBS -N nvidia_divergence_rerun
+#PBS -A UIC-HPC
+#PBS -q debug
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=00:30:00
+
+set -euo pipefail
+
+REPO_ROOT="${REPO_ROOT:-/home/mdunlavy/GPU_FI}"
+WORKLIST="${REPO_ROOT}/divergence_analysis_outputs/nvidia_trace_TRACE_DUE001_compat_worklist.csv"
+CANDIDATES="${REPO_ROOT}/divergence_analysis_outputs/expanded_pairwise_anchor_rerun_candidates.csv"
+RESULTS_DIR="${RESULTS_DIR:?submit with RESULTS_DIR set to a timestamped directory}"
+GOLDEN_ROOT="${GOLDEN_ROOT:-/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs}"
+RUNNER="${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh"
+PLUGIN_BUILD="${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
+DRY_RUN="${DRY_RUN:-0}"
+MAX_BENCHES="${MAX_BENCHES:-0}"
+MAX_ROWS_PER_BENCH="${MAX_ROWS_PER_BENCH:-0}"
+BENCH_FILTER="${BENCH_FILTER:-}"
+CAMPAIGN_FAILURES=0
+
+mkdir -p "${RESULTS_DIR}"
+cp -f "${BASH_SOURCE[0]}" "${RESULTS_DIR}/nvidia_divergence_rerun.pbs"
+cp -f "${WORKLIST}" "${RESULTS_DIR}/nvidia_rerun_worklist.csv"
+cp -f "${CANDIDATES}" "${RESULTS_DIR}/expanded_pairwise_anchor_rerun_candidates.csv"
+printf 'commit=%s\nstarted_utc=%s\nhost=%s\ndry_run=%s\nmax_benches=%s\nmax_rows_per_bench=%s\nbench_filter=%s\n' \
+  "$(git -C "${REPO_ROOT}" rev-parse HEAD)" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$(hostname)" \
+  "${DRY_RUN}" "${MAX_BENCHES}" "${MAX_ROWS_PER_BENCH}" "${BENCH_FILTER}" \
+  > "${RESULTS_DIR}/campaign_metadata.txt"
+
+python3 - "${WORKLIST}" "${RESULTS_DIR}/ordered_benches.txt" "${RESULTS_DIR}/execution_plan.csv" \
+  "${MAX_BENCHES}" "${MAX_ROWS_PER_BENCH}" "${BENCH_FILTER}" <<'PY'
+import csv
+import sys
+
+worklist, benches_path, plan_path = sys.argv[1:4]
+max_benches, max_rows = map(int, sys.argv[4:6])
+bench_filter = [value for value in sys.argv[6].split(",") if value]
+rows = list(csv.DictReader(open(worklist, newline="", encoding="utf-8")))
+benches = []
+for row in rows:
+    if row["bench"] not in benches:
+        benches.append(row["bench"])
+if bench_filter:
+    benches = [bench for bench in benches if bench in bench_filter]
+if max_benches:
+    benches = benches[:max_benches]
+with open(benches_path, "w", encoding="utf-8") as out:
+    out.writelines(f"{bench}\n" for bench in benches)
+with open(plan_path, "w", newline="", encoding="utf-8") as out:
+    fields = ["sequence", "bench", "worklist_id", "nvidia_site_id", "bit_index", "expected_result"]
+    writer = csv.DictWriter(out, fieldnames=fields)
+    writer.writeheader()
+    sequence = 0
+    for bench in benches:
+        selected = [row for row in rows if row["bench"] == bench]
+        if max_rows:
+            selected = selected[:max_rows]
+        for row in selected:
+            sequence += 1
+            writer.writerow({
+                "sequence": sequence,
+                "bench": bench,
+                "worklist_id": row["worklist_id"],
+                "nvidia_site_id": row["nvidia_site_id"],
+                "bit_index": row["bit_index"],
+                "expected_result": row["nvidia_result"],
+            })
+PY
+
+if [[ "${DRY_RUN}" == "1" ]]; then
+  cat "${RESULTS_DIR}/execution_plan.csv"
+  printf 'finished_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "${RESULTS_DIR}/campaign_metadata.txt"
+  echo "[dry-run] results=${RESULTS_DIR}"
+  exit 0
+fi
+
+module use /soft/modulefiles
+module load PrgEnv-gnu
+module load spack-pe-base
+module load cmake
+module load gcc-native/12.3
+module load cudatoolkit-standalone/11.8.0
+module load llvm/release-17.0.0
+
+export CUDA_HOME=/soft/compilers/cudatoolkit/cuda-11.8.0
+export PATH="${CUDA_HOME}/bin:${PATH:-}"
+export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+export CUDA_VISIBLE_DEVICES=0
+export CUDA_LAUNCH_BLOCKING=1
+export REPO_ROOT
+export BITIR_MACHINE_BACKEND=nvidia
+export BITIR_MACHINE_GOLDEN_ROOT="${GOLDEN_ROOT}"
+export BITIR_MACHINE_RESULTS_ROOT=HeCBench/results/llvm17_inject
+export BITIR_MACHINE_RUNTIME_HOME="${CUDA_HOME}"
+export BITIR_MACHINE_CUDA_ARCH_NAME=sm_80
+export BITIR_MACHINE_COMPILER_DRIVER=nvcc
+export BITIR_MACHINE_GPU_QUERY_TOOL=nvidia-smi
+export BITIR_FAULT_MODEL_INJECT_TARGET=result
+export BITIR_FAULT_MODEL_INT_FLOAT_ONLY=1
+export BITIR_FAULT_MODEL_INCLUDE_CONSTANTS=0
+export INJECT_TARGET=result
+export INT_FLOAT_ONLY=1
+export INCLUDE_CONSTANTS=0
+export KEEP_DUMPS=1
+export SKIP_EXISTING=0
+export TRACE_LEVEL=full
+export BITIR_RUN_TIMEOUT=1200
+export ABS_TOL=1e-5
+export REL_TOL=0.0
+
+configure_bench() {
+  local bench="$1"
+  export BENCH="${bench}"
+  export BITIR_BENCH="${bench}"
+  export BITIR_GOLDEN_FILE="${bench}.bin"
+  export BITIR_COMPARE_MODE=exact
+  export BITIR_EXTRA_INCLUDES=""
+  case "${bench}" in
+    colorwheel)
+      export BITIR_SOURCE_DIR=HeCBench/src/colorwheel-cuda
+      export COLORWHEEL_RANGE=10000 COLORWHEEL_SIZE=8 COLORWHEEL_REPEAT=1
+      export BITIR_RUN_ARGS="10000 8 1"
+      ;;
+    randomAccess)
+      export BITIR_SOURCE_DIR=HeCBench/src/randomAccess-cuda
+      export RANDOMACCESS_REPEAT=1
+      export BITIR_RUN_ARGS="1"
+      ;;
+    pathfinder)
+      export BITIR_SOURCE_DIR=HeCBench/src/pathfinder-cuda
+      export PATHFINDER_COLS=10000 PATHFINDER_ROWS=1000 PATHFINDER_PYRAMID=1000
+      export BITIR_RUN_ARGS="10000 1000 1000"
+      ;;
+    dense-embedding)
+      export BITIR_SOURCE_DIR=HeCBench/src/dense-embedding-cuda
+      export DENSE_ROWS=10000 DENSE_BATCH=8 DENSE_REPEAT=1
+      export BITIR_RUN_ARGS="10000 8 1"
+      ;;
+    entropy)
+      export BITIR_SOURCE_DIR=HeCBench/src/entropy-cuda
+      export ENTROPY_WIDTH=10000 ENTROPY_HEIGHT=1024 ENTROPY_REPEAT=1
+      export BITIR_RUN_ARGS="10000 1024 1"
+      ;;
+    *)
+      echo "unsupported benchmark in worklist: ${bench}" >&2
+      return 1
+      ;;
+  esac
+}
+
+build_missing_golden() {
+  local bench="$1" golden="${GOLDEN_ROOT}/${bench}.bin"
+  [[ -s "${golden}" ]] && return 0
+
+  local build_dir="${TMPDIR:-/tmp}/nvidia_divergence_golden_${PBS_JOBID:-$$}_${bench}"
+  echo "[golden] missing ${golden}; building ${bench}"
+  mkdir -p "${GOLDEN_ROOT}"
+  cmake -S "${REPO_ROOT}/HeCBench" -B "${build_dir}" \
+    -DHECBENCH_BENCHMARKS="${bench}" \
+    -DHECBENCH_BUILD_ALL_BENCHMARKS=OFF \
+    -DHECBENCH_ENABLE_CUDA=ON \
+    -DHECBENCH_ENABLE_HIP=OFF \
+    -DHECBENCH_ENABLE_SYCL=OFF \
+    -DHECBENCH_ENABLE_OPENMP=OFF \
+    -DHECBENCH_CUDA_ARCH=80 \
+    -DCMAKE_C_COMPILER=cc \
+    -DCMAKE_CXX_COMPILER=CC \
+    -DCMAKE_CUDA_FLAGS=--allow-unsupported-compiler \
+    > "${RESULTS_DIR}/${bench}/golden_build.log" 2>&1 || return 1
+  cmake --build "${build_dir}" --target "${bench}-cuda" \
+    >> "${RESULTS_DIR}/${bench}/golden_build.log" 2>&1 || return 1
+  HECBENCH_FI_FORCE_DUMP=1 "${build_dir}/bin/cuda/${bench}" ${BITIR_RUN_ARGS} "${golden}" \
+    > "${GOLDEN_ROOT}/${bench}.log" 2> "${GOLDEN_ROOT}/${bench}.err" || return 1
+  [[ -s "${golden}" ]]
+}
+
+printf 'bench,status,result,exit_code,golden,details\n' > "${RESULTS_DIR}/baseline_status.csv"
+
+echo "[setup] building injection plugin"
+if ! bash "${PLUGIN_BUILD}" > "${RESULTS_DIR}/plugin_build.log" 2>&1; then
+  echo "injection plugin build failed" >&2
+  exit 1
+fi
+
+while IFS= read -r bench; do
+  [[ -n "${bench}" ]] || continue
+  bench_dir="${RESULTS_DIR}/${bench}"
+  mkdir -p "${bench_dir}"
+  if ! configure_bench "${bench}"; then
+    printf '%s,FAIL,CONFIG_ERROR,,,unsupported benchmark\n' "${bench}" >> "${RESULTS_DIR}/baseline_status.csv"
+    CAMPAIGN_FAILURES=$((CAMPAIGN_FAILURES + 1))
+    continue
+  fi
+  if ! build_missing_golden "${bench}"; then
+    printf '%s,FAIL,GOLDEN_BUILD_FAILED,,%s,missing golden could not be generated\n' \
+      "${bench}" "${GOLDEN_ROOT}/${bench}.bin" >> "${RESULTS_DIR}/baseline_status.csv"
+    CAMPAIGN_FAILURES=$((CAMPAIGN_FAILURES + 1))
+    continue
+  fi
+
+  read -r baseline_site baseline_bit < <(python3 - "${WORKLIST}" "${bench}" <<'PY'
+import csv
+import sys
+with open(sys.argv[1], newline="", encoding="utf-8") as source:
+    for row in csv.DictReader(source):
+        if row["bench"] == sys.argv[2]:
+            print(row["nvidia_site_id"], row["bit_index"])
+            break
+PY
+)
+  echo "[baseline] bench=${bench} site=${baseline_site} bit=${baseline_bit}"
+  baseline_rc=0
+  baseline_tmp="${TMPDIR:-/tmp}/nvidia_divergence_${bench}_baseline_${PBS_JOBID:-$$}"
+  BASELINE=1 SITE_ID="${baseline_site}" BIT_INDEX="${baseline_bit}" TRIAL_INDEX=1 \
+    RESULTS_DIR="${bench_dir}" OUT_DIR="${baseline_tmp}" \
+    bash "${RUNNER}" > "${bench_dir}/baseline_driver.log" 2>&1 || baseline_rc=$?
+  rm -rf "${baseline_tmp}"
+  baseline_result="$(awk -F, 'NR > 1 { value=$4 } END { print value }' "${bench_dir}/summary.csv" 2>/dev/null)"
+  if [[ "${baseline_rc}" != "0" || "${baseline_result}" != "BASELINE" ]]; then
+    printf '%s,FAIL,%s,%s,%s,benchmark injections skipped\n' \
+      "${bench}" "${baseline_result:-NO_RESULT}" "${baseline_rc}" "${GOLDEN_ROOT}/${bench}.bin" \
+      >> "${RESULTS_DIR}/baseline_status.csv"
+    echo "[baseline] FAILED bench=${bench}; skipping its injection rows" >&2
+    CAMPAIGN_FAILURES=$((CAMPAIGN_FAILURES + 1))
+    continue
+  fi
+  printf '%s,PASS,%s,%s,%s,no-flip output matched golden\n' \
+    "${bench}" "${baseline_result}" "${baseline_rc}" "${GOLDEN_ROOT}/${bench}.bin" \
+    >> "${RESULTS_DIR}/baseline_status.csv"
+
+  python3 - "${WORKLIST}" "${bench}" "${bench_dir}/worklist.csv" <<'PY'
+import csv
+import sys
+with open(sys.argv[1], newline="", encoding="utf-8") as source, open(sys.argv[3], "w", newline="", encoding="utf-8") as out:
+    rows = [row for row in csv.DictReader(source) if row["bench"] == sys.argv[2]]
+    writer = csv.DictWriter(out, fieldnames=["index", "site_id", "bit_index"], lineterminator="\n")
+    writer.writeheader()
+    for row in rows:
+        writer.writerow({"index": row["worklist_id"], "site_id": row["nvidia_site_id"], "bit_index": row["bit_index"]})
+PY
+
+  bench_row_count=0
+  while IFS=, read -r worklist_id site_id bit_index; do
+    [[ "${worklist_id}" == "index" ]] && continue
+    if [[ "${MAX_ROWS_PER_BENCH}" != "0" && "${bench_row_count}" -ge "${MAX_ROWS_PER_BENCH}" ]]; then
+      break
+    fi
+    echo "[inject] bench=${bench} worklist_id=${worklist_id} site=${site_id} bit=${bit_index}"
+    run_rc=0
+    run_tmp="${TMPDIR:-/tmp}/nvidia_divergence_${bench}_${site_id}_${bit_index}_${PBS_JOBID:-$$}"
+    BASELINE=0 SITE_ID="${site_id}" BIT_INDEX="${bit_index}" TRIAL_INDEX=1 \
+      RESULTS_DIR="${bench_dir}" OUT_DIR="${run_tmp}" \
+      bash "${RUNNER}" > "${bench_dir}/site${site_id}_bit${bit_index}.driver.log" 2>&1 || run_rc=$?
+    rm -rf "${run_tmp}"
+    if [[ "${run_rc}" != "0" ]]; then
+      CAMPAIGN_FAILURES=$((CAMPAIGN_FAILURES + 1))
+    fi
+    printf '%s,%s,%s,%s\n' "${worklist_id}" "${site_id}" "${bit_index}" "${run_rc}" \
+      >> "${bench_dir}/driver_status.csv"
+    bench_row_count=$((bench_row_count + 1))
+  done < "${bench_dir}/worklist.csv"
+done < "${RESULTS_DIR}/ordered_benches.txt"
+
+python3 - "${WORKLIST}" "${RESULTS_DIR}" <<'PY'
+import csv
+import pathlib
+import sys
+
+worklist = pathlib.Path(sys.argv[1])
+root = pathlib.Path(sys.argv[2])
+baseline = {}
+with (root / "baseline_status.csv").open(newline="", encoding="utf-8") as source:
+    for row in csv.DictReader(source):
+        baseline[row["bench"]] = row
+
+selected_ids = {
+    row["worklist_id"]
+    for row in csv.DictReader((root / "execution_plan.csv").open(newline="", encoding="utf-8"))
+}
+rows = [
+    row for row in csv.DictReader(worklist.open(newline="", encoding="utf-8"))
+    if row["worklist_id"] in selected_ids
+]
+fields = list(rows[0]) + ["baseline_status", "actual_result", "exit_code", "matches_expected", "stdout", "stderr"]
+counts = {}
+with (root / "rerun_summary.csv").open("w", newline="", encoding="utf-8") as out:
+    writer = csv.DictWriter(out, fieldnames=fields)
+    writer.writeheader()
+    for row in rows:
+        bench = row["bench"]
+        row["baseline_status"] = baseline.get(bench, {}).get("status", "NOT_RUN")
+        summary_path = root / bench / "summary.csv"
+        outcome = None
+        if summary_path.exists():
+            for candidate in csv.DictReader(summary_path.open(newline="", encoding="utf-8")):
+                if candidate["site_id"] == row["nvidia_site_id"] and candidate["bit_index"] == row["bit_index"] and not candidate["result"].startswith("BASELINE"):
+                    outcome = candidate
+        if outcome:
+            row["actual_result"] = outcome["result"]
+            row["exit_code"] = outcome["exit_code"]
+            row["stdout"] = outcome["stdout"]
+            row["stderr"] = outcome["stderr"]
+            row["matches_expected"] = str(outcome["result"] == row["nvidia_result"]).lower()
+        else:
+            row["actual_result"] = "SKIPPED_BASELINE" if row["baseline_status"] != "PASS" else "NO_RESULT"
+            row["exit_code"] = ""
+            row["stdout"] = ""
+            row["stderr"] = ""
+            row["matches_expected"] = "false"
+        counts[row["actual_result"]] = counts.get(row["actual_result"], 0) + 1
+        writer.writerow(row)
+
+with (root / "rerun_summary.txt").open("w", encoding="utf-8") as out:
+    out.write(f"total_rows={len(rows)}\n")
+    out.write(f"completed_rows={sum(v for k, v in counts.items() if k not in {'SKIPPED_BASELINE', 'NO_RESULT'})}\n")
+    for result in sorted(counts):
+        out.write(f"{result}={counts[result]}\n")
+PY
+
+printf 'finished_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "${RESULTS_DIR}/campaign_metadata.txt"
+echo "[done] results=${RESULTS_DIR}"
+if [[ "${CAMPAIGN_FAILURES}" != "0" ]]; then
+  echo "[done] campaign failures=${CAMPAIGN_FAILURES}" >&2
+  exit 1
+fi

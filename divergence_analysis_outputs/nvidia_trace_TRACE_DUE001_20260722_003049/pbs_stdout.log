@@ -1,0 +1,4 @@
+[setup] building injection plugin
+[baseline] bench=entropy site=156 bit=31
+[inject] bench=entropy worklist_id=TRACE_DUE001 site=156 bit=31
+[done] results=/home/mdunlavy/GPU_FI/divergence_analysis_outputs/nvidia_trace_TRACE_DUE001_20260722_003049
