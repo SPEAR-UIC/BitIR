@@ -1,0 +1,6 @@
+[trace029] build injection plugin
+[trace029] regenerate metadata from scratch instrumented source
+verified one-row execution plan: regenerated site 9 bit 31
+[trace029] no-flip baseline site=9 bit=31
+[trace029] injection regenerated_site=9 bit=31
+[trace029] complete results=/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/polaris_run_20260722T142902Z

@@ -1,0 +1,2 @@
+backend,phase,total_threads,valid_threads,computed_threads,final_writing_threads,small_block_cols_difference_threads,blkX_difference_threads,blkXmax_difference_threads,xidx_difference_threads,predicate_difference_threads,detail_records,dropped_detail_records
+nvidia,baseline,10000000,0,0,0,0,0,0,0,0,0,0
