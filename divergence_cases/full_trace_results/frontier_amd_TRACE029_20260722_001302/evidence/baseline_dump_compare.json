@@ -1,0 +1,24 @@
+{
+  "byte_count": 40000,
+  "candidate": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/pathfinder_baseline.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "dump_exists": true,
+  "element_count": 10000,
+  "element_mismatch_count": 0,
+  "first_differing_byte_offset": null,
+  "first_differing_index": null,
+  "golden": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "Frontier_HIP_Golden_Outputs/pathfinder.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "max_absolute_difference": 0,
+  "mismatch_count": 0,
+  "numeric_compare_applicable": true,
+  "size_match": true
+}

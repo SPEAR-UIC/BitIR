@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/llvm-as /ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/tmp/pathfinder_site57_bit31_baseline/device.ll -o /ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/tmp/pathfinder_site57_bit31_baseline/device.bc 

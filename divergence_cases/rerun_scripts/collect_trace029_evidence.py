@@ -168,6 +168,8 @@ def main():
     ap.add_argument("--sites-csv", required=True)
     ap.add_argument("--alignment-csv", required=True)
     ap.add_argument("--pairwise-csv", required=True)
+    ap.add_argument("--alignment-amd-site-id")
+    ap.add_argument("--pairwise-amd-site-id")
     ap.add_argument("--golden", required=True)
     ap.add_argument("--baseline-dump", required=True)
     ap.add_argument("--injected-dump", required=True)
@@ -180,6 +182,8 @@ def main():
     trace_results_dir = Path(args.trace_results_dir)
     evidence_dir = results_root / "evidence"
     evidence_dir.mkdir(parents=True, exist_ok=True)
+    alignment_amd_site_id = args.alignment_amd_site_id or args.site_id
+    pairwise_amd_site_id = args.pairwise_amd_site_id or args.site_id
 
     worklist_fields, worklist_row = read_csv_row(
         Path(args.worklist), lambda row: row.get("trace_case_id") == args.trace_case_id
@@ -204,7 +208,7 @@ def main():
     alignment_fields, alignment_row = read_csv_row(
         Path(args.alignment_csv),
         lambda row: row.get("bench") == args.bench
-        and row.get("amd_site_id") == args.site_id
+        and row.get("amd_site_id") == alignment_amd_site_id
         and row.get("nvidia_site_id") == "9"
         and row.get("intel_site_id") == "25",
     )
@@ -213,7 +217,7 @@ def main():
     pairwise_fields, pairwise_row = read_csv_row(
         Path(args.pairwise_csv),
         lambda row: row.get("bench") == args.bench
-        and row.get("amd_site_id") == args.site_id
+        and row.get("amd_site_id") == pairwise_amd_site_id
         and row.get("bit_index") == args.bit_index,
     )
     write_single_row_csv(evidence_dir / "selected_pairwise_candidate_row.csv", pairwise_fields, pairwise_row)

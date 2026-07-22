@@ -58,8 +58,6 @@ EXPECTED_FUNCTION="${EXPECTED_FUNCTION:-_Z10pathfinderPKiS0_PiS1_iiiii}"
 EXPECTED_SITE_CLASS="${EXPECTED_SITE_CLASS:-result}"
 EXPECTED_OPERAND_INDEX="${EXPECTED_OPERAND_INDEX:--1}"
 EXPECTED_SOURCE_FILE="${EXPECTED_SOURCE_FILE:-$REPO_ROOT/HeCBench/src/pathfinder-hip/main.cu}"
-TRACE_METADATA_SOURCE_CSV="${TRACE_METADATA_SOURCE_CSV:-$OVERRIDE_METADATA_CSV}"
-TRACE_SITES_SOURCE_CSV="${TRACE_SITES_SOURCE_CSV:-$OVERRIDE_SITES_CSV}"
 
 cd "$REPO_ROOT"
 mkdir -p "$RESULTS_ROOT" "$TRACE_RESULTS_DIR" "$TRACE_TMP_ROOT" "$RESULTS_ROOT/.bitir_jobs" "$GOLDEN_ROOT"
@@ -104,12 +102,10 @@ finalize_trace029_artifacts() {
       --trace-case-id "$TRACE_CASE_ID" \
       --worklist "$WORKLIST" \
       --case-csv "$CASE_CSV" \
-      --metadata-csv "$TRACE_METADATA_SOURCE_CSV" \
-      --sites-csv "$TRACE_SITES_SOURCE_CSV" \
+      --metadata-csv "$METADATA_CSV" \
+      --sites-csv "$SITES_CSV" \
       --alignment-csv "$ALIGNMENT_CSV" \
       --pairwise-csv "$PAIRWISE_CSV" \
-      --alignment-amd-site-id "$ORIGINAL_SITE_ID" \
-      --pairwise-amd-site-id "$ORIGINAL_SITE_ID" \
       --golden "$PATHFINDER_GOLDEN" \
       --baseline-dump "$TRACE_RESULTS_DIR/${BENCH}_baseline.bin" \
       --injected-dump "$INJECTED_DUMP" \

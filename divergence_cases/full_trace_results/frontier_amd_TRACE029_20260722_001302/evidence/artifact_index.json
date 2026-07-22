@@ -1,0 +1,66 @@
+{
+  "baseline_dump": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/pathfinder_baseline.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "baseline_stderr": {
+    "bytes": 0,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/baseline.err",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "baseline_stdout": {
+    "bytes": 318,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/baseline.out",
+    "sha256": "845438bf9eb7c4cdfb3c163792a5e7b0d3b7ae85ed82f25ecdfb4195f270777f"
+  },
+  "baseline_summary_csv": {
+    "bytes": 328,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/baseline_summary.csv",
+    "sha256": "77e98555bbb359ceaa80a43ae00e75b7ed5f659f399d23d5b70e81f18b4fa45b"
+  },
+  "baseline_trace_dir": {
+    "exists": false,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/trace_baseline"
+  },
+  "golden": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "Frontier_HIP_Golden_Outputs/pathfinder.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "injected_dump": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/pathfinder_site57_bit31.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "injected_stderr": {
+    "bytes": 0,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/site57_bit31.err",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "injected_stdout": {
+    "bytes": 311,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/site57_bit31.out",
+    "sha256": "39be77808c48faac4234e93dacf2920748c41c89650ed15571c68cb9d77fd703"
+  },
+  "injected_trace_dir": {
+    "exists": false,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/trace_site57_bit31"
+  },
+  "results_root": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302",
+  "summary_csv": {
+    "bytes": 472,
+    "exists": true,
+    "path": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder/summary.csv",
+    "sha256": "d9b88a9569c71b97977f6499ebf174dbfc37adeebc8814b2ee1b0d31e49d70c8"
+  },
+  "trace_results_dir": "divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_001302/pathfinder"
+}

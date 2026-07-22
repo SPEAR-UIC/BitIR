@@ -1,0 +1,3 @@
+flock: 9: Unknown error 524
+warning: unable to lock /ccs/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/.libfi_inject.lock; continuing without file lock
+Built /ccs/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/libfi_inject.so
