@@ -1,0 +1,2 @@
+trace_case_id,bench,bit_index,comparison,match_tier,divergence_pattern,nvidia_site_id,intel_site_id,amd_site_id,nvidia_rerun_result,intel_rerun_result,amd_rerun_result,nvidia_original_result,intel_original_result,amd_original_result,selection_reason,notes
+TRACE_DUE001,entropy,31,three_outcome_due_case,source_context_type_family,NVIDIA=DUE;INTEL=SDC;AMD=MASKED,156,226,443,DUE,SDC,MASKED,,MASKED,DUE,reproduced_three_outcome_due_split,Entropy case selected to reproduce and diagnose NVIDIA DUE versus Intel SDC versus AMD MASKED.
