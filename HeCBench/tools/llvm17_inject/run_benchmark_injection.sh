@@ -480,6 +480,52 @@ PY
   fi
 }
 
+validate_generated_injection_site_metadata() {
+  [[ "${BASELINE}" == "1" ]] && return 0
+  [[ -f "${INJECTION_SITES_CSV:-}" ]] || return 0
+
+  local expected_opcode="${EXPECT_INJECTION_OPCODE:-}"
+  local expected_type_kind="${EXPECT_INJECTION_TYPE_KIND:-}"
+  local expected_bitwidth="${EXPECT_INJECTION_BITWIDTH:-}"
+  local expected_source_line="${EXPECT_INJECTION_SOURCE_LINE:-}"
+  local expected_source_column="${EXPECT_INJECTION_SOURCE_COLUMN:-}"
+  local expected_signature_ordinal="${EXPECT_INJECTION_SIGNATURE_ORDINAL:-}"
+  local expected_function="${EXPECT_INJECTION_FUNCTION:-}"
+
+  [[ -n "${expected_opcode}" ]] || return 0
+
+  local actual_row expected_row
+  actual_row="$(awk -F, -v site="${SITE_ID}" '
+    NR == 1 {
+      sub(/\r$/, "")
+      for (i = 1; i <= NF; i++) {
+        idx[$i] = i
+      }
+      next
+    }
+    { sub(/\r$/, "") }
+    idx["site_id"] && $idx["site_id"] == site {
+      print $idx["opcode"] "," $idx["type_kind"] "," $idx["bitwidth"] "," \
+            $idx["source_line"] "," $idx["source_column"] "," $idx["signature_ordinal"] "," \
+            $idx["function"]
+      exit
+    }
+  ' "${INJECTION_SITES_CSV}")"
+
+  if [[ -z "${actual_row}" ]]; then
+    echo "generated injection metadata missing site_id=${SITE_ID} in ${INJECTION_SITES_CSV}" >&2
+    exit 1
+  fi
+
+  expected_row="${expected_opcode},${expected_type_kind},${expected_bitwidth},${expected_source_line},${expected_source_column},${expected_signature_ordinal},${expected_function}"
+  if [[ "${actual_row}" != "${expected_row}" ]]; then
+    echo "generated injection metadata mismatch for site=${SITE_ID} bit=${BIT_INDEX}" >&2
+    echo "expected generated row: ${expected_row}" >&2
+    echo "actual generated row:   ${actual_row}" >&2
+    exit 1
+  fi
+}
+
 common_run() {
   mkdir -p "${RESULTS_DIR}" "${OUT_DIR}"
   TRIAL_INDEX="${TRIAL_INDEX:-1}"
@@ -814,6 +860,8 @@ build_amd_binary() {
     -fi-include-constants="${INCLUDE_CONSTANTS}" \
     -fi-dump-sites-rich="${INJECTION_SITES_CSV}" \
     -disable-output "${IR_BC}"
+
+  validate_generated_injection_site_metadata
 
   if [[ "${AMD_EXECUTION_MODE}" == "plugin" ]]; then
     trace_record_command build_amd_binary_plugin_mode env \

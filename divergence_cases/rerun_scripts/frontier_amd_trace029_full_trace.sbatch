@@ -21,7 +21,7 @@ WORKLIST="${WORKLIST:-$REPO_ROOT/divergence_analysis_outputs/full_trace_debug_wo
 CASE_CSV="${CASE_CSV:-$REPO_ROOT/divergence_analysis_outputs/full_trace_debug_worklists/batch00_single_case_trace029/batch00_single_case_trace029_trace_case.csv}"
 TRACE_CASE_ID="${TRACE_CASE_ID:-TRACE029}"
 BENCH="${BENCH:-pathfinder}"
-SITE_ID="${SITE_ID:-123}"
+SITE_ID="${SITE_ID:-57}"
 BIT_INDEX="${BIT_INDEX:-31}"
 EXPECTED_RESULT="${EXPECTED_RESULT:-MASKED}"
 RESULTS_ROOT="${RESULTS_ROOT:-$REPO_ROOT/divergence_cases/full_trace_results/frontier_amd_${TRACE_CASE_ID}_$(date -u +%Y%m%d_%H%M%S)}"
@@ -214,6 +214,13 @@ export BITIR_SITE_LIST="$VALIDATION_SITE_LIST"
 export SUMMARY_INCLUDE_PATHS=1
 export CLEAN_RUN_ARTIFACTS=0
 export FORCE_REBUILD=1
+export EXPECT_INJECTION_OPCODE="sub"
+export EXPECT_INJECTION_TYPE_KIND="int"
+export EXPECT_INJECTION_BITWIDTH="32"
+export EXPECT_INJECTION_SOURCE_LINE="66"
+export EXPECT_INJECTION_SOURCE_COLUMN="37"
+export EXPECT_INJECTION_SIGNATURE_ORDINAL="1"
+export EXPECT_INJECTION_FUNCTION="_Z10pathfinderPKiS0_PiS1_iiiii"
 
 echo "[trace029] rebuilding fi_inject plugin"
 bash HeCBench/tools/llvm17_inject/build.sh 2>&1 | tee "$RESULTS_ROOT/plugin_build.log"
