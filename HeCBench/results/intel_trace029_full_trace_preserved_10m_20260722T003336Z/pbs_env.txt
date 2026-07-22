@@ -1,0 +1,225 @@
+ ;;
+ ;;
+ ;;
+}
+}
+A21_SDK_ROOT=/opt/aurora/25.190.0
+ACLOCAL_PATH=/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/cmake-3.31.8-mvhtj5u/share/aclocal
+ADVISOR_2025_DIR=/opt/aurora/25.190.0/oneapi/advisor/latest
+APM=/opt/aurora/25.190.0/oneapi/advisor/latest/perfmodels
+AURORA_BASE_ENV=2025.2.0
+BASH_ENV=/usr/share/lmod/lmod/init/bash
+BASH_FUNC_ml%%=() {  eval "$($LMOD_DIR/ml_cmd "$@")"
+BASH_FUNC_module%%=() {  if [ -z "${LMOD_SH_DBG_ON+x}" ]; then
+C3_RSH=ssh -oConnectTimeout=10 -oForwardX11=no
+ case "$-" in 
+CC=icx
+CCL_CONFIGURATION=cpu_gpu_dpcpp
+CCL_CONFIGURATION_PATH=
+CCL_ROOT=/opt/aurora/25.190.0/oneapi/ccl/latest
+C_INCLUDE_PATH=/opt/aurora/25.190.0/oneapi/ishmem/latest/include:/opt/aurora/25.190.0/oneapi/pti/latest/include:/opt/aurora/25.190.0/oneapi/umf/latest/include:/opt/aurora/25.190.0/oneapi/ipp/latest/include:/opt/aurora/25.190.0/oneapi/ippcp/latest/include:/opt/aurora/25.190.0/oneapi/tbb/latest/include:/opt/aurora/25.190.0/oneapi/mkl/latest/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include
+CLASSPATH=/opt/aurora/25.190.0/oneapi/dal/latest/lib
+CMAKE_PREFIX_PATH=/opt/aurora/25.190.0/support/libraries/khronos/default:/opt/aurora/25.190.0/oneapi/ishmem/latest/lib/cmake/ishmem:/opt/aurora/25.190.0/oneapi/pti/latest/lib/cmake/pti:/opt/aurora/25.190.0/oneapi/ipp/latest/lib/cmake/ipp:/opt/aurora/25.190.0/oneapi/dpl/latest/lib/cmake/oneDPL:/opt/aurora/25.190.0/oneapi/ccl/latest/lib/cmake/oneCCL:/opt/aurora/25.190.0/oneapi/dal/latest:/opt/aurora/25.190.0/oneapi/dnnl/latest/lib/cmake:/opt/aurora/25.190.0/oneapi/tbb/latest:/opt/aurora/25.190.0/oneapi/mkl/latest/lib/cmake:/opt/aurora/25.190.0/oneapi/compiler/latest:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/ninja-1.12.1-s6tkszj:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/cmake-3.31.8-mvhtj5u:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmake-4.4.1-wza7sk4:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-runtime-13.3.0-ghotoln
+CMPLR_ROOT=/opt/aurora/25.190.0/oneapi/compiler/latest
+CMPROOT=/opt/aurora/25.190.0/oneapi/compiler/latest
+COLORTERM=1
+CPATH=/opt/aurora/25.190.0/support/libraries/khronos/default/include:/opt/aurora/25.190.0/oneapi/umf/latest/include:/opt/aurora/25.190.0/oneapi/ccl/latest/include:/opt/aurora/25.190.0/oneapi/dnnl/latest/include:/opt/aurora/25.190.0/oneapi/mkl/latest/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include
+CPLUS_INCLUDE_PATH=/opt/aurora/25.190.0/oneapi/ishmem/latest/include:/opt/aurora/25.190.0/oneapi/pti/latest/include:/opt/aurora/25.190.0/oneapi/umf/latest/include:/opt/aurora/25.190.0/oneapi/ipp/latest/include:/opt/aurora/25.190.0/oneapi/ippcp/latest/include:/opt/aurora/25.190.0/oneapi/dpcpp-ct/latest/include:/opt/aurora/25.190.0/oneapi/dpl/latest/include:/opt/aurora/25.190.0/oneapi/dal/latest/include/dal:/opt/aurora/25.190.0/oneapi/dal/latest/include:/opt/aurora/25.190.0/oneapi/tbb/latest/include:/opt/aurora/25.190.0/oneapi/mkl/latest/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include
+CPU=x86_64
+CSHEDIT=emacs
+CXX=icpx
+DAALROOT=/opt/aurora/25.190.0/oneapi/dal/latest
+DAL_MAJOR_BINARY=3
+DAL_MINOR_BINARY=0
+DALROOT=/opt/aurora/25.190.0/oneapi/dal/latest
+dnnl_ROOT=/opt/aurora/25.190.0/oneapi/dnnl
+DNNL_ROOT=/opt/aurora/25.190.0/oneapi/dnnl/latest
+DNNLROOT=/opt/aurora/25.190.0/oneapi/dnnl/latest
+DPCT_BUNDLE_ROOT=/opt/aurora/25.190.0/oneapi/dpcpp-ct/latest
+DPCTROOT=/opt/aurora/25.190.0/oneapi/dpcpp-ct/latest
+DPL_ROOT=/opt/aurora/25.190.0/oneapi/dpl/latest
+DPLROOT=/opt/aurora/25.190.0/oneapi/dpl/latest
+ echo "Shell debugging restarted" 1>&2;
+ echo "Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output" 1>&2;
+EnableChipsetUniqueUUID=1
+ENVIRONMENT=BATCH
+ esac;
+ eval "$($LMOD_CMD shell "$@")" && eval "$(${LMOD_SETTARG_CMD:-:} -s sh)";
+F77=ifx
+FC=ifx
+ fi;
+ fi;
+ fi;
+FPATH=/usr/share/lmod/lmod/init/ksh_funcs
+FROM_HEADER=
+G_BROKEN_FILENAMES=1
+GDB_INFO=/opt/aurora/25.190.0/oneapi/debugger/latest/share/info
+GDBROOT=/opt/aurora/25.190.0/oneapi/debugger/latest
+G_FILENAME_ENCODING=@locale,UTF-8,ISO-8859-15,CP1252
+GMAKE_ROOT=/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmake-4.4.1-wza7sk4
+GPG_TTY=not a tty
+HISTSIZE=1000
+HOME=/home/mdunlavy
+HOSTNAME=x4510c4s1b0n0
+HOSTTYPE=x86_64
+HOST=x4510c4s1b0n0
+IDPROOT=/opt/aurora/25.190.0/oneapi/intel-conda-miniforge
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+ if [ -n "${__lmod_sh_dbg:-}" ]; then
+INCLUDE=/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include
+INFOPATH=/opt/aurora/25.190.0/oneapi/debugger/latest/share/info
+INTEL_PYTHONHOME=/opt/aurora/25.190.0/oneapi/debugger/latest/opt/debugger
+INTEL_PYTHON_SHADOW_PREFIX=/opt/aurora/25.190.0
+IPPCP_TARGET_ARCH=intel64
+IPPCRYPTOROOT=/opt/aurora/25.190.0/oneapi/ippcp/latest
+IPPROOT=/opt/aurora/25.190.0/oneapi/ipp/latest
+IPP_TARGET_ARCH=intel64
+ISHMEM_ROOT=/opt/aurora/25.190.0/oneapi/ishmem/latest
+LANG=en_US.UTF-8
+LANGUAGE=en_US.UTF-8
+LD_LIBRARY_PATH=/opt/aurora/25.190.0/support/libraries/khronos/default/lib64:/opt/aurora/25.190.0/oneapi/ishmem/latest/lib:/opt/aurora/25.190.0/oneapi/pti/latest/lib:/opt/aurora/25.190.0/oneapi/tcm/latest/lib:/opt/aurora/25.190.0/oneapi/umf/latest/lib:/opt/aurora/25.190.0/oneapi/ipp/latest/lib:/opt/aurora/25.190.0/oneapi/ippcp/latest/lib:/opt/aurora/25.190.0/oneapi/debugger/latest/opt/debugger/lib:/opt/aurora/25.190.0/oneapi/ccl/latest/lib:/opt/aurora/25.190.0/oneapi/dal/latest/lib:/opt/aurora/25.190.0/oneapi/dnnl/latest/lib:/opt/aurora/25.190.0/oneapi/tbb/latest/lib/intel64/gcc4.8:/opt/aurora/25.190.0/oneapi/mkl/latest/lib:/opt/aurora/25.190.0/oneapi/compiler/latest/opt/compiler/lib:/opt/aurora/25.190.0/oneapi/compiler/latest/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib64:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-runtime-13.3.0-ghotoln/lib
+LESS_ADVANCED_PREPROCESSOR=no
+LESSCLOSE=lessclose.sh %s %s
+LESSKEY=/etc/lesskey.bin
+LESS=-M -I -R
+LESSOPEN=lessopen.sh %s
+LIBOMPTARGET_PLUGIN=LEVEL0
+LIBRARY_PATH=/opt/aurora/25.190.0/support/libraries/khronos/default/lib64:/opt/aurora/25.190.0/oneapi/ishmem/latest/lib:/opt/aurora/25.190.0/oneapi/pti/latest/lib:/opt/aurora/25.190.0/oneapi/tcm/latest/lib:/opt/aurora/25.190.0/oneapi/umf/latest/lib:/opt/aurora/25.190.0/oneapi/ipp/latest/lib:/opt/aurora/25.190.0/oneapi/ippcp/latest/lib:/opt/aurora/25.190.0/oneapi/ccl/latest/lib:/opt/aurora/25.190.0/oneapi/dal/latest/lib:/opt/aurora/25.190.0/oneapi/dnnl/latest/lib:/opt/aurora/25.190.0/oneapi/tbb/latest/lib/intel64/gcc4.8:/opt/aurora/25.190.0/oneapi/mkl/latest/lib:/opt/aurora/25.190.0/oneapi/compiler/latest/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib64:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/lib:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-runtime-13.3.0-ghotoln/lib
+_LMFILES_=/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/gcc-runtime/13.3.0-ghotoln.lua:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/gmake/4.4.1.lua:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/cmake/3.31.8.lua:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/ninja/1.12.1.lua:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/gmp/6.3.0-mtokfaw.lua:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/mpfr/4.2.1-gkcdl5w.lua:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/mpc/1.3.1-rdrlvsl.lua:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core/gcc/13.3.0.lua:/opt/aurora/25.190.0/modulefiles/oneapi/release/2025.2.0
+LMOD_CMD=/usr/share/lmod/lmod/libexec/lmod
+LMOD_DIR=/usr/share/lmod/lmod/libexec
+LMOD_FAMILY_COMPILER=gcc
+LMOD_FAMILY_COMPILER_VERSION=13.3.0
+LMOD_FAMILY_ONEAPI=oneapi
+LMOD_FAMILY_ONEAPI_VERSION=release/2025.2.0
+ __lmod_my_status=$?;
+LMOD_PKG=/usr/share/lmod/lmod
+__LMOD_REF_COUNT_ACLOCAL_PATH=/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/cmake-3.31.8-mvhtj5u/share/aclocal:1
+__LMOD_REF_COUNT_C_INCLUDE_PATH=/opt/aurora/25.190.0/oneapi/ishmem/latest/include:1;/opt/aurora/25.190.0/oneapi/pti/latest/include:1;/opt/aurora/25.190.0/oneapi/umf/latest/include:1;/opt/aurora/25.190.0/oneapi/ipp/latest/include:1;/opt/aurora/25.190.0/oneapi/ippcp/latest/include:1;/opt/aurora/25.190.0/oneapi/tbb/latest/include:1;/opt/aurora/25.190.0/oneapi/mkl/latest/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include:1
+__LMOD_REF_COUNT_CLASSPATH=/opt/aurora/25.190.0/oneapi/dal/latest/lib:1
+__LMOD_REF_COUNT_CMAKE_PREFIX_PATH=/opt/aurora/25.190.0/support/libraries/khronos/default:1;/opt/aurora/25.190.0/oneapi/ishmem/latest/lib/cmake/ishmem:1;/opt/aurora/25.190.0/oneapi/pti/latest/lib/cmake/pti:1;/opt/aurora/25.190.0/oneapi/ipp/latest/lib/cmake/ipp:1;/opt/aurora/25.190.0/oneapi/dpl/latest/lib/cmake/oneDPL:1;/opt/aurora/25.190.0/oneapi/ccl/latest/lib/cmake/oneCCL:1;/opt/aurora/25.190.0/oneapi/dal/latest:1;/opt/aurora/25.190.0/oneapi/dnnl/latest/lib/cmake:1;/opt/aurora/25.190.0/oneapi/tbb/latest:1;/opt/aurora/25.190.0/oneapi/mkl/latest/lib/cmake:1;/opt/aurora/25.190.0/oneapi/compiler/latest:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/ninja-1.12.1-s6tkszj:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/cmake-3.31.8-mvhtj5u:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmake-4.4.1-wza7sk4:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-runtime-13.3.0-ghotoln:1
+__LMOD_REF_COUNT_CPATH=/opt/aurora/25.190.0/support/libraries/khronos/default/include:1;/opt/aurora/25.190.0/oneapi/umf/latest/include:1;/opt/aurora/25.190.0/oneapi/ccl/latest/include:1;/opt/aurora/25.190.0/oneapi/dnnl/latest/include:1;/opt/aurora/25.190.0/oneapi/mkl/latest/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include:1
+__LMOD_REF_COUNT_CPLUS_INCLUDE_PATH=/opt/aurora/25.190.0/oneapi/ishmem/latest/include:1;/opt/aurora/25.190.0/oneapi/pti/latest/include:1;/opt/aurora/25.190.0/oneapi/umf/latest/include:1;/opt/aurora/25.190.0/oneapi/ipp/latest/include:1;/opt/aurora/25.190.0/oneapi/ippcp/latest/include:1;/opt/aurora/25.190.0/oneapi/dpcpp-ct/latest/include:1;/opt/aurora/25.190.0/oneapi/dpl/latest/include:1;/opt/aurora/25.190.0/oneapi/dal/latest/include/dal:1;/opt/aurora/25.190.0/oneapi/dal/latest/include:1;/opt/aurora/25.190.0/oneapi/tbb/latest/include:1;/opt/aurora/25.190.0/oneapi/mkl/latest/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include:1
+__LMOD_REF_COUNT_INCLUDE=/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/include:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/include:1
+__LMOD_REF_COUNT_INFOPATH=/opt/aurora/25.190.0/oneapi/debugger/latest/share/info:1
+__LMOD_REF_COUNT_LD_LIBRARY_PATH=/opt/aurora/25.190.0/support/libraries/khronos/default/lib64:1;/opt/aurora/25.190.0/oneapi/ishmem/latest/lib:1;/opt/aurora/25.190.0/oneapi/pti/latest/lib:1;/opt/aurora/25.190.0/oneapi/tcm/latest/lib:1;/opt/aurora/25.190.0/oneapi/umf/latest/lib:1;/opt/aurora/25.190.0/oneapi/ipp/latest/lib:1;/opt/aurora/25.190.0/oneapi/ippcp/latest/lib:1;/opt/aurora/25.190.0/oneapi/debugger/latest/opt/debugger/lib:1;/opt/aurora/25.190.0/oneapi/ccl/latest/lib:1;/opt/aurora/25.190.0/oneapi/dal/latest/lib:1;/opt/aurora/25.190.0/oneapi/dnnl/latest/lib:1;/opt/aurora/25.190.0/oneapi/tbb/latest/lib/intel64/gcc4.8:1;/opt/aurora/25.190.0/oneapi/mkl/latest/lib:1;/opt/aurora/25.190.0/oneapi/compiler/latest/opt/compiler/lib:1;/opt/aurora/25.190.0/oneapi/compiler/latest/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib64:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-runtime-13.3.0-ghotoln/lib:1
+__LMOD_REF_COUNT_LIBRARY_PATH=/opt/aurora/25.190.0/support/libraries/khronos/default/lib64:1;/opt/aurora/25.190.0/oneapi/ishmem/latest/lib:1;/opt/aurora/25.190.0/oneapi/pti/latest/lib:1;/opt/aurora/25.190.0/oneapi/tcm/latest/lib:1;/opt/aurora/25.190.0/oneapi/umf/latest/lib:1;/opt/aurora/25.190.0/oneapi/ipp/latest/lib:1;/opt/aurora/25.190.0/oneapi/ippcp/latest/lib:1;/opt/aurora/25.190.0/oneapi/ccl/latest/lib:1;/opt/aurora/25.190.0/oneapi/dal/latest/lib:1;/opt/aurora/25.190.0/oneapi/dnnl/latest/lib:1;/opt/aurora/25.190.0/oneapi/tbb/latest/lib/intel64/gcc4.8:1;/opt/aurora/25.190.0/oneapi/mkl/latest/lib:1;/opt/aurora/25.190.0/oneapi/compiler/latest/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib64:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpc-1.3.1-rdrlvsl/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/lib:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-runtime-13.3.0-ghotoln/lib:1
+__LMOD_REF_COUNT_MANPATH=/opt/aurora/25.190.0/oneapi/debugger/latest/share/man:1;/opt/aurora/25.190.0/oneapi/compiler/latest/share/man:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/share/man:1;/usr/share/lmod/lmod/share/man:1;/home/mdunlavy/.local/share/man:1;/usr/local/man:1;/usr/share/man:1;/opt/c3/man:1;/opt/pbs/share/man:1;/opt/clmgr/man:1;/opt/sgi/share/man:1;/opt/clmgr/share/man:1;/opt/clmgr/lib/cm-cli/man:1;:1
+__LMOD_REF_COUNT_MODULEPATH=/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core:3;/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/oneapi/2025.2.0:1;/opt/aurora/25.190.0/modulefiles:2;/usr/share/lmod/modulefiles/Linux:1;/usr/share/lmod/modulefiles/Core:1;/usr/share/lmod/lmod/modulefiles/Core:1;/opt/cray/pals/lmod/modulefiles/core:1;/opt/cray/modulefiles:1;/opt/aurora/26.26.0/modulefiles:1
+__LMOD_REF_COUNT_NLSPATH=/opt/aurora/25.190.0/oneapi/compiler/latest/lib/compiler/locale/%l_%t/%N:1
+__LMOD_REF_COUNT_PATH=/opt/aurora/25.190.0/support/tools/gpu_validation:1;/opt/aurora/25.190.0/support/tools/mpi_wrapper_utils:1;/opt/aurora/25.190.0/oneapi/ishmem/latest/bin:1;/opt/aurora/25.190.0/oneapi/dpcpp-ct/latest/bin:1;/opt/aurora/25.190.0/oneapi/advisor/latest/bin64:1;/opt/aurora/25.190.0/oneapi/vtune/latest/bin64:1;/opt/aurora/25.190.0/oneapi/debugger/latest/opt/debugger/bin:1;/opt/aurora/25.190.0/oneapi/mkl/latest/bin:1;/opt/aurora/25.190.0/oneapi/compiler/latest/bin:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/bin:2;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/ninja-1.12.1-s6tkszj/bin:2;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/cmake-3.31.8-mvhtj5u/bin:2;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmake-4.4.1-wza7sk4/bin:2;/opt/clmgr/sbin:1;/opt/clmgr/bin:1;/opt/sgi/sbin:1;/opt/sgi/bin:1;/home/mdunlavy/.local/bin:1;/usr/local/bin:1;/usr/bin:1;/bin:2;/opt/c3/bin:1;/usr/lib/mit/bin:1;/usr/lib/mit/sbin:1;/opt/pbs/bin:1;/sbin:1
+__LMOD_REF_COUNT_PKG_CONFIG_PATH=/opt/aurora/25.190.0/oneapi/ishmem/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/ippcp/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/advisor/latest/include/pkgconfig/lib64:1;/opt/aurora/25.190.0/oneapi/vtune/latest/include/pkgconfig/lib64:1;/opt/aurora/25.190.0/oneapi/dpl/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/ccl/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/dal/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/dnnl/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/tbb/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/mkl/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/oneapi/compiler/latest/lib/pkgconfig:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/lib/pkgconfig:2;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/lib/pkgconfig:2
+__LMOD_REF_COUNT_PYTHONPATH=/opt/aurora/25.190.0/oneapi/advisor/latest/pythonapi:1;/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/ninja-1.12.1-s6tkszj/misc:1
+LMOD_ROOT=/usr/share/lmod
+LMOD_SETTARG_FULL_SUPPORT=no
+ __lmod_sh_dbg='v'
+ __lmod_sh_dbg='vx'
+ __lmod_sh_dbg='x'
+LMOD_sys=Linux
+LMOD_SYSTEM_DEFAULT_MODULES=oneapi/release/2025.3.1:mpich/opt/5.0.0.aurora_test.3c70a61:libfabric/1.22.0:cray-pals/1.8.0:cray-libpals/1.8.0
+LMOD_VERSION=8.7.59
+LOADEDMODULES=gcc-runtime/13.3.0-ghotoln:gmake/4.4.1:cmake/3.31.8:ninja/1.12.1:gmp/6.3.0-mtokfaw:mpfr/4.2.1-gkcdl5w:mpc/1.3.1-rdrlvsl:gcc/13.3.0:oneapi/release/2025.2.0
+LOGNAME=mdunlavy
+MACHTYPE=x86_64-suse-linux
+MAIL=/var/spool/mail/mdunlavy
+MANPATH=/opt/aurora/25.190.0/oneapi/debugger/latest/share/man:/opt/aurora/25.190.0/oneapi/compiler/latest/share/man:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/share/man:/usr/share/lmod/lmod/share/man:/home/mdunlavy/.local/share/man:/usr/local/man:/usr/share/man:/opt/c3/man:/opt/pbs/share/man:/opt/clmgr/man:/opt/sgi/share/man:/opt/clmgr/share/man:/opt/clmgr/lib/cm-cli/man::
+MINICOM=-c on
+MKL_ROOT=/opt/aurora/25.190.0/oneapi/mkl/latest
+MKLROOT=/opt/aurora/25.190.0/oneapi/mkl/latest
+MODULEPATH=/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core:/opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/oneapi/2025.2.0:/opt/aurora/25.190.0/modulefiles:/usr/share/lmod/modulefiles/Linux:/usr/share/lmod/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core:/opt/cray/pals/lmod/modulefiles/core:/opt/cray/modulefiles:/opt/aurora/26.26.0/modulefiles
+MODULEPATH_ROOT=/usr/share/lmod/modulefiles
+MODULESHOME=/usr/share/lmod/lmod
+_ModuleTable001_=X01vZHVsZVRhYmxlXyA9IHsKTVR2ZXJzaW9uID0gMywKY19yZWJ1aWxkVGltZSA9IGZhbHNlLApjX3Nob3J0VGltZSA9IGZhbHNlLApkZXB0aFQgPSB7fSwKZmFtaWx5ID0gewpjb21waWxlciA9ICJnY2MiLApvbmVhcGkgPSAib25lYXBpIiwKfSwKbVQgPSB7CmNtYWtlID0gewpmbiA9ICIvb3B0L2F1cm9yYS8yNS4xOTAuMC9zcGFjay91bmlmaWVkLzAuMTAuMS9pbnN0YWxsL21vZHVsZWZpbGVzL0NvcmUvY21ha2UvMy4zMS44Lmx1YSIsCmZ1bGxOYW1lID0gImNtYWtlLzMuMzEuOCIsCmxvYWRPcmRlciA9IDMsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAwLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiY21ha2UvMy4zMS44IiwKd1YgPSAiMDAwMDAwMDAzLjAw
+_ModuleTable002_=MDAwMDAzMS4wMDAwMDAwMDguKnpmaW5hbCIsCn0sCmdjYyA9IHsKYWN0aW9uQSA9IHsKInByZXBlbmRfcGF0aChcIk1PRFVMRVBBVEhcIixcIi9vcHQvYXVyb3JhLzI1LjE5MC4wL3NwYWNrL3VuaWZpZWQvMC4xMC4xL2luc3RhbGwvbW9kdWxlZmlsZXMvQ29yZVwiKSIsCn0sCmZuID0gIi9vcHQvYXVyb3JhLzI1LjE5MC4wL3NwYWNrL3VuaWZpZWQvMC4xMC4xL2luc3RhbGwvbW9kdWxlZmlsZXMvQ29yZS9nY2MvMTMuMy4wLmx1YSIsCmZ1bGxOYW1lID0gImdjYy8xMy4zLjAiLApsb2FkT3JkZXIgPSA4LApwcm9wVCA9IHt9LApyZWZfY291bnQgPSAxLApzdGFja0RlcHRoID0gMSwKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gImdjYy8xMy4zLjAiLAp3ViA9ICIwMDAw
+_ModuleTable003_=MDAwMTMuMDAwMDAwMDAzLip6ZmluYWwiLAp9LApbImdjYy1ydW50aW1lIl0gPSB7CmZuID0gIi9vcHQvYXVyb3JhLzI1LjE5MC4wL3NwYWNrL3VuaWZpZWQvMC4xMC4xL2luc3RhbGwvbW9kdWxlZmlsZXMvQ29yZS9nY2MtcnVudGltZS8xMy4zLjAtZ2hvdG9sbi5sdWEiLApmdWxsTmFtZSA9ICJnY2MtcnVudGltZS8xMy4zLjAtZ2hvdG9sbiIsCmxvYWRPcmRlciA9IDEsCm1vZHVsZUtpbmRUID0gewpraW5kID0gImhpZGRlbiIsCn0sCnByb3BUID0ge30sCnJlZl9jb3VudCA9IDcsCnN0YWNrRGVwdGggPSAxLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiZ2NjLXJ1bnRpbWUvMTMuMy4wLWdob3RvbG4iLAp3ViA9ICIwMDAwMDAwMTMuMDAwMDAwMDAzLipnaG90b2xu
+_ModuleTable004_=Lip6ZmluYWwiLAp9LApnbWFrZSA9IHsKZm4gPSAiL29wdC9hdXJvcmEvMjUuMTkwLjAvc3BhY2svdW5pZmllZC8wLjEwLjEvaW5zdGFsbC9tb2R1bGVmaWxlcy9Db3JlL2dtYWtlLzQuNC4xLmx1YSIsCmZ1bGxOYW1lID0gImdtYWtlLzQuNC4xIiwKbG9hZE9yZGVyID0gMiwKcHJvcFQgPSB7fSwKcmVmX2NvdW50ID0gMSwKc3RhY2tEZXB0aCA9IDEsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJnbWFrZS80LjQuMSIsCndWID0gIjAwMDAwMDAwNC4wMDAwMDAwMDQuMDAwMDAwMDAxLip6ZmluYWwiLAp9LApnbXAgPSB7CmZuID0gIi9vcHQvYXVyb3JhLzI1LjE5MC4wL3NwYWNrL3VuaWZpZWQvMC4xMC4xL2luc3RhbGwvbW9kdWxlZmlsZXMvQ29yZS9nbXAvNi4zLjAt
+_ModuleTable005_=bXRva2Zhdy5sdWEiLApmdWxsTmFtZSA9ICJnbXAvNi4zLjAtbXRva2ZhdyIsCmxvYWRPcmRlciA9IDUsCm1vZHVsZUtpbmRUID0gewpraW5kID0gImhpZGRlbiIsCn0sCnByb3BUID0ge30sCnJlZl9jb3VudCA9IDMsCnN0YWNrRGVwdGggPSAyLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAiZ21wLzYuMy4wLW10b2tmYXciLAp3ViA9ICIwMDAwMDAwMDYuMDAwMDAwMDAzLiptdG9rZmF3Lip6ZmluYWwiLAp9LAptcGMgPSB7CmZuID0gIi9vcHQvYXVyb3JhLzI1LjE5MC4wL3NwYWNrL3VuaWZpZWQvMC4xMC4xL2luc3RhbGwvbW9kdWxlZmlsZXMvQ29yZS9tcGMvMS4zLjEtcmRybHZzbC5sdWEiLApmdWxsTmFtZSA9ICJtcGMvMS4zLjEtcmRybHZzbCIsCmxvYWRPcmRl
+_ModuleTable006_=ciA9IDcsCm1vZHVsZUtpbmRUID0gewpraW5kID0gImhpZGRlbiIsCn0sCnByb3BUID0ge30sCnJlZl9jb3VudCA9IDEsCnN0YWNrRGVwdGggPSAyLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAibXBjLzEuMy4xLXJkcmx2c2wiLAp3ViA9ICIwMDAwMDAwMDEuMDAwMDAwMDAzLjAwMDAwMDAwMS4qcmRybHZzbC4qemZpbmFsIiwKfSwKbXBmciA9IHsKZm4gPSAiL29wdC9hdXJvcmEvMjUuMTkwLjAvc3BhY2svdW5pZmllZC8wLjEwLjEvaW5zdGFsbC9tb2R1bGVmaWxlcy9Db3JlL21wZnIvNC4yLjEtZ2tjZGw1dy5sdWEiLApmdWxsTmFtZSA9ICJtcGZyLzQuMi4xLWdrY2RsNXciLApsb2FkT3JkZXIgPSA2LAptb2R1bGVLaW5kVCA9IHsKa2luZCA9ICJoaWRkZW4iLAp9
+_ModuleTable007_=LApwcm9wVCA9IHt9LApyZWZfY291bnQgPSAyLApzdGFja0RlcHRoID0gMywKc3RhdHVzID0gImFjdGl2ZSIsCnVzZXJOYW1lID0gIm1wZnIvNC4yLjEtZ2tjZGw1dyIsCndWID0gIjAwMDAwMDAwNC4wMDAwMDAwMDIuMDAwMDAwMDAxLipna2NkbC4wMDAwMDAwMDUuKncuKnpmaW5hbCIsCn0sCm5pbmphID0gewpmbiA9ICIvb3B0L2F1cm9yYS8yNS4xOTAuMC9zcGFjay91bmlmaWVkLzAuMTAuMS9pbnN0YWxsL21vZHVsZWZpbGVzL0NvcmUvbmluamEvMS4xMi4xLmx1YSIsCmZ1bGxOYW1lID0gIm5pbmphLzEuMTIuMSIsCmxvYWRPcmRlciA9IDQsCnByb3BUID0ge30sCnN0YWNrRGVwdGggPSAwLApzdGF0dXMgPSAiYWN0aXZlIiwKdXNlck5hbWUgPSAibmluamEvMS4xMi4xIiwK
+_ModuleTable008_=d1YgPSAiMDAwMDAwMDAxLjAwMDAwMDAxMi4wMDAwMDAwMDEuKnpmaW5hbCIsCn0sCm9uZWFwaSA9IHsKYWN0aW9uQSA9IHsKCiJwcmVwZW5kX3BhdGgoXCJNT0RVTEVQQVRIXCIsXCIvb3B0L2F1cm9yYS8yNS4xOTAuMC9zcGFjay91bmlmaWVkLzAuMTAuMS9pbnN0YWxsL21vZHVsZWZpbGVzL0NvcmVcIikiLCAicHJlcGVuZF9wYXRoKFwiTU9EVUxFUEFUSFwiLFwiL29wdC9hdXJvcmEvMjUuMTkwLjAvc3BhY2svdW5pZmllZC8wLjEwLjEvaW5zdGFsbC9tb2R1bGVmaWxlcy9vbmVhcGkvMjAyNS4yLjBcIikiLAp9LApmbiA9ICIvb3B0L2F1cm9yYS8yNS4xOTAuMC9tb2R1bGVmaWxlcy9vbmVhcGkvcmVsZWFzZS8yMDI1LjIuMCIsCmZ1bGxOYW1lID0gIm9uZWFwaS9yZWxlYXNl
+_ModuleTable009_=LzIwMjUuMi4wIiwKbG9hZE9yZGVyID0gOSwKcHJvcFQgPSB7fSwKc3RhY2tEZXB0aCA9IDAsCnN0YXR1cyA9ICJhY3RpdmUiLAp1c2VyTmFtZSA9ICJvbmVhcGkvcmVsZWFzZS8yMDI1LjIuMCIsCndWID0gIl5yZWxlYXNlL14wMDAwMjAyNS4wMDAwMDAwMDIuKnpmaW5hbCIsCn0sCn0sCm1wYXRoQSA9IHsKIi9vcHQvYXVyb3JhLzI1LjE5MC4wL3NwYWNrL3VuaWZpZWQvMC4xMC4xL2luc3RhbGwvbW9kdWxlZmlsZXMvQ29yZSIKLCAiL29wdC9hdXJvcmEvMjUuMTkwLjAvc3BhY2svdW5pZmllZC8wLjEwLjEvaW5zdGFsbC9tb2R1bGVmaWxlcy9vbmVhcGkvMjAyNS4yLjAiCiwgIi9vcHQvYXVyb3JhLzI1LjE5MC4wL21vZHVsZWZpbGVzIiwgIi91c3Ivc2hhcmUvbG1vZC9tb2R1
+_ModuleTable010_=bGVmaWxlcy9MaW51eCIKLCAiL3Vzci9zaGFyZS9sbW9kL21vZHVsZWZpbGVzL0NvcmUiLCAiL3Vzci9zaGFyZS9sbW9kL2xtb2QvbW9kdWxlZmlsZXMvQ29yZSIKLCAiL29wdC9jcmF5L3BhbHMvbG1vZC9tb2R1bGVmaWxlcy9jb3JlIiwgIi9vcHQvY3JheS9tb2R1bGVmaWxlcyIsICIvb3B0L2F1cm9yYS8yNi4yNi4wL21vZHVsZWZpbGVzIiwKfSwKc3lzdGVtQmFzZU1QQVRIID0gIi91c3Ivc2hhcmUvbG1vZC9tb2R1bGVmaWxlcy9MaW51eDovdXNyL3NoYXJlL2xtb2QvbW9kdWxlZmlsZXMvQ29yZTovdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvY3JheS9wYWxzL2xtb2QvbW9kdWxlZmlsZXMvY29yZTovb3B0L2NyYXkvbW9kdWxlZmlsZXM6L29w
+_ModuleTable011_=dC9hdXJvcmEvMjYuMjYuMC9tb2R1bGVmaWxlczovb3B0L2F1cm9yYS8yNS4xOTAuMC9tb2R1bGVmaWxlcyIsCn0K
+_ModuleTable_Sz_=11
+MORE=-sl
+NCPUS=12
+NEO_CACHE_PERSISTENT=0
+NEOReadDebugKeys=1
+NINJA_ROOT=/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/ninja-1.12.1-s6tkszj
+NLSPATH=/opt/aurora/25.190.0/oneapi/compiler/latest/lib/compiler/locale/%l_%t/%N
+OCL_ICD_FILENAMES=libigdrcl.so:libintelocl.so
+OMP_NUM_THREADS=12
+OMP_TARGET_OFFLOAD=MANDATORY
+ONEAPI_DEVICE_SELECTOR=level_zero:gpu
+ONEAPI_ROOT=/opt/aurora/25.190.0/oneapi
+OSCAR_HOME=/opt/oscar
+OSTYPE=linux
+PAGER=less
+PALS_TRANSFER=0
+PATH=/opt/aurora/25.190.0/support/tools/gpu_validation:/opt/aurora/25.190.0/support/tools/mpi_wrapper_utils:/opt/aurora/25.190.0/oneapi/ishmem/latest/bin:/opt/aurora/25.190.0/oneapi/dpcpp-ct/latest/bin:/opt/aurora/25.190.0/oneapi/advisor/latest/bin64:/opt/aurora/25.190.0/oneapi/vtune/latest/bin64:/opt/aurora/25.190.0/oneapi/debugger/latest/opt/debugger/bin:/opt/aurora/25.190.0/oneapi/mkl/latest/bin:/opt/aurora/25.190.0/oneapi/compiler/latest/bin:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gcc-13.3.0-4enwbrb/bin:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/ninja-1.12.1-s6tkszj/bin:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/cmake-3.31.8-mvhtj5u/bin:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmake-4.4.1-wza7sk4/bin:/opt/clmgr/sbin:/opt/clmgr/bin:/opt/sgi/sbin:/opt/sgi/bin:/home/mdunlavy/.local/bin:/usr/local/bin:/usr/bin:/bin:/opt/c3/bin:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/pbs/bin:/sbin
+PBS_ACCOUNT=UIC-HPC
+PBS_ENVIRONMENT=PBS_BATCH
+PBS_HOOK_RESOURCES=eJylUsuS4yAM/KHUFnZi50H5Np+wdwqwSNjB4BGQbP5+he1M7N3j+oS6ZanVUgS8A4pehijCGIWJXcXjChwBTUHZBs0UbHKNkwgb5Ar6M2z+vIVhm3KXzvbCWAfxGRMMsVtSdq9yu3W33VrQbiWZS+fCQ0itQ/ZJ6Bu1FkZalxGo28x6uMpk7yBKqOkZfOEeEntBIVwDPrsPGzVC4SQ+FzI9R/iLUFJ/kmxHTXQK2J0OLWNvdJC/u6bEEUTUgUQ0FVefWvRgrLdTax2GMSdSkzGgFCOGXtSsbtmxYj+r46GpmOhr1SqlxEkZDcZwldELLNI79uPImjPXGRFo5NVM7b7ZN+fzvuXgpXIgak8ej+2Bpl2Ql1BazYIYa8Kbf5iRqIK9BqxOrADbRfGbGsQQeuhoXYm/1zvA0O3rq+Jej5mAmvvr9ODeCoQYMmro5sm5pwI6ERfoJMqE1Hp0khIiTZQAOXnzi1LIIxvQpmdXcwzFu9Uck81ChRDTdHBuqnl5CbgsAi7f0qLXs/avLHueQpJu7WJd0Uanb+HmQqytD/xBeckO0DF2qdiFUsiwb6fmn74y5CJwfQEL9v93MBf6d70bfFnpjG03NWMbB/4A87F7vw==
+PBS_JOBCOOKIE=0351BBFC1E6D7C81121203457F71FAB6
+PBS_JOBDIR=/home/mdunlavy
+PBS_JOBID=8682897.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+PBS_JOBID_SHORT=8682897.aurora
+PBS_JOBNAME=intel_trace029
+PBS_MOMPORT=15003
+PBS_NODEFILE=/var/spool/pbs/aux/8682897.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+PBS_NODENUM=0
+PBS_O_HOME=/home/mdunlavy
+PBS_O_HOST=aurora-uan-0009.hostmgmt1000.cm.aurora.alcf.anl.gov
+PBS_O_INTERACTIVE_AUTH_METHOD=resvport
+PBS_O_LANG=en_US.UTF-8
+PBS_O_LOGNAME=mdunlavy
+PBS_O_MAIL=/var/spool/mail/mdunlavy
+PBS_O_PATH=/home/mdunlavy/.codex/tmp/arg0/codex-arg0k29YjH:/home/mdunlavy/.vscode-server/cli/servers/Stable-7c6fdfb0b8f2f675eb0b47f3d95eeca78962565b/server/bin/remote-cli:/opt/cray/pals/1.8/bin:/opt/cray/libfabric/1.22.0/bin:/opt/aurora/26.26.0/spack/unified/1.1.1/install/linux-x86_64/mpich-5.0.0.aurora_test.3c70a61-hlkigtk/bin:/opt/aurora/26.26.0/support/tools/gpu_validation:/opt/aurora/26.26.0/support/tools/mpi_wrapper_utils:/opt/aurora/26.26.0/oneapi/ishmem/latest/bin:/opt/aurora/26.26.0/oneapi/dpcpp-ct/latest/bin:/opt/aurora/26.26.0/oneapi/advisor/latest/bin64:/opt/aurora/26.26.0/oneapi/vtune/latest/bin64:/opt/aurora/26.26.0/oneapi/debugger/latest/opt/debugger/bin:/opt/aurora/26.26.0/oneapi/mkl/latest/bin:/opt/aurora/26.26.0/oneapi/compiler/latest/bin:/opt/aurora/26.26.0/spack/unified/1.1.1/install/linux-x86_64/gcc-13.4.0-hgnyg4p/bin:/opt/clmgr/sbin:/opt/clmgr/bin:/opt/sgi/sbin:/opt/sgi/bin:/home/mdunlavy/.local/bin:/usr/local/bin:/usr/bin:/bin:/opt/c3/bin:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/pbs/bin:/sbin:/home/mdunlavy/.vscode-server/extensions/openai.chatgpt-26.707.91948-linux-x64/bin/linux-x86_64
+PBS_O_QUEUE=debug
+PBS_O_SHELL=/bin/bash
+PBS_O_SYSTEM=Linux
+PBS_O_WORKDIR=/home/mdunlavy/GPU_FI
+PBS_QUEUE=debug
+PBS_TASKNUM=1
+PELOCAL_PRGENV=true
+PKG_CONFIG_PATH=/opt/aurora/25.190.0/oneapi/ishmem/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/ippcp/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/advisor/latest/include/pkgconfig/lib64:/opt/aurora/25.190.0/oneapi/vtune/latest/include/pkgconfig/lib64:/opt/aurora/25.190.0/oneapi/dpl/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/ccl/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/dal/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/dnnl/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/tbb/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/mkl/latest/lib/pkgconfig:/opt/aurora/25.190.0/oneapi/compiler/latest/lib/pkgconfig:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/mpfr-4.2.1-gkcdl5w/lib/pkgconfig:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/gmp-6.3.0-mtokfaw/lib/pkgconfig
+PROFILEREAD=true
+Pti_DIR=/opt/aurora/25.190.0/oneapi/pti/latest/lib/cmake/pti
+PTIROOT=/opt/aurora/25.190.0/oneapi/pti/latest
+PWD=/home/mdunlavy
+PYTHONPATH=/opt/aurora/25.190.0/oneapi/advisor/latest/pythonapi:/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/ninja-1.12.1-s6tkszj/misc
+PYTHONSTARTUP=/etc/pythonstart
+QT_SYSTEM_DIR=/usr/share/desktop-data
+ return $__lmod_my_status
+ set +$__lmod_sh_dbg;
+ set -$__lmod_sh_dbg;
+SHELL=/bin/bash
+SHLVL=2
+TBB_ROOT=/opt/aurora/25.190.0/oneapi/tbb/latest
+TBBROOT=/opt/aurora/25.190.0/oneapi/tbb/latest
+TCM_ROOT=/opt/aurora/25.190.0/oneapi/tcm/latest
+TCMROOT=/opt/aurora/25.190.0/oneapi/tcm/latest
+TMOUT=1800
+TMPDIR=/var/tmp/pbs.8682897.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+TZ=Etc/UTC
+UMF_ROOT=/opt/aurora/25.190.0/oneapi/umf/latest
+UMFROOT=/opt/aurora/25.190.0/oneapi/umf/latest
+ unset __lmod_sh_dbg;
+USE_PCM_DB=2
+USER=mdunlavy
+_=/usr/bin/env
+ *v*)
+VTUNE_PROFILER_2025_DIR=/opt/aurora/25.190.0/oneapi/vtune/latest
+VTUNE_PROFILER_DIR=/opt/aurora/25.190.0/oneapi/vtune/latest
+ *v*x*)
+WINDOWMANAGER=xterm
+ *x*)
+XCURSOR_THEME=DMZ
+XDG_CONFIG_DIRS=/etc/xdg
+XDG_DATA_DIRS=/usr/share
+XDG_RUNTIME_DIR=/run/user/41029
+XKEYSYMDB=/usr/X11R6/lib/X11/XKeysymDB
+XNLSPATH=/usr/share/X11/nls
+ZE_ENABLE_API_TRACING=1
+ZE_ENABLE_PCI_ID_DEVICE_ORDER=1
+ZE_FLAT_DEVICE_HIERARCHY=COMPOSITE

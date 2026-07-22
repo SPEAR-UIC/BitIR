@@ -1,0 +1,59 @@
+[pbs] start 2026-07-22T00:33:47Z
+[pbs] host x4510c4s1b0n0
+[pbs] repo_root=/home/mdunlavy/GPU_FI
+[pbs] results_dir=/home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z
+[pbs] job_id=8682897.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+
+Currently Loaded Modules:
+  1) gcc-runtime/13.3.0-ghotoln (H)   6) mpfr/4.2.1-gkcdl5w      (H)
+  2) gmake/4.4.1                      7) mpc/1.3.1-rdrlvsl       (H)
+  3) cmake/3.31.8                     8) gcc/13.3.0
+  4) ninja/1.12.1                     9) oneapi/release/2025.2.0
+  5) gmp/6.3.0-mtokfaw          (H)
+
+  Where:
+   H:  Hidden Module
+
+ 
+
+[job] reusing existing injection plugin /home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/libfi_inject.so
+[job] building HeCBench pathfinder
+-- SYCL compiler type: Intel DPC++
+--   CUDA backend: supported
+--   HIP backend: supported
+-- SYCL enabled - Compiler: /opt/aurora/25.190.0/oneapi/compiler/latest/bin/icpx
+-- CTest enabled - use 'ctest' to run benchmarks
+-- Python3 for tests: /usr/bin/python3.10
+-- Registered benchmark: pathfinder-sycl
+-- Created category target: category-algorithms (1 benchmarks)
+-- 
+-- === Benchmark Registration Summary ===
+-- Total benchmarks registered: 1
+--   algorithms: 1
+-- ======================================
+-- 
+-- 
+-- === HeCBench Build Configuration ===
+-- CUDA:    OFF
+-- HIP:     OFF
+-- SYCL:    ON
+-- OpenMP:  OFF
+-- Testing: ON
+-- FI-GPU: OFF
+-- ====================================
+-- 
+-- Configuring done (11.5s)
+-- Generating done (110.9s)
+-- Build files have been written to: /home/mdunlavy/GPU_FI/HeCBench/build/sycl-intel-golden
+[ 50%] Linking CXX executable ../../bin/sycl/pathfinder
+[100%] Built target pathfinder-sycl
+[job] reusing existing golden /home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/pathfinder.bin
+[job] running baseline full trace
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: BASELINE (exit 0)
+[job] running injected full trace
+/opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt: WARNING: failed to create target machine for 'spir64-unknown-unknown': unable to get target for 'spir64-unknown-unknown', see --version and --triple.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+Result: SDC (exit 0)

@@ -1,0 +1,328 @@
+#!/bin/bash
+#PBS -N intel_trace029
+#PBS -A UIC-HPC
+#PBS -q debug
+#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb
+#PBS -l filesystems=home
+#PBS -l walltime=00:10:00
+
+set -euo pipefail
+
+if ! command -v module >/dev/null 2>&1 && [[ -f /etc/profile.d/modules.sh ]]; then
+  source /etc/profile.d/modules.sh
+fi
+
+if command -v module >/dev/null 2>&1; then
+  module purge || true
+  module use /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core 2>/dev/null || true
+  module use /opt/aurora/25.190.0/modulefiles 2>/dev/null || true
+  module load cmake/3.31.8 2>/dev/null || true
+  module load ninja/1.12.1 2>/dev/null || true
+  module load oneapi/release/2025.2.0 2>/dev/null || true
+fi
+
+REPO_ROOT="${PBS_O_WORKDIR:-$HOME/GPU_FI}"
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+RESULTS_DIR="${REPO_ROOT}/HeCBench/results/intel_trace029_full_trace_preserved_10m_${STAMP}"
+RUNNER="${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh"
+PLUGIN_BUILD="${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
+HECBENCH_BUILD="${REPO_ROOT}/HeCBench/build.sh"
+GOLDEN_PATH="${REPO_ROOT}/Aurora_Sycl_Golden_Outputs/pathfinder.bin"
+GOLDEN_COPY="${RESULTS_DIR}/golden/pathfinder.bin"
+PATHFINDER_BIN="${REPO_ROOT}/HeCBench/build/sycl-intel-golden/bin/sycl/pathfinder"
+WORKLIST="${REPO_ROOT}/divergence_analysis_outputs/full_trace_debug_worklists/batch00_single_case_trace029/intel_batch00_single_case_trace029_full_trace_worklist.csv"
+TRACE_CASE="${REPO_ROOT}/divergence_analysis_outputs/full_trace_debug_worklists/batch00_single_case_trace029/batch00_single_case_trace029_trace_case.csv"
+BENCH_ONLY_FILE="${RESULTS_DIR}/benchmarks.txt"
+SCHED_STDOUT="${RESULTS_DIR}/scheduler_stdout.log"
+SCHED_STDERR="${RESULTS_DIR}/scheduler_stderr.log"
+
+mkdir -p "${RESULTS_DIR}" "${RESULTS_DIR}/golden"
+exec > >(tee -a "${SCHED_STDOUT}") 2> >(tee -a "${SCHED_STDERR}" >&2)
+
+cat <<INFO > "${RESULTS_DIR}/job_context.txt"
+repo_root=${REPO_ROOT}
+results_dir=${RESULTS_DIR}
+job_id=${PBS_JOBID:-}
+queue=debug
+walltime=00:10:00
+commit=$(git -C "${REPO_ROOT}" rev-parse HEAD)
+case=TRACE029
+bench=pathfinder
+site_id=25
+bit_index=31
+expected_rerun_result=SDC
+cross_machine_pattern=NVIDIA=MASKED;INTEL=SDC;AMD=MASKED
+trace_level=full
+INFO
+
+git -C "${REPO_ROOT}" status --short --branch > "${RESULTS_DIR}/git_status_at_submit.txt"
+
+cp -f "${WORKLIST}" "${RESULTS_DIR}/intel_batch00_single_case_trace029_full_trace_worklist.csv"
+cp -f "${TRACE_CASE}" "${RESULTS_DIR}/batch00_single_case_trace029_trace_case.csv"
+cp -f "${REPO_ROOT}/HeCBench/config/bitir.yml" "${RESULTS_DIR}/bitir.yml"
+cp -f "${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh" "${RESULTS_DIR}/run_benchmark_injection.sh"
+cp -f "${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_binary_exact.py" "${RESULTS_DIR}/compare_binary_exact.py"
+cp -f "${REPO_ROOT}/HeCBench/tools/llvm17_inject/compare_matrix_dump.py" "${RESULTS_DIR}/compare_matrix_dump.py"
+cp -f "${REPO_ROOT}/HeCBench/tools/llvm17_inject/write_trace_diagnostics.py" "${RESULTS_DIR}/write_trace_diagnostics.py" 2>/dev/null || true
+cp -f "${SCRIPT_PATH}" "${RESULTS_DIR}/$(basename "${SCRIPT_PATH}").snapshot"
+
+{
+  echo "[pbs] start $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "[pbs] host $(hostname)"
+  echo "[pbs] repo_root=${REPO_ROOT}"
+  echo "[pbs] results_dir=${RESULTS_DIR}"
+  echo "[pbs] job_id=${PBS_JOBID:-}"
+} | tee "${RESULTS_DIR}/pbs_environment.log"
+
+if command -v module >/dev/null 2>&1; then
+  module list 2>&1 | tee "${RESULTS_DIR}/module_list.txt"
+fi
+
+env | sort > "${RESULTS_DIR}/pbs_env.txt"
+if command -v xpu-smi >/dev/null 2>&1; then
+  xpu-smi discovery > "${RESULTS_DIR}/xpu_smi_discovery_before.txt" 2>&1 || true
+  xpu-smi dump > "${RESULTS_DIR}/xpu_smi_dump_before.txt" 2>&1 || true
+fi
+
+printf 'pathfinder
+' > "${BENCH_ONLY_FILE}"
+cd "${REPO_ROOT}"
+
+common_env() {
+  export REPO_ROOT="${REPO_ROOT}"
+  export BITIR_WORKDIR="${REPO_ROOT}"
+  export BITIR_MACHINE="aurora_divergence_rerun"
+  export BITIR_MACHINE_BACKEND="intel"
+  export BITIR_MACHINE_BUILD_DIR="HeCBench/build/sycl-intel-golden"
+  export BITIR_MACHINE_BINARY_SUBDIR="sycl"
+  export BITIR_MACHINE_GOLDEN_ROOT="Aurora_Sycl_Golden_Outputs"
+  export BITIR_MACHINE_RESULTS_ROOT="HeCBench/results/llvm17_inject"
+  export BITIR_MACHINE_DEVICE_VISIBLE_ENV="ONEAPI_DEVICE_SELECTOR"
+  export BITIR_MACHINE_DEVICE_VISIBLE_VALUE="level_zero:gpu"
+  export BITIR_MACHINE_SYCL_TARGET="spir64"
+  export BITIR_MACHINE_SYCL_OFFLOAD_TARGET="sycl-spir64-unknown-unknown"
+  export BITIR_MACHINE_SYCL_HOST_TRIPLE="x86_64-unknown-linux-gnu"
+  export BITIR_MACHINE_TOOL_SEARCH_ROOTS="/opt/aurora/25.190.0/oneapi/compiler/latest/bin /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler /opt/aurora/25.190.0/oneapi/compiler/2025.2/bin /opt/aurora/25.190.0/oneapi/compiler/2025.2/bin/compiler"
+  export BITIR_MACHINE_LLVM_SEARCH_ROOT="/opt/aurora/25.190.0/spack/unified"
+  export BITIR_MACHINE_GPU_QUERY_TOOL="xpu-smi"
+  export BITIR_RUN_TIMEOUT="200"
+  export TRACE_LEVEL="full"
+  export KEEP_DUMPS="1"
+  export INJECT_TARGET="result"
+  export INT_FLOAT_ONLY="1"
+  export INCLUDE_CONSTANTS="0"
+  export PLUGIN="${REPO_ROOT}/HeCBench/tools/llvm17_inject/libfi_inject.so"
+  export BENCH="pathfinder"
+  export BITIR_SOURCE_DIR="HeCBench/src/pathfinder-sycl"
+  export BITIR_GOLDEN_FILE="pathfinder.bin"
+  export BITIR_COMPARE_MODE="exact"
+  export BITIR_RUN_ARGS="10000 1000 5"
+  export BITIR_EXTRA_INCLUDES=""
+  export BITIR_ABS_TOL="0"
+  export BITIR_REL_TOL="0"
+  export BITIR_SITE_LIST="${WORKLIST}"
+}
+
+common_env
+
+if [[ -s "${PLUGIN}" ]]; then
+  echo "[job] reusing existing injection plugin ${PLUGIN}" | tee -a "${RESULTS_DIR}/job.log"
+  sha256sum "${PLUGIN}" > "${RESULTS_DIR}/libfi_inject.so.sha256"
+else
+  echo "[job] building missing injection plugin" | tee -a "${RESULTS_DIR}/job.log"
+  bash "${PLUGIN_BUILD}" 2>&1 | tee -a "${RESULTS_DIR}/job.log"
+  sha256sum "${PLUGIN}" > "${RESULTS_DIR}/libfi_inject.so.sha256"
+fi
+
+echo "[job] building HeCBench pathfinder" | tee -a "${RESULTS_DIR}/job.log"
+BENCH_ONLY_FILE="${BENCH_ONLY_FILE}" bash "${HECBENCH_BUILD}" 2>&1 | tee -a "${RESULTS_DIR}/job.log"
+
+if [[ ! -f "${GOLDEN_PATH}" ]]; then
+  echo "[job] generating missing golden ${GOLDEN_PATH}" | tee -a "${RESULTS_DIR}/job.log"
+  env -u ONEAPI_DEVICE_SELECTOR -u SYCL_DEVICE_FILTER HECBENCH_LLFI_FORCE_DUMP=1 "${PATHFINDER_BIN}" 10000 1000 5 "${GOLDEN_PATH}"     > "${RESULTS_DIR}/golden_generate.out" 2> "${RESULTS_DIR}/golden_generate.err"
+else
+  echo "[job] reusing existing golden ${GOLDEN_PATH}" | tee -a "${RESULTS_DIR}/job.log"
+fi
+cp -f "${GOLDEN_PATH}" "${GOLDEN_COPY}"
+sha256sum "${GOLDEN_PATH}" > "${RESULTS_DIR}/golden/pathfinder.bin.sha256"
+
+run_case() {
+  local out_dir="$1"
+  local results_subdir="$2"
+  local baseline_flag="$3"
+  mkdir -p "${out_dir}" "${results_subdir}"
+  common_env
+  export OUT_DIR="${out_dir}"
+  BASELINE="${baseline_flag}" SITE_ID=25 BIT_INDEX=31 RESULTS_DIR="${results_subdir}" SKIP_EXISTING=0 \
+    bash "${RUNNER}" 2>&1 | tee -a "${RESULTS_DIR}/job.log"
+}
+
+copy_selected_rows() {
+  local trace_dir="$1"
+  local prefix="$2"
+  if [[ -f "${trace_dir}/site_metadata.csv" ]]; then
+    cp -f "${trace_dir}/site_metadata.csv" "${RESULTS_DIR}/${prefix}_selected_site_metadata.csv"
+  fi
+  if [[ -f "${trace_dir}/selected_manifest_row.csv" ]]; then
+    cp -f "${trace_dir}/selected_manifest_row.csv" "${RESULTS_DIR}/${prefix}_selected_worklist_row.csv"
+  fi
+  if [[ -f "${trace_dir}/expected_site.csv" ]]; then
+    cp -f "${trace_dir}/expected_site.csv" "${RESULTS_DIR}/${prefix}_expected_site.csv"
+  fi
+  if [[ -f "${trace_dir}/local_metadata_row.csv" ]]; then
+    cp -f "${trace_dir}/local_metadata_row.csv" "${RESULTS_DIR}/${prefix}_local_metadata_row.csv"
+  fi
+}
+
+collect_intel_site_table() {
+  local trace_dir="$1"
+  local out_csv="$2"
+  local row_csv="$3"
+  local device_bc="${trace_dir}/device.bc"
+  local rich_csv_tmp="${RESULTS_DIR}/tmp_site_dump.csv"
+  if [[ -f "${device_bc}" ]]; then
+    local opt_cmd
+    opt_cmd=$(ls /opt/aurora/25.190.0/spack/unified/*/install/*/llvm-develop-*/bin/opt 2>/dev/null | head -n 1 || true)
+    if [[ -n "${opt_cmd}" && -x "${opt_cmd}" ]]; then
+      "${opt_cmd}" -load-pass-plugin "${PLUGIN}" -passes=fi-inject -fi-site=-1 -fi-target=result -fi-int-float-only=1 -fi-include-constants=0 -fi-dump-sites-rich="${rich_csv_tmp}" -disable-output "${device_bc}" > "${RESULTS_DIR}/site_dump.stdout" 2> "${RESULTS_DIR}/site_dump.stderr" || true
+      if [[ -f "${rich_csv_tmp}" ]]; then
+        cp -f "${rich_csv_tmp}" "${out_csv}"
+        python3 - <<'PYROW' "${rich_csv_tmp}" "${row_csv}"
+import csv, sys
+src, dst = sys.argv[1], sys.argv[2]
+rows = list(csv.reader(open(src, newline='', encoding='utf-8')))
+with open(dst, 'w', newline='', encoding='utf-8') as f:
+    w = csv.writer(f)
+    if rows:
+        w.writerow(rows[0])
+        for row in rows[1:]:
+            if row and row[0] == '25':
+                w.writerow(row)
+                break
+PYROW
+      fi
+    fi
+  fi
+}
+
+dump_report() {
+  python3 - <<'PYREP' "$1" "$2" "$3" "$4"
+import hashlib, json, os, struct, sys
+label, golden, candidate, report = sys.argv[1:5]
+rep = {
+    'label': label,
+    'golden_path': golden,
+    'candidate_path': candidate,
+    'golden_exists': os.path.isfile(golden),
+    'candidate_exists': os.path.isfile(candidate),
+}
+def sha256(path):
+    h = hashlib.sha256()
+    with open(path, 'rb') as f:
+        for chunk in iter(lambda: f.read(1 << 20), b''):
+            h.update(chunk)
+    return h.hexdigest()
+if rep['golden_exists']:
+    rep['golden_sha256'] = sha256(golden)
+    rep['golden_bytes'] = os.path.getsize(golden)
+if rep['candidate_exists']:
+    rep['candidate_sha256'] = sha256(candidate)
+    rep['candidate_bytes'] = os.path.getsize(candidate)
+if rep['golden_exists'] and rep['candidate_exists']:
+    gb = open(golden, 'rb').read()
+    cb = open(candidate, 'rb').read()
+    rep['byte_count'] = min(len(gb), len(cb))
+    rep['size_match'] = len(gb) == len(cb)
+    mismatches = 0
+    first_offset = None
+    first_index = None
+    max_abs = None
+    if label.startswith('pathfinder') and len(gb) >= 4 and len(cb) >= 4:
+        try:
+            cols_g = struct.unpack_from('i', gb, 0)[0]
+            cols_c = struct.unpack_from('i', cb, 0)[0]
+            rep['element_count'] = min(cols_g, cols_c)
+            vals_g = struct.unpack_from(f'{min(cols_g, cols_c)}i', gb, 4)
+            vals_c = struct.unpack_from(f'{min(cols_g, cols_c)}i', cb, 4)
+            max_abs = 0
+            for i, (x, y) in enumerate(zip(vals_g, vals_c)):
+                if x != y:
+                    mismatches += 1
+                    if first_index is None:
+                        first_index = i
+                        first_offset = 4 + i * 4
+                    d = abs(x - y)
+                    if d > max_abs:
+                        max_abs = d
+        except Exception as exc:
+            rep['parse_error'] = str(exc)
+    else:
+        for i, (x, y) in enumerate(zip(gb, cb)):
+            if x != y:
+                mismatches += 1
+                if first_offset is None:
+                    first_offset = i
+                    first_index = i
+        max_abs = max((abs(x - y) for x, y in zip(gb, cb)), default=0)
+    rep['mismatch_count'] = mismatches
+    rep['first_differing_index'] = first_index
+    rep['first_differing_byte_offset'] = first_offset
+    rep['max_abs_difference'] = max_abs
+with open(report, 'w', encoding='utf-8') as f:
+    json.dump(rep, f, indent=2, sort_keys=True)
+PYREP
+}
+
+BASELINE_OUT_DIR="${RESULTS_DIR}/out_baseline"
+BASELINE_RESULTS_DIR="${RESULTS_DIR}/baseline_case"
+INJECT_OUT_DIR="${RESULTS_DIR}/out_injection"
+INJECT_RESULTS_DIR="${RESULTS_DIR}/injection_case"
+
+echo "[job] running baseline full trace" | tee -a "${RESULTS_DIR}/job.log"
+run_case "${BASELINE_OUT_DIR}" "${BASELINE_RESULTS_DIR}" 1
+if [[ -f "${BASELINE_OUT_DIR}/pathfinder_baseline.bin" ]]; then
+  cp -f "${BASELINE_OUT_DIR}/pathfinder_baseline.bin" "${BASELINE_RESULTS_DIR}/pathfinder_baseline.bin"
+fi
+copy_selected_rows "${BASELINE_RESULTS_DIR}/trace_baseline" baseline
+collect_intel_site_table "${BASELINE_RESULTS_DIR}/trace_baseline" "${RESULTS_DIR}/intel_sites_metadata_full.csv" "${RESULTS_DIR}/intel_site25_metadata_row.csv"
+dump_report pathfinder_baseline "${GOLDEN_COPY}" "${BASELINE_RESULTS_DIR}/pathfinder_baseline.bin" "${RESULTS_DIR}/baseline_dump_comparison.json"
+
+echo "[job] running injected full trace" | tee -a "${RESULTS_DIR}/job.log"
+run_case "${INJECT_OUT_DIR}" "${INJECT_RESULTS_DIR}" 0
+copy_selected_rows "${INJECT_RESULTS_DIR}/trace_site25_bit31" injection
+if [[ -f "${INJECT_RESULTS_DIR}/pathfinder_site25_bit31.bin" ]]; then
+  sha256sum "${INJECT_RESULTS_DIR}/pathfinder_site25_bit31.bin" > "${RESULTS_DIR}/injected_dump.sha256"
+fi
+dump_report pathfinder_injected "${GOLDEN_COPY}" "${INJECT_RESULTS_DIR}/pathfinder_site25_bit31.bin" "${RESULTS_DIR}/injected_dump_comparison.json"
+
+python3 - <<'PYALIGN' "${TRACE_CASE}" "${RESULTS_DIR}/alignment_row.csv"
+import csv, sys
+trace_case, out = sys.argv[1:3]
+row = next(csv.DictReader(open(trace_case, newline='', encoding='utf-8')))
+with open(out, 'w', newline='', encoding='utf-8') as f:
+    w = csv.writer(f)
+    w.writerow(['trace_case_id','bench','nvidia_site_id','intel_site_id','amd_site_id','divergence_pattern','nvidia_rerun_result','intel_rerun_result','amd_rerun_result'])
+    w.writerow([row['trace_case_id'], row['bench'], row['nvidia_site_id'], row['intel_site_id'], row['amd_site_id'], row['divergence_pattern'], row['nvidia_rerun_result'], row['intel_rerun_result'], row['amd_rerun_result']])
+PYALIGN
+
+python3 - "${RESULTS_DIR}" > "${RESULTS_DIR}/case_summary.txt" <<'PYCASE'
+import csv, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+print('trace_case_id=TRACE029')
+print('expected_rerun_result=SDC')
+print('cross_machine_pattern=NVIDIA=MASKED;INTEL=SDC;AMD=MASKED')
+for label in ['baseline_case', 'injection_case']:
+    print(f'[{label}]')
+    csv_path = root / label / 'summary.csv'
+    rows = list(csv.DictReader(csv_path.open(newline='', encoding='utf-8')))
+    row = rows[-1] if rows else {}
+    for key in ['site_id', 'bit_index', 'trial', 'result', 'exit_code', 'stdout', 'stderr', 'dump']:
+        print(f'{key}=' + row.get(key, ''))
+PYCASE
+
+if command -v xpu-smi >/dev/null 2>&1; then
+  xpu-smi discovery > "${RESULTS_DIR}/xpu_smi_discovery_after.txt" 2>&1 || true
+  xpu-smi dump > "${RESULTS_DIR}/xpu_smi_dump_after.txt" 2>&1 || true
+fi

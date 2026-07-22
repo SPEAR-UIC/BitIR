@@ -1,0 +1,1 @@
+/opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler/sycl-post-link --split=kernel --symbols --properties -o /home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z/out_baseline/postlink.table /home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z/out_baseline/device.bc 

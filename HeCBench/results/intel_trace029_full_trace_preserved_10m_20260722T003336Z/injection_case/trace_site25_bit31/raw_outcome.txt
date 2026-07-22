@@ -1,0 +1,14 @@
+bench=pathfinder
+site_id=25
+bit_index=31
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=unknown
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=TRACE029,batch00_single_case_trace029,intel,pathfinder,25,31,SDC,NVIDIA=MASKED;INTEL=SDC;AMD=MASKED,9,25,123,MASKED,SDC,MASKED,fullest_available,fullest_available,single_case_full_trace,Run only this one case first. Use local golden output if present; rebuild only if missing. Preserve all debug artifacts until we decide which are useful.
+local_metadata_row=
+mutated_ir_instruction=%fi_flip = xor i32 %94, -2147483648 || store i32 %fi_flip, ptr addrspace(4) %40, align 4

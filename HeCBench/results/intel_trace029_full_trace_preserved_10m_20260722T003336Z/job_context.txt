@@ -1,0 +1,13 @@
+repo_root=/home/mdunlavy/GPU_FI
+results_dir=/home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z
+job_id=8682897.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+queue=debug
+walltime=00:10:00
+commit=7480fc0b2bb0dce998a2e052cb7c30b944533356
+case=TRACE029
+bench=pathfinder
+site_id=25
+bit_index=31
+expected_rerun_result=SDC
+cross_machine_pattern=NVIDIA=MASKED;INTEL=SDC;AMD=MASKED
+trace_level=full
