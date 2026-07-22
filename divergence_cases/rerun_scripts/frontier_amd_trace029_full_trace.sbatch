@@ -434,7 +434,7 @@ import csv, sys
 import json
 
 (baseline_csv, summary_csv, baseline_ref_json, injected_ref_json, golden_ref_json,
- baseline_compare_json, injected_compare_json, expected, out_json, out_txt) = sys.argv[1:10]
+ baseline_compare_json, injected_compare_json, expected, out_json, out_txt) = sys.argv[1:11]
 
 def one_row(path):
     rows = list(csv.DictReader(open(path, newline="", encoding="utf-8")))
