@@ -167,7 +167,7 @@ for required in baseline_runtime_summary.csv injected_runtime_summary.csv \
 done
 
 for phase in baseline injected; do
-  python3 "${SCRIPT_DIR}/write_frontier_runtime_csv.py" \
+  python3 "${RUNTIME_ROOT}/write_frontier_runtime_csv.py" \
     --summary "${RUNTIME_DIR}/${phase}_runtime_summary.csv" \
     --records "${RUNTIME_DIR}/${phase}_runtime_records.csv" \
     --output "${RUNTIME_DIR}/${phase}_runtime.csv"
