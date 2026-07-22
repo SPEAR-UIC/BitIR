@@ -1,0 +1,12 @@
+screen_id,screen_kind,bench,site_id,bit_index,trial_results,reproducible,final_outcome
+SUP001,DUE,matrix-rotate,16,31,DUE;DUE,true,DUE
+SUP002,DUE,matrix-rotate,16,13,SDC;SDC,true,SDC
+SUP003,DUE,layout,14,0,MASKED;MASKED,true,MASKED
+SUP004,DUE,dense-embedding,44,11,DUE;DUE,true,DUE
+SUP005,DUE,dense-embedding,47,7,DUE;DUE,true,DUE
+SUP006,DUE,entropy,22,0,DUE;DUE,true,DUE
+SUP007,DUE,entropy,18,0,MASKED;MASKED,true,MASKED
+SUP008,SDC_MASKED,matrix-rotate,9,0,SDC;SDC,true,SDC
+SUP009,SDC_MASKED,layout,31,12,SDC;SDC,true,SDC
+SUP010,SDC_MASKED,dense-embedding,128,0,SDC;SDC,true,SDC
+SUP011,SDC_MASKED,entropy,60,10,MASKED;MASKED,true,MASKED

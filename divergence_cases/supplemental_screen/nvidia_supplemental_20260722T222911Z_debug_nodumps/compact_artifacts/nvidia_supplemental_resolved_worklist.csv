@@ -1,0 +1,12 @@
+screen_id,screen_kind,bench,site_id,bit_index,trials,original_site_id,original_result,semantic_match_key
+SUP001,DUE,matrix-rotate,16,31,2,16,DUE,356221f091c4|load|int|32|value|-1|7
+SUP002,DUE,matrix-rotate,16,13,2,16,SDC,356221f091c4|load|int|32|value|-1|7
+SUP003,DUE,layout,14,0,2,14,MASKED,{|res += trees[gid].apples[i];|}|add|int|32|value
+SUP004,DUE,dense-embedding,44,11,2,44,DUE,for (int idx = tid; idx < embedding_dim; idx += grain_size) {|T dense_elem = dense[batch_idx * embedding_dim + idx];|for (int nested_idx = idx; nested_idx < range; nested_idx += embedding_dim) {|add|int|32|value
+SUP005,DUE,dense-embedding,47,7,2,47,DUE,int range = offset[batch_idx + 1] - offset[batch_idx];|add|int|32|value
+SUP006,DUE,entropy,22,0,2,22,DUE,char count[16];|for (int i = 0; i < 16; i++) count[i] = 0;|char total = 0;|add|int|32|value
+SUP007,DUE,entropy,18,0,2,18,MASKED,char count[16];|for (int i = 0; i < 16; i++) count[i] = 0;|char total = 0;|icmp|int|1|value
+SUP008,SDC_MASKED,matrix-rotate,9,0,2,9,MASKED,if (layer < n/2) {|icmp|int|1|value
+SUP009,SDC_MASKED,layout,31,12,2,31,SDC,33dcf2732312|load|int|32|value|-1|4
+SUP010,SDC_MASKED,dense-embedding,128,0,2,128,SDC,T input_elem = input[start + idx];|T dense_elem = dense[batch_idx * embedding_dim + idx % embedding_dim];|output[start + idx] = input_elem + dense_elem;|add|int|32|value
+SUP011,SDC_MASKED,entropy,60,10,2,60,MASKED,cd1c2c6965d0|sext|int|32|value|-1|1

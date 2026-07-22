@@ -1,0 +1,5 @@
+[gpu-debug] cudaGetDeviceCount=1 err=no error
+[gpu-debug] cudaGetDevice=0 err=no error
+[gpu-debug] device=0 name=NVIDIA A100-SXM4-40GB cc=8.0 err=no error
+[gpu-debug] kernel launch err=an illegal memory access was encountered
+[gpu-debug] cudaDeviceSynchronize err=an illegal memory access was encountered

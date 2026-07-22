@@ -1,0 +1,5 @@
+Average kernel execution time: 0.355987 (s)
+FAIL
+Matrix snapshot written to /var/tmp/pbs.7272769.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_supp_7272769.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/matrix-rotate/SUP001_trial1/matrix-rotate_site16_bit31.bin
+mismatch
+Result: SDC (exit 0)

@@ -1,0 +1,9 @@
+git_head=4eb7a79534c1732fa13ea4356794530e92e2f505
+started_utc=2026-07-22T22:42:57Z
+host=x3001c0s19b1n0
+baseline_timeout=600
+trial_timeout_policy=max(60,10x_baseline_runtime); no per-row original timeout in supplemental worklist
+keep_dumps=0; exact comparisons still performed before cleanup
+raw_out_dir=compute_node_tmpdir
+trace_level=off
+source_instrumentation=none

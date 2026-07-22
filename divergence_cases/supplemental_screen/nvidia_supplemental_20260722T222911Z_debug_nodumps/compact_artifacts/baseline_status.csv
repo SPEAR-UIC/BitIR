@@ -1,0 +1,5 @@
+bench,status,runner_result,exit_code,golden,baseline_elapsed_seconds,trial_timeout_seconds,details
+matrix-rotate,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/matrix-rotate.bin,2,60,existing or generated golden matched no-flip baseline
+layout,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/layout.bin,3,60,existing or generated golden matched no-flip baseline
+dense-embedding,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/dense-embedding.bin,13,130,existing or generated golden matched no-flip baseline
+entropy,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/entropy.bin,6,60,existing or generated golden matched no-flip baseline
