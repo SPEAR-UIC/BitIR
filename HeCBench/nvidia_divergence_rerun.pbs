@@ -9,6 +9,10 @@
 set -euo pipefail
 
 REPO_ROOT="${REPO_ROOT:-/home/mdunlavy/GPU_FI}"
+if [[ "${RUNTIME_DEBUG_CASE:-}" == "TRACE029" ]]; then
+  exec bash "${REPO_ROOT}/divergence_cases/runtime_debug/trace029/run_nvidia_trace029.sh"
+fi
+
 WORKLIST="${REPO_ROOT}/divergence_analysis_outputs/nvidia_rerun_worklist.csv"
 CANDIDATES="${REPO_ROOT}/divergence_analysis_outputs/expanded_pairwise_anchor_rerun_candidates.csv"
 RESULTS_DIR="${RESULTS_DIR:?submit with RESULTS_DIR set to a timestamped directory}"
