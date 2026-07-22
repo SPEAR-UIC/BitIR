@@ -1,0 +1,11 @@
+screen_id,bench,original_site_id,fresh_site_id,bit_index,trials,original_result,function,site_class,opcode,type_kind,bitwidth,operand_index,source_line,source_column,signature_ordinal,canonical_line
+DUE001,colorwheel,153,71,0,2,DUE,_Z12computeColorffPh,result,add,int,32,-1,43,71,3,"for (i = 0; i < YG; i++) setcols(cw, 255-255*i/YG, 255, 0, k++);"
+DUE002,colorwheel,304,144,1,2,DUE,_Z12computeColorffPh,result,load,int,32,-1,56,21,28,float col0 = cw[k0][b] / 255.f;
+DUE003,colorwheel,115,52,3,2,DUE,_Z7setcolsPA3_iiiii,result,load,int,32,-1,28,14,5,cw[k][2] = b;
+DUE004,colorwheel,495,233,13,2,DUE,_Z5colorPhiiff,result,load,int,32,-1,77,30,15,size_t idx = (y * size + x) * 3;
+DUE005,colorwheel,506,238,4,2,DUE,_Z5colorPhiiff,result,load,float,32,-1,78,21,6,"computeColor(fx/truerange, fy/truerange, pix+idx);"
+DUE006,colorwheel,103,46,12,2,DUE,_Z7setcolsPA3_iiiii,result,load,int,32,-1,26,14,1,cw[k][0] = r;
+DUE007,colorwheel,324,154,62,2,MASKED,_Z12computeColorffPh,result,sext,int,64,-1,57,18,4,float col1 = cw[k1][b] / 255.f;
+DUE008,colorwheel,135,62,1,2,MASKED,_Z12computeColorffPh,result,load,int,32,-1,42,24,4,"for (i = 0; i < RY; i++) setcols(cw, 255, 255*i/RY, 0, k++);"
+DUE009,colorwheel,374,177,10,2,MASKED,_Z12computeColorffPh,result,fptosi,int,32,-1,63,23,2,pix[2 - b] = (int)(255.f * col);
+DUE010,colorwheel,370,175,8,2,DUE,_Z12computeColorffPh,result,load,float,32,-1,63,32,21,pix[2 - b] = (int)(255.f * col);

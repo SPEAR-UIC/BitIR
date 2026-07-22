@@ -1,0 +1,46 @@
+{
+  "candidate": {
+    "bytes": 200,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/due_screen/results/frontier_amd_due_screen_20260722_182048/raw/colorwheel/colorwheel_site46_bit12.bin",
+    "sha256": "b0c7946dbc01cc289e2642f2330a1958c4405d7b8f707c9888d1ea23bc115fdc"
+  },
+  "first_differing_byte_offset": 43,
+  "golden": {
+    "bytes": 200,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/Frontier_HIP_Golden_Outputs/colorwheel.bin",
+    "sha256": "06f36daec9cfd6acb5e46013220ab81722a91991b38616e0c06c2846cdd04026"
+  },
+  "mismatch_count": 27,
+  "sample_differing_byte_offsets": [
+    43,
+    49,
+    55,
+    64,
+    67,
+    73,
+    76,
+    85,
+    88,
+    91,
+    97,
+    100,
+    103,
+    133,
+    136,
+    139,
+    145,
+    148,
+    151,
+    160,
+    163,
+    169,
+    172,
+    175,
+    187,
+    193,
+    196
+  ],
+  "sha256_match": false
+}

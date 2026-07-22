@@ -1,0 +1,12 @@
+DUE001	colorwheel	153	71	0	add	int	32	43	71	3	_Z12computeColorffPh
+DUE002	colorwheel	304	144	1	load	int	32	56	21	28	_Z12computeColorffPh
+DUE003	colorwheel	115	52	3	load	int	32	28	14	5	_Z7setcolsPA3_iiiii
+DUE004	colorwheel	495	233	13	load	int	32	77	30	15	_Z5colorPhiiff
+DUE005	colorwheel	506	238	4	load	float	32	78	21	6	_Z5colorPhiiff
+DUE006	colorwheel	103	46	12	load	int	32	26	14	1	_Z7setcolsPA3_iiiii
+DUE007	colorwheel	324	154	62	sext	int	64	57	18	4	_Z12computeColorffPh
+DUE008	colorwheel	135	62	1	load	int	32	42	24	4	_Z12computeColorffPh
+DUE009	colorwheel	374	177	10	fptosi	int	32	63	23	2	_Z12computeColorffPh
+DUE010	colorwheel	370	175	8	load	float	32	63	32	21	_Z12computeColorffPh
+DUE011	randomAccess	354	166	0	add	int	64	68	36	1	_Z6updatePyy
+DUE012	randomAccess	320	151	0	icmp	int	1	68	21	1	_Z6updatePyy

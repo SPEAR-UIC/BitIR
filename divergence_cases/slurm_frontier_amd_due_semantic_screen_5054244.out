@@ -1,0 +1,51 @@
+
+Currently Loaded Modules:
+  1) rocm/6.4.2   2) rocm-llvm-toolchain
+
+ 
+
+[due-screen] baseline bench=colorwheel
+Result: BASELINE (exit 0)
+[due-screen] baseline bench=randomAccess
+Result: BASELINE (exit 0)
+[due-screen] screen_id=DUE001 bench=colorwheel site=71 bit=0 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE001 bench=colorwheel site=71 bit=0 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE002 bench=colorwheel site=144 bit=1 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE002 bench=colorwheel site=144 bit=1 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE003 bench=colorwheel site=52 bit=3 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE003 bench=colorwheel site=52 bit=3 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE004 bench=colorwheel site=233 bit=13 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE004 bench=colorwheel site=233 bit=13 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE005 bench=colorwheel site=238 bit=4 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE005 bench=colorwheel site=238 bit=4 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE006 bench=colorwheel site=46 bit=12 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE006 bench=colorwheel site=46 bit=12 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE007 bench=colorwheel site=154 bit=62 trial=1
+Result: MASKED (exit 0)
+[due-screen] screen_id=DUE007 bench=colorwheel site=154 bit=62 trial=2
+Result: MASKED (exit 0)
+[due-screen] screen_id=DUE008 bench=colorwheel site=62 bit=1 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE008 bench=colorwheel site=62 bit=1 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE009 bench=colorwheel site=177 bit=10 trial=1
+Result: MASKED (exit 0)
+[due-screen] screen_id=DUE009 bench=colorwheel site=177 bit=10 trial=2
+Result: MASKED (exit 0)
+[due-screen] screen_id=DUE010 bench=colorwheel site=175 bit=8 trial=1
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE010 bench=colorwheel site=175 bit=8 trial=2
+Result: SDC (exit 0)
+[due-screen] screen_id=DUE011 bench=randomAccess site=166 bit=0 trial=1

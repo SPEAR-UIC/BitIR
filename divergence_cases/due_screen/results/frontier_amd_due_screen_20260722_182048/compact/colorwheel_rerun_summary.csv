@@ -1,0 +1,11 @@
+screen_id,bench,original_site_id,fresh_site_id,bit_index,trial1_result,trial2_result,trial1_exit_code,trial2_exit_code,trial1_match_golden,trial2_match_golden,final_result,reproducible
+DUE001,colorwheel,153,71,0,SDC,SDC,0,0,0,0,SDC,1
+DUE002,colorwheel,304,144,1,SDC,SDC,0,0,0,0,SDC,1
+DUE003,colorwheel,115,52,3,SDC,SDC,0,0,0,0,SDC,1
+DUE004,colorwheel,495,233,13,SDC,SDC,0,0,0,0,SDC,1
+DUE005,colorwheel,506,238,4,SDC,SDC,0,0,0,0,SDC,1
+DUE006,colorwheel,103,46,12,SDC,SDC,0,0,0,0,SDC,1
+DUE007,colorwheel,324,154,62,MASKED,MASKED,0,0,1,1,MASKED,1
+DUE008,colorwheel,135,62,1,SDC,SDC,0,0,0,0,SDC,1
+DUE009,colorwheel,374,177,10,MASKED,MASKED,0,0,1,1,MASKED,1
+DUE010,colorwheel,370,175,8,SDC,SDC,0,0,0,0,SDC,1

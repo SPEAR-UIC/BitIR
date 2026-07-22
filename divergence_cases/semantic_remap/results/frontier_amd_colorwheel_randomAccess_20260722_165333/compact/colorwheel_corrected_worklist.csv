@@ -1,0 +1,10 @@
+trace_case_id,benchmark,old_site_id,fresh_site_id,bit_index,function,site_class,opcode,type_kind,bitwidth,operand_index,source_line,source_column,signature_ordinal
+TRACE001,colorwheel,141,65,2,_Z12computeColorffPh,result,icmp,int,1,-1,43,17,2
+TRACE002,colorwheel,141,65,6,_Z12computeColorffPh,result,icmp,int,1,-1,43,17,2
+TRACE003,colorwheel,145,67,2,_Z12computeColorffPh,result,mul,int,32,-1,43,47,2
+TRACE004,colorwheel,147,68,0,_Z12computeColorffPh,result,sdiv,int,32,-1,43,49,2
+TRACE005,colorwheel,149,69,0,_Z12computeColorffPh,result,sub,int,32,-1,43,43,1
+TRACE006,colorwheel,149,69,4,_Z12computeColorffPh,result,sub,int,32,-1,43,43,1
+TRACE007,colorwheel,293,139,2,_Z12computeColorffPh,result,load,int,32,-1,54,18,26
+TRACE008,colorwheel,295,140,7,_Z12computeColorffPh,result,sitofp,float,32,-1,54,18,1
+TRACE009,colorwheel,115,52,1,_Z7setcolsPA3_iiiii,result,load,int,32,-1,28,14,5

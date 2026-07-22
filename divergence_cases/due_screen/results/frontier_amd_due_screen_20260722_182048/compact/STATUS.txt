@@ -1,0 +1,7 @@
+AMD DUE semantic screen status as of 2026-07-22:
+
+- Colorwheel portion completed and is usable.
+- RandomAccess portion did not complete in this run.
+- Slurm job 5054244 ended in state CANCELLED+ after Colorwheel DUE001-DUE010 completed.
+- Use colorwheel_rerun_summary.csv for the finished Colorwheel outcomes from this bundle.
+- Do not treat this bundle as a complete AMD DUE screen for RandomAccess.

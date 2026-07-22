@@ -1,0 +1,2 @@
+bench,baseline_result,baseline_exit_code,baseline_match_golden,baseline_dump_path
+colorwheel,BASELINE,0,1,/ccs/home/mdunlavy/GPU_FI/divergence_cases/due_screen/results/frontier_amd_due_screen_20260722_182048/raw/colorwheel/colorwheel_baseline.bin
