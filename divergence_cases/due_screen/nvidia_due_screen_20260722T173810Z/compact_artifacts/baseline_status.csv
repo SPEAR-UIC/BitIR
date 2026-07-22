@@ -1,0 +1,3 @@
+bench,status,runner_result,exit_code,golden,details
+colorwheel,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/colorwheel.bin,existing golden matched no-flip baseline
+randomAccess,PASS,BASELINE,0,/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs/randomAccess.bin,existing golden matched no-flip baseline

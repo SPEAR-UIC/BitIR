@@ -1,0 +1,13 @@
+screen_id,bench,site_id,bit_index,trial_results,reproducible,current_outcome
+DUE001,colorwheel,26,0,SDC;SDC,true,SDC
+DUE002,colorwheel,150,1,SDC;SDC,true,SDC
+DUE003,colorwheel,7,3,SDC;SDC,true,SDC
+DUE004,colorwheel,233,13,SDC;SDC,true,SDC
+DUE005,colorwheel,238,4,SDC;SDC,true,SDC
+DUE006,colorwheel,1,12,SDC;SDC,true,SDC
+DUE007,colorwheel,160,62,MASKED;MASKED,true,MASKED
+DUE008,colorwheel,17,1,SDC;SDC,true,SDC
+DUE009,colorwheel,183,10,MASKED;MASKED,true,MASKED
+DUE010,colorwheel,181,8,SDC;SDC,true,SDC
+DUE011,randomAccess,117,0,DUE;DUE,true,DUE
+DUE012,randomAccess,102,0,SDC;SDC,true,SDC

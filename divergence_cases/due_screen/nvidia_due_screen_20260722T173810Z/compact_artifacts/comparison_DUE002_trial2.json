@@ -1,0 +1,280 @@
+{
+  "candidate_exists": true,
+  "candidate_sha256": "27e8f2549327a6a3087bc63d6e90f3add50c629277f1cf65540b53db5e9e26c3",
+  "candidate_size": 200,
+  "differing_bytes": 54,
+  "first_differences": [
+    {
+      "candidate": 30,
+      "golden": 39,
+      "offset": 9
+    },
+    {
+      "candidate": 19,
+      "golden": 18,
+      "offset": 12
+    },
+    {
+      "candidate": 21,
+      "golden": 7,
+      "offset": 16
+    },
+    {
+      "candidate": 17,
+      "golden": 34,
+      "offset": 19
+    },
+    {
+      "candidate": 85,
+      "golden": 96,
+      "offset": 25
+    },
+    {
+      "candidate": 139,
+      "golden": 124,
+      "offset": 28
+    },
+    {
+      "candidate": 118,
+      "golden": 147,
+      "offset": 31
+    },
+    {
+      "candidate": 44,
+      "golden": 60,
+      "offset": 33
+    },
+    {
+      "candidate": 30,
+      "golden": 39,
+      "offset": 36
+    },
+    {
+      "candidate": 52,
+      "golden": 28,
+      "offset": 39
+    },
+    {
+      "candidate": 81,
+      "golden": 73,
+      "offset": 43
+    },
+    {
+      "candidate": 138,
+      "golden": 162,
+      "offset": 49
+    },
+    {
+      "candidate": 207,
+      "golden": 191,
+      "offset": 52
+    },
+    {
+      "candidate": 143,
+      "golden": 165,
+      "offset": 55
+    },
+    {
+      "candidate": 61,
+      "golden": 101,
+      "offset": 60
+    },
+    {
+      "candidate": 97,
+      "golden": 106,
+      "offset": 63
+    },
+    {
+      "candidate": 123,
+      "golden": 112,
+      "offset": 67
+    },
+    {
+      "candidate": 215,
+      "golden": 203,
+      "offset": 73
+    },
+    {
+      "candidate": 207,
+      "golden": 229,
+      "offset": 76
+    },
+    {
+      "candidate": 252,
+      "golden": 255,
+      "offset": 77
+    },
+    {
+      "candidate": 255,
+      "golden": 253,
+      "offset": 79
+    },
+    {
+      "candidate": 88,
+      "golden": 120,
+      "offset": 81
+    },
+    {
+      "candidate": 155,
+      "golden": 164,
+      "offset": 84
+    },
+    {
+      "candidate": 176,
+      "golden": 180,
+      "offset": 90
+    },
+    {
+      "candidate": 231,
+      "golden": 242,
+      "offset": 97
+    },
+    {
+      "candidate": 254,
+      "golden": 230,
+      "offset": 98
+    },
+    {
+      "candidate": 243,
+      "golden": 255,
+      "offset": 100
+    },
+    {
+      "candidate": 230,
+      "golden": 177,
+      "offset": 101
+    },
+    {
+      "candidate": 191,
+      "golden": 186,
+      "offset": 128
+    },
+    {
+      "candidate": 189,
+      "golden": 191,
+      "offset": 129
+    },
+    {
+      "candidate": 255,
+      "golden": 214,
+      "offset": 131
+    },
+    {
+      "candidate": 240,
+      "golden": 255,
+      "offset": 132
+    },
+    {
+      "candidate": 108,
+      "golden": 181,
+      "offset": 134
+    },
+    {
+      "candidate": 178,
+      "golden": 161,
+      "offset": 137
+    },
+    {
+      "candidate": 161,
+      "golden": 173,
+      "offset": 139
+    },
+    {
+      "candidate": 200,
+      "golden": 203,
+      "offset": 144
+    },
+    {
+      "candidate": 145,
+      "golden": 146,
+      "offset": 147
+    },
+    {
+      "candidate": 77,
+      "golden": 83,
+      "offset": 150
+    },
+    {
+      "candidate": 2,
+      "golden": 95,
+      "offset": 152
+    },
+    {
+      "candidate": 78,
+      "golden": 71,
+      "offset": 155
+    },
+    {
+      "candidate": 102,
+      "golden": 67,
+      "offset": 158
+    },
+    {
+      "candidate": 67,
+      "golden": 91,
+      "offset": 160
+    },
+    {
+      "candidate": 168,
+      "golden": 193,
+      "offset": 163
+    },
+    {
+      "candidate": 210,
+      "golden": 200,
+      "offset": 168
+    },
+    {
+      "candidate": 145,
+      "golden": 151,
+      "offset": 171
+    },
+    {
+      "candidate": 126,
+      "golden": 96,
+      "offset": 174
+    },
+    {
+      "candidate": 72,
+      "golden": 22,
+      "offset": 176
+    },
+    {
+      "candidate": 35,
+      "golden": 0,
+      "offset": 179
+    },
+    {
+      "candidate": 0,
+      "golden": 24,
+      "offset": 181
+    },
+    {
+      "candidate": 149,
+      "golden": 113,
+      "offset": 184
+    },
+    {
+      "candidate": 159,
+      "golden": 211,
+      "offset": 187
+    },
+    {
+      "candidate": 187,
+      "golden": 195,
+      "offset": 192
+    },
+    {
+      "candidate": 168,
+      "golden": 150,
+      "offset": 195
+    },
+    {
+      "candidate": 79,
+      "golden": 86,
+      "offset": 198
+    }
+  ],
+  "golden_sha256": "06f36daec9cfd6acb5e46013220ab81722a91991b38616e0c06c2846cdd04026",
+  "golden_size": 200
+}

@@ -1,0 +1,145 @@
+{
+  "candidate_exists": true,
+  "candidate_sha256": "b0c7946dbc01cc289e2642f2330a1958c4405d7b8f707c9888d1ea23bc115fdc",
+  "candidate_size": 200,
+  "differing_bytes": 27,
+  "first_differences": [
+    {
+      "candidate": 112,
+      "golden": 73,
+      "offset": 43
+    },
+    {
+      "candidate": 201,
+      "golden": 162,
+      "offset": 49
+    },
+    {
+      "candidate": 164,
+      "golden": 165,
+      "offset": 55
+    },
+    {
+      "candidate": 7,
+      "golden": 67,
+      "offset": 64
+    },
+    {
+      "candidate": 189,
+      "golden": 112,
+      "offset": 67
+    },
+    {
+      "candidate": 24,
+      "golden": 203,
+      "offset": 73
+    },
+    {
+      "candidate": 169,
+      "golden": 229,
+      "offset": 76
+    },
+    {
+      "candidate": 85,
+      "golden": 45,
+      "offset": 85
+    },
+    {
+      "candidate": 184,
+      "golden": 106,
+      "offset": 88
+    },
+    {
+      "candidate": 131,
+      "golden": 161,
+      "offset": 91
+    },
+    {
+      "candidate": 212,
+      "golden": 242,
+      "offset": 97
+    },
+    {
+      "candidate": 76,
+      "golden": 255,
+      "offset": 100
+    },
+    {
+      "candidate": 38,
+      "golden": 255,
+      "offset": 103
+    },
+    {
+      "candidate": 85,
+      "golden": 45,
+      "offset": 133
+    },
+    {
+      "candidate": 184,
+      "golden": 106,
+      "offset": 136
+    },
+    {
+      "candidate": 143,
+      "golden": 173,
+      "offset": 139
+    },
+    {
+      "candidate": 225,
+      "golden": 255,
+      "offset": 145
+    },
+    {
+      "candidate": 76,
+      "golden": 255,
+      "offset": 148
+    },
+    {
+      "candidate": 38,
+      "golden": 255,
+      "offset": 151
+    },
+    {
+      "candidate": 31,
+      "golden": 91,
+      "offset": 160
+    },
+    {
+      "candidate": 15,
+      "golden": 193,
+      "offset": 163
+    },
+    {
+      "candidate": 76,
+      "golden": 255,
+      "offset": 169
+    },
+    {
+      "candidate": 195,
+      "golden": 255,
+      "offset": 172
+    },
+    {
+      "candidate": 254,
+      "golden": 255,
+      "offset": 175
+    },
+    {
+      "candidate": 250,
+      "golden": 211,
+      "offset": 187
+    },
+    {
+      "candidate": 38,
+      "golden": 255,
+      "offset": 193
+    },
+    {
+      "candidate": 254,
+      "golden": 255,
+      "offset": 196
+    }
+  ],
+  "golden_sha256": "06f36daec9cfd6acb5e46013220ab81722a91991b38616e0c06c2846cdd04026",
+  "golden_size": 200
+}

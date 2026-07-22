@@ -1,0 +1,9 @@
+{
+  "candidate_exists": true,
+  "candidate_sha256": "06f36daec9cfd6acb5e46013220ab81722a91991b38616e0c06c2846cdd04026",
+  "candidate_size": 200,
+  "differing_bytes": 0,
+  "first_differences": [],
+  "golden_sha256": "06f36daec9cfd6acb5e46013220ab81722a91991b38616e0c06c2846cdd04026",
+  "golden_size": 200
+}

@@ -1,0 +1,13 @@
+screen_id,bench,site_id,bit_index,trials,original_site_id,original_result,semantic_match_key
+DUE001,colorwheel,26,0,2,26,SDC,259f132710d3|add|int|32|value|-1|3
+DUE002,colorwheel,150,1,2,150,DUE,4a29794e22f9|load|int|32|value|-1|28
+DUE003,colorwheel,7,3,2,7,SDC,4fa0b31a15c7|load|int|32|value|-1|5
+DUE004,colorwheel,233,13,2,233,MASKED,5efa48040b87|load|int|32|value|-1|15
+DUE005,colorwheel,238,4,2,238,DUE,6ecb7dc32d12|load|float|32|value|-1|6
+DUE006,colorwheel,1,12,2,1,SDC,8f5a40cb06b1|load|int|32|value|-1|1
+DUE007,colorwheel,160,62,2,160,SDC,a2a842de0039|sext|int|64|value|-1|4
+DUE008,colorwheel,17,1,2,17,DUE,e2d55974a121|load|int|32|value|-1|4
+DUE009,colorwheel,183,10,2,183,SDC,eeb981d25e2d|fptosi|int|32|value|-1|2
+DUE010,colorwheel,181,8,2,181,SDC,col *= .75f;|pix[2 - b] = (int)(255.f * col);|}|load|float|32|value
+DUE011,randomAccess,117,0,2,117,DUE,7b6a6b3cea90|add|int|64|value|-1|1
+DUE012,randomAccess,102,0,2,102,SDC,u64Int ran = HPCC_starts ((NUPDATE/128) * j);|for (u64Int i=0; i<NUPDATE/128; i++) {|ran = (ran << 1) ^ ((s64Int) ran < 0 ? POLY : 0);|icmp|int|1|value

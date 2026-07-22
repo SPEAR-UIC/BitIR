@@ -1,0 +1,20 @@
+{
+  "candidate_exists": true,
+  "candidate_sha256": "c69a6c1a6da5017c4e4365e052622a1db503060c24f49defa635e03c7e1f078d",
+  "candidate_size": 200,
+  "differing_bytes": 2,
+  "first_differences": [
+    {
+      "candidate": 164,
+      "golden": 165,
+      "offset": 55
+    },
+    {
+      "candidate": 254,
+      "golden": 253,
+      "offset": 79
+    }
+  ],
+  "golden_sha256": "06f36daec9cfd6acb5e46013220ab81722a91991b38616e0c06c2846cdd04026",
+  "golden_size": 200
+}
