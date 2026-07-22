@@ -1,0 +1,12 @@
+screen_id,screen_kind,bench,original_site_id,bit_index,value_bitwidth,original_result,semantic_match_key,opcode,canonical_line,trials
+SUP001,DUE,matrix-rotate,17,31,32,SDC,356221f091c4|load|int|32|value|-1|7,load,for(int i = first; i < last; ++i) {,2
+SUP002,DUE,matrix-rotate,17,13,32,DUE,356221f091c4|load|int|32|value|-1|7,load,for(int i = first; i < last; ++i) {,2
+SUP003,DUE,layout,16,0,32,DUE,{|res += trees[gid].apples[i];|}|add|int|32|value,add,res += trees[gid].apples[i];,2
+SUP004,DUE,dense-embedding,33,11,32,SDC,for (int idx = tid; idx < embedding_dim; idx += grain_size) {|T dense_elem = dense[batch_idx * embedding_dim + idx];|for (int nested_idx = idx; nested_idx < range; nested_idx += embedding_dim) {|add|int|32|value,add,T dense_elem = dense[batch_idx * embedding_dim + idx];,2
+SUP005,DUE,dense-embedding,18,7,32,SDC,int range = offset[batch_idx + 1] - offset[batch_idx];|add|int|32|value,add,int range = offset[batch_idx + 1] - offset[batch_idx];,2
+SUP006,DUE,entropy,26,0,32,MASKED,char count[16];|for (int i = 0; i < 16; i++) count[i] = 0;|char total = 0;|add|int|32|value,add,for (int i = 0; i < 16; i++) count[i] = 0;,2
+SUP007,DUE,entropy,22,0,1,DUE,char count[16];|for (int i = 0; i < 16; i++) count[i] = 0;|char total = 0;|icmp|int|1|value,icmp,for (int i = 0; i < 16; i++) count[i] = 0;,2
+SUP008,SDC_MASKED,matrix-rotate,11,0,1,SDC,if (layer < n/2) {|icmp|int|1|value,icmp,if (layer < n/2) {,2
+SUP009,SDC_MASKED,layout,58,12,32,MASKED,33dcf2732312|load|int|32|value|-1|4,load,res += applesOnTrees[i].trees[gid];,2
+SUP010,SDC_MASKED,dense-embedding,192,0,32,MASKED,T input_elem = input[start + idx];|T dense_elem = dense[batch_idx * embedding_dim + idx % embedding_dim];|output[start + idx] = input_elem + dense_elem;|add|int|32|value,add,T dense_elem = dense[batch_idx * embedding_dim + idx % embedding_dim];,2
+SUP011,SDC_MASKED,entropy,64,10,32,SDC,cd1c2c6965d0|sext|int|32|value|-1|1,sext,if (total < 1) {,2
