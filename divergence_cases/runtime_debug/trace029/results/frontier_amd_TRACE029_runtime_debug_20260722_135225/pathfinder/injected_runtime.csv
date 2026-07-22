@@ -1,0 +1,2 @@
+run_label,record_kind,record_index,t,iteration,bx,tx,expected_small_block_cols,actual_small_block_cols,blkX,blkXmax,xidx,validXmin,validXmax,isValid,computed,final_write,index,value,total_computed_threads,total_final_writes,records_captured,records_truncated
+injected,aggregate,-1,,,,,,,,,,,,,,,,,0,0,0,0

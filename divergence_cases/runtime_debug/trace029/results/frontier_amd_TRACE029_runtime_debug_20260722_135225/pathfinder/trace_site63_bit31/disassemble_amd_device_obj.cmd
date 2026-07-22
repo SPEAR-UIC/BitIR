@@ -1,0 +1,1 @@
+/opt/rocm-6.4.2/lib/llvm/bin/llvm-objdump -d --mcpu=gfx90a /ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/tmp/pathfinder_injected/device.o 

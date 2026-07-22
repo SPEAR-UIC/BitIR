@@ -1,0 +1,5 @@
+Total kernel execution time: 1784728359.806938 (s)
+Device offloading time = 0.760620 (s)
+pathfinder snapshot written to /ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/tmp/pathfinder_injected/pathfinder_site63_bit31.bin
+mismatch
+Result: SDC (exit 0)

@@ -1,0 +1,28 @@
+{
+  "baseline": {
+    "dump_mismatch_count": 29825,
+    "dump_sha256_match_golden": false,
+    "exit_code": "0",
+    "result": "BASELINE_MISMATCH",
+    "total_computed_threads": 0,
+    "total_final_writes": 0
+  },
+  "classification_policy": "runner outcome and exact golden dump comparison only; CPU reference does not override MASKED/SDC/DUE",
+  "corrected_historical_site_id": 57,
+  "diagnostic_masking_mode": "non_masked_or_undetermined",
+  "expected_previous_amd_result": "MASKED",
+  "injected": {
+    "dump_mismatch_count": 29943,
+    "dump_sha256_match_golden": false,
+    "exit_code": "0",
+    "result": "SDC",
+    "total_computed_threads": 0,
+    "total_final_writes": 0
+  },
+  "notes": [
+    "Baseline with zero final writes is diagnostic evidence, not an automatic rejection.",
+    "The runtime-debug adapter keeps the original Pathfinder configuration and does not initialize d_gpuResult."
+  ],
+  "original_superseded_site_id": 123,
+  "selected_regenerated_site_id": 63
+}

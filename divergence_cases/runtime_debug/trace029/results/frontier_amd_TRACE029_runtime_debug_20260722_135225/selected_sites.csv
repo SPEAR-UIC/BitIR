@@ -1,0 +1,2 @@
+site_id,opcode,type_kind,bitwidth,operand_index,function
+63,sub,int,32,-1,_Z10pathfinderPKiS0_PiS1_P21Trace029RuntimeRecordPjS4_S4_iiiii

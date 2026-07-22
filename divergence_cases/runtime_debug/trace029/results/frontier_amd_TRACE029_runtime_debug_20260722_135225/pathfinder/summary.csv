@@ -1,0 +1,2 @@
+site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
+63,31,1,SDC,0,/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/site63_bit31.out,/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/site63_bit31.err,/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/pathfinder_site63_bit31.bin

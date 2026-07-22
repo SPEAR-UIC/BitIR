@@ -1,0 +1,6 @@
+
+Currently Loaded Modules:
+  1) rocm/6.4.2   2) rocm-llvm-toolchain
+
+ 
+

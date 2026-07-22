@@ -1,0 +1,18 @@
+{
+  "match_count": 1,
+  "selected_row": {
+    "bitwidth": "32",
+    "function": "_Z10pathfinderPKiS0_PiS1_P21Trace029RuntimeRecordPjS4_S4_iiiii",
+    "opcode": "sub",
+    "operand_index": "-1",
+    "semantic_key": "_Z10pathfinderPKiS0_PiS1_P21Trace029RuntimeRecordPjS4_S4_iiiii|result|sub|int|32|-1|/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu|66|37|2",
+    "signature_ordinal": "2",
+    "site_class": "result",
+    "site_id": "63",
+    "source_column": "37",
+    "source_file": "/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu",
+    "source_line": "66",
+    "type_kind": "int"
+  },
+  "selected_site_id": 63
+}

@@ -1,0 +1,18 @@
+{
+  "candidate": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/pathfinder_baseline.bin",
+    "sha256": "685ae099a3e757932051b5317014e1062278b33b937f10b321a51e02ac351ee8"
+  },
+  "first_differing_byte_offset": 0,
+  "golden": {
+    "bytes": 40000,
+    "exists": true,
+    "path": "/ccs/home/mdunlavy/GPU_FI/divergence_cases/full_trace_results/frontier_amd_TRACE029_20260722_010653/pathfinder/pathfinder_golden.bin",
+    "sha256": "e7e2dcff542de95352682dc186432e98f0188084896773f1973276b0577d5305"
+  },
+  "mismatch_count": 29825,
+  "sha256_match": false,
+  "size_match": true
+}

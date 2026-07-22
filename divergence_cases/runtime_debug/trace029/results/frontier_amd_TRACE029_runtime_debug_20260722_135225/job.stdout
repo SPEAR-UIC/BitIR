@@ -1,0 +1,64 @@
+[trace029-rtdebug] start 2026-07-22T13:52:25Z
+[trace029-rtdebug] git_head=56aa476a4319a616943350832bd5ba47143489b5
+[trace029-rtdebug] host=frontier03997
+[trace029-rtdebug] results_root=/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225
+
+Currently Loaded Modules:
+  1) rocm/6.4.2   2) rocm-llvm-toolchain
+
+ 
+
+[trace029-rtdebug] rebuilding fi_inject plugin
+Using existing /ccs/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/libfi_inject.so
+{
+  "match_count": 1,
+  "selected_row": {
+    "bitwidth": "32",
+    "function": "_Z10pathfinderPKiS0_PiS1_P21Trace029RuntimeRecordPjS4_S4_iiiii",
+    "opcode": "sub",
+    "operand_index": "-1",
+    "semantic_key": "_Z10pathfinderPKiS0_PiS1_P21Trace029RuntimeRecordPjS4_S4_iiiii|result|sub|int|32|-1|/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu|66|37|2",
+    "signature_ordinal": "2",
+    "site_class": "result",
+    "site_id": "63",
+    "source_column": "37",
+    "source_file": "/ccs/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-hip/main.cu",
+    "source_line": "66",
+    "type_kind": "int"
+  },
+  "selected_site_id": 63
+}
+[trace029-rtdebug] selected regenerated site_id=63 (corrected historical site was 57; site 123 superseded)
+[trace029-rtdebug] baseline run bench=pathfinder site=63 bit=31
+Result: BASELINE_MISMATCH (exit 0)
+[trace029-rtdebug] injection run bench=pathfinder site=63 bit=31 expected_previous=MASKED
+Result: SDC (exit 0)
+{
+  "baseline": {
+    "dump_mismatch_count": 29825,
+    "dump_sha256_match_golden": false,
+    "exit_code": "0",
+    "result": "BASELINE_MISMATCH",
+    "total_computed_threads": 0,
+    "total_final_writes": 0
+  },
+  "classification_policy": "runner outcome and exact golden dump comparison only; CPU reference does not override MASKED/SDC/DUE",
+  "corrected_historical_site_id": 57,
+  "diagnostic_masking_mode": "non_masked_or_undetermined",
+  "expected_previous_amd_result": "MASKED",
+  "injected": {
+    "dump_mismatch_count": 29943,
+    "dump_sha256_match_golden": false,
+    "exit_code": "0",
+    "result": "SDC",
+    "total_computed_threads": 0,
+    "total_final_writes": 0
+  },
+  "notes": [
+    "Baseline with zero final writes is diagnostic evidence, not an automatic rejection.",
+    "The runtime-debug adapter keeps the original Pathfinder configuration and does not initialize d_gpuResult."
+  ],
+  "original_superseded_site_id": 123,
+  "selected_regenerated_site_id": 63
+}
+[trace029-rtdebug] finish 2026-07-22T13:52:40Z

@@ -1,0 +1,4 @@
+Total kernel execution time: 1784728355.451555 (s)
+Device offloading time = 2.228723 (s)
+pathfinder snapshot written to /ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/tmp/pathfinder_baseline/pathfinder_baseline.bin
+mismatch

@@ -1,0 +1,17 @@
+trace_level=full
+backend=amd
+bench=pathfinder
+source=/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/pathfinder-hip_runtime_debug/main.cu
+source_dir=divergence_cases/runtime_debug/trace029/pathfinder-hip_runtime_debug
+site_id=63
+bit_index=31
+inject_target=result
+compare_mode=exact
+amd_execution_mode=injected_ir
+phase=float
+results_dir=/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder
+out_dir=/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/tmp/pathfinder_baseline
+run_out=/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/baseline.out
+run_err=/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/baseline.err
+run_dump=/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/tmp/pathfinder_baseline/pathfinder_baseline.bin
+run_timeout=

@@ -1,0 +1,8 @@
+selected_regenerated_site_id=63
+baseline_result=BASELINE_MISMATCH
+injected_result=SDC
+baseline_total_computed_threads=0
+baseline_total_final_writes=0
+injected_total_computed_threads=0
+injected_total_final_writes=0
+diagnostic_masking_mode=non_masked_or_undetermined

@@ -1,0 +1,2 @@
+site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
+63,31,1,BASELINE_MISMATCH,0,/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/baseline.out,/ccs/home/mdunlavy/GPU_FI/divergence_cases/runtime_debug/trace029/results/frontier_amd_TRACE029_runtime_debug_20260722_135225/pathfinder/baseline.err,
