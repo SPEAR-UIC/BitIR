@@ -1,0 +1,22 @@
+[
+  {
+    "bit_index": "0",
+    "dump": "",
+    "exit_code": "0",
+    "result": "BASELINE",
+    "site_id": "117",
+    "stderr": "/home/mdunlavy/GPU_FI_semantic_crosswalk/divergence_cases/due_screen/nvidia_due011_debug_20260722T183035Z/randomAccess/baseline.err",
+    "stdout": "/home/mdunlavy/GPU_FI_semantic_crosswalk/divergence_cases/due_screen/nvidia_due011_debug_20260722T183035Z/randomAccess/baseline.out",
+    "trial": "1"
+  },
+  {
+    "bit_index": "0",
+    "dump": "",
+    "exit_code": "124",
+    "result": "FAILURE",
+    "site_id": "117",
+    "stderr": "/home/mdunlavy/GPU_FI_semantic_crosswalk/divergence_cases/due_screen/nvidia_due011_debug_20260722T183035Z/randomAccess/site117_bit0.err",
+    "stdout": "/home/mdunlavy/GPU_FI_semantic_crosswalk/divergence_cases/due_screen/nvidia_due011_debug_20260722T183035Z/randomAccess/site117_bit0.out",
+    "trial": "1"
+  }
+]

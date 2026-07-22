@@ -1,0 +1,310 @@
+	.loc	1 36 13                         // HeCBench/src/randomAccess-cuda/main.cu:36:13
+	ld.u64 	%rd36, [%SP+536];
+	.loc	1 36 18                         // HeCBench/src/randomAccess-cuda/main.cu:36:18
+	shl.b64 	%rd37, %rd36, 1;
+	.loc	1 36 27                         // HeCBench/src/randomAccess-cuda/main.cu:36:27
+	shr.s64 	%rd38, %rd36, 63;
+	and.b64  	%rd39, %rd38, 7;
+	.loc	1 36 24                         // HeCBench/src/randomAccess-cuda/main.cu:36:24
+	xor.b64  	%rd40, %rd37, %rd39;
+	.loc	1 36 10                         // HeCBench/src/randomAccess-cuda/main.cu:36:10
+	st.u64 	[%SP+536], %rd40;
+	.loc	1 37 13                         // HeCBench/src/randomAccess-cuda/main.cu:37:13
+	ld.u64 	%rd41, [%SP+536];
+	.loc	1 37 18                         // HeCBench/src/randomAccess-cuda/main.cu:37:18
+	shl.b64 	%rd42, %rd41, 1;
+	.loc	1 37 27                         // HeCBench/src/randomAccess-cuda/main.cu:37:27
+	shr.s64 	%rd43, %rd41, 63;
+	and.b64  	%rd44, %rd43, 7;
+	.loc	1 37 24                         // HeCBench/src/randomAccess-cuda/main.cu:37:24
+	xor.b64  	%rd45, %rd42, %rd44;
+	.loc	1 37 10                         // HeCBench/src/randomAccess-cuda/main.cu:37:10
+	st.u64 	[%SP+536], %rd45;
+	.loc	1 38 3                          // HeCBench/src/randomAccess-cuda/main.cu:38:3
+	bra.uni 	$L__BB0_11;
+$L__tmp9:
+$L__BB0_11:                             // %for.inc
+                                        //   in Loop: Header=BB0_9 Depth=1
+	.loc	1 34 20                         // HeCBench/src/randomAccess-cuda/main.cu:34:20
+	ld.u32 	%r17, [%SP+16];
+	add.s32 	%r18, %r17, 1;
+	st.u32 	[%SP+16], %r18;
+	.loc	1 34 3                          // HeCBench/src/randomAccess-cuda/main.cu:34:3
+	bra.uni 	$L__BB0_9;
+$L__tmp10:
+$L__BB0_12:                             // %for.end
+	.loc	1 0 3                           // HeCBench/src/randomAccess-cuda/main.cu:0:3
+	mov.u32 	%r3, 62;
+	.loc	1 41 15                         // HeCBench/src/randomAccess-cuda/main.cu:41:15
+	ld.u32 	%r5, [%SP+16];
+	.loc	1 41 12                         // HeCBench/src/randomAccess-cuda/main.cu:41:12
+	shr.u64 	%rd7, %rd6, %r5;
+	.loc	1 41 9                          // HeCBench/src/randomAccess-cuda/main.cu:41:9
+	and.b64  	%rd8, %rd7, 1;
+	setp.eq.b64 	%p6, %rd8, 1;
+	mov.pred 	%p7, 0;
+	xor.pred  	%p8, %p6, %p7;
+	not.pred 	%p9, %p8;
+$L__tmp15:
+	.loc	1 41 9                          // HeCBench/src/randomAccess-cuda/main.cu:41:9
+	@%p9 bra 	$L__BB0_16;
+	bra.uni 	$L__BB0_15;
+$L__BB0_15:                             // %if.then15
+$L__tmp16:
+	.loc	1 42 7                          // HeCBench/src/randomAccess-cuda/main.cu:42:7
+	bra.uni 	$L__BB0_19;
+$L__BB0_16:                             // %if.end16
+                                        //   in Loop: Header=BB0_13 Depth=1
+	.loc	1 41 20                         // HeCBench/src/randomAccess-cuda/main.cu:41:20
+	bra.uni 	$L__BB0_17;
+$L__tmp17:
+$L__BB0_17:                             // %for.inc17
+                                        //   in Loop: Header=BB0_13 Depth=1
+	.loc	1 40 21                         // HeCBench/src/randomAccess-cuda/main.cu:40:21
+	.loc	1 49 19                         // HeCBench/src/randomAccess-cuda/main.cu:49:19
+	ld.u32 	%r14, [%SP+20];
+	.loc	1 49 16                         // HeCBench/src/randomAccess-cuda/main.cu:49:16
+	shr.u64 	%rd22, %rd21, %r14;
+	.loc	1 49 11                         // HeCBench/src/randomAccess-cuda/main.cu:49:11
+	and.b64  	%rd23, %rd22, 1;
+	setp.eq.b64 	%p16, %rd23, 1;
+	mov.pred 	%p17, 0;
+	xor.pred  	%p18, %p16, %p17;
+	not.pred 	%p19, %p18;
+$L__tmp24:
+	.loc	1 49 11                         // HeCBench/src/randomAccess-cuda/main.cu:49:11
+	@%p19 bra 	$L__BB0_25;
+	bra.uni 	$L__BB0_24;
+$L__BB0_24:                             // %if.then29
+                                        //   in Loop: Header=BB0_22 Depth=2
+$L__tmp25:
+	.loc	1 50 20                         // HeCBench/src/randomAccess-cuda/main.cu:50:20
+	ld.s32 	%rd24, [%SP+20];
+	.loc	1 50 17                         // HeCBench/src/randomAccess-cuda/main.cu:50:17
+	shl.b64 	%rd25, %rd24, 3;
+	add.u64 	%rd26, %SP, 24;
+	add.s64 	%rd27, %rd26, %rd25;
+	ld.u64 	%rd28, [%rd27];
+	.loc	1 50 14                         // HeCBench/src/randomAccess-cuda/main.cu:50:14
+	ld.u64 	%rd29, [%SP+536];
+	xor.b64  	%rd30, %rd29, %rd28;
+	st.u64 	[%SP+536], %rd30;
+	.loc	1 50 9                          // HeCBench/src/randomAccess-cuda/main.cu:50:9
+	bra.uni 	$L__BB0_25;
+$L__BB0_25:                             // %if.end33
+                                        //   in Loop: Header=BB0_22 Depth=2
+	.loc	1 49 24                         // HeCBench/src/randomAccess-cuda/main.cu:49:24
+	bra.uni 	$L__BB0_26;
+$L__tmp26:
+$L__BB0_26:                             // %for.inc34
+                                        //   in Loop: Header=BB0_22 Depth=2
+	.loc	1 48 22                         // HeCBench/src/randomAccess-cuda/main.cu:48:22
+	ld.u32 	%r15, [%SP+20];
+	add.s32 	%r16, %r15, 1;
+	st.u32 	[%SP+20], %r16;
+	.loc	1 48 5                          // HeCBench/src/randomAccess-cuda/main.cu:48:5
+	bra.uni 	$L__BB0_22;
+$L__tmp27:
+	.loc	1 53 15                         // HeCBench/src/randomAccess-cuda/main.cu:53:15
+	ld.u32 	%r13, [%SP+16];
+	.loc	1 53 12                         // HeCBench/src/randomAccess-cuda/main.cu:53:12
+	shr.u64 	%rd14, %rd13, %r13;
+	.loc	1 53 9                          // HeCBench/src/randomAccess-cuda/main.cu:53:9
+	and.b64  	%rd15, %rd14, 1;
+	setp.eq.b64 	%p12, %rd15, 1;
+	mov.pred 	%p13, 0;
+	xor.pred  	%p14, %p12, %p13;
+	not.pred 	%p15, %p14;
+$L__tmp29:
+	.loc	1 53 9                          // HeCBench/src/randomAccess-cuda/main.cu:53:9
+	@%p15 bra 	$L__BB0_29;
+	bra.uni 	$L__BB0_28;
+$L__BB0_28:                             // %if.then42
+                                        //   in Loop: Header=BB0_20 Depth=1
+$L__tmp30:
+	.loc	1 54 14                         // HeCBench/src/randomAccess-cuda/main.cu:54:14
+	ld.u64 	%rd16, [%SP+544];
+	.loc	1 54 18                         // HeCBench/src/randomAccess-cuda/main.cu:54:18
+	shl.b64 	%rd17, %rd16, 1;
+	.loc	1 54 27                         // HeCBench/src/randomAccess-cuda/main.cu:54:27
+	shr.s64 	%rd18, %rd16, 63;
+	and.b64  	%rd19, %rd18, 7;
+	.loc	1 54 24                         // HeCBench/src/randomAccess-cuda/main.cu:54:24
+	xor.b64  	%rd20, %rd17, %rd19;
+	.loc	1 54 11                         // HeCBench/src/randomAccess-cuda/main.cu:54:11
+	st.u64 	[%SP+544], %rd20;
+	.loc	1 54 7                          // HeCBench/src/randomAccess-cuda/main.cu:54:7
+	bra.uni 	$L__BB0_29;
+$L__tmp31:
+$L__BB0_29:                             // %if.end47
+                                        //   in Loop: Header=BB0_20 Depth=1
+	.loc	1 45 3                          // HeCBench/src/randomAccess-cuda/main.cu:45:3
+	bra.uni 	$L__BB0_20;
+$L__BB0_30:                             // %while.end48
+	.loc	1 57 10                         // HeCBench/src/randomAccess-cuda/main.cu:57:10
+	ld.u64 	%rd10, [%SP+544];
+	.loc	1 57 3                          // HeCBench/src/randomAccess-cuda/main.cu:57:3
+	st.u64 	[%SP+0], %rd10;
+	bra.uni 	$L__BB0_31;
+$L__BB0_31:                             // %return
+	.loc	1 58 1                          // HeCBench/src/randomAccess-cuda/main.cu:58:1
+$L__tmp41:
+$L__BB1_2:                              // %if.end
+	.loc	1 63 1                          // HeCBench/src/randomAccess-cuda/main.cu:63:1
+	ret;
+$L__tmp42:
+$L__func_end1:
+                                        // -- End function
+}
+	// .globl	_Z6updatePyy            // -- Begin function _Z6updatePyy
+.visible .entry _Z6updatePyy(
+	.param .u64 _Z6updatePyy_param_0,
+	.param .u64 _Z6updatePyy_param_1
+)                                       // @_Z6updatePyy
+{
+	.local .align 8 .b8 	__local_depot2[40];
+	.reg .b64 	%SP;
+	.reg .b64 	%SPL;
+	.reg .pred 	%p<2>;
+	.reg .b32 	%r<2>;
+	.reg .b64 	%rd<34>;
+	.loc	1 66 0                          // HeCBench/src/randomAccess-cuda/main.cu:66:0
+$L__func_begin2:
+	.loc	1 66 0                          // HeCBench/src/randomAccess-cuda/main.cu:66:0
+
+// %bb.0:                               // %entry
+	mov.u64 	%SPL, __local_depot2;
+	cvta.local.u64 	%SP, %SPL;
+	ld.param.u64 	%rd2, [_Z6updatePyy_param_1];
+	ld.param.u64 	%rd1, [_Z6updatePyy_param_0];
+	cvta.to.global.u64 	%rd3, %rd1;
+	cvta.global.u64 	%rd4, %rd3;
+	st.u64 	[%SP+0], %rd4;
+	st.u64 	[%SP+8], %rd2;
+$L__tmp43:
+	.loc	3 53 3                          // /soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_builtin_vars.h:53:3
+	mov.u32 	%r1, %tid.x;
+$L__tmp44:
+	.loc	1 67 7                          // HeCBench/src/randomAccess-cuda/main.cu:67:7
+	st.u32 	[%SP+16], %r1;
+	.loc	1 68 30                         // HeCBench/src/randomAccess-cuda/main.cu:68:30
+	ld.u64 	%rd5, [%SP+8];
+	.loc	1 68 37                         // HeCBench/src/randomAccess-cuda/main.cu:68:37
+	shr.u64 	%rd6, %rd5, 5;
+	and.b64  	%rd7, %rd6, 144115188075855871;
+	.loc	1 68 45                         // HeCBench/src/randomAccess-cuda/main.cu:68:45
+	ld.s32 	%rd8, [%SP+16];
+	param0
+	);
+	ld.param.b64 	%rd10, [retval0+0];
+	} // callseq 0
+	.loc	1 68 10                         // HeCBench/src/randomAccess-cuda/main.cu:68:10
+	st.u64 	[%SP+24], %rd10;
+	mov.u64 	%rd12, 0;
+$L__tmp45:
+	.loc	1 69 15                         // HeCBench/src/randomAccess-cuda/main.cu:69:15
+	st.u64 	[%SP+32], %rd12;
+	.loc	1 69 8                          // HeCBench/src/randomAccess-cuda/main.cu:69:8
+	bra.uni 	$L__BB2_1;
+$L__BB2_1:                              // %for.cond
+                                        // =>This Inner Loop Header: Depth=1
+$L__tmp46:
+	.loc	1 69 20                         // HeCBench/src/randomAccess-cuda/main.cu:69:20
+	ld.u64 	%rd13, [%SP+32];
+	.loc	1 69 22                         // HeCBench/src/randomAccess-cuda/main.cu:69:22
+	ld.u64 	%rd14, [%SP+8];
+	.loc	1 69 29                         // HeCBench/src/randomAccess-cuda/main.cu:69:29
+	shr.u64 	%rd15, %rd14, 5;
+	and.b64  	%rd16, %rd15, 144115188075855871;
+	.loc	1 69 21                         // HeCBench/src/randomAccess-cuda/main.cu:69:21
+	setp.ge.u64 	%p1, %rd13, %rd16;
+$L__tmp47:
+	.loc	1 69 3                          // HeCBench/src/randomAccess-cuda/main.cu:69:3
+	@%p1 bra 	$L__BB2_4;
+	bra.uni 	$L__BB2_2;
+$L__BB2_2:                              // %for.body
+                                        //   in Loop: Header=BB2_1 Depth=1
+$L__tmp48:
+	.loc	1 70 12                         // HeCBench/src/randomAccess-cuda/main.cu:70:12
+	ld.u64 	%rd17, [%SP+24];
+	.loc	1 70 16                         // HeCBench/src/randomAccess-cuda/main.cu:70:16
+	shl.b64 	%rd18, %rd17, 1;
+	.loc	1 70 25                         // HeCBench/src/randomAccess-cuda/main.cu:70:25
+	shr.s64 	%rd19, %rd17, 63;
+	and.b64  	%rd20, %rd19, 7;
+	.loc	1 70 22                         // HeCBench/src/randomAccess-cuda/main.cu:70:22
+	xor.b64  	%rd21, %rd18, %rd20;
+	.loc	1 70 9                          // HeCBench/src/randomAccess-cuda/main.cu:70:9
+	st.u64 	[%SP+24], %rd21;
+	.loc	1 71 16                         // HeCBench/src/randomAccess-cuda/main.cu:71:16
+	ld.u64 	%rd22, [%SP+0];
+	.loc	1 71 22                         // HeCBench/src/randomAccess-cuda/main.cu:71:22
+	ld.u64 	%rd23, [%SP+24];
+	.loc	1 71 29                         // HeCBench/src/randomAccess-cuda/main.cu:71:29
+	ld.u64 	%rd24, [%SP+8];
+	.loc	1 71 38                         // HeCBench/src/randomAccess-cuda/main.cu:71:38
+	add.s64 	%rd25, %rd24, -1;
+	.loc	1 71 26                         // HeCBench/src/randomAccess-cuda/main.cu:71:26
+	and.b64  	%rd26, %rd23, %rd25;
+	.loc	1 71 16                         // HeCBench/src/randomAccess-cuda/main.cu:71:16
+	shl.b64 	%rd27, %rd26, 3;
+	add.s64 	%rd28, %rd22, %rd27;
+	.loc	1 71 5                          // HeCBench/src/randomAccess-cuda/main.cu:71:5
+	{ // callseq 1, 0
+	);
+	ld.param.b64 	%rd29, [retval0+0];
+	} // callseq 1
+	.loc	1 72 3                          // HeCBench/src/randomAccess-cuda/main.cu:72:3
+	bra.uni 	$L__BB2_3;
+$L__tmp49:
+$L__BB2_3:                              // %for.inc
+                                        //   in Loop: Header=BB2_1 Depth=1
+	.loc	1 69 36                         // HeCBench/src/randomAccess-cuda/main.cu:69:36
+	ld.u64 	%rd31, [%SP+32];
+	add.s64 	%rd32, %rd31, 1;
+	xor.b64  	%rd33, %rd32, 1;
+	st.u64 	[%SP+32], %rd33;
+	.loc	1 69 3                          // HeCBench/src/randomAccess-cuda/main.cu:69:3
+	bra.uni 	$L__BB2_1;
+$L__tmp50:
+$L__BB2_4:                              // %for.end
+	.loc	1 73 1                          // HeCBench/src/randomAccess-cuda/main.cu:73:1
+	ret;
+$L__tmp51:
+$L__func_end2:
+                                        // -- End function
+}
+.func  (.param .b64 func_retval0) _ZL9atomicXorPyy(
+	.param .b64 _ZL9atomicXorPyy_param_0,
+	.param .b64 _ZL9atomicXorPyy_param_1
+)                                       // -- Begin function _ZL9atomicXorPyy
+                                        // @_ZL9atomicXorPyy
+{
+	.local .align 8 .b8 	__local_depot3[32];
+	.reg .b64 	%SP;
+	st.u64 	[%SP+0], %rd3;
+	st.u64 	[%SP+8], %rd4;
+$L__tmp53:
+	.loc	5 776 46                        // /soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_device_functions.h:776:46
+	ld.u64 	%rd5, [%SP+0];
+	.loc	5 776 51                        // /soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_device_functions.h:776:51
+	ld.u64 	%rd6, [%SP+8];
+	.loc	5 776 10                        // /soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_device_functions.h:776:10
+	atom.xor.b64 	%rd7, [%rd5], %rd6;
+$L__tmp54:
+	.loc	4 124 5                         // /soft/compilers/cudatoolkit/cuda-11.8.0/include/sm_32_atomic_functions.hpp:124:5
+	st.param.b64 	[func_retval0+0], %rd7;
+	ret;
+$L__tmp55:
+$L__func_end3:
+                                        // -- End function
+}
+	.file	1 "/home/mdunlavy/GPU_FI_semantic_crosswalk/HeCBench/src/randomAccess-cuda/main.cu"
+	.file	2 "/soft/compilers/cudatoolkit/cuda-11.8.0/include/vector_types.h"
+	.file	3 "/soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_builtin_vars.h"
+	.file	4 "/soft/compilers/cudatoolkit/cuda-11.8.0/include/sm_32_atomic_functions.hpp"
+	.file	5 "/soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_device_functions.h"
+	.file	6 "/soft/compilers/llvm/release-17.0.6/lib/clang/17/include/__clang_cuda_math_forward_declares.h"
+	.file	7 "/usr/include/stdlib.h"
+	.file	8 "/usr/lib64/gcc/x86_64-suse-linux/12/../../../../include/c++/12/bits/std_abs.h"
+	.file	9 "/usr/include/bits/mathcalls.h"

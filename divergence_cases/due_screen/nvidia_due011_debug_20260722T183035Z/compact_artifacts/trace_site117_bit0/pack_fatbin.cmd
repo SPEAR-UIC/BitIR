@@ -1,0 +1,1 @@
+/soft/compilers/cudatoolkit/cuda-11.8.0/bin/nvcc --fatbin -arch=sm_80 /home/mdunlavy/GPU_FI_semantic_crosswalk/divergence_cases/due_screen/nvidia_due011_debug_20260722T183035Z/randomAccess/tmp/injection/device.injected.ptx -o /home/mdunlavy/GPU_FI_semantic_crosswalk/divergence_cases/due_screen/nvidia_due011_debug_20260722T183035Z/randomAccess/tmp/injection/device.injected.fatbin 
