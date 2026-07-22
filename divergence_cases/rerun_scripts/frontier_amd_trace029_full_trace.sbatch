@@ -42,6 +42,7 @@ INJECTED_DUMP="${TRACE_RESULTS_DIR}/${BENCH}_site${SITE_ID}_bit${BIT_INDEX}.bin"
 BASELINE_TRACE_DIR="${TRACE_RESULTS_DIR}/trace_baseline"
 INJECTED_TRACE_DIR="${TRACE_RESULTS_DIR}/trace_site${SITE_ID}_bit${BIT_INDEX}"
 EVIDENCE_SCRIPT="${EVIDENCE_SCRIPT:-$REPO_ROOT/divergence_cases/rerun_scripts/collect_trace029_evidence.py}"
+CPU_REF_SCRIPT="${CPU_REF_SCRIPT:-$REPO_ROOT/divergence_cases/rerun_scripts/compare_pathfinder_reference.py}"
 SBATCH_STDOUT_SRC="${REPO_ROOT}/divergence_cases/slurm_frontier_amd_trace029_${SLURM_JOB_ID:-manual}.out"
 SBATCH_STDERR_SRC="${REPO_ROOT}/divergence_cases/slurm_frontier_amd_trace029_${SLURM_JOB_ID:-manual}.err"
 VALIDATION_SITE_LIST="${RESULTS_ROOT}/trace029_validation_site_list.csv"
@@ -60,6 +61,17 @@ EXPECTED_OPERAND_INDEX="${EXPECTED_OPERAND_INDEX:--1}"
 EXPECTED_SOURCE_FILE="${EXPECTED_SOURCE_FILE:-$REPO_ROOT/HeCBench/src/pathfinder-hip/main.cu}"
 TRACE_METADATA_SOURCE_CSV="${TRACE_METADATA_SOURCE_CSV:-$OVERRIDE_METADATA_CSV}"
 TRACE_SITES_SOURCE_CSV="${TRACE_SITES_SOURCE_CSV:-$OVERRIDE_SITES_CSV}"
+PATHFINDER_COLS="${PATHFINDER_COLS:-10000}"
+PATHFINDER_ROWS="${PATHFINDER_ROWS:-1000}"
+PATHFINDER_PYRAMID="${PATHFINDER_PYRAMID:-1000}"
+GOLDEN_COPY="${TRACE_RESULTS_DIR}/${BENCH}_golden.bin"
+BASELINE_CPU_REF_JSON="${TRACE_RESULTS_DIR}/baseline_cpu_reference.json"
+INJECTED_CPU_REF_JSON="${TRACE_RESULTS_DIR}/injected_cpu_reference.json"
+GOLDEN_CPU_REF_JSON="${TRACE_RESULTS_DIR}/golden_cpu_reference.json"
+FINAL_CLASSIFICATION_JSON="${RESULTS_ROOT}/final_classification.json"
+FINAL_CLASSIFICATION_TXT="${RESULTS_ROOT}/final_classification.txt"
+DUMP_FORMAT_NOTE_JSON="${TRACE_RESULTS_DIR}/dump_format_note.json"
+DUMP_FORMAT_NOTE_TXT="${TRACE_RESULTS_DIR}/dump_format_note.txt"
 
 cd "$REPO_ROOT"
 mkdir -p "$RESULTS_ROOT" "$TRACE_RESULTS_DIR" "$TRACE_TMP_ROOT" "$RESULTS_ROOT/.bitir_jobs" "$GOLDEN_ROOT"
@@ -309,10 +321,34 @@ if [[ -f "$PATHFINDER_GOLDEN" ]]; then
 else
   echo "[trace029] missing golden, building pathfinder and generating $PATHFINDER_GOLDEN"
   BENCH_ONLY="$BENCH" REPO_ROOT="$REPO_ROOT" BUILD_DIR="$BUILD_ROOT" bash HeCBench/build.sh 2>&1 | tee "$RESULTS_ROOT/golden_build.log"
-  HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "$BUILD_ROOT/bin/hip/$BENCH" 10000 1000 1000 "$PATHFINDER_GOLDEN" \
+  HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 "$BUILD_ROOT/bin/hip/$BENCH" "$PATHFINDER_COLS" "$PATHFINDER_ROWS" "$PATHFINDER_PYRAMID" "$PATHFINDER_GOLDEN" \
     > "$RESULTS_ROOT/golden_generate.out" 2> "$RESULTS_ROOT/golden_generate.err"
   ls -lh "$PATHFINDER_GOLDEN"
 fi
+cp -f "$PATHFINDER_GOLDEN" "$GOLDEN_COPY"
+
+python3 - "$DUMP_FORMAT_NOTE_JSON" "$DUMP_FORMAT_NOTE_TXT" <<'PY'
+import json
+import sys
+
+json_path, txt_path = sys.argv[1:3]
+note = {
+    "benchmark": "pathfinder",
+    "dump_formats": {
+        "cuda": {"layout": "cols_header_plus_int32_values", "bytes_for_10000_cols": 40004},
+        "sycl": {"layout": "cols_header_plus_int32_values", "bytes_for_10000_cols": 40004},
+        "amd": {"layout": "raw_int32_values", "bytes_for_10000_cols": 40000},
+    },
+    "comparison_policy": "Do not directly compare headered CUDA/SYCL dumps against raw AMD dumps without normalization.",
+}
+with open(json_path, "w", encoding="utf-8") as f:
+    json.dump(note, f, indent=2, sort_keys=True)
+    f.write("\n")
+with open(txt_path, "w", encoding="utf-8") as f:
+    f.write("CUDA/SYCL pathfinder dumps: cols header + cols int32 values (40004 bytes for cols=10000)\n")
+    f.write("AMD pathfinder dumps: cols int32 values only (40000 bytes for cols=10000)\n")
+    f.write("Cross-backend comparisons must normalize format before comparing bytes.\n")
+PY
 
 echo "[trace029] baseline run bench=$BENCH site=$SITE_ID bit=$BIT_INDEX expected=$EXPECTED_RESULT"
 BASELINE=1 \
@@ -343,17 +379,118 @@ python3 HeCBench/tools/llvm17_inject/bitir_pipeline.py \
   --fault-model trace029_full \
   --local
 
-python3 - "$TRACE_RESULTS_DIR/summary.csv" "$EXPECTED_RESULT" <<'PY'
+python3 "$CPU_REF_SCRIPT" \
+  --dump "$GOLDEN_COPY" \
+  --cols "$PATHFINDER_COLS" \
+  --rows "$PATHFINDER_ROWS" \
+  --pyramid-height "$PATHFINDER_PYRAMID" \
+  --output-json "$GOLDEN_CPU_REF_JSON" \
+  --label golden > "$TRACE_RESULTS_DIR/golden_cpu_reference.out" 2>&1 || true
+
+python3 "$CPU_REF_SCRIPT" \
+  --dump "$TRACE_RESULTS_DIR/${BENCH}_baseline.bin" \
+  --cols "$PATHFINDER_COLS" \
+  --rows "$PATHFINDER_ROWS" \
+  --pyramid-height "$PATHFINDER_PYRAMID" \
+  --output-json "$BASELINE_CPU_REF_JSON" \
+  --label baseline > "$TRACE_RESULTS_DIR/baseline_cpu_reference.out" 2>&1 || true
+
+python3 "$CPU_REF_SCRIPT" \
+  --dump "$INJECTED_DUMP" \
+  --cols "$PATHFINDER_COLS" \
+  --rows "$PATHFINDER_ROWS" \
+  --pyramid-height "$PATHFINDER_PYRAMID" \
+  --output-json "$INJECTED_CPU_REF_JSON" \
+  --label injected > "$TRACE_RESULTS_DIR/injected_cpu_reference.out" 2>&1 || true
+
+python3 "$EVIDENCE_SCRIPT" \
+  --results-root "$RESULTS_ROOT" \
+  --trace-results-dir "$TRACE_RESULTS_DIR" \
+  --bench "$BENCH" \
+  --site-id "$SITE_ID" \
+  --bit-index "$BIT_INDEX" \
+  --trace-case-id "$TRACE_CASE_ID" \
+  --worklist "$WORKLIST" \
+  --case-csv "$CASE_CSV" \
+  --metadata-csv "$TRACE_METADATA_SOURCE_CSV" \
+  --sites-csv "$TRACE_SITES_SOURCE_CSV" \
+  --alignment-csv "$ALIGNMENT_CSV" \
+  --pairwise-csv "$PAIRWISE_CSV" \
+  --alignment-amd-site-id "$ORIGINAL_SITE_ID" \
+  --pairwise-amd-site-id "$ORIGINAL_SITE_ID" \
+  --golden "$PATHFINDER_GOLDEN" \
+  --baseline-dump "$TRACE_RESULTS_DIR/${BENCH}_baseline.bin" \
+  --injected-dump "$INJECTED_DUMP" \
+  --baseline-trace-dir "$BASELINE_TRACE_DIR" \
+  --injected-trace-dir "$INJECTED_TRACE_DIR" \
+  --numeric-type int32 \
+  > "$RESULTS_ROOT/evidence_collect.out" 2> "$RESULTS_ROOT/evidence_collect.err"
+
+python3 - "$TRACE_RESULTS_DIR/baseline_summary.csv" "$TRACE_RESULTS_DIR/summary.csv" \
+  "$BASELINE_CPU_REF_JSON" "$INJECTED_CPU_REF_JSON" "$GOLDEN_CPU_REF_JSON" \
+  "$RESULTS_ROOT/evidence/baseline_dump_compare.json" "$RESULTS_ROOT/evidence/injected_dump_compare.json" \
+  "$EXPECTED_RESULT" "$FINAL_CLASSIFICATION_JSON" "$FINAL_CLASSIFICATION_TXT" <<'PY'
 import csv, sys
-path, expected = sys.argv[1:3]
-rows = list(csv.DictReader(open(path, newline="", encoding="utf-8")))
-if len(rows) != 1:
-    raise SystemExit(f"expected exactly 1 summary row, found {len(rows)}")
-row = rows[0]
-actual = row.get("result", "")
-print(f"[trace029] summary result={actual} exit_code={row.get('exit_code','')}")
-if actual != expected:
-    raise SystemExit(f"unexpected rerun result: expected {expected}, got {actual}")
+import json
+
+(baseline_csv, summary_csv, baseline_ref_json, injected_ref_json, golden_ref_json,
+ baseline_compare_json, injected_compare_json, expected, out_json, out_txt) = sys.argv[1:10]
+
+def one_row(path):
+    rows = list(csv.DictReader(open(path, newline="", encoding="utf-8")))
+    if len(rows) != 1:
+        raise SystemExit(f"expected exactly 1 row in {path}, found {len(rows)}")
+    return rows[0]
+
+baseline = one_row(baseline_csv)
+injected = one_row(summary_csv)
+baseline_ref = json.load(open(baseline_ref_json, encoding="utf-8"))
+injected_ref = json.load(open(injected_ref_json, encoding="utf-8"))
+golden_ref = json.load(open(golden_ref_json, encoding="utf-8"))
+baseline_cmp = json.load(open(baseline_compare_json, encoding="utf-8"))
+injected_cmp = json.load(open(injected_compare_json, encoding="utf-8"))
+
+baseline_pass = baseline.get("result") == "BASELINE" and baseline.get("exit_code") == "0"
+runtime_ok = injected.get("exit_code") == "0"
+dump_match = injected_cmp.get("mismatch_count") == 0
+baseline_dump_match = baseline_cmp.get("mismatch_count") == 0
+golden_ref_match = bool(golden_ref.get("reference_match"))
+baseline_ref_match = bool(baseline_ref.get("reference_match"))
+injected_ref_match = bool(injected_ref.get("reference_match"))
+
+if not runtime_ok:
+    final = "DUE"
+elif dump_match and injected_ref_match and baseline_pass and baseline_dump_match and baseline_ref_match and golden_ref_match:
+    final = "MASKED"
+elif not dump_match:
+    final = "SDC"
+else:
+    final = "INCONSISTENT"
+
+payload = {
+    "expected_previous_amd_result": expected,
+    "baseline_result": baseline.get("result"),
+    "injected_result": injected.get("result"),
+    "baseline_exit_code": baseline.get("exit_code"),
+    "injected_exit_code": injected.get("exit_code"),
+    "baseline_dump_match": baseline_dump_match,
+    "injected_dump_match": dump_match,
+    "golden_cpu_reference_match": golden_ref_match,
+    "baseline_cpu_reference_match": baseline_ref_match,
+    "injected_cpu_reference_match": injected_ref_match,
+    "final_classification": final,
+}
+
+with open(out_json, "w", encoding="utf-8") as f:
+    json.dump(payload, f, indent=2, sort_keys=True)
+    f.write("\n")
+with open(out_txt, "w", encoding="utf-8") as f:
+    for k, v in payload.items():
+        f.write(f"{k}={v}\n")
+
+print(f"[trace029] final classification={final}")
+if final != expected:
+    print(f"[trace029] expected_previous_amd_result={expected} but final_classification={final}")
 PY
 
 echo "[trace029] finish $(date -u +%Y-%m-%dT%H:%M:%SZ)"
