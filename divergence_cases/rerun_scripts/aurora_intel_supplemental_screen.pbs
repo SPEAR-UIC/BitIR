@@ -1,0 +1,81 @@
+#!/bin/bash
+#PBS -N intel_supp_screen
+#PBS -A UIC-HPC
+#PBS -q debug
+#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb
+#PBS -l filesystems=home
+#PBS -l walltime=01:00:00
+#PBS -j oe
+
+set -euo pipefail
+
+if ! command -v module >/dev/null 2>&1 && [[ -f /etc/profile.d/modules.sh ]]; then
+  source /etc/profile.d/modules.sh
+fi
+
+if command -v module >/dev/null 2>&1; then
+  module purge || true
+  module use /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core 2>/dev/null || true
+  module use /opt/aurora/25.190.0/modulefiles 2>/dev/null || true
+  module load cmake/3.31.8 2>/dev/null || true
+  module load ninja/1.12.1 2>/dev/null || true
+  module load oneapi/release/2025.2.0 2>/dev/null || true
+fi
+
+REPO_ROOT="${PBS_O_WORKDIR:-$HOME/GPU_FI}"
+RESULTS_DIR="${RESULTS_DIR:?RESULTS_DIR is required}"
+WORKLIST_INPUT="${WORKLIST_INPUT:?WORKLIST_INPUT is required}"
+DRIVER="${REPO_ROOT}/divergence_cases/rerun_scripts/run_intel_supplemental_screen.py"
+CROSSWALK_BUILDER="${REPO_ROOT}/divergence_cases/rerun_scripts/build_intel_supplemental_crosswalk.py"
+METADATA_PREP="${REPO_ROOT}/divergence_cases/rerun_scripts/prepare_intel_supplemental_metadata.py"
+WORKLIST="${RESULTS_DIR}/intel_supplemental_resolved_worklist.csv"
+FULL_DUMP_ROOT="${FULL_DUMP_ROOT:-/lus/flare/projects/UIC-HPC/${USER}/GPU_FI_supplemental_dumps/$(basename "${RESULTS_DIR}")}"
+FRESH_METADATA_ROOT="${FULL_DUMP_ROOT}/fresh_metadata"
+
+mkdir -p "$RESULTS_DIR" "$FULL_DUMP_ROOT"
+exec > >(tee -a "$RESULTS_DIR/pbs_stdout.log") 2>&1
+
+cp -f "$0" "$RESULTS_DIR/submitted_job.pbs"
+cp -f "$DRIVER" "$RESULTS_DIR/run_intel_supplemental_screen.py"
+cp -f "$CROSSWALK_BUILDER" "$RESULTS_DIR/build_intel_supplemental_crosswalk.py"
+cp -f "$METADATA_PREP" "$RESULTS_DIR/prepare_intel_supplemental_metadata.py"
+cp -f "$WORKLIST_INPUT" "$RESULTS_DIR/intel_supplemental_semantic_remap_worklist.csv"
+
+{
+  echo "repo_root=$REPO_ROOT"
+  echo "results_dir=$RESULTS_DIR"
+  echo "worklist_input=$WORKLIST_INPUT"
+  echo "resolved_worklist=$WORKLIST"
+  echo "fresh_metadata_root=$FRESH_METADATA_ROOT"
+  echo "full_dump_root=$FULL_DUMP_ROOT"
+  echo "job_id=${PBS_JOBID:-}"
+  git -C "$REPO_ROOT" rev-parse HEAD | sed 's/^/commit=/'
+} > "$RESULTS_DIR/job_context.txt"
+module list > "$RESULTS_DIR/module_list.txt" 2>&1 || true
+env | sort > "$RESULTS_DIR/job_environment.txt"
+
+python3 "$METADATA_PREP" \
+  --repo-root "$REPO_ROOT" \
+  --out-dir "$FRESH_METADATA_ROOT"
+
+python3 "$CROSSWALK_BUILDER" \
+  --repo-root "$REPO_ROOT" \
+  --worklist "$WORKLIST_INPUT" \
+  --fresh-metadata-dir "$FRESH_METADATA_ROOT" \
+  --out-dir "$RESULTS_DIR"
+
+mkdir -p "${RESULTS_DIR}/fresh_metadata_compact"
+cp -f "${FRESH_METADATA_ROOT}/fresh_metadata_manifest.csv" "${RESULTS_DIR}/fresh_metadata_compact/fresh_metadata_manifest.csv"
+cp -f "${FRESH_METADATA_ROOT}/fresh_metadata_summary.json" "${RESULTS_DIR}/fresh_metadata_compact/fresh_metadata_summary.json"
+for bench in matrix-rotate layout dense-embedding entropy; do
+  mkdir -p "${RESULTS_DIR}/fresh_metadata_compact/${bench}"
+  cp -f "${FRESH_METADATA_ROOT}/${bench}/sites.csv" "${RESULTS_DIR}/fresh_metadata_compact/${bench}/sites.csv"
+  cp -f "${FRESH_METADATA_ROOT}/${bench}/sites_metadata.csv" "${RESULTS_DIR}/fresh_metadata_compact/${bench}/sites_metadata.csv"
+  cp -f "${FRESH_METADATA_ROOT}/${bench}"/*.cmd "${RESULTS_DIR}/fresh_metadata_compact/${bench}/" 2>/dev/null || true
+done
+
+cp -f "$RESULTS_DIR/intel_supplemental_site_crosswalk.csv" "$RESULTS_DIR/intel_supplemental_site_crosswalk.csv.snapshot"
+cp -f "$WORKLIST" "$RESULTS_DIR/intel_supplemental_resolved_worklist.csv.snapshot"
+
+REPO_ROOT="$REPO_ROOT" RESULTS_DIR="$RESULTS_DIR" WORKLIST="$WORKLIST" FRESH_METADATA_ROOT="$FRESH_METADATA_ROOT" FULL_DUMP_ROOT="$FULL_DUMP_ROOT" EXPECTED_ROWS=11 EXPECTED_INJECTIONS=22 ORIGINAL_CAMPAIGN_TIMEOUT="${ORIGINAL_CAMPAIGN_TIMEOUT:-200s}" RUN_TIMEOUT_KILL_AFTER="${RUN_TIMEOUT_KILL_AFTER:-15s}" \
+  python3 "$DRIVER"

@@ -1,0 +1,13 @@
+{
+  "candidate_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/local_dumps/layout/layout_site58_bit12_trial2.bin",
+  "candidate_sha256": "549acc32558672b6707ee3e49d6ae9f9bbd61909abf11b060c98878f4efa7fb8",
+  "candidate_size_bytes": 16388,
+  "exact_match": true,
+  "first_differing_index": "",
+  "golden_path": "/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/layout.bin",
+  "golden_sha256": "549acc32558672b6707ee3e49d6ae9f9bbd61909abf11b060c98878f4efa7fb8",
+  "golden_size_bytes": 16388,
+  "mismatch_count": 0,
+  "mode": "exact",
+  "status": "pass"
+}

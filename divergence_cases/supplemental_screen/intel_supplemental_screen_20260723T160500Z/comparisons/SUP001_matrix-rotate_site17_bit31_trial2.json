@@ -1,0 +1,5 @@
+{
+  "status": "no_dump",
+  "golden_path": "/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/matrix-rotate_10000_1.bin",
+  "candidate_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/local_dumps/matrix-rotate/matrix-rotate_site17_bit31_trial2.bin"
+}

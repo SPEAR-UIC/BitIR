@@ -1,0 +1,9 @@
+{
+  "benchmarks": [
+    "matrix-rotate",
+    "layout",
+    "dense-embedding",
+    "entropy"
+  ],
+  "count": 4
+}

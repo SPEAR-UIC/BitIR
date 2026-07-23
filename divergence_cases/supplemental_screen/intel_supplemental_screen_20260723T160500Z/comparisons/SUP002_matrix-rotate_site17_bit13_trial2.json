@@ -1,0 +1,13 @@
+{
+  "candidate_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/local_dumps/matrix-rotate/matrix-rotate_site17_bit13_trial2.bin",
+  "candidate_sha256": "3baaad7c79acb29c65647e653ba9ddf31502579ae1ee0d6e28c119dbc2460357",
+  "candidate_size_bytes": 400000000,
+  "exact_match": false,
+  "first_differing_index": 0,
+  "golden_path": "/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/matrix-rotate_10000_1.bin",
+  "golden_sha256": "930c04b1dd43880a8633996d73918b6fac9ea5f8e44b18fde292040ab2e06420",
+  "golden_size_bytes": 400000000,
+  "mismatch_count": 335813556,
+  "mode": "exact",
+  "status": "fail"
+}

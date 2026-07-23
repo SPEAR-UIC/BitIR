@@ -1,0 +1,14 @@
+{
+  "final_counts": {
+    "DUE": 1,
+    "MASKED": 2,
+    "SDC": 5,
+    "SKIPPED_BASELINE_MISMATCH": 3
+  },
+  "trial_counts": {
+    "DUE": 2,
+    "MASKED": 4,
+    "SDC": 10,
+    "SKIPPED_BASELINE_MISMATCH": 6
+  }
+}

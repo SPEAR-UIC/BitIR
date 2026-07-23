@@ -1,0 +1,13 @@
+{
+  "candidate_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/local_dumps/dense-embedding/dense-embedding_site33_bit11_trial2.bin",
+  "candidate_sha256": "50a69f50d77fb9fd72ba7778f68bfbec87e6daa3c65f36a090e92aac879bf489",
+  "candidate_size_bytes": 7249920192,
+  "exact_match": false,
+  "first_differing_index": 16,
+  "golden_path": "/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/dense-embedding.bin",
+  "golden_sha256": "53420a49c05939e97161ee51bd5c3c60c4a05d94cb12ace453be24c3f8a50c02",
+  "golden_size_bytes": 7249920192,
+  "mismatch_count": 8795884,
+  "mode": "exact",
+  "status": "fail"
+}

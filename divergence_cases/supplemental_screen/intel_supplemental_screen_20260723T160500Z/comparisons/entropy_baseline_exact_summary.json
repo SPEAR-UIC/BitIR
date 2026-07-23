@@ -1,0 +1,13 @@
+{
+  "candidate_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/tmp/entropy_baseline/entropy_baseline.bin",
+  "candidate_sha256": "251df766d26c7f6e112b7ade91fc51ca1323359a77c140695ef6f3bfaed51249",
+  "candidate_size_bytes": 40960000,
+  "exact_match": false,
+  "first_differing_index": 0,
+  "golden_path": "/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/entropy.bin",
+  "golden_sha256": "3571b95e3f985ab9cb86e684def2bd9ecd8ce2c2078ae90417d9fb6cfde64615",
+  "golden_size_bytes": 40960000,
+  "mismatch_count": 10129271,
+  "mode": "exact",
+  "status": "fail"
+}

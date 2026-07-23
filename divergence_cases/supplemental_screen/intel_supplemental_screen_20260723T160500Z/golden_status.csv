@@ -1,0 +1,5 @@
+bench,golden_path,generated,status,stdout,stderr
+matrix-rotate,/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/matrix-rotate_10000_1.bin,no,existing,,
+layout,/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/layout.bin,no,existing,,
+dense-embedding,/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/dense-embedding.bin,no,existing,,
+entropy,/home/mdunlavy/GPU_FI/Aurora_Sycl_Golden_Outputs/entropy.bin,no,existing,,

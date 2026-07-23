@@ -1,0 +1,8 @@
+repo_root=/home/mdunlavy/GPU_FI
+results_dir=/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_supplemental_screen_20260723T160500Z
+worklist_input=/home/mdunlavy/GPU_FI/divergence_analysis_outputs/divergence_case_screen_worklists/intel_supplemental_semantic_remap_worklist.csv
+resolved_worklist=/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_supplemental_screen_20260723T160500Z/intel_supplemental_resolved_worklist.csv
+fresh_metadata_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/fresh_metadata
+full_dump_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z
+job_id=8691394.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+commit=4eb7a79534c1732fa13ea4356794530e92e2f505
