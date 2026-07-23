@@ -1,0 +1,5 @@
+{
+  "status": "no_dump",
+  "golden_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_entropy_rerun_20260723T173000Z/golden/entropy.bin",
+  "candidate_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_entropy_rerun_20260723T211000Z/local_dumps/entropy/entropy_site26_bit0_trial1.bin"
+}

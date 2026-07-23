@@ -1,0 +1,4 @@
+screen_id,screen_kind,bench,site_id,bit_index,old_site_id,trials,value_bitwidth,original_result,semantic_match_key,opcode,canonical_line
+SUP006,DUE,entropy,26,0,26,2,32,MASKED,char count[16];|for (int i = 0; i < 16; i++) count[i] = 0;|char total = 0;|add|int|32|value,add,for (int i = 0; i < 16; i++) count[i] = 0;
+SUP007,DUE,entropy,22,0,22,2,1,DUE,char count[16];|for (int i = 0; i < 16; i++) count[i] = 0;|char total = 0;|icmp|int|1|value,icmp,for (int i = 0; i < 16; i++) count[i] = 0;
+SUP011,SDC_MASKED,entropy,64,10,64,2,32,SDC,cd1c2c6965d0|sext|int|32|value|-1|1,sext,if (total < 1) {

@@ -1,0 +1,4 @@
+screen_id,bench,old_site_id,site_id,bit_index,trial1_classification,trial2_classification,final_reproducible_result,reproducible
+SUP006,entropy,26,26,0,DUE,DUE,DUE,True
+SUP007,entropy,22,22,0,MASKED,MASKED,MASKED,True
+SUP011,entropy,64,64,10,MASKED,MASKED,MASKED,True

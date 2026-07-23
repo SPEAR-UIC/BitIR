@@ -1,0 +1,55 @@
+#!/bin/bash
+#PBS -N intel_supp_entropy
+#PBS -A UIC-HPC
+#PBS -q debug
+#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb
+#PBS -l filesystems=home
+#PBS -l walltime=00:30:00
+#PBS -j oe
+
+set -euo pipefail
+
+if ! command -v module >/dev/null 2>&1 && [[ -f /etc/profile.d/modules.sh ]]; then
+  source /etc/profile.d/modules.sh
+fi
+
+if command -v module >/dev/null 2>&1; then
+  module purge || true
+  module use /opt/aurora/25.190.0/spack/unified/0.10.1/install/modulefiles/Core 2>/dev/null || true
+  module use /opt/aurora/25.190.0/modulefiles 2>/dev/null || true
+  module load cmake/3.31.8 2>/dev/null || true
+  module load ninja/1.12.1 2>/dev/null || true
+  module load oneapi/release/2025.2.0 2>/dev/null || true
+fi
+
+REPO_ROOT="${PBS_O_WORKDIR:-$HOME/GPU_FI}"
+RESULTS_DIR="${RESULTS_DIR:?RESULTS_DIR is required}"
+WORKLIST="${WORKLIST:?WORKLIST is required}"
+FRESH_METADATA_ROOT="${FRESH_METADATA_ROOT:?FRESH_METADATA_ROOT is required}"
+FULL_DUMP_ROOT="${FULL_DUMP_ROOT:?FULL_DUMP_ROOT is required}"
+CAMPAIGN_GOLDEN_ROOT="${CAMPAIGN_GOLDEN_ROOT:?CAMPAIGN_GOLDEN_ROOT is required}"
+DRIVER="${REPO_ROOT}/divergence_cases/rerun_scripts/run_intel_supplemental_screen.py"
+
+mkdir -p "$RESULTS_DIR" "$FULL_DUMP_ROOT"
+exec > >(tee -a "$RESULTS_DIR/pbs_stdout.log") 2>&1
+
+cp -f "$0" "$RESULTS_DIR/submitted_job.pbs"
+cp -f "$DRIVER" "$RESULTS_DIR/run_intel_supplemental_screen.py"
+if [[ "$(readlink -f "$WORKLIST")" != "$(readlink -f "$RESULTS_DIR/intel_supplemental_entropy_resolved_worklist.csv")" ]]; then
+  cp -f "$WORKLIST" "$RESULTS_DIR/intel_supplemental_entropy_resolved_worklist.csv"
+fi
+
+{
+  echo "repo_root=$REPO_ROOT"
+  echo "results_dir=$RESULTS_DIR"
+  echo "worklist=$WORKLIST"
+  echo "fresh_metadata_root=$FRESH_METADATA_ROOT"
+  echo "full_dump_root=$FULL_DUMP_ROOT"
+  echo "campaign_golden_root=$CAMPAIGN_GOLDEN_ROOT"
+  echo "job_id=${PBS_JOBID:-}"
+  git -C "$REPO_ROOT" rev-parse HEAD | sed 's/^/commit=/'
+} > "$RESULTS_DIR/job_context.txt"
+module list > "$RESULTS_DIR/module_list.txt" 2>&1 || true
+
+REPO_ROOT="$REPO_ROOT" RESULTS_DIR="$RESULTS_DIR" WORKLIST="$WORKLIST" FRESH_METADATA_ROOT="$FRESH_METADATA_ROOT" FULL_DUMP_ROOT="$FULL_DUMP_ROOT" CAMPAIGN_GOLDEN_ROOT="$CAMPAIGN_GOLDEN_ROOT" BENCHES=entropy EXPECTED_ROWS=3 EXPECTED_INJECTIONS=6 ORIGINAL_CAMPAIGN_TIMEOUT="${ORIGINAL_CAMPAIGN_TIMEOUT:-200s}" RUN_TIMEOUT_KILL_AFTER="${RUN_TIMEOUT_KILL_AFTER:-15s}" \
+  python3 "$DRIVER"

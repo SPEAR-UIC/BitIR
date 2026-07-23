@@ -1,0 +1,8 @@
+repo_root=/home/mdunlavy/GPU_FI
+results_dir=/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_supplemental_entropy_rerun_20260723T211000Z
+worklist=/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_supplemental_entropy_rerun_20260723T211000Z/intel_supplemental_entropy_resolved_worklist.csv
+fresh_metadata_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/fresh_metadata
+full_dump_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_entropy_rerun_20260723T211000Z
+campaign_golden_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_entropy_rerun_20260723T173000Z/golden
+job_id=8692809.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+commit=c99dfa5b5ef51530601d370c1ca878fd15aeaef3

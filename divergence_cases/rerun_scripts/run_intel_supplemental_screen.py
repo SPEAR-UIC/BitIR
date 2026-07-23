@@ -17,7 +17,7 @@ WORKLIST = Path(os.environ['WORKLIST']).resolve()
 FRESH_METADATA_ROOT = Path(os.environ['FRESH_METADATA_ROOT']).resolve()
 FULL_DUMP_ROOT = Path(os.environ.get('FULL_DUMP_ROOT', str(RESULTS_DIR))).resolve()
 RUNNER = REPO_ROOT / 'HeCBench/tools/llvm17_inject/run_benchmark_injection.sh'
-GOLDEN_ROOT = REPO_ROOT / 'Aurora_Sycl_Golden_Outputs'
+GOLDEN_ROOT = Path(os.environ.get('CAMPAIGN_GOLDEN_ROOT', str(REPO_ROOT / 'Aurora_Sycl_Golden_Outputs'))).resolve()
 DEFAULT_ORIGINAL_TIMEOUT = os.environ.get('ORIGINAL_CAMPAIGN_TIMEOUT', '200s')
 FALLBACK_BASELINE_TIMEOUT_SECONDS = int(os.environ.get('BASELINE_TIMEOUT_FALLBACK_SECONDS', '600'))
 
@@ -55,7 +55,7 @@ BASE_ENV = {
     'BITIR_MACHINE_BACKEND': 'intel',
     'BITIR_MACHINE_BUILD_DIR': 'HeCBench/build/sycl-intel-golden',
     'BITIR_MACHINE_BINARY_SUBDIR': 'sycl',
-    'BITIR_MACHINE_GOLDEN_ROOT': 'Aurora_Sycl_Golden_Outputs',
+    'BITIR_MACHINE_GOLDEN_ROOT': str(GOLDEN_ROOT),
     'BITIR_MACHINE_RESULTS_ROOT': 'HeCBench/results/llvm17_inject',
     'BITIR_MACHINE_DEVICE_VISIBLE_ENV': 'ONEAPI_DEVICE_SELECTOR',
     'BITIR_MACHINE_DEVICE_VISIBLE_VALUE': 'level_zero:gpu',
@@ -224,7 +224,7 @@ def run_runner(bench: str, site: str, bit: str, trial: str, baseline: bool, time
         'RESULTS_DIR': str(bench_dir),
         'OUT_DIR': str(out_dir),
         'CSV': str(summary),
-        'RUN_TIMEOUT': f'{int(timeout_s)}s',
+        'BITIR_RUN_TIMEOUT': f'{int(timeout_s)}s',
     })
     start = time.monotonic()
     rc = run_cmd(['bash', str(RUNNER)], env, REPO_ROOT, stdout, stderr, check=False)
@@ -295,7 +295,7 @@ def main():
     for row in rows:
         by_bench[row['bench']].append(row)
 
-    benches = ['matrix-rotate', 'layout', 'dense-embedding', 'entropy']
+    benches = [b.strip() for b in os.environ.get('BENCHES', 'matrix-rotate,layout,dense-embedding,entropy').split(',') if b.strip()]
     golden_rows = ensure_goldens(benches)
     timeout_rows = []
     baseline_rows = []

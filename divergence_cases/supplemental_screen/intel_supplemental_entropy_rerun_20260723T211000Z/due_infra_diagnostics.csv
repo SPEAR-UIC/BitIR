@@ -1,0 +1,7 @@
+screen_id,bench,site_id,bit_index,trial,classification,timeout,signal_or_crash,nonzero_exit,gpu_runtime_error,infra_failure,due_reason
+SUP006,entropy,26,0,1,DUE,True,False,True,False,False,timeout
+SUP006,entropy,26,0,2,DUE,True,False,True,False,False,timeout
+SUP007,entropy,22,0,1,MASKED,False,False,False,False,False,
+SUP007,entropy,22,0,2,MASKED,False,False,False,False,False,
+SUP011,entropy,64,10,1,MASKED,False,False,False,False,False,
+SUP011,entropy,64,10,2,MASKED,False,False,False,False,False,
