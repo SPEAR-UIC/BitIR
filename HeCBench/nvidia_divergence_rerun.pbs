@@ -124,6 +124,18 @@ configure_bench() {
   export BITIR_COMPARE_MODE=exact
   export BITIR_EXTRA_INCLUDES=""
   case "${bench}" in
+    matrix-rotate)
+      export BITIR_SOURCE_DIR=HeCBench/src/matrix-rotate-cuda
+      export MATRIX_SIZE=10000 MATRIX_REPEAT=1
+      export BITIR_GOLDEN_FILE="matrix-rotate_10000_1.bin"
+      export BITIR_COMPARE_MODE=float
+      export BITIR_RUN_ARGS="10000 1"
+      ;;
+    layout)
+      export BITIR_SOURCE_DIR=HeCBench/src/layout-cuda
+      export LAYOUT_REPEAT=1
+      export BITIR_RUN_ARGS="1"
+      ;;
     colorwheel)
       export BITIR_SOURCE_DIR=HeCBench/src/colorwheel-cuda
       export COLORWHEEL_RANGE=10000 COLORWHEEL_SIZE=8 COLORWHEEL_REPEAT=1
@@ -157,7 +169,7 @@ configure_bench() {
 }
 
 build_missing_golden() {
-  local bench="$1" golden="${GOLDEN_ROOT}/${bench}.bin"
+  local bench="$1" golden="${GOLDEN_ROOT}/${BITIR_GOLDEN_FILE:-${bench}.bin}"
   [[ -s "${golden}" ]] && return 0
 
   local build_dir="${TMPDIR:-/tmp}/nvidia_divergence_golden_${PBS_JOBID:-$$}_${bench}"
