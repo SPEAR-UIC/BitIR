@@ -157,6 +157,43 @@ def derive_fault_path(path: Path):
     }
 
 
+def collect_use_chain(path: Path, root_value: str, max_depth: int = 3, max_uses: int = 40):
+    if not path.exists() or not root_value:
+        return []
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    seen = set([root_value])
+    frontier = [(root_value, 0)]
+    records = []
+    while frontier and len(records) < max_uses:
+        value, depth = frontier.pop(0)
+        value_re = re.compile(r"(?<![-A-Za-z0-9_.$])" + re.escape(value) + r"(?![-A-Za-z0-9_.$])")
+        for idx, line in enumerate(lines, start=1):
+            stripped = line.strip()
+            if not stripped or stripped.startswith(";"):
+                continue
+            define_match = re.match(r"(%[-A-Za-z0-9_.$]+)\s*=", stripped)
+            if define_match and define_match.group(1) == value:
+                continue
+            if not value_re.search(stripped):
+                continue
+            defined = define_match.group(1) if define_match else ""
+            cclass = classify_consumer(stripped, value, [])
+            records.append({
+                "depth": str(depth + 1),
+                "input_value": value,
+                "defined_value": defined,
+                "line_number": str(idx),
+                "consumer_class": cclass,
+                "instruction": stripped,
+            })
+            if defined and defined not in seen and depth + 1 < max_depth:
+                seen.add(defined)
+                frontier.append((defined, depth + 1))
+            if len(records) >= max_uses:
+                break
+    return records
+
+
 def first_nonempty(*values):
     for value in values:
         if value not in (None, ""):
@@ -176,6 +213,7 @@ def main():
     raw_outcome = read_key_values(trace_dir / "raw_outcome.txt")
     mutated_lines = collect_mutated_lines(trace_dir / "device.injected.ll")
     fault_path = derive_fault_path(trace_dir / "device.injected.ll")
+    use_chain = collect_use_chain(trace_dir / "device.injected.ll", fault_path["mutated_value"])
 
     record = {
         "benchmark": manifest.get("bench", ""),
@@ -217,7 +255,14 @@ def main():
         else "",
         "stdout_path": manifest.get("run_out", ""),
         "stderr_path": manifest.get("run_err", ""),
+        "use_chain_path": "use_chain.csv" if use_chain else "",
     }
+
+    if use_chain:
+        with (trace_dir / "use_chain.csv").open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=["depth", "input_value", "defined_value", "line_number", "consumer_class", "instruction"])
+            writer.writeheader()
+            writer.writerows(use_chain)
 
     csv_path = trace_dir / "diag_records.csv"
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
@@ -242,6 +287,7 @@ def main():
                 f"flipped_bit={record['bit_index']}",
                 f"first_direct_consumer={record['first_direct_consumer']}",
                 f"consumer_class={record['consumer_class']}",
+                f"use_chain_path={record['use_chain_path']}",
                 f"final_observed_outcome={record['final_observed_outcome']}",
             ]
         )

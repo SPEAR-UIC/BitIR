@@ -1,0 +1,3 @@
+screen_id,screen_kind,benchmark,old_site_id,fresh_site_id,bit_index,function,source_file,source_line,source_column,opcode,type_kind,bitwidth,operand_index,site_class,signature_ordinal,match_count
+SUP001,DUE,matrix-rotate,17,17,31,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi1EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-sycl/main.cpp,83,23,load,int,32,-1,base,7,1
+SUP006,DUE,entropy,26,26,0,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi2EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-sycl/main.cpp,69,34,add,int,32,-1,base,1,1

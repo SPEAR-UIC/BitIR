@@ -1,0 +1,7 @@
+depth,input_value,defined_value,line_number,consumer_class,instruction
+1,%fi_flip,%149,436,other,"%149 = icmp slt i32 %fi_flip, 1"
+2,%149,,437,branch,"br i1 %149, label %150, label %151"
+2,%149,%150,1531,other,"%150 = icmp sge i32 %149, 0"
+3,%150,,437,branch,"br i1 %149, label %150, label %151"
+3,%150,,480,other,"174:                                              ; preds = %173, %150"
+3,%150,,1532,branch,"br i1 %150, label %151, label %185"

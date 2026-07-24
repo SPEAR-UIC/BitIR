@@ -1,0 +1,11 @@
+depth,input_value,defined_value,line_number,consumer_class,instruction
+1,%fi_flip,%111,1379,other,%111 = sext i32 %fi_flip to i64
+2,%111,%112,372,other,"%112 = load i32, ptr addrspace(4) %111, align 4"
+2,%111,%116,1145,address_calc,"%116 = getelementptr inbounds float, ptr addrspace(4) %111, i64 %115"
+2,%111,%112,1380,address_calc,"%112 = getelementptr inbounds float, ptr addrspace(4) %103, i64 %111"
+3,%112,%114,374,other,"%114 = add nsw i32 %112, %113"
+3,%112,%114,1143,other,"%114 = add nsw i32 %112, %113"
+3,%112,%113,1381,other,"%113 = load float, ptr addrspace(4) %112, align 4"
+3,%116,%117,377,other,"%117 = load float, ptr addrspace(4) %116, align 4"
+3,%116,,1146,address_calc,"store float %110, ptr addrspace(4) %116, align 4"
+3,%116,,1392,store_data,"store float %116, ptr addrspace(4) %122, align 4"
