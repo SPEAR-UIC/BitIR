@@ -8,15 +8,15 @@
 
 set -euo pipefail
 
-REPO_ROOT="${REPO_ROOT:-/home/mdunlavy/GPU_FI}"
+REPO_ROOT="${REPO_ROOT:-${PBS_O_WORKDIR:-$PWD}}"
 if [[ "${RUNTIME_DEBUG_CASE:-}" == "TRACE029" ]]; then
   exec bash "${REPO_ROOT}/divergence_cases/runtime_debug/trace029/run_nvidia_trace029.sh"
 fi
 
 WORKLIST="${REPO_ROOT}/divergence_analysis_outputs/nvidia_rerun_worklist.csv"
 CANDIDATES="${REPO_ROOT}/divergence_analysis_outputs/expanded_pairwise_anchor_rerun_candidates.csv"
-RESULTS_DIR="${RESULTS_DIR:?submit with RESULTS_DIR set to a timestamped directory}"
-GOLDEN_ROOT="${GOLDEN_ROOT:-/home/mdunlavy/GPU_FI_outcome_divergence/Polaris_Golden_Outputs}"
+RESULTS_DIR="${REPO_ROOT}/divergence_cases/supplemental_screen/nvidia_targeted_debug"
+GOLDEN_ROOT="${GOLDEN_ROOT:-${REPO_ROOT}/Polaris_Golden_Outputs}"
 RUNNER="${REPO_ROOT}/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh"
 PLUGIN_BUILD="${REPO_ROOT}/HeCBench/tools/llvm17_inject/build.sh"
 DRY_RUN="${DRY_RUN:-0}"
@@ -109,9 +109,9 @@ export BITIR_FAULT_MODEL_INCLUDE_CONSTANTS=0
 export INJECT_TARGET=result
 export INT_FLOAT_ONLY=1
 export INCLUDE_CONSTANTS=0
-export KEEP_DUMPS=0
+export KEEP_DUMPS=1
 export SKIP_EXISTING=0
-export TRACE_LEVEL=basic
+export TRACE_LEVEL=full
 export BITIR_RUN_TIMEOUT=600
 export ABS_TOL=1e-5
 export REL_TOL=0.0
