@@ -1,0 +1,71 @@
+#!/bin/bash
+#PBS -N polaris_nvidia_intel_debug
+#PBS -A {ADD ACCOUNT HERE}
+#PBS -q debug
+#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb
+#PBS -l filesystems=home:eagle
+#PBS -l walltime=05:00:00
+#PBS -o OUT_polaris_nvidia_intel_debug.out
+#PBS -j oe
+
+set -euo pipefail
+
+REPO_ROOT="${REPO_ROOT:-${PBS_O_WORKDIR:-$PWD}}"
+CONFIG="${REPO_ROOT}/bitir/config/runs/polaris_nvidia_intel_debug.yml"
+RUN_ROOT="${REPO_ROOT}/divergence_analysis_outputs/polaris_targeted_debug/run_$(date -u +%Y%m%d_%H%M%S)"
+mkdir -p "${RUN_ROOT}"
+
+cd "${REPO_ROOT}"
+
+{
+  echo "started_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "host=$(hostname)"
+  echo "repo=${REPO_ROOT}"
+  echo "git_head=$(git rev-parse HEAD)"
+  echo "config=${CONFIG}"
+} > "${RUN_ROOT}/run_context.txt"
+
+module -t list > "${RUN_ROOT}/module_list_before.txt" 2>&1 || true
+
+echo "[polaris-debug] build/golden all targeted benchmarks"
+python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+  build "${CONFIG}" \
+  --machine polaris \
+  --campaign nvidia_intel_debug \
+  --local \
+  2>&1 | tee "${RUN_ROOT}/build.log"
+
+run_deploy() {
+  local bench="$1"
+  local model="$2"
+  local log="${RUN_ROOT}/deploy_${bench}.log"
+  echo "[polaris-debug] deploy bench=${bench} model=${model}"
+  python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+    deploy "${CONFIG}" \
+    --machine polaris \
+    --bench "${bench}" \
+    --fault-model "${model}" \
+    --local \
+    2>&1 | tee "${log}"
+  local latest
+  latest="$(ls -td "${REPO_ROOT}"/results/20* | head -n 1)"
+  printf '%s,%s,%s,%s\n' "${bench}" "${model}" "${latest}" "${log}" >> "${RUN_ROOT}/result_dirs.csv"
+}
+
+printf 'bench,fault_model,result_dir,log\n' > "${RUN_ROOT}/result_dirs.csv"
+run_deploy matrix-rotate nvidia_intel_debug_matrix_rotate
+run_deploy layout nvidia_intel_debug_layout
+run_deploy dense-embedding nvidia_intel_debug_dense_embedding
+run_deploy entropy nvidia_intel_debug_entropy
+
+python3 divergence_analysis_outputs/polaris_targeted_debug/summarize_polaris_nvidia_intel_debug.py \
+  "${RUN_ROOT}/result_dirs.csv" \
+  "${RUN_ROOT}/summary.csv" \
+  2>&1 | tee "${RUN_ROOT}/summarize.log"
+
+{
+  echo "finished_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "run_root=${RUN_ROOT}"
+} >> "${RUN_ROOT}/run_context.txt"
+
+echo "[polaris-debug] complete: ${RUN_ROOT}"

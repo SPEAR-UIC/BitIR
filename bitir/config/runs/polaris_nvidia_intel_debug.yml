@@ -1,0 +1,169 @@
+extends:
+  - polaris_template.yml
+
+methodology:
+  default_campaign: nvidia_intel_debug
+  float_abs_tol: 1e-5
+  float_rel_tol: 0.0
+
+run:
+  machine: polaris
+  benchmark_set: hecbench
+  campaign: nvidia_intel_debug
+  fault_model: nvidia_intel_debug_matrix_rotate
+  execution_mode: local
+
+campaigns:
+  nvidia_intel_debug:
+    benchmarks:
+      - matrix-rotate
+      - layout
+      - dense-embedding
+      - entropy
+
+fault_models:
+  nvidia_intel_debug_matrix_rotate:
+    selection_mode: instruction_result
+    phase: nvidia_intel_debug
+    site_list: bitir/config/sites/polaris_nvidia_intel_debug_matrix_rotate.csv
+    int_float_only: 1
+    include_constants: 0
+    max_injections: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    trace_level: full
+    trace_repeats: 2
+    trace_source_window: 12
+    runtime_env:
+      CUDA_LAUNCH_BLOCKING: "1"
+      HECBENCH_LLFI_FORCE_DUMP: "1"
+
+  nvidia_intel_debug_layout:
+    selection_mode: instruction_result
+    phase: nvidia_intel_debug
+    site_list: bitir/config/sites/polaris_nvidia_intel_debug_layout.csv
+    int_float_only: 1
+    include_constants: 0
+    max_injections: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    trace_level: full
+    trace_repeats: 2
+    trace_source_window: 12
+    runtime_env:
+      CUDA_LAUNCH_BLOCKING: "1"
+      HECBENCH_LLFI_FORCE_DUMP: "1"
+
+  nvidia_intel_debug_dense_embedding:
+    selection_mode: instruction_result
+    phase: nvidia_intel_debug
+    site_list: bitir/config/sites/polaris_nvidia_intel_debug_dense_embedding.csv
+    int_float_only: 1
+    include_constants: 0
+    max_injections: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    trace_level: full
+    trace_repeats: 2
+    trace_source_window: 12
+    runtime_env:
+      CUDA_LAUNCH_BLOCKING: "1"
+      HECBENCH_LLFI_FORCE_DUMP: "1"
+
+  nvidia_intel_debug_entropy:
+    selection_mode: instruction_result
+    phase: nvidia_intel_debug
+    site_list: bitir/config/sites/polaris_nvidia_intel_debug_entropy.csv
+    int_float_only: 1
+    include_constants: 0
+    max_injections: 0
+    keep_dumps: 1
+    run_baseline: 1
+    skip_existing: 0
+    trace_level: full
+    trace_repeats: 2
+    trace_source_window: 12
+    runtime_env:
+      CUDA_LAUNCH_BLOCKING: "1"
+      HECBENCH_LLFI_FORCE_DUMP: "1"
+
+machines:
+  polaris:
+    build_dir: bitir/build/cuda-polaris-nvidia-intel-debug
+    golden_root: Polaris_Golden_Outputs_nvidia_intel_debug
+    results_root: bitir/results/nvidia_intel_debug
+    jobs:
+      build:
+        header:
+          - "#PBS -N bitir_polaris_debug_build"
+          - "#PBS -A {ADD ACCOUNT HERE}"
+          - "#PBS -q debug"
+          - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
+          - "#PBS -l filesystems=home:eagle"
+          - "#PBS -l walltime=00:45:00"
+          - "#PBS -o OUT_polaris_debug_build_{stamp}.out"
+          - "#PBS -j oe"
+      deploy:
+        header:
+          - "#PBS -N bitir_polaris_debug_deploy"
+          - "#PBS -A {ADD ACCOUNT HERE}"
+          - "#PBS -q debug"
+          - "#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb"
+          - "#PBS -l filesystems=home:eagle"
+          - "#PBS -l walltime=04:00:00"
+          - "#PBS -o OUT_polaris_debug_deploy_{stamp}.out"
+          - "#PBS -j oe"
+
+benchmarks:
+  matrix-rotate:
+    compare_mode: exact
+    golden_file: matrix-rotate_10000_1.bin
+    args:
+      - "{MATRIX_ROTATE_SIZE}"
+      - "{MATRIX_ROTATE_REPEAT}"
+    env:
+      MATRIX_ROTATE_SIZE: "10000"
+      MATRIX_ROTATE_REPEAT: "1"
+    source_dirs:
+      cuda: src/matrix-rotate-cuda
+
+  layout:
+    compare_mode: exact
+    golden_file: layout.bin
+    args:
+      - "{LAYOUT_REPEAT}"
+    env:
+      LAYOUT_REPEAT: "1"
+    source_dirs:
+      cuda: src/layout-cuda
+
+  dense-embedding:
+    compare_mode: exact
+    golden_file: dense-embedding.bin
+    args:
+      - "{DENSE_EMBEDDING_ROWS}"
+      - "{DENSE_EMBEDDING_BATCH}"
+      - "{DENSE_EMBEDDING_REPEAT}"
+    env:
+      DENSE_EMBEDDING_ROWS: "10000"
+      DENSE_EMBEDDING_BATCH: "8"
+      DENSE_EMBEDDING_REPEAT: "1"
+    source_dirs:
+      cuda: src/dense-embedding-cuda
+
+  entropy:
+    compare_mode: exact
+    golden_file: entropy.bin
+    args:
+      - "{ENTROPY_WIDTH}"
+      - "{ENTROPY_HEIGHT}"
+      - "{ENTROPY_REPEAT}"
+    env:
+      ENTROPY_WIDTH: "10000"
+      ENTROPY_HEIGHT: "1024"
+      ENTROPY_REPEAT: "1"
+    source_dirs:
+      cuda: src/entropy-cuda
