@@ -8,4 +8,5 @@ mutated_value=%fi_flip
 flipped_bit=31
 first_direct_consumer=store i32 %fi_flip, ptr addrspace(4) %21, align 4
 consumer_class=store_data
+use_chain_path=use_chain.csv
 final_observed_outcome=FAILURE

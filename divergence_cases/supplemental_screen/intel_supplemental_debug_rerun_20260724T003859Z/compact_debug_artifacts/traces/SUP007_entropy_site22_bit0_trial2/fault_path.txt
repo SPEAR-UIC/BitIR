@@ -8,4 +8,5 @@ mutated_value=%fi_flip
 flipped_bit=0
 first_direct_consumer=br i1 %fi_flip, label %83, label %90
 consumer_class=branch
+use_chain_path=use_chain.csv
 final_observed_outcome=MASKED

@@ -8,4 +8,5 @@ mutated_value=%fi_flip
 flipped_bit=10
 first_direct_consumer=%149 = icmp slt i32 %fi_flip, 1
 consumer_class=branch
+use_chain_path=use_chain.csv
 final_observed_outcome=MASKED

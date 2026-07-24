@@ -35,5 +35,6 @@
   "source_line": "83",
   "stderr_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/matrix-rotate/site17_bit13_trial2.err",
   "stdout_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/matrix-rotate/site17_bit13_trial2.out",
-  "type_kind": "int"
+  "type_kind": "int",
+  "use_chain_path": "use_chain.csv"
 }

@@ -35,5 +35,6 @@
   "source_line": "89",
   "stderr_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/dense-embedding/site192_bit0.err",
   "stdout_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/dense-embedding/site192_bit0.out",
-  "type_kind": "int"
+  "type_kind": "int",
+  "use_chain_path": "use_chain.csv"
 }

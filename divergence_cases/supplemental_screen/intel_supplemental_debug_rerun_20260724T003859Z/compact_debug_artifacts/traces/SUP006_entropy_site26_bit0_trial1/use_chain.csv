@@ -1,0 +1,2 @@
+depth,input_value,defined_value,line_number,consumer_class,instruction
+1,%fi_flip,,338,store_data,"store i32 %fi_flip, ptr addrspace(4) %32, align 4"

@@ -8,4 +8,5 @@ mutated_value=%fi_flip
 flipped_bit=0
 first_direct_consumer=%111 = sext i32 %fi_flip to i64
 consumer_class=other
+use_chain_path=use_chain.csv
 final_observed_outcome=SDC
