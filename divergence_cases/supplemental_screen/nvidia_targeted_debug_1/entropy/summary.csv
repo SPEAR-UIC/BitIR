@@ -1,0 +1,5 @@
+site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
+22,0,1,BASELINE,0,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/baseline.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/baseline.err,
+22,0,1,FAILURE,124,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site22_bit0.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site22_bit0.err,
+18,0,1,MASKED,0,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site18_bit0.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site18_bit0.err,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/entropy_site18_bit0.bin
+60,10,1,MASKED,0,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site60_bit10.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site60_bit10.err,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/entropy_site60_bit10.bin

@@ -1,0 +1,11 @@
+bench=entropy
+site_id=22
+bit_index=0
+selected_site=base,add,int,32,_Z7entropyPfPKcii,20,28,3
+injection_site=,,,,,,,
+mutated_instruction=
+mutated_value=
+flipped_bit=0
+first_direct_consumer=
+consumer_class=
+final_observed_outcome=BASELINE

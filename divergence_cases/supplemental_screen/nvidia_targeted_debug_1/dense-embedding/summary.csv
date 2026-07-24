@@ -1,0 +1,3 @@
+site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
+128,0,1,BASELINE,0,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/dense-embedding/baseline.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/dense-embedding/baseline.err,
+128,0,1,SDC,0,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/dense-embedding/site128_bit0.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/dense-embedding/site128_bit0.err,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/dense-embedding/dense-embedding_site128_bit0.bin

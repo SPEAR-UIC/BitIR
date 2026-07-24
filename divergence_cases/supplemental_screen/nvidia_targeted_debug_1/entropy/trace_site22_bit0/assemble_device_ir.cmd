@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/llvm-as /var/tmp/pbs.7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_entropy_22_0_7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.ll -o /var/tmp/pbs.7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_entropy_22_0_7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.bc 

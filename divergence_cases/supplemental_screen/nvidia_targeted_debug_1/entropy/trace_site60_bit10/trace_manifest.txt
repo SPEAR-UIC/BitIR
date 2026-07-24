@@ -1,0 +1,17 @@
+trace_level=full
+backend=nvidia
+bench=entropy
+source=/home/mdunlavy/GPU_FI_outcome_divergence/HeCBench/src/entropy-cuda/main.cu
+source_dir=HeCBench/src/entropy-cuda
+site_id=60
+bit_index=10
+inject_target=result
+compare_mode=exact
+amd_execution_mode=injected_ir
+phase=
+results_dir=/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy
+out_dir=/var/tmp/pbs.7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_entropy_60_10_7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov
+run_out=/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site60_bit10.out
+run_err=/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site60_bit10.err
+run_dump=/var/tmp/pbs.7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_entropy_60_10_7276359.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/entropy_site60_bit10.bin
+run_timeout=600

@@ -1,0 +1,8 @@
+worklist_id,screen_id,bench,nvidia_site_id,bit_index,nvidia_result,baseline_status,actual_result,exit_code,matches_expected,stdout,stderr
+SUP001,SUP001,matrix-rotate,16,31,DUE,FAIL,SKIPPED_BASELINE,,false,,
+SUP002,SUP002,matrix-rotate,16,13,SDC,FAIL,SKIPPED_BASELINE,,false,,
+SUP003,SUP003,layout,14,0,MASKED,FAIL,SKIPPED_BASELINE,,false,,
+SUP006,SUP006,entropy,22,0,DUE,PASS,FAILURE,124,false,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site22_bit0.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site22_bit0.err
+SUP007,SUP007,entropy,18,0,MASKED,PASS,MASKED,0,true,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site18_bit0.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site18_bit0.err
+SUP010,SUP010,dense-embedding,128,0,SDC,PASS,SDC,0,true,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/dense-embedding/site128_bit0.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/dense-embedding/site128_bit0.err
+SUP011,SUP011,entropy,60,10,MASKED,PASS,MASKED,0,true,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site60_bit10.out,/home/mdunlavy/divergence_cases/supplemental_screen/nvidia_targeted_debug_1/entropy/site60_bit10.err

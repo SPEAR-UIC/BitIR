@@ -1,0 +1,11 @@
+bench=entropy
+site_id=60
+bit_index=10
+selected_site=base,sext,int,32,_Z7entropyPfPKcii,38,7,1
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %conv, 1024, !dbg !1290
+mutated_value=%fi_flip
+flipped_bit=10
+first_direct_consumer=%cmp40 = icmp slt i32 %fi_flip, 1, !dbg !1290
+consumer_class=branch
+final_observed_outcome=MASKED

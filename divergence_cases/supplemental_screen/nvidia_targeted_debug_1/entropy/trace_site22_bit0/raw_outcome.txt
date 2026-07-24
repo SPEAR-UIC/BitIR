@@ -1,0 +1,14 @@
+bench=entropy
+site_id=22
+bit_index=0
+trial=1
+result=FAILURE
+process_exit=124
+timeout=1
+benchmark_status=unknown
+dump_exists=0
+dump_compare=not_run
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=22,base,add,int,32,-1,_Z7entropyPfPKcii,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-cuda/main.cu,20,28,3,_Z7entropyPfPKcii|base|add|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/entropy-cuda/main.cu|20|28|3
+mutated_ir_instruction=%fi_flip = xor i32 %inc, 1, !dbg !1215 || store i32 %fi_flip, ptr %i, align 4, !dbg !1215

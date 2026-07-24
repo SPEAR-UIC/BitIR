@@ -1,0 +1,6 @@
+total_rows=7
+completed_rows=4
+FAILURE=1
+MASKED=2
+SDC=1
+SKIPPED_BASELINE=3
