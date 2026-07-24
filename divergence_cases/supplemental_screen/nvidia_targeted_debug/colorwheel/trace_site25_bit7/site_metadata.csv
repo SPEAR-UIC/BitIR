@@ -1,0 +1,2 @@
+site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
+25,base,load,int,32,-1,_Z12computeColorffPh,/home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-cuda/main.cu,43,71,7,_Z12computeColorffPh|base|load|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-cuda/main.cu|43|71|7

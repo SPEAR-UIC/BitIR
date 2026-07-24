@@ -1,0 +1,5 @@
+run_status=124
+run_timeout=600
+run_timeout_kill_after=15s
+run_out=/home/mdunlavy/GPU_FI_outcome_divergence/divergence_cases/supplemental_screen/nvidia_targeted_debug/dense-embedding/site44_bit11.out
+run_err=/home/mdunlavy/GPU_FI_outcome_divergence/divergence_cases/supplemental_screen/nvidia_targeted_debug/dense-embedding/site44_bit11.err

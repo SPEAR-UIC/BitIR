@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=19
+bit_index=0
+selected_site=base,icmp,int,1,_Z11HPCC_startsx,36,41,5
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i1 %cmp7, true, !dbg !1184
+mutated_value=%fi_flip
+flipped_bit=0
+first_direct_consumer=%10 = zext i1 %fi_flip to i64, !dbg !1184
+consumer_class=other
+final_observed_outcome=SDC

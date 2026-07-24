@@ -1,0 +1,14 @@
+bench=layout
+site_id=31
+bit_index=12
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=
+mutated_ir_instruction=%fi_flip = xor i32 %7, 4096, !dbg !1761 || %add5 = add i32 %8, %fi_flip, !dbg !1761

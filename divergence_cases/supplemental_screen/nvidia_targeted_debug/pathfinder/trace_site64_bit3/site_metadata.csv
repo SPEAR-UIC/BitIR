@@ -1,0 +1,2 @@
+site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
+64,base,zext,int,8,-1,_Z10pathfinderPKiS0_PiS1_iiiii,/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-cuda/main.cu,88,8,1,_Z10pathfinderPKiS0_PiS1_iiiii|base|zext|int|8|-1|/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-cuda/main.cu|88|8|1

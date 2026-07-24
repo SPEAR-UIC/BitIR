@@ -1,0 +1,11 @@
+bench=colorwheel
+site_id=24
+bit_index=0
+selected_site=base,sub,int,32,_Z12computeColorffPh,43,43,1
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %sub, 1, !dbg !1456
+mutated_value=%fi_flip
+flipped_bit=0
+first_direct_consumer=call void @_Z7setcolsPA3_iiiii(ptr noundef %arraydecay5, i32 noundef %fi_flip, i32 noundef 255, i32 noundef 0, i32 noundef %6) #6, !dbg !1457
+consumer_class=other
+final_observed_outcome=SDC

@@ -1,0 +1,14 @@
+bench=randomAccess
+site_id=71
+bit_index=0
+trial=1
+result=SDC
+process_exit=1
+timeout=0
+benchmark_status=unknown
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=71,base,icmp,int,1,-1,_Z11HPCC_startsx,/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu,54,40,13,_Z11HPCC_startsx|base|icmp|int|1|-1|/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu|54|40|13
+mutated_ir_instruction=%fi_flip = xor i1 %cmp44, true, !dbg !1263 || %33 = zext i1 %fi_flip to i64, !dbg !1263 || %cond45 = select i1 %fi_flip, i64 7, i64 0, !dbg !1263

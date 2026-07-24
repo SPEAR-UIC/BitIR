@@ -1,0 +1,8 @@
+sequence,bench,worklist_id,nvidia_site_id,bit_index,expected_result
+1,matrix-rotate,SUP001,16,31,DUE
+2,matrix-rotate,SUP002,16,13,SDC
+3,matrix-rotate,SUP008,9,0,SDC
+4,layout,SUP003,14,0,MASKED
+5,layout,SUP009,31,12,SDC
+6,dense-embedding,SUP004,44,11,DUE
+7,dense-embedding,SUP005,47,7,DUE

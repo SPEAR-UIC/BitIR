@@ -1,0 +1,1 @@
+env HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /var/tmp/pbs.7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_layout_31_12_7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/layout 1 /var/tmp/pbs.7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_layout_31_12_7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/layout_site31_bit12.bin 

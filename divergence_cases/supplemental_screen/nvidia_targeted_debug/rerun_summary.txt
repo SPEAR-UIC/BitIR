@@ -1,0 +1,4 @@
+total_rows=7
+completed_rows=7
+MASKED=1
+SDC=6

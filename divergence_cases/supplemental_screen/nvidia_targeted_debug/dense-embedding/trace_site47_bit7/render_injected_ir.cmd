@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/opt -S /var/tmp/pbs.7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_dense-embedding_47_7_7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.injected.bc -o /home/mdunlavy/GPU_FI_outcome_divergence/divergence_cases/supplemental_screen/nvidia_targeted_debug/dense-embedding/trace_site47_bit7/device.injected.ll 

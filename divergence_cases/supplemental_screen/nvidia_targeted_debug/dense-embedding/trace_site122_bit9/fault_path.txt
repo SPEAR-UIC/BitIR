@@ -1,0 +1,11 @@
+bench=dense-embedding
+site_id=122
+bit_index=9
+selected_site=base,load,float,32,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi,85,22,2
+injection_site=,,,,,,,
+mutated_instruction=%fi_fx = xor i32 %fi_f2i, 512, !dbg !1367
+mutated_value=%fi_i2f
+flipped_bit=9
+first_direct_consumer=store float %fi_i2f, ptr %dense_elem, align 4, !dbg !1367
+consumer_class=store_data
+final_observed_outcome=SDC

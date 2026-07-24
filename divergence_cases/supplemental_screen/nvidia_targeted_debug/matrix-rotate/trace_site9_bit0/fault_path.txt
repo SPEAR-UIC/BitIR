@@ -1,0 +1,11 @@
+bench=matrix-rotate
+site_id=9
+bit_index=0
+selected_site=base,icmp,int,1,_Z22rotate_matrix_parallelPfi,9,13,1
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i1 %cmp, true, !dbg !1329
+mutated_value=%fi_flip
+flipped_bit=0
+first_direct_consumer=br i1 %fi_flip, label %if.then, label %if.end, !dbg !1329
+consumer_class=branch
+final_observed_outcome=SDC

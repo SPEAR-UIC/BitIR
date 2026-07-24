@@ -1,0 +1,11 @@
+bench=layout
+site_id=31
+bit_index=12
+selected_site=result,,,,,,,
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %7, 4096, !dbg !1761
+mutated_value=%fi_flip
+flipped_bit=12
+first_direct_consumer=%add5 = add i32 %8, %fi_flip, !dbg !1761
+consumer_class=other
+final_observed_outcome=SDC

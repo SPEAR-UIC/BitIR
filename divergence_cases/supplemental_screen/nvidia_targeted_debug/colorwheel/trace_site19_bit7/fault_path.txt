@@ -1,0 +1,11 @@
+bench=colorwheel
+site_id=19
+bit_index=7
+selected_site=base,load,int,32,_Z12computeColorffPh,43,15,5
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %4, 128, !dbg !1449
+mutated_value=%fi_flip
+flipped_bit=7
+first_direct_consumer=%cmp3 = icmp slt i32 %fi_flip, 6, !dbg !1449
+consumer_class=branch
+final_observed_outcome=SDC

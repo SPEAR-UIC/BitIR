@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=70
+bit_index=63
+selected_site=base,load,int,64,_Z11HPCC_startsx,54,36,18
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i64 %32, -9223372036854775808, !dbg !1262
+mutated_value=%fi_flip
+flipped_bit=63
+first_direct_consumer=%cmp44 = icmp slt i64 %fi_flip, 0, !dbg !1262
+consumer_class=other
+final_observed_outcome=SDC

@@ -1,0 +1,14 @@
+bench=randomAccess
+site_id=102
+bit_index=1
+trial=1
+result=SDC
+process_exit=1
+timeout=0
+benchmark_status=unknown
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=102,base,icmp,int,1,-1,_Z6updatePyy,/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu,69,21,1,_Z6updatePyy|base|icmp|int|1|-1|/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu|69|21|1
+mutated_ir_instruction=%fi_flip = xor i1 %cmp, true, !dbg !1332 || br i1 %fi_flip, label %for.body, label %for.end, !dbg !1332

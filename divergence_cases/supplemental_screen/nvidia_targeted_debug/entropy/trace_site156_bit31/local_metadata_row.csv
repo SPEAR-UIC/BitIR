@@ -1,0 +1,2 @@
+site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
+156,base,icmp,int,1,-1,_Z11entropy_optILi16ELi16EEvPfPKcPKfii,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-cuda/main.cu,81,20,10,_Z11entropy_optILi16ELi16EEvPfPKcPKfii|base|icmp|int|1|-1|/home/mdunlavy/GPU_FI/HeCBench/src/entropy-cuda/main.cu|81|20|10

@@ -1,0 +1,14 @@
+bench=matrix-rotate
+site_id=16
+bit_index=31
+trial=1
+result=BASELINE
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=16,base,load,int,32,-1,_Z22rotate_matrix_parallelPfi,/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-cuda/main.cu,12,24,7,_Z22rotate_matrix_parallelPfi|base|load|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-cuda/main.cu|12|24|7
+mutated_ir_instruction=

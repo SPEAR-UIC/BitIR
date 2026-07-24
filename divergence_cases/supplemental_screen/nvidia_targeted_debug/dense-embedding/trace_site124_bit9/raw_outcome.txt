@@ -1,0 +1,14 @@
+bench=dense-embedding
+site_id=124
+bit_index=9
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=124,base,load,float,32,-1,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi,/home/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-cuda/main.cu,86,42,4,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi|base|load|float|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-cuda/main.cu|86|42|4
+mutated_ir_instruction=%fi_f2i = bitcast float %25 to i32, !dbg !1378 || %fi_fx = xor i32 %fi_f2i, 512, !dbg !1378 || %fi_i2f = bitcast i32 %fi_fx to float, !dbg !1378 || %add12 = fadd contract float %24, %fi_i2f, !dbg !1378

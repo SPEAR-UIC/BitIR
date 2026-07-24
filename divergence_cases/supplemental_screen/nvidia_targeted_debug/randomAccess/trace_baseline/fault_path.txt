@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=100
+bit_index=0
+selected_site=base,mul,int,64,_Z6updatePyy,69,22,3
+injection_site=,,,,,,,
+mutated_instruction=
+mutated_value=
+flipped_bit=0
+first_direct_consumer=
+consumer_class=
+final_observed_outcome=BASELINE

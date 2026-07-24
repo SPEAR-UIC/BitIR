@@ -1,0 +1,17 @@
+trace_level=full
+backend=nvidia
+bench=dense-embedding
+source=/home/mdunlavy/GPU_FI_outcome_divergence/HeCBench/src/dense-embedding-cuda/main.cu
+source_dir=HeCBench/src/dense-embedding-cuda
+site_id=122
+bit_index=23
+inject_target=result
+compare_mode=exact
+amd_execution_mode=injected_ir
+phase=
+results_dir=/home/mdunlavy/GPU_FI_outcome_divergence/divergence_cases/supplemental_screen/nvidia_targeted_debug/dense-embedding
+out_dir=/var/tmp/pbs.7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_dense-embedding_122_23_7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov
+run_out=/home/mdunlavy/GPU_FI_outcome_divergence/divergence_cases/supplemental_screen/nvidia_targeted_debug/dense-embedding/site122_bit23.out
+run_err=/home/mdunlavy/GPU_FI_outcome_divergence/divergence_cases/supplemental_screen/nvidia_targeted_debug/dense-embedding/site122_bit23.err
+run_dump=/var/tmp/pbs.7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_dense-embedding_122_23_7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/dense-embedding_site122_bit23.bin
+run_timeout=600

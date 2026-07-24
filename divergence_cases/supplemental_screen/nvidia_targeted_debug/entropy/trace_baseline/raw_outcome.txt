@@ -1,0 +1,14 @@
+bench=entropy
+site_id=156
+bit_index=17
+trial=1
+result=BASELINE
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=156,base,icmp,int,1,-1,_Z11entropy_optILi16ELi16EEvPfPKcPKfii,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-cuda/main.cu,81,20,10,_Z11entropy_optILi16ELi16EEvPfPKcPKfii|base|icmp|int|1|-1|/home/mdunlavy/GPU_FI/HeCBench/src/entropy-cuda/main.cu|81|20|10
+mutated_ir_instruction=

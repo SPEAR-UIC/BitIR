@@ -1,0 +1,5 @@
+Average kernel execution time: 0.104173 (s)
+PASS
+Matrix snapshot written to /var/tmp/pbs.7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_matrix-rotate_baseline_7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/matrix-rotate_baseline.bin
+compare_ok
+Result: BASELINE (exit 0)

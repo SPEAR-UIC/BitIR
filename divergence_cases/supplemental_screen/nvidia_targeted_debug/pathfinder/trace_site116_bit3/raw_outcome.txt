@@ -1,0 +1,14 @@
+bench=pathfinder
+site_id=116
+bit_index=3
+trial=1
+result=MASKED
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=116,base,mul,int,32,-1,_Z10pathfinderPKiS0_PiS1_iiiii,/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-cuda/main.cu,111,23,4,_Z10pathfinderPKiS0_PiS1_iiiii|base|mul|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-cuda/main.cu|111|23|4
+mutated_ir_instruction=%fi_flip = xor i32 %mul65, 8, !dbg !1775 || %add66 = add nsw i32 %fi_flip, %68, !dbg !1776

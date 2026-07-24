@@ -1,0 +1,6 @@
+Start execution on a device
+Average kernel execution time : 0.732153 (ms)
+PASS
+colorwheel snapshot written to /var/tmp/pbs.7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_colorwheel_baseline_7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/colorwheel_baseline.bin
+compare_ok
+Result: BASELINE (exit 0)

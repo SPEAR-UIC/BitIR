@@ -1,0 +1,15 @@
+Average kernel execution time: 0.018605 (s)
+FAIL
+Matrix snapshot written to /var/tmp/pbs.7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_matrix-rotate_16_13_7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/matrix-rotate_site16_bit13.bin
+compare_mismatch
+idx=1807 golden=8.192e+07 candidate=1807 diff=8.19182e+07 tol=1e-05
+idx=1808 golden=8.191e+07 candidate=1808 diff=8.19082e+07 tol=1e-05
+idx=1809 golden=8.19e+07 candidate=1809 diff=8.18982e+07 tol=1e-05
+idx=1810 golden=8.189e+07 candidate=1810 diff=8.18882e+07 tol=1e-05
+idx=1811 golden=8.188e+07 candidate=1811 diff=8.18782e+07 tol=1e-05
+idx=1812 golden=8.187e+07 candidate=1812 diff=8.18682e+07 tol=1e-05
+idx=1813 golden=8.186e+07 candidate=1813 diff=8.18582e+07 tol=1e-05
+idx=1814 golden=8.185e+07 candidate=1814 diff=8.18482e+07 tol=1e-05
+idx=1815 golden=8.184e+07 candidate=1815 diff=8.18382e+07 tol=1e-05
+idx=1816 golden=8.183e+07 candidate=1816 diff=8.18282e+07 tol=1e-05
+Result: SDC (exit 0)

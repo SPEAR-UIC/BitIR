@@ -1,0 +1,2 @@
+site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
+9,base,icmp,int,1,-1,_Z22rotate_matrix_parallelPfi,/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-cuda/main.cu,9,13,1,_Z22rotate_matrix_parallelPfi|base|icmp|int|1|-1|/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-cuda/main.cu|9|13|1

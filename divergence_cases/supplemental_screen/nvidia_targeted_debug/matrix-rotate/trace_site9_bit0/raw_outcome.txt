@@ -1,0 +1,14 @@
+bench=matrix-rotate
+site_id=9
+bit_index=0
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=9,base,icmp,int,1,-1,_Z22rotate_matrix_parallelPfi,/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-cuda/main.cu,9,13,1,_Z22rotate_matrix_parallelPfi|base|icmp|int|1|-1|/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-cuda/main.cu|9|13|1
+mutated_ir_instruction=%fi_flip = xor i1 %cmp, true, !dbg !1329 || br i1 %fi_flip, label %if.then, label %if.end, !dbg !1329

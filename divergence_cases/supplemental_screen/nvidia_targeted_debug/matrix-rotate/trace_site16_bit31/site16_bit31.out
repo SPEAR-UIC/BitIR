@@ -1,0 +1,14 @@
+Average kernel execution time: 0.660741 (s)
+FAIL
+Matrix snapshot written to /var/tmp/pbs.7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_matrix-rotate_16_31_7277639.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/matrix-rotate_site16_bit31.bin
+compare_mismatch
+idx=0 golden=9.999e+07 candidate=0 diff=9.999e+07 tol=1e-05
+idx=1 golden=9.998e+07 candidate=1 diff=9.998e+07 tol=1e-05
+idx=2 golden=9.997e+07 candidate=2 diff=9.997e+07 tol=1e-05
+idx=3 golden=9.996e+07 candidate=3 diff=9.996e+07 tol=1e-05
+idx=4 golden=9.995e+07 candidate=4 diff=9.995e+07 tol=1e-05
+idx=5 golden=9.994e+07 candidate=5 diff=9.994e+07 tol=1e-05
+idx=6 golden=9.993e+07 candidate=6 diff=9.993e+07 tol=1e-05
+idx=7 golden=9.992e+07 candidate=7 diff=9.992e+07 tol=1e-05
+idx=8 golden=9.991e+07 candidate=8 diff=9.991e+07 tol=1e-05
+idx=9 golden=9.99e+07 candidate=9 diff=9.99e+07 tol=1e-05

@@ -1,0 +1,1 @@
+/soft/compilers/llvm/release-17.0.6/bin/opt -S /var/tmp/pbs.7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_entropy_156_17_7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/device.injected.bc -o /home/mdunlavy/GPU_FI_outcome_divergence/divergence_cases/supplemental_screen/nvidia_targeted_debug/entropy/trace_site156_bit17/device.injected.ll 

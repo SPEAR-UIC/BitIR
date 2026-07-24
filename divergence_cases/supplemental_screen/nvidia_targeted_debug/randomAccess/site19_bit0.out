@@ -1,0 +1,8 @@
+Table size = 67108864
+Main table size   = 2^26 = 67108864 words
+Number of updates = 268435456
+Average kernel execution time: 8.741998 (s)
+Found 67083529 errors in 67108864 locations (FAIL).
+randomAccess snapshot written to /var/tmp/pbs.7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/nvidia_divergence_randomAccess_19_0_7277572.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/randomAccess_site19_bit0.bin
+mismatch
+Result: SDC (exit 1)

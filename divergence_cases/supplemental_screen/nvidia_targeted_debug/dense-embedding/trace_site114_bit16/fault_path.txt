@@ -1,0 +1,11 @@
+bench=dense-embedding
+site_id=114
+bit_index=16
+selected_site=base,load,int,32,_Z12dense_esuhm3IfEvPKT_S2_PS0_iPKi,85,28,13
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %19, 65536, !dbg !1370
+mutated_value=%fi_flip
+flipped_bit=16
+first_direct_consumer=%mul = mul nsw i32 %fi_flip, %20, !dbg !1371
+consumer_class=other
+final_observed_outcome=SDC

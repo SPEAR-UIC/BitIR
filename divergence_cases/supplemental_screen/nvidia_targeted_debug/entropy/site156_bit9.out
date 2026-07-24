@@ -1,0 +1,4 @@
+Average kernel (baseline) execution time 0.012703 (s)
+Average kernel (optimized) execution time 0.012615 (s)
+FAIL
+Result: DUE (exit 0)

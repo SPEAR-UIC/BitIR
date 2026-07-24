@@ -1,0 +1,14 @@
+bench=colorwheel
+site_id=23
+bit_index=0
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=23,base,sdiv,int,32,-1,_Z12computeColorffPh,/home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-cuda/main.cu,43,49,2,_Z12computeColorffPh|base|sdiv|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-cuda/main.cu|43|49|2
+mutated_ir_instruction=%fi_flip = xor i32 %div7, 1, !dbg !1455 || %sub = sub nsw i32 255, %fi_flip, !dbg !1455

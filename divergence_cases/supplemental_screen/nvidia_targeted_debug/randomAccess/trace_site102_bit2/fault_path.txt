@@ -1,0 +1,11 @@
+bench=randomAccess
+site_id=102
+bit_index=2
+selected_site=base,icmp,int,1,_Z6updatePyy,69,21,1
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i1 %cmp, true, !dbg !1332
+mutated_value=%fi_flip
+flipped_bit=2
+first_direct_consumer=br i1 %fi_flip, label %for.body, label %for.end, !dbg !1332
+consumer_class=branch
+final_observed_outcome=SDC

@@ -1,0 +1,11 @@
+bench=colorwheel
+site_id=26
+bit_index=3
+selected_site=base,add,int,32,_Z12computeColorffPh,43,71,3
+injection_site=,,,,,,,
+mutated_instruction=
+mutated_value=
+flipped_bit=3
+first_direct_consumer=
+consumer_class=
+final_observed_outcome=BASELINE
