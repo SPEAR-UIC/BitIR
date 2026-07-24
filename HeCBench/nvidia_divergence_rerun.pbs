@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-REPO_ROOT="${PBS_O_WORKDIR:-$PWD}"
+REPO_ROOT="/home/mdunlavy/GPU_FI_outcome_divergence"
 if [[ "${RUNTIME_DEBUG_CASE:-}" == "TRACE029" ]]; then
   exec bash "${REPO_ROOT}/divergence_cases/runtime_debug/trace029/run_nvidia_trace029.sh"
 fi
