@@ -159,7 +159,7 @@ def classify_failure(exit_code, stdout_path: Path, stderr_path: Path, dump_exist
         if path.is_file():
             text += path.read_text(encoding='utf-8', errors='replace')[-20000:]
     lower = text.lower()
-    timeout = str(exit_code) in {'124', '137'} or bool(re.search(r'(timed out|timeout:|time limit|exceeded.*time)', lower))
+    timeout = str(exit_code) in {'124', '137'} or 'timeout' in lower or 'timed out' in lower
     signal = bool(re.search(r'(signal|segmentation fault|sigsegv|sigabrt|sigill|sigbus)', lower))
     gpu = bool(re.search(r'(level_zero|ze_result|sycl|pi_error|ur_result|gpu|device).*?(error|failed|failure)', lower))
     nonzero = bool(str(exit_code) and str(exit_code) != '0')

@@ -1,0 +1,14 @@
+bench=layout
+site_id=16
+bit_index=0
+trial=2
+result=MASKED
+process_exit=0
+timeout=0
+benchmark_status=PASS
+dump_exists=1
+dump_compare=pass
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=16,base,add,int,32,-1,_Z9AoSKernelPK9AppleTreePiiRN4sycl3_V17nd_itemILi1EEE,/home/mdunlavy/GPU_FI/HeCBench/src/layout-sycl/main.cpp,49,9,1,_Z9AoSKernelPK9AppleTreePiiRN4sycl3_V17nd_itemILi1EEE|base|add|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/layout-sycl/main.cpp|49|9|1
+mutated_ir_instruction=%fi_flip = xor i32 %53, 1 || store i32 %fi_flip, ptr addrspace(4) %22, align 4

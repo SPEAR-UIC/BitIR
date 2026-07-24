@@ -1,0 +1,4 @@
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.
+warning: overriding the module target triple with spir64-unknown-unknown [-Woverride-module]
+1 warning generated.

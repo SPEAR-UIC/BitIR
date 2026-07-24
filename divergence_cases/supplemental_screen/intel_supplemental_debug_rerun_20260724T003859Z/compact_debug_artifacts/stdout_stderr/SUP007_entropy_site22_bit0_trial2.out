@@ -1,0 +1,6 @@
+Average kernel (baseline) execution time 0.092615 (s)
+Average kernel (optimized) execution time 0.280772 (s)
+PASS
+entropy snapshot written to /lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/tmp/entropy_site22_bit0_trial2/entropy_site22_bit0_trial2.bin
+compare_ok
+Result: MASKED (exit 0)

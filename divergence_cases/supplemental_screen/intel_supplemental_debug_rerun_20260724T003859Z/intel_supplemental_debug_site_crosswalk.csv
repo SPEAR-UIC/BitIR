@@ -1,0 +1,8 @@
+screen_id,screen_kind,benchmark,old_site_id,fresh_site_id,bit_index,function,source_file,source_line,source_column,opcode,type_kind,bitwidth,operand_index,site_class,signature_ordinal,match_count
+SUP001,DUE,matrix-rotate,17,17,31,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi1EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-sycl/main.cpp,83,23,load,int,32,-1,base,7,1
+SUP002,DUE,matrix-rotate,17,17,13,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi1EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-sycl/main.cpp,83,23,load,int,32,-1,base,7,1
+SUP003,DUE,layout,16,16,0,_Z9AoSKernelPK9AppleTreePiiRN4sycl3_V17nd_itemILi1EEE,/home/mdunlavy/GPU_FI/HeCBench/src/layout-sycl/main.cpp,49,9,add,int,32,-1,base,1,1
+SUP006,DUE,entropy,26,26,0,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi2EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-sycl/main.cpp,69,34,add,int,32,-1,base,1,1
+SUP007,DUE,entropy,22,22,0,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi2EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-sycl/main.cpp,69,27,icmp,int,1,-1,base,5,1
+SUP010,SDC_MASKED,dense-embedding,192,192,0,_Z12dense_esuhm3IfEvRN4sycl3_V17nd_itemILi1EEEPKT_S7_PS5_iPKi,/home/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-sycl/main.cpp,89,54,add,int,32,-1,base,3,1
+SUP011,SDC_MASKED,entropy,64,64,10,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi2EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-sycl/main.cpp,87,13,sext,int,32,-1,base,1,1

@@ -1,0 +1,14 @@
+bench=dense-embedding
+site_id=192
+bit_index=0
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=192,base,add,int,32,-1,_Z12dense_esuhm3IfEvRN4sycl3_V17nd_itemILi1EEEPKT_S7_PS5_iPKi,/home/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-sycl/main.cpp,89,54,3,_Z12dense_esuhm3IfEvRN4sycl3_V17nd_itemILi1EEEPKT_S7_PS5_iPKi|base|add|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-sycl/main.cpp|89|54|3
+mutated_ir_instruction=%fi_flip = xor i32 %110, 1 || %111 = sext i32 %fi_flip to i64

@@ -1,0 +1,17 @@
+trace_level=full
+backend=intel
+bench=dense-embedding
+source=/home/mdunlavy/GPU_FI/HeCBench/src/dense-embedding-sycl/main.cpp
+source_dir=HeCBench/src/dense-embedding-sycl
+site_id=192
+bit_index=0
+inject_target=result
+compare_mode=exact
+amd_execution_mode=injected_ir
+phase=
+results_dir=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/dense-embedding
+out_dir=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/tmp/dense-embedding_site192_bit0_trial2
+run_out=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/dense-embedding/site192_bit0_trial2.out
+run_err=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/dense-embedding/site192_bit0_trial2.err
+run_dump=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/tmp/dense-embedding_site192_bit0_trial2/dense-embedding_site192_bit0_trial2.bin
+run_timeout=200s

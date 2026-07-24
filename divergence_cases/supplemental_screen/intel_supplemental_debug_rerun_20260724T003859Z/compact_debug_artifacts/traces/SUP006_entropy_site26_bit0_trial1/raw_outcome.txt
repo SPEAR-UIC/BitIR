@@ -1,0 +1,14 @@
+bench=entropy
+site_id=26
+bit_index=0
+trial=1
+result=FAILURE
+process_exit=124
+timeout=1
+benchmark_status=unknown
+dump_exists=0
+dump_compare=not_run
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=26,base,add,int,32,-1,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi2EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/entropy-sycl/main.cpp,69,34,1,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi2EEEE_clES5_|base|add|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/entropy-sycl/main.cpp|69|34|1
+mutated_ir_instruction=%fi_flip = xor i32 %89, 1 || store i32 %fi_flip, ptr addrspace(4) %32, align 4

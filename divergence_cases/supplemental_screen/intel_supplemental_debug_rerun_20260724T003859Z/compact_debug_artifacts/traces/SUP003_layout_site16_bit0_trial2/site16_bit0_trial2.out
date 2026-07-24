@@ -1,0 +1,6 @@
+Average kernel execution time (AoS): 67128.9 (us)
+PASS
+layout snapshot written to /lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/tmp/layout_site16_bit0_trial2/layout_site16_bit0_trial2.bin
+Average kernel execution time (SoA): 57194.7 (us)
+PASS
+compare_ok

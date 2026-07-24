@@ -1,0 +1,9 @@
+repo_root=/home/mdunlavy/GPU_FI
+results_dir=/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_supplemental_debug_rerun_20260724T003859Z
+worklist=/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_supplemental_debug_rerun_20260724T003859Z/intel_supplemental_debug_resolved_worklist.csv
+fresh_metadata_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_screen_20260723T160500Z/fresh_metadata
+full_dump_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z
+campaign_golden_root=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/golden
+supplemental_trace_level=full
+job_id=8693704.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov
+commit=105d833d22172384afa41e0342a4e38a0f4a823c

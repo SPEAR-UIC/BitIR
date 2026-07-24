@@ -1,0 +1,5 @@
+run_status=124
+run_timeout=200s
+run_timeout_kill_after=15s
+run_out=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/entropy/site26_bit0_trial2.out
+run_err=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/entropy/site26_bit0_trial2.err

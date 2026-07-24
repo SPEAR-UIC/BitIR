@@ -1,0 +1,11 @@
+bench=entropy
+site_id=22
+bit_index=0
+selected_site=base,icmp,int,1,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi2EEEE_clES5_,69,27,5
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i1 %82, true
+mutated_value=%fi_flip
+flipped_bit=0
+first_direct_consumer=br i1 %fi_flip, label %83, label %90
+consumer_class=branch
+final_observed_outcome=MASKED

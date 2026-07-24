@@ -1,0 +1,15 @@
+screen_id,bench,site_id,bit_index,trial,classification,timeout,signal_or_crash,nonzero_exit,gpu_runtime_error,infra_failure,due_reason
+SUP001,matrix-rotate,17,31,1,DUE,True,True,True,False,False,timeout
+SUP001,matrix-rotate,17,31,2,DUE,True,True,True,False,False,timeout
+SUP002,matrix-rotate,17,13,1,SDC,False,False,False,False,False,
+SUP002,matrix-rotate,17,13,2,SDC,False,False,False,False,False,
+SUP003,layout,16,0,1,MASKED,False,False,False,False,False,
+SUP003,layout,16,0,2,MASKED,False,False,False,False,False,
+SUP010,dense-embedding,192,0,1,SDC,False,False,False,False,False,
+SUP010,dense-embedding,192,0,2,SDC,False,False,False,False,False,
+SUP006,entropy,26,0,1,DUE,True,False,True,False,False,timeout
+SUP006,entropy,26,0,2,DUE,True,False,True,False,False,timeout
+SUP007,entropy,22,0,1,MASKED,False,False,False,False,False,
+SUP007,entropy,22,0,2,MASKED,False,False,False,False,False,
+SUP011,entropy,64,10,1,MASKED,False,False,False,False,False,
+SUP011,entropy,64,10,2,MASKED,False,False,False,False,False,

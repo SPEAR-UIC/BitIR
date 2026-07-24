@@ -1,0 +1,11 @@
+bench=matrix-rotate
+site_id=17
+bit_index=13
+selected_site=base,load,int,32,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi1EEEE_clES5_,83,23,7
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %51, 8192
+mutated_value=%fi_flip
+flipped_bit=13
+first_direct_consumer=store i32 %fi_flip, ptr addrspace(4) %21, align 4
+consumer_class=store_data
+final_observed_outcome=SDC

@@ -1,0 +1,17 @@
+trace_level=full
+backend=intel
+bench=entropy
+source=/home/mdunlavy/GPU_FI/HeCBench/src/entropy-sycl/main.cpp
+source_dir=HeCBench/src/entropy-sycl
+site_id=22
+bit_index=0
+inject_target=result
+compare_mode=exact
+amd_execution_mode=injected_ir
+phase=
+results_dir=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/entropy
+out_dir=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/tmp/entropy_site22_bit0_trial1
+run_out=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/entropy/site22_bit0.out
+run_err=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/local_dumps/entropy/site22_bit0.err
+run_dump=/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_supplemental_debug_rerun_20260724T003859Z/tmp/entropy_site22_bit0_trial1/entropy_site22_bit0.bin
+run_timeout=200s
