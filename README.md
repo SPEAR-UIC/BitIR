@@ -1,5 +1,10 @@
 # BitIR GPU Fault-Injection Pipeline
 
+Note: If you use BitIR in your work, please cite the following paper:
+
+Maisy Dunlavy, Mike Papka, Zhiling Lan, "BitIR: Cross-Architecture Fault Injection for
+Resilience Analysis of Heterogeneous GPU Applications", Proc. of SC26, 2026.
+
 BitIR is a YAML-driven pipeline for building selected HeCBench GPU benchmarks,
 generating golden outputs, building BitIR worklists, and launching injection
 campaigns as single scheduler jobs.
