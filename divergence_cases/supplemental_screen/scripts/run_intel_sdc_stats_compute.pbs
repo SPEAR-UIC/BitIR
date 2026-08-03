@@ -1,0 +1,182 @@
+#!/bin/bash
+#PBS -N intel_sdc_stats
+#PBS -A UIC-HPC
+#PBS -q debug
+#PBS -l select=1
+#PBS -l walltime=02:00:00
+#PBS -j oe
+
+set -euo pipefail
+
+cd "${PBS_O_WORKDIR:-$HOME/GPU_FI}"
+
+OUTDIR="divergence_cases/supplemental_screen/intel_sdc_full_mismatch_stats"
+mkdir -p "$OUTDIR/rows"
+PY="$OUTDIR/compute_one_sdc_stats.py"
+
+cat > "$PY" <<'PY'
+import csv, hashlib, json, os, struct, sys
+from pathlib import Path
+
+POPCOUNT = [bin(i).count("1") for i in range(256)]
+
+def sha256_path(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(16 * 1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def decode_at(path, off):
+    aligned = off - (off % 4)
+    with open(path, "rb") as f:
+        f.seek(aligned)
+        b = f.read(4)
+    if len(b) < 4:
+        return "", ""
+    return struct.unpack("<i", b)[0], struct.unpack("<f", b)[0]
+
+def stats(golden, candidate, label):
+    g_size = os.path.getsize(golden)
+    c_size = os.path.getsize(candidate)
+    if g_size != c_size or g_size == 0 or c_size == 0:
+        return {"status": "not_full_size_sdc", "golden_bytes": g_size, "candidate_bytes": c_size}
+
+    differing_bytes = 0
+    first = None
+    total_words = g_size // 4
+    differing_words = 0
+    total_hamming = 0
+    max_hamming = 0
+    first_word_hamming = ""
+    offset = 0
+    chunk_size = 16 * 1024 * 1024
+    next_report = 512 * 1024 * 1024
+
+    with open(golden, "rb") as gf, open(candidate, "rb") as cf:
+        while True:
+            gb = gf.read(chunk_size)
+            cb = cf.read(chunk_size)
+            if not gb and not cb:
+                break
+            n = min(len(gb), len(cb))
+            xor = bytes([a ^ b for a, b in zip(gb[:n], cb[:n])])
+
+            if first is None:
+                for i, x in enumerate(xor):
+                    if x:
+                        first = offset + i
+                        break
+
+            differing_bytes += sum(1 for x in xor if x)
+            usable = n - (n % 4)
+            for j in range(0, usable, 4):
+                hd = POPCOUNT[xor[j]] + POPCOUNT[xor[j+1]] + POPCOUNT[xor[j+2]] + POPCOUNT[xor[j+3]]
+                if hd:
+                    differing_words += 1
+                    total_hamming += hd
+                    if hd > max_hamming:
+                        max_hamming = hd
+                    if first_word_hamming == "":
+                        first_word_hamming = hd
+
+            offset += n
+            if offset >= next_report:
+                print("[progress]", label, offset, "of", g_size, flush=True)
+                next_report += 512 * 1024 * 1024
+
+    gi, gf32 = decode_at(golden, first if first is not None else 0)
+    ci, cf32 = decode_at(candidate, first if first is not None else 0)
+    return {
+        "status": "SDC" if differing_bytes else "MASKED",
+        "golden_bytes": g_size,
+        "candidate_bytes": c_size,
+        "golden_sha256": sha256_path(golden),
+        "candidate_sha256": sha256_path(candidate),
+        "first_differing_byte": "" if first is None else first,
+        "differing_bytes": differing_bytes,
+        "percent_differing_bytes": 100.0 * differing_bytes / g_size,
+        "total_words32_compared": total_words,
+        "differing_words32": differing_words,
+        "percent_differing_words32": 100.0 * differing_words / total_words if total_words else "",
+        "total_hamming32_over_differing_words": total_hamming,
+        "avg_hamming32_per_differing_word": float(total_hamming) / differing_words if differing_words else "",
+        "max_hamming32": max_hamming,
+        "first_word_hamming32": first_word_hamming,
+        "golden_i32": gi,
+        "candidate_i32": ci,
+        "golden_f32": gf32,
+        "candidate_f32": cf32,
+    }
+
+fields = [
+    "case","bench","site","bit","trial","status","json_path",
+    "golden_path","candidate_path","golden_bytes","candidate_bytes",
+    "golden_sha256","candidate_sha256","first_differing_byte",
+    "differing_bytes","percent_differing_bytes",
+    "total_words32_compared","differing_words32","percent_differing_words32",
+    "total_hamming32_over_differing_words","avg_hamming32_per_differing_word",
+    "max_hamming32","first_word_hamming32",
+    "golden_i32","candidate_i32","golden_f32","candidate_f32",
+]
+
+case, bench, site, bit, trial, json_path, out_csv = sys.argv[1:]
+label = "%s %s site%s bit%s trial%s" % (case, bench, site, bit, trial)
+print("[case]", label, flush=True)
+row = {"case": case, "bench": bench, "site": site, "bit": bit, "trial": trial, "json_path": json_path}
+try:
+    data = json.load(open(json_path))
+    golden = data.get("golden_path", "")
+    candidate = data.get("candidate_path", "")
+    row["golden_path"] = golden
+    row["candidate_path"] = candidate
+    if not golden or not os.path.exists(golden):
+        row["status"] = "missing_golden"
+    elif not candidate or not os.path.exists(candidate):
+        row["status"] = "missing_candidate"
+    else:
+        row.update(stats(golden, candidate, label))
+except Exception as e:
+    row["status"] = "error:" + str(e)
+
+with open(out_csv, "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=fields)
+    w.writeheader()
+    w.writerow(row)
+print("[done]", label, out_csv, flush=True)
+PY
+
+run_case() {
+  python3 "$PY" "$@" "$OUTDIR/rows/$1_$2_site$3_bit$4_trial$5.csv"
+}
+
+run_case C2 matrix-rotate 17 13 1 divergence_cases/supplemental_screen/intel_selected_mechanism_packets_20260724T154638Z/comparisons/SUP002_matrix-rotate_site17_bit13_trial1.json &
+run_case C2 matrix-rotate 17 13 2 divergence_cases/supplemental_screen/intel_selected_mechanism_packets_20260724T154638Z/comparisons/SUP002_matrix-rotate_site17_bit13_trial2.json &
+run_case C3 dense-embedding 33 11 1 divergence_cases/supplemental_screen/intel_selected_mechanism_packets_20260724T154638Z/comparisons/SUP004_dense-embedding_site33_bit11_trial1.json &
+run_case C3 dense-embedding 33 11 2 divergence_cases/supplemental_screen/intel_selected_mechanism_packets_20260724T154638Z/comparisons/SUP004_dense-embedding_site33_bit11_trial2.json &
+run_case C4 dense-embedding 18 7 1 divergence_cases/supplemental_screen/intel_selected_mechanism_packets_20260724T154638Z/comparisons/SUP005_dense-embedding_site18_bit7_trial1.json &
+wait
+
+python3 - <<'PY'
+import csv
+from pathlib import Path
+
+outdir = Path("divergence_cases/supplemental_screen/intel_sdc_full_mismatch_stats")
+rows = []
+fields = None
+for path in sorted((outdir / "rows").glob("*.csv")):
+    with open(path, newline="") as f:
+        r = csv.DictReader(f)
+        if fields is None:
+            fields = r.fieldnames
+        rows.extend(r)
+
+out = outdir / "intel_sdc_full_mismatch_stats.csv"
+with open(out, "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=fields)
+    w.writeheader()
+    w.writerows(rows)
+
+print(out)
+print(open(out).read())
+PY
