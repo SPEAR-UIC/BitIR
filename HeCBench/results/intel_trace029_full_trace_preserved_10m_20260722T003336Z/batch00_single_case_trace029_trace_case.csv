@@ -1,2 +1,0 @@
-trace_case_id,bench,bit_index,comparison,match_tier,divergence_pattern,nvidia_site_id,intel_site_id,amd_site_id,nvidia_rerun_result,intel_rerun_result,amd_rerun_result,nvidia_original_result,intel_original_result,amd_original_result,selection_reason,notes
-TRACE029,pathfinder,31,nvidia_vs_intel,source_text_type_family,NVIDIA=MASKED;INTEL=SDC;AMD=MASKED,9,25,123,MASKED,SDC,MASKED,MASKED,SDC,,clean_three_machine_divergent_rerun,

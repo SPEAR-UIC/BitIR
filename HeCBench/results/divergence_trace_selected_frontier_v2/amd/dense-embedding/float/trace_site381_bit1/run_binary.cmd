@@ -1,1 +1,0 @@
-HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_amd_dense-embedding_site381_bit1_trial1/dense-embedding 10000 8 1 /tmp/bitir_amd_dense-embedding_site381_bit1_trial1/dense-embedding_site381_bit1.bin 

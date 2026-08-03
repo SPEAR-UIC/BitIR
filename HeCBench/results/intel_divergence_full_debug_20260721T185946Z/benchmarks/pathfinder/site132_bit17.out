@@ -1,8 +1,0 @@
-Total kernel execution time: 3.579698 (s)
-Device offloading time = 3.638837 (s)
-pathfinder snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_pathfinder_site132_bit17/pathfinder_site132_bit17.bin
-Segmentation fault from GPU at 0xff00000002890000, ctx_id: 9 (CCS) type: 0 (NotPresent), level: 0 (PTE), access: 0 (Read), banned: 1, aborting.
-Abort was called at 288 line in file:
-/home/ubit/rpmbuild/BUILD/intel-compute-runtime-25.18.33578.42/shared/source/os_interface/linux/drm_neo.cpp
-mismatch
-Result: SDC (exit 134)

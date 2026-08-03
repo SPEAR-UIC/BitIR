@@ -1,8 +1,0 @@
-extends: ../bitir.yml
-
-run:
-  machine: nvidia
-  task: inject-one
-  bench: layout
-  execution_mode: print-script
-  fault_model: result

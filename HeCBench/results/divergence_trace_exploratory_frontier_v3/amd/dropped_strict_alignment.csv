@@ -1,2 +1,0 @@
-bench,old_site_id,bit_index,prior_result,expected_outcome_category,reason,old_site_class,fresh_site_id,fresh_site_class,strict_key
-colorwheel,479,11,FAILURE_HANG,due_or_hang,strict semantic match count 2; partial non-class matches: 479:operand|480:operand,operand,479,operand,icmp|76|11|_Z5colorPhiiff|operand|int|32|3

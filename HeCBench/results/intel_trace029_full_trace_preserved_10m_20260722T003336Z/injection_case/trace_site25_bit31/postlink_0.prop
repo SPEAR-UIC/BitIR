@@ -1,6 +1,0 @@
-[SYCL/devicelib req mask]
-DeviceLibReqMask=1|0
-[SYCL/device requirements]
-aspects=2|AAAAAAAAAAA
-[SYCL/misc properties]
-optLevel=1|0

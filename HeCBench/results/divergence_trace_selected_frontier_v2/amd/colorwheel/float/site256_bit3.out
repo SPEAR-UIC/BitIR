@@ -1,6 +1,0 @@
-Start execution on a device
-Average kernel execution time : 281.067200 (ms)
-PASS
-colorwheel snapshot written to /tmp/bitir_amd_colorwheel_site256_bit3_trial1/colorwheel_site256_bit3.bin
-compare_ok
-Result: MASKED (exit 0)

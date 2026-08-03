@@ -1,7 +1,0 @@
-Average kernel execution time (AoS): 8694.08 (us)
-PASS
-Average kernel execution time (SoA): 9829.65 (us)
-PASS
-layout snapshot written to /var/tmp/pbs.7229181.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_layout_site1_bit0/layout_baseline.bin
-compare_ok
-Result: BASELINE (exit 0)

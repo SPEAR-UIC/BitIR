@@ -1,7 +1,0 @@
-Average kernel execution time (AoS): 1.00763e+06 (us)
-FAIL
-Average kernel execution time (SoA): 20.018 (us)
-FAIL
-layout snapshot written to /var/tmp/pbs.7230201.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_layout_site8_bit18/layout_site8_bit18.bin
-mismatch
-Result: SDC (exit 0)

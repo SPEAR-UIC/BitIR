@@ -1,5 +1,0 @@
-Start execution on a device
-Average kernel execution time : 103.953339 (ms)
-Maximum error between host and device results: 1
-colorwheel snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit0/colorwheel_site79_bit0.bin
-compare_ok max_diff=1

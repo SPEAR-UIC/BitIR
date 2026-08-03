@@ -1,5 +1,0 @@
-run_status=124
-run_timeout=200
-run_timeout_kill_after=15s
-run_out=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/randomAccess/site76_bit0.out
-run_err=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z/benchmarks/randomAccess/site76_bit0.err

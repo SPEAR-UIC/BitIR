@@ -1,2 +1,0 @@
-Segmentation fault from GPU at 0xff00000002890000, ctx_id: 9 (CCS) type: 0 (NotPresent), level: 0 (PTE), access: 0 (Read), banned: 1, aborting.
-/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh: line 117: 107453 Aborted                 timeout --kill-after="${RUN_TIMEOUT_KILL_AFTER:-15s}" "${RUN_TIMEOUT}" "$@"

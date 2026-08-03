@@ -1,7 +1,0 @@
-extends: ../bitir.yml
-
-run:
-  machine: nvidia
-  task: build
-  campaign: default
-  execution_mode: print-script

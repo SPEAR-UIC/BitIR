@@ -1,1 +1,0 @@
-/soft/compilers/llvm/release-17.0.6/bin/opt -S /var/tmp/pbs.7230203.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_matrix-rotate_site5_bit7/device.injected.bc -o /home/mdunlavy/GPU_FI/HeCBench/results/llvm17_inject_trace_probe/matrix-rotate/float/trace_site5_bit7_trial3/device.injected.ll 

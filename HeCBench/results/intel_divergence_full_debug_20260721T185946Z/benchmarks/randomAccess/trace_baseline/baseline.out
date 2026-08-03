@@ -1,7 +1,0 @@
-Table size = 67108864
-Main table size   = 2^26 = 67108864 words
-Number of updates = 268435456
-Average kernel execution time: 17.952984 (s)
-Found 0 errors in 67108864 locations (PASS).
-randomAccess snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_randomAccess_site59_bit0/randomAccess_baseline.bin
-compare_ok

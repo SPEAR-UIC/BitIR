@@ -1,8 +1,0 @@
-# particles-omp/CMakeLists.txt
-
-add_hecbench_benchmark(
-    NAME particles
-    MODEL omp
-    SOURCES bitonicSort.cpp bitonicSort_kernels.cpp main.cpp particles.cpp particles_kernels.cpp
-    CATEGORIES algorithms
-)

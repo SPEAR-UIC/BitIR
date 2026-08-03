@@ -1,1 +1,0 @@
-/opt/aurora/25.190.0/oneapi/compiler/latest/bin/icpx -fsycl -fsycl-targets=spir64 -O0 -g0 -DUSE_GPU -I /home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-sycl -I /home/mdunlavy/GPU_FI/HeCBench/src -c /home/mdunlavy/GPU_FI/HeCBench/src/colorwheel-sycl/main.cpp -o /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit4/bundle.o 

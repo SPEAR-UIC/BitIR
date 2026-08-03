@@ -1,9 +1,0 @@
-Average kernel execution time (AoS): 9819.99 (us)
-PASS
-Average kernel execution time (SoA): 5568.42 (us)
-PASS
-compare_ok
-compare_note: passfail_token_stream_equal
-metric_num_bad=0
-metric_frac_bad=0
-Result: MASKED (exit 0)

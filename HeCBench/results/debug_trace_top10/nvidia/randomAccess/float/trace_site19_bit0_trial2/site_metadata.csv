@@ -1,2 +1,0 @@
-site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
-19,result,icmp,int,1,-1,_Z11HPCC_startsx,/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu,36,41,5,_Z11HPCC_startsx|result|icmp|int|1|-1|/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu|36|41|5

@@ -1,7 +1,0 @@
-Table size = 67108864
-Main table size   = 2^26 = 67108864 words
-Number of updates = 268435456
-Average kernel execution time: 8.745928 (s)
-Found 67083529 errors in 67108864 locations (FAIL).
-randomAccess snapshot written to /var/tmp/pbs.7239498.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_randomAccess_site19_bit0/randomAccess_site19_bit0_trial2.bin
-Result: FAILURE (exit 1)

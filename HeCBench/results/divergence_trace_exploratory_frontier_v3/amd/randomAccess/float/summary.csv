@@ -1,5 +1,0 @@
-site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
-268,4,1,MASKED,0,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit4.out,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit4.err,
-268,4,2,MASKED,0,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit4_trial2.out,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit4_trial2.err,
-268,6,1,MASKED,0,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit6.out,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit6.err,
-268,6,2,MASKED,0,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit6_trial2.out,/ccs/home/mdunlavy/GPU_FI/HeCBench/results/divergence_trace_exploratory_frontier_v3/amd/randomAccess/float/site268_bit6_trial2.err,

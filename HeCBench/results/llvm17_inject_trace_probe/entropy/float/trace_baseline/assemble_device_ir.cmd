@@ -1,1 +1,0 @@
-/soft/compilers/llvm/release-17.0.6/bin/llvm-as /var/tmp/pbs.7230199.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_entropy_site1_bit0/device.ll -o /var/tmp/pbs.7230199.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_entropy_site1_bit0/device.bc 

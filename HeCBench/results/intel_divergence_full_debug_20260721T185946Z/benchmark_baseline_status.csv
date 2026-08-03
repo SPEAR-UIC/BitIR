@@ -1,5 +1,0 @@
-bench,baseline_status,baseline_result,generated_golden,baseline_site_id,baseline_bit_index,notes
-colorwheel,pass,BASELINE,no,81,3,
-randomAccess,pass,BASELINE,no,59,0,
-pathfinder,pass,BASELINE,no,153,3,
-entropy,pass,BASELINE,no,226,17,

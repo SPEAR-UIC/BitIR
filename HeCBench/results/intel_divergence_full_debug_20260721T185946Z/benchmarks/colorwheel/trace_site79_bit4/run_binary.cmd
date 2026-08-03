@@ -1,1 +1,0 @@
-env HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1 /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit4/colorwheel 10000 8 1 /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site79_bit4/colorwheel_site79_bit4.bin 

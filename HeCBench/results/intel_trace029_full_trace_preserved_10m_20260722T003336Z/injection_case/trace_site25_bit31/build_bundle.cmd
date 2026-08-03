@@ -1,1 +1,0 @@
-/opt/aurora/25.190.0/oneapi/compiler/latest/bin/icpx -fsycl -fsycl-targets=spir64 -O0 -g0 -DUSE_GPU -I /home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-sycl -I /home/mdunlavy/GPU_FI/HeCBench/src -c /home/mdunlavy/GPU_FI/HeCBench/src/pathfinder-sycl/main.cpp -o /home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z/out_injection/bundle.o 

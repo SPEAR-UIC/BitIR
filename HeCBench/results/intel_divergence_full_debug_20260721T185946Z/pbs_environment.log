@@ -1,5 +1,0 @@
-[pbs] start 2026-07-21T19:14:51Z
-[pbs] host x4219c2s3b0n0
-[pbs] repo_root=/home/mdunlavy/GPU_FI
-[pbs] results_dir=/home/mdunlavy/GPU_FI/HeCBench/results/intel_divergence_full_debug_20260721T185946Z
-[pbs] job_id=8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov

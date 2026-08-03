@@ -1,1 +1,0 @@
-/soft/compilers/llvm/release-17.0.6/bin/opt -S /var/tmp/pbs.7238636.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_entropy_site9_bit16/device.injected.bc -o /home/mdunlavy/GPU_FI/HeCBench/results/debug_trace_top10/nvidia/entropy/float/trace_site9_bit16/device.injected.ll 

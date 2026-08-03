@@ -1,2 +1,0 @@
-site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
-25,31,1,SDC,0,/home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z/injection_case/site25_bit31.out,/home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z/injection_case/site25_bit31.err,/home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z/injection_case/pathfinder_site25_bit31.bin

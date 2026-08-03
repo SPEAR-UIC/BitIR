@@ -1,1 +1,0 @@
-HECBENCH_GPU_DEBUG=1 HECBENCH_FI_FORCE_DUMP=1 /var/tmp/pbs.7230199.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_entropy_site16_bit0/entropy 256 256 1 /var/tmp/pbs.7230199.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_entropy_site16_bit0/entropy_site16_bit0_trial2.bin 

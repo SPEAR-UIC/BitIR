@@ -1,2 +1,0 @@
-trace_case_id,bench,nvidia_site_id,intel_site_id,amd_site_id,divergence_pattern,nvidia_rerun_result,intel_rerun_result,amd_rerun_result
-TRACE029,pathfinder,9,25,123,NVIDIA=MASKED;INTEL=SDC;AMD=MASKED,MASKED,SDC,MASKED

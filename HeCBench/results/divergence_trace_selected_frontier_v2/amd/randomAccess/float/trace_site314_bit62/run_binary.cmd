@@ -1,1 +1,0 @@
-run_env_bin HECBENCH_FI_FORCE_DUMP=1 /tmp/bitir_randomAccess_site314_bit62/randomAccess 1 /tmp/bitir_randomAccess_site314_bit62/randomAccess_site314_bit62.bin 

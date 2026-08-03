@@ -1,1 +1,0 @@
-/opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler/sycl-post-link --split=kernel --symbols --properties -o /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site75_bit2/postlink.table /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_colorwheel_site75_bit2/device.injected.bc 

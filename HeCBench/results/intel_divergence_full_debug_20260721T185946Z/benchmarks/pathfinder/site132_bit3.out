@@ -1,5 +1,0 @@
-Total kernel execution time: 3.584174 (s)
-Device offloading time = 3.646105 (s)
-pathfinder snapshot written to /var/tmp/pbs.8682238.aurora-pbs-0001.hostmgmt.cm.aurora.alcf.anl.gov/bitir_intel_pathfinder_site132_bit3/pathfinder_site132_bit3.bin
-mismatch
-Result: SDC (exit 0)

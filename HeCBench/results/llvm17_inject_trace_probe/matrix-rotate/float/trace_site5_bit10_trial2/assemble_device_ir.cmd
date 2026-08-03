@@ -1,1 +1,0 @@
-/soft/compilers/llvm/release-17.0.6/bin/llvm-as /var/tmp/pbs.7230203.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_matrix-rotate_site5_bit10/device.ll -o /var/tmp/pbs.7230203.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_nvidia_matrix-rotate_site5_bit10/device.bc 

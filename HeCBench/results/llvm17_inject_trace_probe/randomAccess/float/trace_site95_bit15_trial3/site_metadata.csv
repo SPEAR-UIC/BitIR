@@ -1,2 +1,0 @@
-site_id,site_class,opcode,type_kind,bitwidth,operand_index,function,source_file,source_line,source_column,signature_ordinal,semantic_key
-95,result,sext,int,64,-1,_Z6updatePyy,/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu,68,45,1,_Z6updatePyy|result|sext|int|64|-1|/home/mdunlavy/GPU_FI/HeCBench/src/randomAccess-cuda/main.cu|68|45|1

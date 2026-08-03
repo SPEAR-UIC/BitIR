@@ -1,5 +1,0 @@
-Total kernel execution time: 3.519716 (s)
-Device offloading time = 3.582757 (s)
-pathfinder snapshot written to /home/mdunlavy/GPU_FI/HeCBench/results/intel_trace029_full_trace_preserved_10m_20260722T003336Z/out_injection/pathfinder_site25_bit31.bin
-mismatch
-Result: SDC (exit 0)

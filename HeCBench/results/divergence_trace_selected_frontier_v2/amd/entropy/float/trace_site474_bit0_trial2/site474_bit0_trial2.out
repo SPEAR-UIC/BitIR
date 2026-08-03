@@ -1,5 +1,0 @@
-Average kernel (baseline) execution time 1.201858 (s)
-Average kernel (optimized) execution time 0.023689 (s)
-PASS
-entropy snapshot written to /tmp/bitir_amd_entropy_site474_bit0_trial2/entropy_site474_bit0_trial2.bin
-compare_ok

@@ -1,7 +1,0 @@
-Average kernel execution time (AoS): 8773.27 (us)
-FAIL
-Average kernel execution time (SoA): 9813.93 (us)
-FAIL
-layout snapshot written to /var/tmp/pbs.7229181.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/bitir_layout_site8_bit14/layout_site8_bit14_trial4.bin
-compare_ok
-Result: MASKED (exit 0)
