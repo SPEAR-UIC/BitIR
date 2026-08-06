@@ -85,7 +85,7 @@ def build_body():
         done
         benchmarks_cmake="$(IFS=';'; echo "${{BENCH_LIST[*]}}")"
         BITIR_GOLDEN_KEY="${{REPO_DIR}}/bitir/build/golden_keys/${{BITIR_BENCHMARK_SET}}/${{DEVICE_BIN_SUBDIR}}/golden_outputs.yml"
-        python3 "${{BITIR_ROOT}}/tools/benchmark_sets/profile_golden_outputs.py" \
+        python3 "${{BITIR_ROOT}}/tools/benchmarks/profile_golden_outputs.py" \
           --benchmark-set "${{BITIR_BENCHMARK_SET}}" \
           --benchmark-root "${{BITIR_BENCHMARK_ROOT}}" \
           --source-root "${{BITIR_BENCHMARK_SOURCE_ROOT#${{BITIR_BENCHMARK_ROOT}}/}}" \
@@ -96,7 +96,7 @@ def build_body():
         export BITIR_GOLDEN_KEY
         apply_golden_key_config() {{
           local key_mode
-          key_mode="$(python3 "${{BITIR_ROOT}}/tools/benchmark_sets/golden_key_query.py" \
+          key_mode="$(python3 "${{BITIR_ROOT}}/tools/benchmarks/golden_key_query.py" \
             --key "${{BITIR_GOLDEN_KEY}}" \
             --benchmark "${{BENCH}}" \
             --model "${{DEVICE_BIN_SUBDIR}}" \
@@ -110,7 +110,7 @@ def build_body():
           export BITIR_COMPARE_MODE BITIR_GOLDEN_FILE
         }}
         BITIR_CMAKE_SOURCE_ROOT="${{REPO_DIR}}/bitir/build/benchmark_sets/${{BITIR_BENCHMARK_SET}}/${{DEVICE_BIN_SUBDIR}}"
-        python3 "${{BITIR_ROOT}}/tools/benchmark_sets/prepare_benchmark_set.py" \
+        python3 "${{BITIR_ROOT}}/tools/benchmarks/prepare_benchmark_set.py" \
           --benchmark-set "${{BITIR_BENCHMARK_SET}}" \
           --benchmark-root "${{BITIR_BENCHMARK_ROOT}}" \
           --source-root "${{BITIR_BENCHMARK_SOURCE_ROOT#${{BITIR_BENCHMARK_ROOT}}/}}" \
@@ -307,7 +307,7 @@ DEPLOY_BODY = dedent(
 
     benchmarks_cmake="$(IFS=';'; echo "${BENCH_LIST[*]}")"
     BITIR_GOLDEN_KEY="${REPO_ROOT}/bitir/build/golden_keys/${BITIR_BENCHMARK_SET}/${BITIR_MACHINE_BINARY_SUBDIR}/golden_outputs.yml"
-    python3 "${BITIR_ROOT}/tools/benchmark_sets/profile_golden_outputs.py" \
+    python3 "${BITIR_ROOT}/tools/benchmarks/profile_golden_outputs.py" \
       --benchmark-set "${BITIR_BENCHMARK_SET}" \
       --benchmark-root "${BITIR_BENCHMARK_ROOT}" \
       --source-root "${BITIR_BENCHMARK_SOURCE_ROOT#${BITIR_BENCHMARK_ROOT}/}" \
@@ -318,7 +318,7 @@ DEPLOY_BODY = dedent(
     export BITIR_GOLDEN_KEY
     apply_golden_key_config() {
       local key_mode
-      key_mode="$(python3 "${BITIR_ROOT}/tools/benchmark_sets/golden_key_query.py" \
+      key_mode="$(python3 "${BITIR_ROOT}/tools/benchmarks/golden_key_query.py" \
         --key "${BITIR_GOLDEN_KEY}" \
         --benchmark "${BENCH}" \
         --model "${BITIR_MACHINE_BINARY_SUBDIR}" \
@@ -334,7 +334,7 @@ DEPLOY_BODY = dedent(
 
     BITIR_DEPLOY_SOURCE_ROOT="${REPO_ROOT}/bitir/build/benchmark_sets/${BITIR_BENCHMARK_SET}/${BITIR_MACHINE_BINARY_SUBDIR}"
     BITIR_DEPLOY_VARIANTS="${BITIR_DEPLOY_SOURCE_ROOT}/benchmark_variants.csv"
-    python3 "${BITIR_ROOT}/tools/benchmark_sets/prepare_benchmark_set.py" \
+    python3 "${BITIR_ROOT}/tools/benchmarks/prepare_benchmark_set.py" \
       --benchmark-set "${BITIR_BENCHMARK_SET}" \
       --benchmark-root "${BITIR_BENCHMARK_ROOT}" \
       --source-root "${BITIR_BENCHMARK_SOURCE_ROOT#${BITIR_BENCHMARK_ROOT}/}" \

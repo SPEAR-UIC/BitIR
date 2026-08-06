@@ -93,49 +93,6 @@ def select_rows(rows, random_sample, random_seed):
     return selected[:random_sample]
 
 
-def write_legacy_worklist(
-    worklist_path,
-    sites_path,
-    target,
-    int_float_only,
-    excluded_pairs,
-    allowed_kinds,
-    allowed_opcodes,
-    random_sample,
-    random_seed,
-):
-    rows = []
-    skipped = 0
-    with open(sites_path, "r", encoding="utf-8") as fh:
-        next(fh, None)
-        for line in fh:
-            parts = line.strip().split(",")
-            if len(parts) < 4:
-                continue
-            site_id = parts[0]
-            opcode = parts[1]
-            kind = parts[2]
-            bitwidth = int(parts[3]) if parts[3].isdigit() else 0
-            if target == "pointer":
-                if kind != "ptr":
-                    continue
-            elif int_float_only and kind not in ("int", "float"):
-                continue
-            if bitwidth <= 0 or not site_allowed(kind, opcode, allowed_kinds, allowed_opcodes):
-                continue
-            for bit in range(bitwidth):
-                if (site_id, str(bit)) in excluded_pairs:
-                    skipped += 1
-                    continue
-                rows.append((site_id, bit, bitwidth, kind, opcode))
-    rows = select_rows(rows, random_sample, random_seed)
-    with open(worklist_path, "w", encoding="utf-8") as wl:
-        wl.write("index,site_id,bit_index,bitwidth,type_kind,opcode\n")
-        for index, (site_id, bit, bitwidth, kind, opcode) in enumerate(rows, start=1):
-            wl.write(f"{index},{site_id},{bit},{bitwidth},{kind},{opcode}\n")
-    return len(rows), skipped
-
-
 def write_rich_worklist(
     worklist_path,
     sites_path,
@@ -281,7 +238,6 @@ def main():
 
     plugin = os.path.join(bitir_root, "tools/llvm17_inject/libfi_inject.so")
     suffix = "" if args.target in ("result", "all") else f"_{args.target}"
-    format_name = os.environ.get("BITIR_MACHINE_WORKLIST_FORMAT", "rich").strip().lower()
     sites_path = resolve_results_path(repo_root, results_dir, args.sites, f"sites{suffix}.csv")
     sites_rich_path = resolve_results_path(repo_root, results_dir, args.sites_rich, f"sites{suffix}_metadata.csv")
     if os.path.exists(sites_path):
@@ -289,7 +245,6 @@ def main():
     if os.path.exists(sites_rich_path):
         os.remove(sites_rich_path)
 
-    dump_rich = sites_rich_path if format_name == "rich" else ""
     cmd = [
         opt_bin,
         "-load-pass-plugin", plugin,
@@ -300,8 +255,7 @@ def main():
         f"-fi-include-constants={args.include_constants}",
         "-fi-dump-sites=" + sites_path,
     ]
-    if dump_rich:
-        cmd.append("-fi-dump-sites-rich=" + dump_rich)
+    cmd.append("-fi-dump-sites-rich=" + sites_rich_path)
     cmd.extend([ir_bc, "-o", os.path.join(out_dir, "device.dump.bc")])
     code, out = run_cmd(cmd)
     if code != 0:
@@ -309,7 +263,7 @@ def main():
         return code
 
     if args.metadata_only:
-        print(f"Wrote site metadata to {dump_rich or sites_path}")
+        print(f"Wrote site metadata to {sites_rich_path}")
         return 0
 
     excluded_pairs, exclusion_sources = load_excluded_pairs(
@@ -322,30 +276,17 @@ def main():
     worklist_path = resolve_results_path(repo_root, results_dir, args.worklist, f"worklist{suffix}.csv")
     allowed_kinds = csv_set(args.type_kind)
     allowed_opcodes = csv_set(args.opcode)
-    if format_name == "rich":
-        count, skipped = write_rich_worklist(
-            worklist_path,
-            sites_rich_path,
-            args.target,
-            args.int_float_only,
-            excluded_pairs,
-            allowed_kinds,
-            allowed_opcodes,
-            args.random_sample,
-            args.random_seed,
-        )
-    else:
-        count, skipped = write_legacy_worklist(
-            worklist_path,
-            sites_path,
-            args.target,
-            args.int_float_only,
-            excluded_pairs,
-            allowed_kinds,
-            allowed_opcodes,
-            args.random_sample,
-            args.random_seed,
-        )
+    count, skipped = write_rich_worklist(
+        worklist_path,
+        sites_rich_path,
+        args.target,
+        args.int_float_only,
+        excluded_pairs,
+        allowed_kinds,
+        allowed_opcodes,
+        args.random_sample,
+        args.random_seed,
+    )
 
     message = f"Wrote {count} candidate injections to {worklist_path}"
     if exclusion_sources:

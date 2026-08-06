@@ -63,7 +63,7 @@ def module_block(module_use: list[str], modules: list[str], permissive: bool) ->
     return lines
 
 
-def wrapper_script(
+def scheduler_script(
     machine_name: str,
     task: str,
     job: dict[str, Any],

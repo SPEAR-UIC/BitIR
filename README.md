@@ -13,7 +13,7 @@ The supported workflow has two scheduler-facing phases:
 
 Build and deploy jobs are not split per benchmark.
 
-Generated PBS/SLURM files are intentionally thin wrappers: they contain the
+Generated PBS/SLURM files are intentionally thin scheduler scripts: they contain the
 resource header, direct module commands from the YAML, then call the BitIR
 controller in local mode inside the allocation. The detailed build/deploy shell
 is fed directly to `bash` internally so submitted scheduler scripts stay
@@ -33,15 +33,25 @@ file; the templates do not create separate `ERROR_*.err` files.
 | `bitir/tools/llvm17_inject/controller.py` | Minimal CLI controller for build/deploy/baseline/golden/inject-one |
 | `bitir/tools/llvm17_inject/pipeline_*.py` | Small controller support modules for config and shell rendering |
 | `bitir/tools/llvm17_inject/task_bodies.py` | Backend shell task bodies used only for local execution inside allocations |
-| `bitir/tools/llvm17_inject/bitir_pipeline.py` | Backward-compatible shim for older commands |
 | `bitir/tools/llvm17_inject/` | LLVM injection pass, worklist builder, runner, and comparators |
-| `bitir/tools/benchmark_sets/` | Benchmark-set overlay and golden-output profiling tools |
-| `bitir/analysis/` | Optional post-processing helpers, not required for injection runs |
+| `bitir/tools/benchmarks/` | Runtime benchmark overlay and golden-output profiling tools |
+| `bitir/benchmarks/hecbench/` | Runtime HeCBench assets used by campaigns, such as dump adapters |
+| `dev/` | Development-only inspection tools, review manifests, notes, and research analysis |
 | `HeCBench/` | Upstream ORNL/HeCBench checkout, tracked as a git submodule |
 | `<benchmark_set>/src/` | Supported benchmark sources; the default checkout is `HeCBench` |
 
-BitIR-owned code lives under `bitir/`. The `HeCBench/` directory is treated as
-the selected benchmark checkout, not as a place for BitIR pipeline code.
+User-facing campaign code lives under `bitir/`. Development and research work
+lives under `dev/`. The `HeCBench/` directory is treated as the selected
+benchmark checkout, not as a place for BitIR pipeline code.
+
+## Development Principles
+
+Project coding rules live in [AGENTS.md](AGENTS.md). In short:
+
+- Do not add legacy compatibility paths. Update callers to the current workflow and remove old paths.
+- Do not add wrappers, facades, adapters, or forwarding helpers unless they remove real duplication or isolate an external boundary.
+- Keep symbols scarce and domain-specific. Prefer inline logic over new names when the logic is local and simple.
+- Prefer deleting obsolete behavior over preserving every previous edge case.
 
 ## Local Prerequisite
 
@@ -271,11 +281,11 @@ Tasks:
 
 Execution modes:
 
-- `write-script`: default; write a PBS/SLURM wrapper under `.bitir_jobs/`
-- `submit`: write and submit the wrapper with `submit_command`
+- `write-script`: default; write a PBS/SLURM script under `.bitir_jobs/`
+- `submit`: write and submit the generated scheduler script with `submit_command`
 - `local`: run immediately in the current shell; intended for inside scheduler
   allocations or local debugging
-- `print-script`: print the generated wrapper to stdout
+- `print-script`: print the generated script to stdout
 
 CLI overrides:
 
@@ -398,10 +408,24 @@ Runtime debug environment variables can be set under `runtime_env` or machine
 dump env fields. Current HeCBench layout adapters recognize:
 
 - `HECBENCH_GPU_DEBUG=1`: print GPU/device diagnostics from layout adapters
-- `HECBENCH_LLFI_FORCE_DUMP=1`: force supported adapters to write dump outputs
+- `HECBENCH_LLFI_FORCE_DUMP=1`: force dump adapters to write outputs
 
 Scheduler debug queues, such as Polaris/Aurora `#PBS -q debug`, are configured
 in `machines.<name>.jobs.<task>.header` and are separate from `trace_level`.
+
+### HeCBench Output Manifest
+
+HeCBench output handling is moving to an application-level manifest. The manifest describes what final program state should be dumped and how it should be compared; it does not define separate correctness contracts for CUDA, HIP, SYCL, or OMP.
+
+Generate the proposed inventory with:
+
+```bash
+python3 dev/tools/inspect_hecbench_outputs.py \
+  --benchmark-root HeCBench \
+  --output dev/manifests/hecbench/output_manifest.proposed.yml
+```
+
+The proposed file groups backend implementations under each application and marks every entry `review: needed`. Review turns proposed output contracts into exact benchmark contracts. Once reviewed, normal pipeline operation should treat a missing manifest entry as a repository completeness error, not as an unsupported benchmark category.
 
 ### Benchmark Output Options
 
@@ -428,9 +452,9 @@ Compare modes:
 Common fields under `machines.<name>`:
 
 - `submit_command`: scheduler command, usually `qsub` or `sbatch`
-- `script_extension`: generated wrapper extension, such as `.pbs` or `.sbatch`
+- `script_extension`: generated script extension, such as `.pbs` or `.sbatch`
 - `module_use`: module search paths
-- `modules`: modules loaded by generated wrappers
+- `modules`: modules loaded by generated scripts
 - `jobs.<task>.header`: literal PBS/SLURM header lines for each task
 - `source_key`: backend key used to select benchmark source directories
 - `binary_subdir`: backend binary directory, usually `cuda`, `hip`, or `sycl`

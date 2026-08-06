@@ -56,7 +56,7 @@ disabled because its local CMake tree adds only the present subset and
 `BenchmarkMacros.cmake` returns early for unselected benchmarks.
 
 Follow-up: BitIR now generates an external CMake overlay with
-`bitir/tools/benchmark_sets/prepare_benchmark_set.py`. The overlay discovers
+`bitir/tools/benchmarks/prepare_benchmark_set.py`. The overlay discovers
 available `*-cuda`, `*-hip`, and `*-sycl` variants, writes a selected-only
 `CMakeLists.txt`, and avoids running upstream `src/CMakeLists.txt`. A disabled
 backend configure against the fresh checkout succeeded through this overlay.
@@ -90,10 +90,9 @@ the target systems.
    invoking their benchmark CMake files.
 
 2. Move golden-output snapshot behavior out of edited benchmark files.
-   Options to evaluate:
-   - maintain benchmark source patches under `bitir/patches/hecbench`
-   - generate patched benchmark overlays into `bitir/build/benchmark_sets`
-   - add external wrappers only where stdout/text comparison is sufficient
+   Preferred path: generate patched benchmark overlays into
+   `bitir/build/benchmark_sets`. Do not add alternate compatibility paths for
+   old benchmark layouts.
 
 3. Remove or isolate old FI-GPU CMake integration.
    `FIGPUIntegration.cmake` and `fi_nvcc_wrapper.sh.in` are local-only and not

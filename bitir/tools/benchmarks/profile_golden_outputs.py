@@ -21,7 +21,7 @@ def yaml_quote(value):
 
 def default_adapter_root(benchmark_set):
     bitir_root = Path(__file__).resolve().parents[2]
-    return bitir_root / "benchmark_sets" / benchmark_set / "dump_adapters"
+    return bitir_root / "benchmarks" / benchmark_set / "dump_adapters"
 
 
 def classify_dump(text):
@@ -242,7 +242,7 @@ def profile_variant(bench, model, source_dir, text_benchmarks, adapter_root):
 def write_key(path, benchmark_set, profiles):
     lines = [
         f"benchmark_set: {yaml_quote(benchmark_set)}",
-        "generated_by: bitir/tools/benchmark_sets/profile_golden_outputs.py",
+        "generated_by: bitir/tools/benchmarks/profile_golden_outputs.py",
         "outputs:",
     ]
     for item in profiles:

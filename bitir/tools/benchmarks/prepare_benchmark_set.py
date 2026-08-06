@@ -18,7 +18,7 @@ def cmake_quote(value):
 
 def adapter_root_for(benchmark_set):
     bitir_root = Path(__file__).resolve().parents[2]
-    return bitir_root / "benchmark_sets" / benchmark_set / "dump_adapters"
+    return bitir_root / "benchmarks" / benchmark_set / "dump_adapters"
 
 
 def find_statement_end(text, start):

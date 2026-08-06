@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline_config import load_config, read_benches, resolve_mode, validate_machine
-from pipeline_shell import export_line, export_mapping, local_script, shell_join, wrapper_script
+from pipeline_shell import export_line, export_mapping, local_script, scheduler_script
 from task_bodies import task_body
 
 TASKS = ["build", "deploy", "golden", "baseline", "inject-one"]
@@ -159,7 +159,7 @@ def fault_model_exports(fault_model_cfg: dict[str, Any]) -> list[str]:
     return exports
 
 
-def wrapper_command(args: argparse.Namespace, config_path: Path, repo_root: Path, machine: str, campaign: str, bench: str, benches_file: str, site_id: Any, bit_index: Any, fault_model: str, account: str) -> list[str]:
+def local_controller_command(args: argparse.Namespace, config_path: Path, repo_root: Path, machine: str, campaign: str, bench: str, benches_file: str, site_id: Any, bit_index: Any, fault_model: str, account: str) -> list[str]:
     command: list[Any] = [
         "python3", str(Path(__file__).resolve()), args.task, str(config_path),
         "--repo-root", str(repo_root), "--machine", machine, "--local",
@@ -306,7 +306,7 @@ def main() -> None:
     script_units = [(bench, [bench])] if args.task == "inject-one" else [("", benches)]
     generated: list[tuple[str, Path, str]] = []
 
-    command = wrapper_command(args, config_path, repo_root, machine_name, campaign, bench, benches_file, site_id, bit_index, fault_model, account)
+    command = local_controller_command(args, config_path, repo_root, machine_name, campaign, bench, benches_file, site_id, bit_index, fault_model, account)
 
     for index, (bench_name, unit_benches) in enumerate(script_units):
         job_values = dict(job, bench=bench_name.replace("/", "_").replace(" ", "_") or "all", stamp=stamp, index=f"{index:02d}")
@@ -324,7 +324,7 @@ def main() -> None:
             )
             script = local_script(machine_name, args.task, job_values, exports, task_body(args.task), module_use, modules)
         else:
-            script = wrapper_script(machine_name, args.task, job_values, command, repo_root, module_use, modules)
+            script = scheduler_script(machine_name, args.task, job_values, command, repo_root, module_use, modules)
             path.write_text(script, encoding="utf-8")
             os.chmod(path, 0o755)
         generated.append((bench_name, path, script))

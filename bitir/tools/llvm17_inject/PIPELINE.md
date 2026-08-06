@@ -2,7 +2,7 @@
 
 The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs render one scheduler script for the selected benchmark set. `inject-one` remains a targeted single benchmark/site helper. Deploy baselines use the injected-build path with no bit flip before real injections start.
 
-Written and submitted scheduler scripts are compact wrappers. They keep only the
+Written and submitted scheduler scripts are compact. They keep only the
 PBS/SLURM resource header, module setup, repository `cd`, and a `controller.py
 --local` call. The detailed shell body is generated inside the allocation.
 Scheduler stdout and stderr are merged into the generated `OUT_*.out` file.
@@ -11,8 +11,7 @@ Scheduler stdout and stderr are merged into the generated `OUT_*.out` file.
 python3 bitir/tools/llvm17_inject/controller.py <task> <config.yml>
 ```
 
-`bitir/tools/llvm17_inject/bitir_pipeline.py` remains as a compatibility shim
-for older commands, but new docs and scripts should use `controller.py`.
+`controller.py` is the only supported entry point.
 
 Supported tasks:
 
@@ -29,12 +28,12 @@ modules:
 
 - `controller.py`: CLI parsing, high-level orchestration, script writing, submit/local dispatch
 - `pipeline_config.py`: YAML `extends` loading, dictionary merge, mode resolution, machine validation
-- `pipeline_shell.py`: environment exports, module blocks, scheduler wrapper rendering, local shell rendering
+- `pipeline_shell.py`: environment exports, module blocks, scheduler script rendering, local shell rendering
 - `task_bodies.py`: backend shell bodies for build, baseline, deploy, and targeted injection
 
-`write-script`, `submit`, and `print-script` produce compact scheduler wrappers
+`write-script`, `submit`, and `print-script` produce compact scheduler scripts
 directly. Full task shell bodies are generated only when running with `--local`,
-which is what scheduler wrappers call inside an allocation.
+which is what scheduler scripts call inside an allocation.
 
 ## What the repo ships
 
@@ -119,6 +118,18 @@ python3 bitir/tools/llvm17_inject/controller.py \
 ```
 
 9. Submit the generated `*_all_*` deploy script with the submit command defined in your machine YAML
+
+## HeCBench Output Manifest
+
+Use the inspection tool to build the application-level output inventory:
+
+```bash
+python3 dev/tools/inspect_hecbench_outputs.py \
+  --benchmark-root HeCBench \
+  --output dev/manifests/hecbench/output_manifest.proposed.yml
+```
+
+The proposed manifest groups CUDA, HIP, SYCL, and OMP implementations under one benchmark contract. It records source variants, candidate output records, comparison mode, and evidence for review. Missing reviewed entries should be fixed in the manifest rather than handled as runtime support categories.
 
 ## Worklist selection
 
