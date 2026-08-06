@@ -21,4 +21,23 @@ python3 dev/tools/inspect_hecbench_outputs.py \
   --output dev/manifests/hecbench/output_manifest.proposed.yml
 ```
 
-Reviewed manifests can later move into runtime locations under `bitir/` once they are exact campaign contracts.
+Run the static review against the current machine configs with:
+
+```bash
+python3 dev/tools/review_hecbench_manifest.py
+```
+
+This writes:
+
+- `dev/manifests/hecbench/static_review.csv`
+- `dev/manifests/hecbench/static_review_summary.yml`
+
+The static review uses `bitir/config/machines/*.yml` to check the currently configured campaign backends:
+
+- Polaris: CUDA
+- Aurora: SYCL
+- Frontier: HIP
+
+Entries marked `static_candidate` have consistent static evidence across those configured backends. Entries marked `manual_review` need source inspection or manifest correction before dynamic verification.
+
+Reviewed manifests can later move into runtime locations under `bitir/` once they are exact campaign contracts. Dynamic verification should use the existing machine YAMLs to generate build/golden/baseline jobs rather than introducing separate machine logic.

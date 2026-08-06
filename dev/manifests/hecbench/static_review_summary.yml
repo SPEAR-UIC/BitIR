@@ -1,0 +1,23 @@
+manifest: dev/manifests/hecbench/output_manifest.proposed.yml
+machines:
+  aurora: sycl
+  frontier: hip
+  polaris: cuda
+backends_reviewed:
+- cuda
+- hip
+- sycl
+benchmarks: 538
+counts:
+  static_candidate: 448
+  manual_review: 90
+top_reasons:
+  missing_copy_candidates:cuda: 37
+  missing_copy_candidates:hip: 35
+  missing_text_signal:hip: 28
+  missing_text_signal:cuda: 27
+  missing_text_signal:sycl: 26
+  missing_source:sycl: 15
+  missing_copy_candidates:sycl: 8
+  missing_source:hip: 4
+  missing_source:cuda: 1
