@@ -9,9 +9,8 @@
 | `config/` | Base config, reusable fault models, shared machine definitions, and run templates |
 | `tools/llvm17_inject/` | Campaign controller, LLVM injection pass, worklist builder, runner, and comparators |
 | `tools/benchmarks/` | Runtime benchmark overlay and golden-output profiling tools |
-| `benchmarks/hecbench/` | Runtime HeCBench assets used by campaigns, such as reviewed dump adapters |
 
-Development tools, proposed manifests, notes, and research analysis belong in `../dev/`, not here.
+Development tools, proposed dump adapters, proposed manifests, notes, and research analysis belong in `../dev/`, not here. Reviewed benchmark assets can be added under `bitir/` only when they become runtime campaign contracts.
 
 ## Entry Point
 

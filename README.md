@@ -35,8 +35,7 @@ file; the templates do not create separate `ERROR_*.err` files.
 | `bitir/tools/llvm17_inject/task_bodies.py` | Backend shell task bodies used only for local execution inside allocations |
 | `bitir/tools/llvm17_inject/` | LLVM injection pass, worklist builder, runner, and comparators |
 | `bitir/tools/benchmarks/` | Runtime benchmark overlay and golden-output profiling tools |
-| `bitir/benchmarks/hecbench/` | Runtime HeCBench assets used by campaigns, such as dump adapters |
-| `dev/` | Development-only inspection tools, review manifests, notes, and research analysis |
+| `dev/` | Development-only inspection tools, proposed dump adapters, review manifests, notes, and research analysis |
 | `HeCBench/` | Upstream ORNL/HeCBench checkout, tracked as a git submodule |
 | `<benchmark_set>/src/` | Supported benchmark sources; the default checkout is `HeCBench` |
 

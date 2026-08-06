@@ -14,7 +14,7 @@
 
 - Moved development-only inspection, review, notes, and research files under `dev/` so `bitir/` remains user-facing runtime code.
 - Renamed runtime benchmark tooling from `bitir/tools/benchmark_sets/` to `bitir/tools/benchmarks/`.
-- Moved runtime HeCBench assets from `bitir/benchmark_sets/hecbench/` to `bitir/benchmarks/hecbench/`.
+- Moved proposed HeCBench review assets out of runtime paths; `bitir/` now contains no benchmark-specific dump adapters until they are reviewed runtime contracts.
 - Moved post-processing helpers out of the injection toolchain:
   - `bitir/tools/llvm17_inject/compute_sdc_metrics.py` -> `dev/research/analysis/compute_sdc_metrics.py`
   - `bitir/tools/llvm17_inject/merge_bench_summaries.py` -> `dev/research/analysis/merge_bench_summaries.py`
