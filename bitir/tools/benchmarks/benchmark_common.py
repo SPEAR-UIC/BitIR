@@ -1,18 +1,16 @@
-from __future__ import annotations
-
 import re
 from pathlib import Path
 
 KNOWN_MODELS = ("cuda", "hip", "sycl", "omp", "openmp")
 
 
-def parse_list(value: str | None) -> list[str]:
+def parse_list(value):
     return [item.strip() for item in re.split(r"[;,\s]+", value or "") if item.strip()]
 
 
-def discover_variants(benchmark_root: Path, source_root: str = "src", require_cmake: bool = False) -> dict[str, dict[str, Path]]:
+def discover_variants(benchmark_root, source_root="src", require_cmake=False):
     source_dir = benchmark_root / source_root
-    variants: dict[str, dict[str, Path]] = {}
+    variants = {}
     if not source_dir.is_dir():
         raise SystemExit(f"missing benchmark source root: {source_dir}")
     for child in sorted(source_dir.iterdir()):
@@ -28,11 +26,11 @@ def discover_variants(benchmark_root: Path, source_root: str = "src", require_cm
     return variants
 
 
-def split_top_level_args(text: str) -> list[str]:
-    args: list[str] = []
-    current: list[str] = []
+def split_top_level_args(text):
+    args = []
+    current = []
     depth = 0
-    in_string: str | None = None
+    in_string = None
     escape = False
     for char in text:
         if in_string:
@@ -63,15 +61,15 @@ def split_top_level_args(text: str) -> list[str]:
     return args
 
 
-def source_files(source_dir: Path) -> list[Path]:
-    files: set[Path] = set()
+def source_files(source_dir):
+    files = set()
     for pattern in ("*.cu", "*.cpp", "*.cc", "*.cxx", "*.c", "*.h", "*.hpp"):
         files.update(source_dir.glob(pattern))
     return sorted(files)
 
 
-def read_sources(source_dir: Path) -> list[tuple[str, str]]:
-    chunks: list[tuple[str, str]] = []
+def read_sources(source_dir):
+    chunks = []
     for path in source_files(source_dir):
         try:
             chunks.append((path.name, path.read_text(encoding="utf-8", errors="replace")))
