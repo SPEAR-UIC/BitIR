@@ -15,20 +15,28 @@ Build and deploy jobs are not split per benchmark.
 
 Generated PBS/SLURM files are intentionally thin wrappers: they contain the
 resource header, direct module commands from the YAML, then call the BitIR
-launcher in local mode inside the allocation. The detailed build/deploy shell is
-fed directly to `bash` internally so submitted scheduler scripts stay readable.
-Scheduler stdout and stderr are merged into the generated `OUT_*.out` file; the
-templates do not create separate `ERROR_*.err` files.
+controller in local mode inside the allocation. The detailed build/deploy shell
+is fed directly to `bash` internally so submitted scheduler scripts stay
+readable. Scheduler stdout and stderr are merged into the generated `OUT_*.out`
+file; the templates do not create separate `ERROR_*.err` files.
 
 ## Repository Layout
 
 | Path | Purpose |
 | --- | --- |
 | `bitir/config/bitir.yml` | Base config shape |
-| `bitir/config/runs/*_toy.yml` | Small hardware smoke tests for Polaris, Aurora, and Frontier |
-| `bitir/config/runs/*_template.yml` | Machine-specific campaign templates |
-| `bitir/config/runs/run_template.yml` | Blank template for a new machine |
-| `bitir/tools/llvm17_inject/` | Pipeline launcher, LLVM pass, worklist builder, runner, and comparators |
+| `bitir/config/fault_models.yml` | Reusable fault model definitions |
+| `bitir/config/machines/*.yml` | Shared scheduler/toolchain/backend definitions for supported systems |
+| `bitir/config/runs/*_toy.yml` | Small hardware smoke tests that extend shared machine configs |
+| `bitir/config/runs/*_template.yml` | Minimal campaign templates that extend shared machine configs |
+| `bitir/config/runs/run_template.yml` | Blank template for a new machine or campaign |
+| `bitir/tools/llvm17_inject/controller.py` | Minimal CLI controller for build/deploy/baseline/golden/inject-one |
+| `bitir/tools/llvm17_inject/pipeline_*.py` | Small controller support modules for config and shell rendering |
+| `bitir/tools/llvm17_inject/task_bodies.py` | Backend shell task bodies used only for local execution inside allocations |
+| `bitir/tools/llvm17_inject/bitir_pipeline.py` | Backward-compatible shim for older commands |
+| `bitir/tools/llvm17_inject/` | LLVM injection pass, worklist builder, runner, and comparators |
+| `bitir/tools/benchmark_sets/` | Benchmark-set overlay and golden-output profiling tools |
+| `bitir/analysis/` | Optional post-processing helpers, not required for injection runs |
 | `HeCBench/` | Upstream ORNL/HeCBench checkout, tracked as a git submodule |
 | `<benchmark_set>/src/` | Supported benchmark sources; the default checkout is `HeCBench` |
 
@@ -50,7 +58,7 @@ For an existing checkout:
 git submodule update --init --recursive
 ```
 
-The launcher needs PyYAML:
+The controller needs PyYAML:
 
 ```bash
 python3 -m pip install -r requirements.txt
@@ -76,7 +84,7 @@ baseline check, and injects up to 8 site/bit pairs.
 Run from the repository root on Polaris:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   build bitir/config/runs/polaris_toy.yml \
   --account <account>
 ```
@@ -87,7 +95,7 @@ lines if needed, then submit it with `qsub`.
 After the build/golden job finishes:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   deploy bitir/config/runs/polaris_toy.yml \
   --account <account>
 ```
@@ -102,7 +110,7 @@ Expected backend: `layout-cuda`.
 Run from the repository root on Aurora:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   build bitir/config/runs/aurora_toy.yml \
   --account <account>
 ```
@@ -113,7 +121,7 @@ lines if needed, then submit it with `qsub`.
 After the build/golden job finishes:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   deploy bitir/config/runs/aurora_toy.yml \
   --account <account>
 ```
@@ -128,7 +136,7 @@ Expected backend: `layout-sycl`.
 Run from the repository root on Frontier:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   build bitir/config/runs/frontier_toy.yml \
   --account <account>
 ```
@@ -139,7 +147,7 @@ lines if needed, then submit it with `sbatch`.
 After the build/golden job finishes:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   deploy bitir/config/runs/frontier_toy.yml \
   --account <account>
 ```
@@ -172,7 +180,7 @@ Edit the copied YAML rather than the template. At minimum, update:
 Generate the build job:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py build my_polaris_campaign.yml
+python3 bitir/tools/llvm17_inject/controller.py build my_polaris_campaign.yml
 ```
 
 Inspect the generated scheduler script, edit the account/resource lines if
@@ -183,7 +191,7 @@ Frontier, use `my_frontier_campaign.yml`.
 After the build/golden job finishes, generate deploy:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py deploy my_polaris_campaign.yml
+python3 bitir/tools/llvm17_inject/controller.py deploy my_polaris_campaign.yml
 ```
 
 Again, inspect/edit the generated scheduler script before submitting it.
@@ -521,17 +529,14 @@ contract could not be inferred safely. The profiler is intentionally broad for
 classification, but conservative about allowing campaigns to continue without an
 adapter.
 
-For full-machine readiness work, use the temporary qualification harness in
-`bitir/qualification/`. It discovers backend variants, generates chunked
-campaign YAMLs, and summarizes source-profile, build, and no-flip baseline
-results into a support matrix. Treat benchmarks as campaign-ready only after the
-target machine passes build/golden and baseline validation.
+Treat benchmarks as campaign-ready only after the target machine passes build,
+golden-output generation, and no-flip baseline validation.
 
 ### Common Issues
 
 - `ModuleNotFoundError: No module named 'yaml'`
 
-  Install PyYAML in the Python environment used to run the launcher:
+  Install PyYAML in the Python environment used to run the controller:
 
   ```bash
   python3 -m pip install -r requirements.txt

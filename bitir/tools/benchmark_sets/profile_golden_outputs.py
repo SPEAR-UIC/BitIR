@@ -3,14 +3,11 @@ import argparse
 import re
 from pathlib import Path
 
+from benchmark_common import discover_variants, parse_list, read_sources, split_top_level_args
 
-KNOWN_MODELS = ("cuda", "hip", "sycl", "omp", "openmp")
+
 GENERATED_DUMP_MODELS = ("cuda", "hip")
 GENERATED_DUMP_CLASSES = ("contiguous_buffer", "scalar", "grid_2d", "multi_buffer", "table_snapshot")
-
-
-def parse_list(value):
-    return [item.strip() for item in re.split(r"[;,\s]+", value or "") if item.strip()]
 
 
 def yaml_quote(value):
@@ -22,44 +19,9 @@ def yaml_quote(value):
     return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
-def discover_variants(benchmark_root, source_root="src"):
-    source_dir = benchmark_root / source_root
-    variants = {}
-    if not source_dir.is_dir():
-        raise SystemExit(f"missing benchmark source root: {source_dir}")
-    for child in sorted(source_dir.iterdir()):
-        if not child.is_dir():
-            continue
-        for model in KNOWN_MODELS:
-            suffix = f"-{model}"
-            if child.name.endswith(suffix):
-                bench = child.name[: -len(suffix)]
-                variants.setdefault(bench, {})[model] = child
-                break
-    return variants
-
-
 def default_adapter_root(benchmark_set):
     bitir_root = Path(__file__).resolve().parents[2]
     return bitir_root / "benchmark_sets" / benchmark_set / "dump_adapters"
-
-
-def source_files(source_dir):
-    patterns = ("*.cu", "*.cpp", "*.cc", "*.cxx", "*.c", "*.h", "*.hpp")
-    files = []
-    for pattern in patterns:
-        files.extend(source_dir.glob(pattern))
-    return sorted(set(files))
-
-
-def read_sources(source_dir):
-    chunks = []
-    for path in source_files(source_dir):
-        try:
-            chunks.append((path.name, path.read_text(encoding="utf-8", errors="replace")))
-        except OSError:
-            continue
-    return chunks
 
 
 def classify_dump(text):
@@ -76,41 +38,6 @@ def classify_dump(text):
     if writes >= 4:
         return "multi_buffer", "detected dump_path with multiple binary writes"
     return "contiguous_buffer", "detected dump_path with binary write"
-
-
-def split_top_level_args(text):
-    args = []
-    current = []
-    depth = 0
-    in_string = None
-    escape = False
-    for char in text:
-        if in_string:
-            current.append(char)
-            if escape:
-                escape = False
-            elif char == "\\":
-                escape = True
-            elif char == in_string:
-                in_string = None
-            continue
-        if char in ("'", '"'):
-            in_string = char
-            current.append(char)
-        elif char in "([{":
-            depth += 1
-            current.append(char)
-        elif char in ")]}":
-            depth = max(0, depth - 1)
-            current.append(char)
-        elif char == "," and depth == 0:
-            args.append("".join(current).strip())
-            current = []
-        else:
-            current.append(char)
-    if current:
-        args.append("".join(current).strip())
-    return args
 
 
 def find_device_to_host_copies(text):

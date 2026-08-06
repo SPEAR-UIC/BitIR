@@ -3,13 +3,16 @@
 The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs render one scheduler script for the selected benchmark set. `inject-one` remains a targeted single benchmark/site helper. Deploy baselines use the injected-build path with no bit flip before real injections start.
 
 Written and submitted scheduler scripts are compact wrappers. They keep only the
-PBS/SLURM resource header, module setup, repository `cd`, and a `bitir_pipeline.py
+PBS/SLURM resource header, module setup, repository `cd`, and a `controller.py
 --local` call. The detailed shell body is generated inside the allocation.
 Scheduler stdout and stderr are merged into the generated `OUT_*.out` file.
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py <task> <config.yml>
+python3 bitir/tools/llvm17_inject/controller.py <task> <config.yml>
 ```
+
+`bitir/tools/llvm17_inject/bitir_pipeline.py` remains as a compatibility shim
+for older commands, but new docs and scripts should use `controller.py`.
 
 Supported tasks:
 
@@ -19,11 +22,25 @@ Supported tasks:
 - `baseline`
 - `inject-one`
 
+## Controller Implementation
+
+The controller is intentionally small and delegates supporting work to focused
+modules:
+
+- `controller.py`: CLI parsing, high-level orchestration, script writing, submit/local dispatch
+- `pipeline_config.py`: YAML `extends` loading, dictionary merge, mode resolution, machine validation
+- `pipeline_shell.py`: environment exports, module blocks, scheduler wrapper rendering, local shell rendering
+- `task_bodies.py`: backend shell bodies for build, baseline, deploy, and targeted injection
+
+`write-script`, `submit`, and `print-script` produce compact scheduler wrappers
+directly. Full task shell bodies are generated only when running with `--local`,
+which is what scheduler wrappers call inside an allocation.
+
 ## What the repo ships
 
-The base config at `bitir/config/bitir.yml` only defines empty top level sections
+The base config at `bitir/config/bitir.yml` only defines empty top level sections.
 
-It does not ship benchmark selections, a benchmark catalog, or machine presets
+Shared machine/toolchain definitions live in `bitir/config/machines/`. Run configs extend those shared machine files and only carry campaign-specific benchmark, fault-model, and output-directory choices.
 
 The repo ships these run configs in `bitir/config/runs`:
 
@@ -35,15 +52,17 @@ The repo ships these run configs in `bitir/config/runs`:
 - `frontier_template.yml`
 - `run_template.yml`
 
-You are expected to copy that file and fill in your own:
+For a new campaign on an existing supported machine, copy the closest run config and adjust:
 
 - `run.machine`
 - `run.task`
 - `run.bench` or `run.campaign`
 - `fault_models`
-- `machines`
 - `campaigns`
 - `benchmarks`
+- output-directory overrides under `machines.<name>` when needed
+
+For a new machine, add a shared machine file under `bitir/config/machines/` and extend it from the run config.
 
 Each machine entry should define at least:
 
@@ -85,7 +104,7 @@ If the LLVM pass is not already on your `PATH`, also define search roots used by
 6. Build
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   build <config.yml>
 ```
 
@@ -94,7 +113,7 @@ python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
 8. Deploy with a fault model defined in your YAML
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   deploy <config.yml> \
   --fault-model <model>
 ```
@@ -166,10 +185,10 @@ fault_models:
 Polaris:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   build bitir/config/runs/polaris_toy.yml
 
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   deploy bitir/config/runs/polaris_toy.yml
 ```
 
@@ -179,10 +198,10 @@ Inspect and edit generated `.pbs` account/resource lines before submitting with
 Aurora:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   build bitir/config/runs/aurora_toy.yml
 
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   deploy bitir/config/runs/aurora_toy.yml
 ```
 
@@ -192,10 +211,10 @@ Inspect and edit generated `.pbs` account/resource lines before submitting with
 Frontier:
 
 ```bash
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   build bitir/config/runs/frontier_toy.yml
 
-python3 bitir/tools/llvm17_inject/bitir_pipeline.py \
+python3 bitir/tools/llvm17_inject/controller.py \
   deploy bitir/config/runs/frontier_toy.yml
 ```
 

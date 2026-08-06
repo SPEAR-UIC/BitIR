@@ -1,0 +1,97 @@
+machines:
+  polaris:
+    submit_command: qsub
+    script_extension: .pbs
+    source_key: cuda
+    binary_subdir: cuda
+    source_file: main.cu
+    build_dir: bitir/build/cuda-polaris-template
+    golden_root: Polaris_Golden_Outputs_template
+    results_root: bitir/results/llvm17_inject_template
+    module_use:
+    - /soft/modulefiles
+    modules:
+    - PrgEnv-gnu
+    - spack-pe-base
+    - cmake
+    - gcc-native/12.3
+    - cudatoolkit-standalone/11.8.0
+    - llvm/release-17.0.0
+    runtime_home: /soft/compilers/cudatoolkit/cuda-11.8.0
+    cuda_host_compiler: /usr/bin/g++
+    cuda_arch: '80'
+    cuda_arch_name: sm_80
+    compiler_driver: nvcc
+    clangxx: clang++
+    llvm_as: llvm-as
+    llvm_config: llvm-config
+    opt_bin: opt
+    llc_bin: llc
+    build_configure: 'cmake -S "${BITIR_CMAKE_SOURCE_ROOT}" -B "${BUILD_DIR}" -DHECBENCH_ENABLE_CUDA=ON -DHECBENCH_ENABLE_HIP=OFF -DHECBENCH_ENABLE_SYCL=OFF -DHECBENCH_ENABLE_OPENMP=OFF -DCMAKE_CUDA_FLAGS=--allow-unsupported-compiler ${BITIR_MACHINE_CUDA_HOST_COMPILER:+-DCMAKE_CUDA_HOST_COMPILER="${BITIR_MACHINE_CUDA_HOST_COMPILER}"} -DHECBENCH_CUDA_ARCH="${BITIR_MACHINE_CUDA_ARCH}"
+
+      '
+    build_run_dump_env: HECBENCH_LLFI_FORCE_DUMP=1
+    run_dump_env: HECBENCH_LLFI_FORCE_DUMP=1
+    gpu_query_command: nvidia-smi -q
+    worklist_build_ir: '"${BITIR_MACHINE_CLANGXX}" -x cuda --cuda-device-only --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}" --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}" -std=c++17 -Xclang -emit-llvm -S -O0 -g -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0 -I "${SRC_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}" "${SRC}" -o "${IR_LL}" && "${BITIR_MACHINE_LLVM_AS}" "${IR_LL}" -o "${IR_BC}"
+
+      '
+    inject_build_baseline: '"${BITIR_MACHINE_CLANGXX}" -x cuda --cuda-device-only --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}" --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}" -std=c++17 -Xclang -emit-llvm -S -O0 -g -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0 -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}" "${SRC}" -o "${IR_LL}" && "${BITIR_MACHINE_LLVM_AS}" "${IR_LL}" -o "${IR_BC}" && "${BITIR_MACHINE_LLC_BIN}" -march=nvptx64 -mcpu="${BITIR_MACHINE_CUDA_ARCH_NAME}" -o "${PTX_FILE}" "${IR_BC}" && "${BITIR_MACHINE_RUNTIME_HOME}/bin/${BITIR_MACHINE_COMPILER_DRIVER}" --fatbin -arch="${BITIR_MACHINE_CUDA_ARCH_NAME}" "${PTX_FILE}" -o "${FATBIN_FILE}" && "${BITIR_MACHINE_CLANGXX}" -x cuda --cuda-host-only --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}" --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}" -std=c++17 -Xclang -fcuda-include-gpubinary -Xclang "${FATBIN_FILE}" -O0 -g -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0 -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}" "${SRC}" -L"${BITIR_MACHINE_RUNTIME_HOME}/lib64"
+      -lcudart -o "${BIN_PATH}"
+
+      '
+    inject_build_injected: '"${BITIR_MACHINE_CLANGXX}" -x cuda --cuda-device-only --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}" --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}" -std=c++17 -Xclang -emit-llvm -S -O0 -g -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0 -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}" "${SRC}" -o "${IR_LL}" && "${BITIR_MACHINE_LLVM_AS}" "${IR_LL}" -o "${IR_BC}" && "${BITIR_MACHINE_OPT_BIN}" -load-pass-plugin "${PLUGIN}" -passes=fi-inject -fi-site="${SITE_ID}" -fi-bit="${BIT_INDEX}" -fi-target="${INJECT_TARGET}" -fi-int-float-only="${INT_FLOAT_ONLY}" -fi-include-constants="${INCLUDE_CONSTANTS}" "${IR_BC}" -o "${IR_INJ_BC}" && "${BITIR_MACHINE_LLC_BIN}" -march=nvptx64 -mcpu="${BITIR_MACHINE_CUDA_ARCH_NAME}" -o "${PTX_FILE}" "${IR_INJ_BC}" && "${BITIR_MACHINE_RUNTIME_HOME}/bin/${BITIR_MACHINE_COMPILER_DRIVER}" --fatbin -arch="${BITIR_MACHINE_CUDA_ARCH_NAME}" "${PTX_FILE}" -o "${FATBIN_FILE}" && "${BITIR_MACHINE_CLANGXX}" -x cuda --cuda-host-only --cuda-gpu-arch="${BITIR_MACHINE_CUDA_ARCH_NAME}"
+      --cuda-path="${BITIR_MACHINE_RUNTIME_HOME}" -std=c++17 -Xclang -fcuda-include-gpubinary -Xclang "${FATBIN_FILE}" -O0 -g -D__STRICT_ANSI__ -D_GLIBCXX_USE_FLOAT128=0 -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}" "${SRC}" -L"${BITIR_MACHINE_RUNTIME_HOME}/lib64" -lcudart -o "${BIN_PATH}"
+
+      '
+    jobs:
+      build:
+        header:
+        - '#PBS -N bitir_{machine}_{task}'
+        - '#PBS -A {ADD ACCOUNT HERE}'
+        - '#PBS -q preemptable'
+        - '#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb'
+        - '#PBS -l filesystems=home:eagle'
+        - '#PBS -l walltime=00:20:00'
+        - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
+        - '#PBS -j oe'
+      golden:
+        header:
+        - '#PBS -N bitir_{machine}_{task}'
+        - '#PBS -A {ADD ACCOUNT HERE}'
+        - '#PBS -q preemptable'
+        - '#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb'
+        - '#PBS -l filesystems=home:eagle'
+        - '#PBS -l walltime=00:20:00'
+        - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
+        - '#PBS -j oe'
+      baseline:
+        header:
+        - '#PBS -N bitir_{machine}_{task}'
+        - '#PBS -A {ADD ACCOUNT HERE}'
+        - '#PBS -q preemptable'
+        - '#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb'
+        - '#PBS -l filesystems=home:eagle'
+        - '#PBS -l walltime=00:30:00'
+        - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
+        - '#PBS -j oe'
+      inject_one:
+        header:
+        - '#PBS -N bitir_{machine}_{task}'
+        - '#PBS -A {ADD ACCOUNT HERE}'
+        - '#PBS -q preemptable'
+        - '#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb'
+        - '#PBS -l filesystems=home:eagle'
+        - '#PBS -l walltime=00:30:00'
+        - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
+        - '#PBS -j oe'
+      deploy:
+        header:
+        - '#PBS -N bitir_{machine}_{task}'
+        - '#PBS -A {ADD ACCOUNT HERE}'
+        - '#PBS -q preemptable'
+        - '#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb'
+        - '#PBS -l filesystems=home:eagle'
+        - '#PBS -l walltime=01:00:00'
+        - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
+        - '#PBS -j oe'

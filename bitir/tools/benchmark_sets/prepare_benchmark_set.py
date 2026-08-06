@@ -6,74 +6,19 @@ import shutil
 import shlex
 from pathlib import Path
 
+from benchmark_common import discover_variants, parse_list, split_top_level_args
 
-KNOWN_MODELS = ("cuda", "hip", "sycl", "omp", "openmp")
+
 GENERATED_DUMP_MODELS = ("cuda", "hip")
-
-
-def parse_list(value):
-    return [item.strip() for item in re.split(r"[;,\s]+", value or "") if item.strip()]
 
 
 def cmake_quote(value):
     return '"' + str(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
-def discover_variants(benchmark_root, source_root="src"):
-    source_dir = benchmark_root / source_root
-    variants = {}
-    if not source_dir.is_dir():
-        raise SystemExit(f"missing benchmark source root: {source_dir}")
-    for child in sorted(source_dir.iterdir()):
-        if not child.is_dir() or not (child / "CMakeLists.txt").is_file():
-            continue
-        for model in KNOWN_MODELS:
-            suffix = f"-{model}"
-            if child.name.endswith(suffix):
-                bench = child.name[: -len(suffix)]
-                variants.setdefault(bench, {})[model] = child
-                break
-    return variants
-
-
 def adapter_root_for(benchmark_set):
     bitir_root = Path(__file__).resolve().parents[2]
     return bitir_root / "benchmark_sets" / benchmark_set / "dump_adapters"
-
-
-def split_top_level_args(text):
-    args = []
-    current = []
-    depth = 0
-    in_string = None
-    escape = False
-    for char in text:
-        if in_string:
-            current.append(char)
-            if escape:
-                escape = False
-            elif char == "\\":
-                escape = True
-            elif char == in_string:
-                in_string = None
-            continue
-        if char in ("'", '"'):
-            in_string = char
-            current.append(char)
-        elif char in "([{":
-            depth += 1
-            current.append(char)
-        elif char in ")]}":
-            depth = max(0, depth - 1)
-            current.append(char)
-        elif char == "," and depth == 0:
-            args.append("".join(current).strip())
-            current = []
-        else:
-            current.append(char)
-    if current:
-        args.append("".join(current).strip())
-    return args
 
 
 def find_statement_end(text, start):
@@ -486,7 +431,7 @@ def main():
     output_root = Path(args.output_root).resolve()
     adapter_root = adapter_root_for(args.benchmark_set)
     output_root.mkdir(parents=True, exist_ok=True)
-    variants = discover_variants(benchmark_root, args.source_root)
+    variants = discover_variants(benchmark_root, args.source_root, require_cmake=True)
     benches = parse_list(args.benchmarks)
     models = parse_list(args.models)
     if not benches:

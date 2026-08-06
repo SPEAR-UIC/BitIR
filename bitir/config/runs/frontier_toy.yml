@@ -1,19 +1,17 @@
 extends:
-  - ../bitir.yml
-  - ../fault_models.yml
-
+- ../bitir.yml
+- ../fault_models.yml
+- ../machines/frontier.yml
 methodology:
   default_campaign: toy
   float_abs_tol: 1e-5
   float_rel_tol: 0.0
-
 run:
   machine: frontier
   benchmark_set: hecbench
   campaign: toy
   fault_model: frontier_toy_float_8
   execution_mode: write-script
-
 fault_models:
   frontier_toy_float_8:
     selection_mode: instruction_result
@@ -25,144 +23,22 @@ fault_models:
     skip_existing: 0
     trace_level: full
     trace_source_window: 8
-
 campaigns:
   toy:
     benchmarks:
-      - layout
-
+    - layout
 machines:
   frontier:
-    submit_command: sbatch
-    script_extension: .sbatch
-    source_key: hip
-    binary_subdir: hip
-    source_file: main.cu
     build_dir: bitir/build/hip-frontier-toy
     golden_root: Frontier_HIP_Golden_Outputs_toy
     results_root: bitir/results/llvm17_inject_amd_toy
-    modules:
-      - rocm/6.4.2
-    runtime_home: /opt/rocm
-    hip_arch: gfx90a
-    compiler_driver: hipcc
-    clangxx: clang++
-    llvm_as: llvm-as
-    llvm_config: llvm-config
-    opt_bin: opt
-    build_configure: >
-      cmake -S "${BITIR_CMAKE_SOURCE_ROOT}" -B "${BUILD_DIR}"
-      -DHECBENCH_ENABLE_CUDA=OFF
-      -DHECBENCH_ENABLE_HIP=ON
-      -DHECBENCH_ENABLE_SYCL=OFF
-      -DHECBENCH_ENABLE_OPENMP=OFF
-      -DHECBENCH_HIP_ARCH="${BITIR_MACHINE_HIP_ARCH}"
-    build_run_dump_env: HECBENCH_FI_FORCE_DUMP=1
-    run_dump_env: HECBENCH_FI_FORCE_DUMP=1
-    gpu_query_command: rocm-smi
-    worklist_build_ir: >
-      "${BITIR_MACHINE_CLANGXX}" -x hip
-      --offload-device-only
-      --offload-arch="${BITIR_MACHINE_HIP_ARCH}"
-      --hip-path="${BITIR_MACHINE_RUNTIME_HOME}"
-      -Xclang -emit-llvm -S -O0 -g
-      -I "${SRC_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
-      "${SRC}" -o "${IR_LL}"
-      && "${BITIR_MACHINE_LLVM_AS}" "${IR_LL}" -o "${IR_BC}"
-    inject_build_baseline: >
-      "${BITIR_MACHINE_CLANGXX}" -x hip
-      --offload-arch="${BITIR_MACHINE_HIP_ARCH}"
-      --hip-path="${BITIR_MACHINE_RUNTIME_HOME}"
-      -O0 -g
-      -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
-      "${SRC}" -o "${BIN_PATH}"
-    inject_build_injected: >
-      FI_SITE="${SITE_ID}"
-      FI_BIT="${BIT_INDEX}"
-      FI_TARGET="${INJECT_TARGET}"
-      FI_INT_FLOAT_ONLY="${INT_FLOAT_ONLY}"
-      FI_INCLUDE_CONSTANTS="${INCLUDE_CONSTANTS}"
-      "${BITIR_MACHINE_CLANGXX}" -x hip
-      --offload-arch="${BITIR_MACHINE_HIP_ARCH}"
-      --hip-path="${BITIR_MACHINE_RUNTIME_HOME}"
-      -O0 -g
-      -I "${BENCH_DIR}" -I "${BITIR_BENCHMARK_SOURCE_ROOT}"
-      -fpass-plugin="${PLUGIN}"
-      "${SRC}" -o "${BIN_PATH}"
-    jobs:
-      build:
-        header:
-          - "#SBATCH -J bitir_{machine}_{task}"
-          - "#SBATCH -A {ADD ACCOUNT HERE}"
-          - "#SBATCH -p batch"
-          - "#SBATCH --nodes=1"
-          - "#SBATCH --ntasks-per-node=1"
-          - "#SBATCH --gpus-per-node=1"
-          - "#SBATCH --cpus-per-task=8"
-          - "#SBATCH --mem=32G"
-          - "#SBATCH --time=00:30:00"
-          - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-      golden:
-        header:
-          - "#SBATCH -J bitir_{machine}_{task}"
-          - "#SBATCH -A {ADD ACCOUNT HERE}"
-          - "#SBATCH -p batch"
-          - "#SBATCH --nodes=1"
-          - "#SBATCH --ntasks-per-node=1"
-          - "#SBATCH --gpus-per-node=1"
-          - "#SBATCH --cpus-per-task=8"
-          - "#SBATCH --mem=32G"
-          - "#SBATCH --time=00:30:00"
-          - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-      baseline:
-        header:
-          - "#SBATCH -J bitir_{machine}_{task}"
-          - "#SBATCH -A {ADD ACCOUNT HERE}"
-          - "#SBATCH -p batch"
-          - "#SBATCH --nodes=1"
-          - "#SBATCH --ntasks-per-node=1"
-          - "#SBATCH --gpus-per-node=1"
-          - "#SBATCH --cpus-per-task=8"
-          - "#SBATCH --mem=32G"
-          - "#SBATCH --time=01:00:00"
-          - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-      inject_one:
-        header:
-          - "#SBATCH -J bitir_{machine}_{task}"
-          - "#SBATCH -A {ADD ACCOUNT HERE}"
-          - "#SBATCH -p batch"
-          - "#SBATCH --nodes=1"
-          - "#SBATCH --ntasks-per-node=1"
-          - "#SBATCH --gpus-per-node=1"
-          - "#SBATCH --cpus-per-task=8"
-          - "#SBATCH --mem=32G"
-          - "#SBATCH --time=01:00:00"
-          - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-      deploy:
-        header:
-          - "#SBATCH -J bitir_{machine}_{task}"
-          - "#SBATCH -A {ADD ACCOUNT HERE}"
-          - "#SBATCH -p batch"
-          - "#SBATCH --nodes=1"
-          - "#SBATCH --ntasks-per-node=1"
-          - "#SBATCH --gpus-per-node=1"
-          - "#SBATCH --cpus-per-task=8"
-          - "#SBATCH --mem=32G"
-          - "#SBATCH --time=01:00:00"
-          - "#SBATCH --output=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-          - "#SBATCH --error=OUT_{machine}_{task}_{bench}_{stamp}_{index}.out"
-
 benchmarks:
   layout:
     compare_mode: exact
     golden_file: layout.bin
     args:
-      - "{LAYOUT_REPEAT}"
+    - '{LAYOUT_REPEAT}'
     env:
-      LAYOUT_REPEAT: "1"
+      LAYOUT_REPEAT: '1'
     source_dirs:
       hip: src/layout-hip
