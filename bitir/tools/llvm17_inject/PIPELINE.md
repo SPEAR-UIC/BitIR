@@ -1,6 +1,6 @@
 # BitIR Pipeline
 
-The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs render one scheduler script for the selected benchmark set. `inject-one` remains a targeted single benchmark/site helper. Deploy baselines use the injected-build path with no bit flip before real injections start.
+The pipeline is driven by a user YAML. Build, golden, baseline, and deploy runs render one scheduler script for selected HeCBench benchmarks. `inject-one` remains a targeted single benchmark/site helper. Deploy baselines use the injected-build path with no bit flip before real injections start.
 
 Written and submitted scheduler scripts are compact. They keep only the
 PBS/SLURM resource header, module setup, repository `cd`, and a `controller.py
@@ -125,7 +125,6 @@ Use the inspection tool to build the application-level output inventory:
 
 ```bash
 python3 dev/tools/inspect_hecbench_outputs.py \
-  --benchmark-root HeCBench \
   --output dev/manifests/hecbench/output_manifest.proposed.yml
 ```
 
@@ -323,7 +322,7 @@ benchmarks:
 
 ## Debug studies
 
-Debug studies use the same deploy path. Put a small benchmark set, `site_list`,
+Debug studies use the same deploy path. Put a small HeCBench list, `site_list`,
 and trace fields in the selected fault model; no separate debug runner is
 required.
 

@@ -1,4 +1,4 @@
-benchmark_set: hecbench
+benchmark: hecbench
 source_root: src
 schema: bitir-output-manifest-v1
 benchmarks:

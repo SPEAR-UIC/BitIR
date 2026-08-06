@@ -8,7 +8,6 @@ methodology:
   float_rel_tol: 0.0
 run:
   machine: frontier
-  benchmark_set: hecbench
   campaign: toy
   fault_model: frontier_toy_float_8
   execution_mode: write-script

@@ -1,7 +1,17 @@
 import re
 from pathlib import Path
 
+HECBENCH_NAME = "hecbench"
+HECBENCH_SOURCE_ROOT = "src"
 KNOWN_MODELS = ("cuda", "hip", "sycl", "omp", "openmp")
+
+
+def repo_root():
+    return Path(__file__).resolve().parents[3]
+
+
+def hecbench_root():
+    return repo_root() / "HeCBench"
 
 
 def parse_list(value):

@@ -37,11 +37,9 @@ file; the templates do not create separate `ERROR_*.err` files.
 | `bitir/tools/benchmarks/` | Runtime benchmark overlay and golden-output profiling tools |
 | `dev/` | Development-only inspection tools, proposed dump adapters, review manifests, notes, and research analysis |
 | `HeCBench/` | Upstream ORNL/HeCBench checkout, tracked as a git submodule |
-| `<benchmark_set>/src/` | Supported benchmark sources; the default checkout is `HeCBench` |
 
 User-facing campaign code lives under `bitir/`. Development and research work
-lives under `dev/`. The `HeCBench/` directory is treated as the selected
-benchmark checkout, not as a place for BitIR pipeline code.
+lives under `dev/`. The `HeCBench/` submodule is the only supported benchmark checkout and must stay at the repository root.
 
 ## Development Principles
 
@@ -420,7 +418,6 @@ Generate the proposed inventory with:
 
 ```bash
 python3 dev/tools/inspect_hecbench_outputs.py \
-  --benchmark-root HeCBench \
   --output dev/manifests/hecbench/output_manifest.proposed.yml
 ```
 
@@ -431,7 +428,7 @@ The proposed file groups backend implementations under each application and mark
 Benchmark fields under `benchmarks.<name>`:
 
 - `source_dirs`: map from backend key (`cuda`, `hip`, `sycl`) to source path
-  relative to the benchmark set root
+  relative to the repository-root `HeCBench` submodule
 - `args`: command-line arguments passed to the benchmark
 - `env`: values used to format benchmark args and golden file names
 - `extra_includes`: backend-specific include paths for injection builds
@@ -484,7 +481,6 @@ differences in YAML.
 
 Required YAML sections:
 
-- `benchmark_sets`: benchmark checkout roots, such as `hecbench.root: HeCBench`
 - `run`: selected machine, campaign, fault model, execution mode
 - `campaigns`: benchmark list
 - `fault_models`: selection mode, baseline behavior, run limit
@@ -505,22 +501,9 @@ Each machine must define:
 Use the existing Polaris, Aurora, and Frontier templates as references for CUDA,
 SYCL, and HIP command shape.
 
-### Benchmark Sets
+### HeCBench Sources
 
-Benchmark source paths are configured through `benchmark_sets`:
-
-```yaml
-benchmark_sets:
-  hecbench:
-    root: HeCBench
-    source_root: src
-    build_system: cmake
-
-run:
-  benchmark_set: hecbench
-```
-
-Benchmark `source_dirs` are relative to that benchmark set root:
+Benchmark `source_dirs` are relative to the repository-root `HeCBench` submodule:
 
 ```yaml
 benchmarks:
@@ -529,14 +512,7 @@ benchmarks:
       cuda: src/layout-cuda
 ```
 
-For a different benchmark repository, add another entry under
-`benchmark_sets`, point `run.benchmark_set` at it, and keep machine-specific
-build commands in YAML.
-
-During the build phase, BitIR scans the selected benchmark set and writes a
-small CMake overlay under `bitir/build/benchmark_sets/`. Machine
-`build_configure` commands should configure `${BITIR_CMAKE_SOURCE_ROOT}` so only
-the requested benchmark variants are added to the build.
+During the build phase, BitIR scans `HeCBench/src` and writes a small CMake overlay under `bitir/build/hecbench/`. Machine `build_configure` commands should configure `${BITIR_CMAKE_SOURCE_ROOT}` so only the requested benchmark variants are added to the build.
 
 BitIR also profiles the selected benchmark variants and writes a golden-output
 key under `bitir/build/golden_keys/`. The key records the output class and dump

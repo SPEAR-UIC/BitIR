@@ -3,7 +3,7 @@ import argparse
 import re
 from pathlib import Path
 
-from benchmark_common import discover_variants, parse_list, read_sources, split_top_level_args
+from benchmark_common import HECBENCH_NAME, HECBENCH_SOURCE_ROOT, discover_variants, hecbench_root, parse_list, read_sources, split_top_level_args
 
 
 GENERATED_DUMP_MODELS = ("cuda", "hip")
@@ -19,9 +19,8 @@ def yaml_quote(value):
     return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
-def default_adapter_root(benchmark_set):
-    bitir_root = Path(__file__).resolve().parents[2]
-    return bitir_root / "benchmarks" / benchmark_set / "dump_adapters"
+def default_adapter_root():
+    return Path(__file__).resolve().parents[3] / "dev" / "manifests" / HECBENCH_NAME / "dump_adapters"
 
 
 def classify_dump(text):
@@ -239,9 +238,9 @@ def profile_variant(bench, model, source_dir, text_benchmarks, adapter_root):
     }
 
 
-def write_key(path, benchmark_set, profiles):
+def write_key(path, profiles):
     lines = [
-        f"benchmark_set: {yaml_quote(benchmark_set)}",
+        "benchmark: hecbench",
         "generated_by: bitir/tools/benchmarks/profile_golden_outputs.py",
         "outputs:",
     ]
@@ -265,10 +264,7 @@ def write_key(path, benchmark_set, profiles):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Profile requested benchmark outputs and write a golden-output key")
-    parser.add_argument("--benchmark-set", required=True)
-    parser.add_argument("--benchmark-root", required=True)
-    parser.add_argument("--source-root", default="src")
+    parser = argparse.ArgumentParser(description="Profile requested HeCBench outputs and write a golden-output key")
     parser.add_argument("--benchmarks", required=True)
     parser.add_argument("--models", required=True)
     parser.add_argument("--text-benchmarks", default="")
@@ -278,9 +274,9 @@ def main():
     parser.add_argument("--summary", action="store_true")
     args = parser.parse_args()
 
-    benchmark_root = Path(args.benchmark_root).resolve()
-    variants = discover_variants(benchmark_root, args.source_root)
-    adapter_root = Path(args.adapter_root).resolve() if args.adapter_root else default_adapter_root(args.benchmark_set)
+    benchmark_root = hecbench_root().resolve()
+    variants = discover_variants(benchmark_root, HECBENCH_SOURCE_ROOT)
+    adapter_root = Path(args.adapter_root).resolve() if args.adapter_root else default_adapter_root()
     benches = sorted(variants) if args.benchmarks.strip().lower() == "all" else parse_list(args.benchmarks)
     models = parse_list(args.models)
     text_benchmarks = set(parse_list(args.text_benchmarks))
@@ -315,7 +311,7 @@ def main():
                     "reason": "requested benchmark variant does not exist",
                 }
             )
-    write_key(output_key, args.benchmark_set, profiles)
+    write_key(output_key, profiles)
 
     unsupported = [item for item in profiles if item["status"] != "supported"]
     print(f"[golden-key] wrote {output_key}")

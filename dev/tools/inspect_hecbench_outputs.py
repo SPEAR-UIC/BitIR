@@ -12,7 +12,7 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from bitir.tools.benchmarks.benchmark_common import discover_variants, read_sources, split_top_level_args
+from bitir.tools.benchmarks.benchmark_common import HECBENCH_SOURCE_ROOT, discover_variants, hecbench_root, read_sources, split_top_level_args
 
 
 def call_args(text: str, pattern: str) -> list[list[str]]:
@@ -138,18 +138,16 @@ def app_contract(evidence: dict[str, dict[str, Any]]) -> dict[str, Any]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Inspect HeCBench application outputs and write a proposed BitIR manifest.")
-    ap.add_argument("--benchmark-root", default="HeCBench")
-    ap.add_argument("--source-root", default="src")
     ap.add_argument("--benchmarks", default="")
     ap.add_argument("--output", required=True)
     args = ap.parse_args()
 
-    root = Path(args.benchmark_root).resolve()
-    variants = discover_variants(root, args.source_root, require_cmake=False)
+    root = hecbench_root().resolve()
+    variants = discover_variants(root, HECBENCH_SOURCE_ROOT, require_cmake=False)
     selected = {item.strip() for item in re.split(r"[;,\s]+", args.benchmarks) if item.strip()}
     manifest: dict[str, Any] = {
-        "benchmark_set": "hecbench",
-        "source_root": args.source_root,
+        "benchmark": "hecbench",
+        "source_root": HECBENCH_SOURCE_ROOT,
         "schema": "bitir-output-manifest-v1",
         "benchmarks": {},
     }

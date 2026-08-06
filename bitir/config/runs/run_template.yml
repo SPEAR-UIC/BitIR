@@ -2,7 +2,6 @@ extends: ../bitir.yml
 
 run:
   machine: ""
-  benchmark_set: hecbench
   task: ""
   bench: ""
   campaign: ""

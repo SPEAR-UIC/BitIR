@@ -6,7 +6,7 @@ import shutil
 import shlex
 from pathlib import Path
 
-from benchmark_common import discover_variants, parse_list, split_top_level_args
+from benchmark_common import HECBENCH_NAME, HECBENCH_SOURCE_ROOT, discover_variants, hecbench_root, parse_list, repo_root, split_top_level_args
 
 
 GENERATED_DUMP_MODELS = ("cuda", "hip")
@@ -16,9 +16,8 @@ def cmake_quote(value):
     return '"' + str(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
-def adapter_root_for(benchmark_set):
-    bitir_root = Path(__file__).resolve().parents[2]
-    return bitir_root / "benchmarks" / benchmark_set / "dump_adapters"
+def adapter_root():
+    return repo_root() / "dev" / "manifests" / HECBENCH_NAME / "dump_adapters"
 
 
 def find_statement_end(text, start):
@@ -416,10 +415,7 @@ def write_cmake(path, benchmark_root, selected):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Prepare a BitIR benchmark-set CMake overlay")
-    parser.add_argument("--benchmark-set", default="hecbench")
-    parser.add_argument("--benchmark-root", required=True)
-    parser.add_argument("--source-root", default="src")
+    parser = argparse.ArgumentParser(description="Prepare a BitIR HeCBench CMake overlay")
     parser.add_argument("--output-root", required=True)
     parser.add_argument("--benchmarks", required=True)
     parser.add_argument("--models", required=True)
@@ -427,11 +423,11 @@ def main():
     parser.add_argument("--list", action="store_true")
     args = parser.parse_args()
 
-    benchmark_root = Path(args.benchmark_root).resolve()
+    benchmark_root = hecbench_root().resolve()
     output_root = Path(args.output_root).resolve()
-    adapter_root = adapter_root_for(args.benchmark_set)
+    adapters = adapter_root()
     output_root.mkdir(parents=True, exist_ok=True)
-    variants = discover_variants(benchmark_root, args.source_root, require_cmake=True)
+    variants = discover_variants(benchmark_root, HECBENCH_SOURCE_ROOT, require_cmake=True)
     benches = parse_list(args.benchmarks)
     models = parse_list(args.models)
     if not benches:
@@ -447,7 +443,7 @@ def main():
             if source_dir:
                 selected_source, adapter_dir = materialize_source_dir(
                     output_root,
-                    adapter_root,
+                    adapters,
                     bench,
                     model,
                     source_dir,
@@ -467,7 +463,7 @@ def main():
     write_manifest(output_root / "benchmark_variants.csv", selected)
     write_cmake(output_root / "CMakeLists.txt", benchmark_root, selected)
     quoted = " ".join(shlex.quote(f"{bench}-{model}") for bench, model, _, _ in selected)
-    print(f"[benchmark-set] {args.benchmark_set}: prepared {quoted} in {output_root}")
+    print(f"[hecbench] prepared {quoted} in {output_root}")
 
 
 if __name__ == "__main__":

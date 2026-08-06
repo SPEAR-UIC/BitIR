@@ -4,8 +4,7 @@ Comparison target: `ORNL/HeCBench` cloned at `3cdcf08` into `/private/tmp/HeCBen
 
 ## Summary
 
-The pipeline can render build and deploy scripts with `benchmark_sets.hecbench.root`
-pointing at the fresh checkout, so the new BitIR path plumbing works.
+The pipeline now assumes the repository-root `HeCBench` submodule. Earlier probes used a temporary fresh checkout to validate BitIR-owned path plumbing.
 
 The fresh checkout is not ready to run as a drop-in replacement yet. The original
 breakage was concentrated in two areas:
@@ -63,15 +62,7 @@ backend configure against the fresh checkout succeeded through this overlay.
 
 ## Script Render Probe
 
-Temporary configs extended the shipped toy YAMLs and overrode:
-
-```yaml
-benchmark_sets:
-  hecbench:
-    root: /private/tmp/HeCBench_clean
-    source_root: src
-    build_system: cmake
-```
+Temporary configs extended the shipped toy YAMLs while testing the fresh checkout path behavior.
 
 Rendered successfully:
 
@@ -79,9 +70,7 @@ Rendered successfully:
 - Aurora build and deploy scripts
 - Frontier build and deploy scripts
 
-This validates BitIR-owned paths and benchmark set roots at script-generation
-time only. It does not validate CMake compilation or golden-output generation on
-the target systems.
+This validated BitIR-owned paths at script-generation time only. It did not validate CMake compilation or golden-output generation on the target systems.
 
 ## Required Migration Work
 
@@ -91,8 +80,7 @@ the target systems.
 
 2. Move golden-output snapshot behavior out of edited benchmark files.
    Preferred path: generate patched benchmark overlays into
-   `bitir/build/benchmark_sets`. Do not add alternate compatibility paths for
-   old benchmark layouts.
+   `bitir/build/hecbench`. Do not add alternate compatibility paths for old benchmark layouts.
 
 3. Remove or isolate old FI-GPU CMake integration.
    `FIGPUIntegration.cmake` and `fi_nvcc_wrapper.sh.in` are local-only and not

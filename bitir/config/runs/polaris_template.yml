@@ -8,7 +8,6 @@ methodology:
   float_rel_tol: 0.0
 run:
   machine: polaris
-  benchmark_set: hecbench
   campaign: template
   fault_model: quick_float_8
   execution_mode: write-script

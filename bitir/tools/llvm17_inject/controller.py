@@ -43,18 +43,9 @@ def machine_env(machine: dict[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in machine.items() if key not in {"jobs", "modules", "module_use", "submit_command"}}
 
 
-def benchmark_set_paths(cfg: dict[str, Any], run_cfg: dict[str, Any], repo_root: Path) -> tuple[str, Path, Path]:
-    name = clean(run_cfg.get("benchmark_set")) or clean(cfg.get("benchmark_set")) or "hecbench"
-    entry = dict(cfg.get("benchmark_sets", {}).get(name, {}))
-    if not entry:
-        raise SystemExit(f"unknown benchmark_set={name!r} in YAML")
-    root = Path(clean(entry.get("root")))
-    if not str(root):
-        raise SystemExit(f"benchmark_sets.{name}.root is required")
-    if not root.is_absolute():
-        root = repo_root / root
-    source_root = root / clean(entry.get("source_root") or "src")
-    return name, root, source_root
+def hecbench_paths(repo_root: Path) -> tuple[Path, Path]:
+    root = repo_root / "HeCBench"
+    return root, root / "src"
 
 
 def selected_benches(task: str, cfg: dict[str, Any], campaign: str, bench: str, benches_file: str) -> list[str]:
@@ -179,7 +170,6 @@ def local_exports(
     method_cfg: dict[str, Any],
     machine: dict[str, Any],
     machine_name: str,
-    benchmark_set_name: str,
     benchmark_root: Path,
     benchmark_source_root: Path,
     repo_root: Path,
@@ -194,7 +184,6 @@ def local_exports(
     exports = [
         export_line("BITIR_WORKDIR", str(repo_root)),
         export_line("BITIR_ROOT", str(Path(__file__).resolve().parents[2])),
-        export_line("BITIR_BENCHMARK_SET", benchmark_set_name),
         export_line("BITIR_BENCHMARK_ROOT", str(benchmark_root)),
         export_line("BITIR_BENCHMARK_SOURCE_ROOT", str(benchmark_source_root)),
         export_line("BITIR_MACHINE", machine_name),
@@ -280,7 +269,7 @@ def main() -> None:
     if args.task == "inject-one" and bit_index is None:
         raise SystemExit("inject-one requires bit_index")
 
-    benchmark_set_name, benchmark_root, benchmark_source_root = benchmark_set_paths(cfg, run_cfg, repo_root)
+    benchmark_root, benchmark_source_root = hecbench_paths(repo_root)
     machine = dict(cfg.get("machines", {}).get(machine_name, {}))
     if not machine:
         raise SystemExit(f"unknown machine={machine_name!r}")
@@ -318,7 +307,7 @@ def main() -> None:
 
         if mode == "local":
             exports = local_exports(
-                args, cfg, method_cfg, machine, machine_name, benchmark_set_name, benchmark_root,
+                args, cfg, method_cfg, machine, machine_name, benchmark_root,
                 benchmark_source_root, repo_root, unit_benches, benches_file, bench_name or bench,
                 fault_model, fault_model_cfg, site_id, bit_index,
             )

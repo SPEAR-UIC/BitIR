@@ -17,7 +17,6 @@ Generate the proposed application-level output inventory with:
 
 ```bash
 python3 dev/tools/inspect_hecbench_outputs.py \
-  --benchmark-root HeCBench \
   --output dev/manifests/hecbench/output_manifest.proposed.yml
 ```
 

@@ -4,6 +4,7 @@
 
 ### Removed
 
+- Removed configurable benchmark-set/root selection. BitIR now assumes the repository-root `HeCBench` submodule and no longer exposes `benchmark_set`, `benchmark_sets`, `--benchmark-set`, `--benchmark-root`, or `--source-root` for HeCBench tooling.
 - Removed the old `bitir/tools/llvm17_inject/bitir_pipeline.py` command entirely. `controller.py` is the only supported entry point.
 - Removed legacy worklist-format branching from `build_bench_worklist.py`; BitIR now emits and consumes rich site metadata only.
 - Removed the deleted `progress_journal.docx` research artifact from version control.

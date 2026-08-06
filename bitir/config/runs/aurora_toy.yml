@@ -8,7 +8,6 @@ methodology:
   float_rel_tol: 0.0
 run:
   machine: aurora
-  benchmark_set: hecbench
   campaign: toy
   fault_model: aurora_toy_float_8
   execution_mode: write-script
