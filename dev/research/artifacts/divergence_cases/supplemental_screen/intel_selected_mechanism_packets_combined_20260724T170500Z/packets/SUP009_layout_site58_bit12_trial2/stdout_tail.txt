@@ -1,0 +1,7 @@
+Average kernel execution time (AoS): 63923.8 (us)
+PASS
+layout snapshot written to /lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_selected_mechanism_packets_20260724T154638Z/tmp/layout_site58_bit12_trial2/layout_site58_bit12_trial2.bin
+Average kernel execution time (SoA): 56697 (us)
+FAIL
+compare_ok
+Result: MASKED (exit 0)

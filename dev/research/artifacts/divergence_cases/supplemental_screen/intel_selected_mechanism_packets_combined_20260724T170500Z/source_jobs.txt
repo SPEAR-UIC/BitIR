@@ -1,0 +1,4 @@
+/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_selected_mechanism_packets_20260724T154638Z
+/home/mdunlavy/GPU_FI/divergence_cases/supplemental_screen/intel_selected_mechanism_packets_continuation_20260724T162511Z
+first_job=8696997 Exit_status=-29 walltime_partial
+continuation_job=8697136 Exit_status=0

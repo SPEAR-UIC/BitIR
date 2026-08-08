@@ -1,0 +1,11 @@
+   84:   const int range = offset[batch_idx + 1] - start;
+   85:   for (int s = 0; s < range; s += item.get_local_range(0)) {
+   86:     int idx = s + item.get_local_id(0);
+   87:     if (idx < range) {
+   88:       T input_elem = input[start + idx];
+>> 89:       T dense_elem = dense[batch_idx * embedding_dim + idx % embedding_dim];
+   90:       output[start + idx] = input_elem + dense_elem;
+   91:     }
+   92:   }
+   93: }
+   94: 

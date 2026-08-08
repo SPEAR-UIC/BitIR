@@ -1,0 +1,3 @@
+[gpu-debug] device=Intel(R) Data Center GPU Max 1550 vendor=Intel(R) Corporation driver=1.6.33578+42 backend=level_zero is_gpu=1
+Segmentation fault from GPU at 0xff000000001f6000, ctx_id: 9 (CCS) type: 0 (NotPresent), level: 1 (PDE), access: 0 (Read), banned: 1, aborting.
+/home/mdunlavy/GPU_FI/HeCBench/tools/llvm17_inject/run_benchmark_injection.sh: line 117: 100543 Aborted                 timeout --kill-after="${RUN_TIMEOUT_KILL_AFTER:-15s}" "${RUN_TIMEOUT}" "$@"

@@ -1,0 +1,11 @@
+   38:   const int batch_idx  = item.get_group(0); // each batch is handled by a block
+   39:   const int grain_size = item.get_local_range(0);
+   40:   const int tid = item.get_local_id(0);
+   41:   const int range = offset[batch_idx + 1] - offset[batch_idx];
+   42:   for (int idx = tid; idx < embedding_dim; idx += grain_size) {
+>> 43:     const T dense_elem = dense[batch_idx * embedding_dim + idx];
+   44:     for (int nested_idx = idx; nested_idx < range; nested_idx += embedding_dim) {
+   45:       output[offset[batch_idx] + nested_idx] =
+   46:         input[offset[batch_idx] + nested_idx] + dense_elem;
+   47:     }
+   48:   }

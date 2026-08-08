@@ -1,0 +1,5 @@
+screen_id,bench,old_site_id,site_id,bit_index,trial1_classification,trial2_classification,final_reproducible_result,reproducible
+SUP001,matrix-rotate,17,17,31,DUE,DUE,DUE,True
+SUP002,matrix-rotate,17,17,13,SDC,SDC,SDC,True
+SUP009,layout,58,58,12,MASKED,MASKED,MASKED,True
+SUP004,dense-embedding,33,33,11,SDC,SDC,SDC,True

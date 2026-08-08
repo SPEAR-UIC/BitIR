@@ -1,0 +1,11 @@
+depth,input_value,defined_value,line_number,consumer_class,instruction
+1,%fi_flip,%98,353,other,%98 = sext i32 %fi_flip to i64
+2,%98,%99,354,address_calc,"%99 = getelementptr inbounds float, ptr addrspace(4) %92, i64 %98"
+2,%98,%100,1128,other,"%100 = icmp slt i32 %98, %99"
+2,%98,%99,1366,other,"%99 = add nsw i32 %97, %98"
+3,%99,%100,355,other,"%100 = load float, ptr addrspace(4) %99, align 4"
+3,%99,%100,1128,other,"%100 = icmp slt i32 %98, %99"
+3,%99,%100,1367,other,%100 = sext i32 %99 to i64
+3,%100,,356,store_data,"store float %100, ptr addrspace(4) %41, align 4"
+3,%100,,1129,branch,"br i1 %100, label %101, label %121"
+3,%100,%101,1368,address_calc,"%101 = getelementptr inbounds float, ptr addrspace(4) %96, i64 %100"

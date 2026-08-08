@@ -1,0 +1,6 @@
+depth,input_value,defined_value,line_number,consumer_class,instruction
+1,%fi_flip,%45,857,other,%45 = sext i32 %fi_flip to i64
+2,%45,%46,254,address_calc,"%46 = getelementptr inbounds nuw %struct.AppleTree, ptr addrspace(4) %43, i64 %45"
+2,%45,%46,858,address_calc,"%46 = getelementptr inbounds %struct.ApplesOnTrees, ptr addrspace(4) %43, i64 %45"
+3,%46,%47,255,address_calc,"%47 = getelementptr inbounds nuw %struct.AppleTree, ptr addrspace(4) %46, i32 0, i32 0"
+3,%46,%47,859,address_calc,"%47 = getelementptr inbounds nuw %struct.ApplesOnTrees, ptr addrspace(4) %46, i32 0, i32 0"

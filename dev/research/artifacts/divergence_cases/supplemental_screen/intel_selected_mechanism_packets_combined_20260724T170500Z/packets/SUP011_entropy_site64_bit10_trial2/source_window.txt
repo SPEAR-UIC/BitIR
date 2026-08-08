@@ -1,0 +1,11 @@
+   82:             }
+   83:           }
+   84:         }
+   85: 
+   86:         float entropy = 0;
+>> 87:         if (total < 1) {
+   88:           total = 1;
+   89:         } else {
+   90:           for(int k = 0; k < 16; k++) {
+   91:             float p = sycl::native::divide((float)count[k], (float)total);
+   92:             entropy -= p * sycl::native::log2(p);

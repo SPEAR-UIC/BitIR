@@ -1,0 +1,4 @@
+Segmentation fault from GPU at 0xff000000001f6000, ctx_id: 9 (CCS) type: 0 (NotPresent), level: 1 (PDE), access: 0 (Read), banned: 1, aborting.
+Abort was called at 288 line in file:
+/home/ubit/rpmbuild/BUILD/intel-compute-runtime-25.18.33578.42/shared/source/os_interface/linux/drm_neo.cpp
+Result: FAILURE (exit 134)

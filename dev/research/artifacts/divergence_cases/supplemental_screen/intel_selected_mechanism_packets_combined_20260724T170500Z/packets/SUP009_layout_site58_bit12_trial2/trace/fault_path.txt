@@ -1,0 +1,12 @@
+bench=layout
+site_id=58
+bit_index=12
+selected_site=base,load,int,32,_Z9SoAKernelPK13ApplesOnTreesPiiRN4sycl3_V17nd_itemILi1EEE,63,26,4
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %44, 4096
+mutated_value=%fi_flip
+flipped_bit=12
+first_direct_consumer=%45 = sext i32 %fi_flip to i64
+consumer_class=other
+use_chain_path=use_chain.csv
+final_observed_outcome=MASKED

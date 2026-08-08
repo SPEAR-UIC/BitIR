@@ -1,0 +1,11 @@
+   78:         [=](sycl::nd_item<1> item) {
+   79:         int layer = item.get_global_id(0);
+   80:         if (layer < n/2) {
+   81:           int first = layer;
+   82:           int last = n - 1 - layer;
+>> 83:           for(int i = first; i < last; ++i) {
+   84:             int offset = i - first;
+   85: 
+   86:             float top = d_matrix[first*n+i]; // save top
+   87:             // left -> top
+   88:             d_matrix[first*n+i] = d_matrix[(last-offset)*n+first];

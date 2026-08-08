@@ -1,0 +1,12 @@
+bench=dense-embedding
+site_id=192
+bit_index=0
+selected_site=base,add,int,32,_Z12dense_esuhm3IfEvRN4sycl3_V17nd_itemILi1EEEPKT_S7_PS5_iPKi,89,54,3
+injection_site=,,,,,,,
+mutated_instruction=%fi_flip = xor i32 %110, 1
+mutated_value=%fi_flip
+flipped_bit=0
+first_direct_consumer=%111 = sext i32 %fi_flip to i64
+consumer_class=other
+use_chain_path=use_chain.csv
+final_observed_outcome=SDC

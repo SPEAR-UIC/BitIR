@@ -1,0 +1,8 @@
+benchmark,site_id,bit_index,trial1_output_class,trial2_output_class,reproducible
+matrix-rotate,17,31,DUE_LIKE_NON_COMPLETION,DUE_LIKE_NON_COMPLETION,True
+matrix-rotate,17,13,FULL_SIZE_SDC,FULL_SIZE_SDC,True
+dense-embedding,33,11,FULL_SIZE_SDC,FULL_SIZE_SDC,True
+dense-embedding,18,7,FULL_SIZE_SDC,FULL_SIZE_SDC,True
+layout,58,12,EXACT_MATCH,EXACT_MATCH,True
+dense-embedding,192,0,FULL_SIZE_SDC,FULL_SIZE_SDC,True
+entropy,64,10,EXACT_MATCH,EXACT_MATCH,True

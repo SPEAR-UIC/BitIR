@@ -1,0 +1,12 @@
+{
+  "final_counts": {
+    "DUE": 1,
+    "MASKED": 1,
+    "SDC": 2
+  },
+  "trial_counts": {
+    "DUE": 2,
+    "MASKED": 2,
+    "SDC": 5
+  }
+}

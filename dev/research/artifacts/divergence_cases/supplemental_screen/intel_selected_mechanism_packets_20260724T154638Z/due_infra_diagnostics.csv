@@ -1,0 +1,10 @@
+screen_id,bench,site_id,bit_index,trial,classification,timeout,signal_or_crash,nonzero_exit,gpu_runtime_error,infra_failure,due_reason
+SUP001,matrix-rotate,17,31,1,DUE,False,True,True,False,False,signal_or_crash
+SUP001,matrix-rotate,17,31,2,DUE,False,True,True,False,False,signal_or_crash
+SUP002,matrix-rotate,17,13,1,SDC,False,False,False,False,False,
+SUP002,matrix-rotate,17,13,2,SDC,False,False,False,False,False,
+SUP009,layout,58,12,1,MASKED,False,False,False,False,False,
+SUP009,layout,58,12,2,MASKED,False,False,False,False,False,
+SUP004,dense-embedding,33,11,1,SDC,False,False,False,False,False,
+SUP004,dense-embedding,33,11,2,SDC,False,False,False,False,False,
+SUP005,dense-embedding,18,7,1,SDC,False,False,False,False,False,

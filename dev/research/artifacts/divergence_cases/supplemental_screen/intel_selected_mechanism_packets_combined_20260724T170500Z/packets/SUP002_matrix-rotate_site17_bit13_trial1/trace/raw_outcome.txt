@@ -1,0 +1,14 @@
+bench=matrix-rotate
+site_id=17
+bit_index=13
+trial=1
+result=SDC
+process_exit=0
+timeout=0
+benchmark_status=FAIL
+dump_exists=1
+dump_compare=fail
+amd_execution_mode=injected_ir
+selected_manifest_row=
+local_metadata_row=17,base,load,int,32,-1,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi1EEEE_clES5_,/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-sycl/main.cpp,83,23,7,_ZZZ4mainENKUlRN4sycl3_V17handlerEE_clES2_ENKUlNS0_7nd_itemILi1EEEE_clES5_|base|load|int|32|-1|/home/mdunlavy/GPU_FI/HeCBench/src/matrix-rotate-sycl/main.cpp|83|23|7
+mutated_ir_instruction=%fi_flip = xor i32 %51, 8192 || store i32 %fi_flip, ptr addrspace(4) %21, align 4

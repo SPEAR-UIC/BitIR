@@ -1,0 +1,2 @@
+site_id,bit_index,trial,result,exit_code,stdout,stderr,dump
+33,11,0,BASELINE,0,/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_selected_mechanism_packets_20260724T154638Z/local_dumps/dense-embedding/baseline.out,/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_selected_mechanism_packets_20260724T154638Z/local_dumps/dense-embedding/baseline.err,

@@ -1,0 +1,13 @@
+{
+  "candidate_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_selected_mechanism_packets_20260724T154638Z/tmp/matrix-rotate_baseline/matrix-rotate_baseline.bin",
+  "candidate_sha256": "930c04b1dd43880a8633996d73918b6fac9ea5f8e44b18fde292040ab2e06420",
+  "candidate_size_bytes": 400000000,
+  "exact_match": true,
+  "first_differing_index": "",
+  "golden_path": "/lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_selected_mechanism_packets_20260724T154638Z/golden/matrix-rotate_10000_1.bin",
+  "golden_sha256": "930c04b1dd43880a8633996d73918b6fac9ea5f8e44b18fde292040ab2e06420",
+  "golden_size_bytes": 400000000,
+  "mismatch_count": 0,
+  "mode": "exact",
+  "status": "pass"
+}

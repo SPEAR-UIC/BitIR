@@ -1,0 +1,7 @@
+depth,input_value,defined_value,line_number,consumer_class,instruction
+1,%fi_flip,%77,326,other,%77 = sext i32 %fi_flip to i64
+2,%77,%78,327,address_calc,"%78 = getelementptr inbounds i32, ptr addrspace(4) %74, i64 %77"
+2,%77,,1095,store_data,"store i64 %77, ptr addrspace(4) %72, align 8"
+2,%77,,1342,store_data,"store ptr addrspace(4) %77, ptr addrspace(4) %79, align 8"
+3,%78,%79,328,other,"%79 = load i32, ptr addrspace(4) %78, align 4"
+3,%78,%79,1097,other,"%79 = icmp ule i64 %78, 2147483647"

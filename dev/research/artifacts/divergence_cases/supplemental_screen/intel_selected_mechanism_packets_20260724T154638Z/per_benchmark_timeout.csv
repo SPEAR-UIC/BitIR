@@ -1,0 +1,4 @@
+bench,timeout_seconds,source
+matrix-rotate,200,env:ORIGINAL_CAMPAIGN_TIMEOUT
+layout,200,env:ORIGINAL_CAMPAIGN_TIMEOUT
+dense-embedding,200,env:ORIGINAL_CAMPAIGN_TIMEOUT

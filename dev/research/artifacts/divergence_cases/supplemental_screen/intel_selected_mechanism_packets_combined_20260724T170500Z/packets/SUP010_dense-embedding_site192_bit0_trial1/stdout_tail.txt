@@ -1,0 +1,71 @@
+Number of rows in the embedding table: 10000
+Batch size: 8
+
+Embedding dimension: 768
+block size: 128
+Average execution time of dense embedding kernel (k1): 70176.015625 (us)
+Average execution time of dense embedding kernel (k2): 58143.089844 (us)
+Average execution time of dense embedding kernel (k3): 54880.312500 (us)
+FAIL
+block size: 256
+Average execution time of dense embedding kernel (k1): 893.877014 (us)
+Average execution time of dense embedding kernel (k2): 736.431030 (us)
+Average execution time of dense embedding kernel (k3): 867.280029 (us)
+FAIL
+block size: 512
+Average execution time of dense embedding kernel (k1): 831.615051 (us)
+Average execution time of dense embedding kernel (k2): 713.944031 (us)
+Average execution time of dense embedding kernel (k3): 759.976013 (us)
+FAIL
+block size: 1024
+Average execution time of dense embedding kernel (k1): 780.732056 (us)
+Average execution time of dense embedding kernel (k2): 684.988037 (us)
+Average execution time of dense embedding kernel (k3): 684.714050 (us)
+FAIL
+
+Embedding dimension: 2048
+block size: 128
+Average execution time of dense embedding kernel (k1): 3185.919189 (us)
+Average execution time of dense embedding kernel (k2): 1039.380005 (us)
+Average execution time of dense embedding kernel (k3): 1856.769043 (us)
+FAIL
+block size: 256
+Average execution time of dense embedding kernel (k1): 1028.470093 (us)
+Average execution time of dense embedding kernel (k2): 837.675049 (us)
+Average execution time of dense embedding kernel (k3): 1243.233032 (us)
+FAIL
+block size: 512
+Average execution time of dense embedding kernel (k1): 979.246033 (us)
+Average execution time of dense embedding kernel (k2): 785.610046 (us)
+Average execution time of dense embedding kernel (k3): 966.354065 (us)
+FAIL
+block size: 1024
+Average execution time of dense embedding kernel (k1): 1033.333008 (us)
+Average execution time of dense embedding kernel (k2): 805.823059 (us)
+Average execution time of dense embedding kernel (k3): 870.967041 (us)
+FAIL
+
+Embedding dimension: 12288
+block size: 128
+Average execution time of dense embedding kernel (k1): 2114.736084 (us)
+Average execution time of dense embedding kernel (k2): 2099.627197 (us)
+Average execution time of dense embedding kernel (k3): 7379.743164 (us)
+FAIL
+block size: 256
+Average execution time of dense embedding kernel (k1): 1555.039062 (us)
+Average execution time of dense embedding kernel (k2): 1243.723022 (us)
+Average execution time of dense embedding kernel (k3): 3982.844238 (us)
+FAIL
+block size: 512
+Average execution time of dense embedding kernel (k1): 1298.889038 (us)
+Average execution time of dense embedding kernel (k2): 1096.666016 (us)
+Average execution time of dense embedding kernel (k3): 2390.740234 (us)
+FAIL
+block size: 1024
+Average execution time of dense embedding kernel (k1): 1208.950073 (us)
+Average execution time of dense embedding kernel (k2): 963.489075 (us)
+Average execution time of dense embedding kernel (k3): 1727.638062 (us)
+FAIL
+dense-embedding snapshot written to /lus/flare/projects/UIC-HPC/mdunlavy/GPU_FI_supplemental_dumps/intel_selected_mechanism_packets_continuation_20260724T162511Z/tmp/dense-embedding_site192_bit0_trial1/dense-embedding_site192_bit0.bin
+mismatch
+Result: SDC (exit 0)
