@@ -14,7 +14,6 @@ machines:
     - PrgEnv-gnu
     - spack-pe-base
     - cmake
-    - gcc-native/12.3
     - cudatoolkit-standalone/11.8.0
     - llvm/release-17.0.0
     runtime_home: /soft/compilers/cudatoolkit/cuda-11.8.0
