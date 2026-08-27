@@ -16,6 +16,7 @@ machines:
     - ninja/1.12.1
     - oneapi/release/2025.2.0
     compiler_driver: icpx
+    clangxx: icpx
     icpx: icpx
     llvm_config: llvm-config
     opt_bin: opt

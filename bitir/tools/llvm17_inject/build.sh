@@ -39,6 +39,10 @@ find_tool() {
     printf '%s\n' "${current}"
     return 0
   fi
+  if [[ -n "${current}" ]] && command -v "${current}" >/dev/null 2>&1; then
+    command -v "${current}"
+    return 0
+  fi
 
   local name="$1"
   shift
