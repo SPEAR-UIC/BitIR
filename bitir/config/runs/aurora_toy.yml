@@ -33,6 +33,10 @@ machines:
     results_root: bitir/results/llvm17_inject_toy
 benchmarks:
   colorwheel:
+    args:
+    - "1"
+    - "32"
+    - "1"
     compare_mode: text
     golden_file: colorwheel.txt
     source_dirs:

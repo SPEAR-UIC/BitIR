@@ -92,6 +92,10 @@ machines:
         - '#PBS -j oe'
 benchmarks:
   colorwheel:
+    args:
+    - "1"
+    - "32"
+    - "1"
     compare_mode: text
     golden_file: colorwheel.txt
     source_dirs:
