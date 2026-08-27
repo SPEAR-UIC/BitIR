@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-from __future__ import annotations
 
 import argparse
 import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List, Tuple
 
 import yaml
 
@@ -15,8 +14,8 @@ sys.path.insert(0, str(REPO_ROOT))
 from bitir.tools.benchmarks.benchmark_common import HECBENCH_SOURCE_ROOT, discover_variants, hecbench_root, read_sources, split_top_level_args
 
 
-def call_args(text: str, pattern: str) -> list[list[str]]:
-    calls: list[list[str]] = []
+def call_args(text: str, pattern: str) -> List[List[str]]:
+    calls = []  # type: List[List[str]]
     pos = 0
     rx = re.compile(pattern, re.MULTILINE)
     while True:
@@ -51,7 +50,7 @@ def output_expr(expr: str) -> bool:
     return "input" not in lower and "host" not in lower
 
 
-def unique_records(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+def unique_records(rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
     seen = set()
     out = []
     for row in rows:
@@ -63,7 +62,7 @@ def unique_records(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     return out
 
 
-def copy_candidates(model: str, text: str) -> list[dict[str, str]]:
+def copy_candidates(model: str, text: str) -> List[Dict[str, str]]:
     if model in {"cuda", "hip"}:
         api = r"\b(?:cudaMemcpy|cudaMemcpyAsync|hipMemcpy|hipMemcpyAsync)\s*\("
         directions = {"cudaMemcpyDeviceToHost", "hipMemcpyDeviceToHost"}
@@ -81,7 +80,7 @@ def copy_candidates(model: str, text: str) -> list[dict[str, str]]:
     return []
 
 
-def text_signals(text: str) -> list[str]:
+def text_signals(text: str) -> List[str]:
     signals = []
     for name, rx in {
         "pass_fail": r"\b(PASS|FAIL|Pass|Fail|passed|failed)\b",
@@ -93,7 +92,7 @@ def text_signals(text: str) -> list[str]:
     return signals
 
 
-def output_kind(records: list[dict[str, str]], signals: list[str]) -> dict[str, Any]:
+def output_kind(records: List[Dict[str, str]], signals: List[str]) -> Dict[str, Any]:
     if records:
         joined = " ".join(f"{r['expr']} {r['bytes']}" for r in records).lower()
         compare = "float" if any(word in joined for word in ["float", "double", "real", "solution"]) else "exact"
@@ -110,7 +109,7 @@ def output_kind(records: list[dict[str, str]], signals: list[str]) -> dict[str, 
     }
 
 
-def inspect_variant(model: str, root: Path, source_dir: Path) -> dict[str, Any]:
+def inspect_variant(model: str, root: Path, source_dir: Path) -> Dict[str, Any]:
     chunks = read_sources(source_dir)
     text = "\n".join(chunk for _, chunk in chunks)
     records = copy_candidates(model, text)
@@ -122,9 +121,9 @@ def inspect_variant(model: str, root: Path, source_dir: Path) -> dict[str, Any]:
     }
 
 
-def app_contract(evidence: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    records_by_expr: dict[tuple[str, str], dict[str, str]] = {}
-    signals: list[str] = []
+def app_contract(evidence: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    records_by_expr = {}  # type: Dict[Tuple[str, str], Dict[str, str]]
+    signals = []  # type: List[str]
     for item in evidence.values():
         for row in item["copy_candidates"]:
             records_by_expr[(row["expr"], row["bytes"])] = {"expr": row["expr"], "bytes": row["bytes"]}
@@ -145,7 +144,7 @@ def main() -> int:
     root = hecbench_root().resolve()
     variants = discover_variants(root, HECBENCH_SOURCE_ROOT, require_cmake=False)
     selected = {item.strip() for item in re.split(r"[;,\s]+", args.benchmarks) if item.strip()}
-    manifest: dict[str, Any] = {
+    manifest = {  # type: Dict[str, Any]
         "benchmark": "hecbench",
         "source_root": HECBENCH_SOURCE_ROOT,
         "schema": "bitir-output-manifest-v1",

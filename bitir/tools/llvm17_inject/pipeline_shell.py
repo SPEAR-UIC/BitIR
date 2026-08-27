@@ -1,11 +1,9 @@
-from __future__ import annotations
-
 import shlex
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List
 
 
-def shell_join(command: list[Any]) -> str:
+def shell_join(command: List[Any]) -> str:
     return " ".join(shlex.quote(str(part)) for part in command)
 
 
@@ -17,7 +15,7 @@ def export_line(name: str, value: Any) -> str:
     return f"export {name}={shlex.quote(str(value))}"
 
 
-def export_mapping(lines: list[str], prefix: str, value: Any) -> None:
+def export_mapping(lines: List[str], prefix: str, value: Any) -> None:
     if isinstance(value, dict):
         for key, subvalue in value.items():
             export_mapping(lines, f"{prefix}_{str(key).upper()}", subvalue)
@@ -27,7 +25,7 @@ def export_mapping(lines: list[str], prefix: str, value: Any) -> None:
         lines.append(line)
 
 
-def script_header(machine_name: str, task: str, job: dict[str, Any]) -> list[str]:
+def script_header(machine_name: str, task: str, job: Dict[str, Any]) -> List[str]:
     values = {
         "machine": machine_name,
         "task": task.replace("-", "_"),
@@ -46,8 +44,8 @@ def script_header(machine_name: str, task: str, job: dict[str, Any]) -> list[str
     return header
 
 
-def module_block(module_use: list[str], modules: list[str], permissive: bool) -> list[str]:
-    lines: list[str] = [
+def module_block(module_use: List[str], modules: List[str], permissive: bool) -> List[str]:
+    lines = [  # type: List[str]
         'if ! command -v module >/dev/null 2>&1 && [[ -f /etc/profile.d/modules.sh ]]; then',
         '  source /etc/profile.d/modules.sh',
         "fi",
@@ -66,11 +64,11 @@ def module_block(module_use: list[str], modules: list[str], permissive: bool) ->
 def scheduler_script(
     machine_name: str,
     task: str,
-    job: dict[str, Any],
-    command: list[Any],
+    job: Dict[str, Any],
+    command: List[Any],
     repo_root: Path,
-    module_use: list[str],
-    modules: list[str],
+    module_use: List[str],
+    modules: List[str],
 ) -> str:
     lines = [
         "set -euo pipefail",
@@ -86,11 +84,11 @@ def scheduler_script(
 def local_script(
     machine_name: str,
     task: str,
-    job: dict[str, Any],
-    exports: list[str],
+    job: Dict[str, Any],
+    exports: List[str],
     body: str,
-    module_use: list[str],
-    modules: list[str],
+    module_use: List[str],
+    modules: List[str],
 ) -> str:
     lines = [
         "set -euo pipefail",

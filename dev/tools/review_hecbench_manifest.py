@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-from __future__ import annotations
 
 import argparse
 import csv
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List, Set, Tuple
 
 import yaml
 
 
-def load_yaml(path: Path) -> dict[str, Any]:
+def load_yaml(path: Path) -> Dict[str, Any]:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
-def machine_backends(config_dir: Path) -> dict[str, str]:
+def machine_backends(config_dir: Path) -> Dict[str, str]:
     out = {}
     for path in sorted(config_dir.glob("*.yml")):
         for name, cfg in load_yaml(path).get("machines", {}).items():
@@ -23,11 +22,11 @@ def machine_backends(config_dir: Path) -> dict[str, str]:
     return out
 
 
-def record_keys(rows: list[dict[str, Any]]) -> set[tuple[str, str]]:
+def record_keys(rows: List[Dict[str, Any]]) -> Set[Tuple[str, str]]:
     return {(str(row.get("expr", "")).strip(), str(row.get("bytes", "")).strip()) for row in rows}
 
 
-def review_entry(entry: dict[str, Any], backends: set[str]) -> tuple[str, list[str]]:
+def review_entry(entry: Dict[str, Any], backends: Set[str]) -> Tuple[str, List[str]]:
     output = entry.get("output", {})
     fmt = output.get("format")
     sources = entry.get("sources", {})
@@ -79,7 +78,7 @@ def main() -> int:
     backends = set(machines.values())
     rows = []
     counts = {"static_candidate": 0, "manual_review": 0}
-    reason_counts: dict[str, int] = {}
+    reason_counts = {}  # type: Dict[str, int]
 
     for bench, entry in sorted(manifest.get("benchmarks", {}).items()):
         status, reasons = review_entry(entry, backends)

@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 from copy import deepcopy
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List, Set, Union
 
 import yaml
 
@@ -19,10 +17,10 @@ def merge_dicts(base: Any, override: Any) -> Any:
     return merged
 
 
-def load_config(path: str | Path) -> dict[str, Any]:
-    seen: set[Path] = set()
+def load_config(path: Union[str, Path]) -> Dict[str, Any]:
+    seen = set()  # type: Set[Path]
 
-    def read_one(config_path: Path) -> dict[str, Any]:
+    def read_one(config_path: Path) -> Dict[str, Any]:
         config_path = config_path.resolve()
         if config_path in seen:
             raise SystemExit(f"cyclic config extends detected at {config_path}")
@@ -32,7 +30,7 @@ def load_config(path: str | Path) -> dict[str, Any]:
         extends = config.pop("extends", None)
         if not extends:
             return config
-        base: dict[str, Any] = {}
+        base = {}  # type: Dict[str, Any]
         for item in extends if isinstance(extends, list) else [extends]:
             base_path = Path(item)
             if not base_path.is_absolute():
@@ -43,8 +41,8 @@ def load_config(path: str | Path) -> dict[str, Any]:
     return read_one(Path(path))
 
 
-def read_benches(path: str | Path) -> list[str]:
-    benches: list[str] = []
+def read_benches(path: Union[str, Path]) -> List[str]:
+    benches = []  # type: List[str]
     for raw in Path(path).read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if line and not line.startswith("#"):
@@ -52,13 +50,13 @@ def read_benches(path: str | Path) -> list[str]:
     return benches
 
 
-def require_fields(scope: str, mapping: dict[str, Any], keys: list[str]) -> None:
+def require_fields(scope: str, mapping: Dict[str, Any], keys: List[str]) -> None:
     missing = [key for key in keys if str(mapping.get(key, "")).strip() == ""]
     if missing:
         raise SystemExit(f"missing {scope} field(s) in YAML: {', '.join(missing)}")
 
 
-def validate_machine(task: str, machine_name: str, machine: dict[str, Any], mode: str) -> None:
+def validate_machine(task: str, machine_name: str, machine: Dict[str, Any], mode: str) -> None:
     require_fields(f"machines.{machine_name}", machine, ["script_extension"])
     if mode == "submit":
         require_fields(f"machines.{machine_name}", machine, ["submit_command"])
@@ -84,7 +82,7 @@ def validate_machine(task: str, machine_name: str, machine: dict[str, Any], mode
         require_fields(f"machines.{machine_name}", machine, ["worklist_build_ir"])
 
 
-def resolve_mode(args: Any, run_cfg: dict[str, Any]) -> str:
+def resolve_mode(args: Any, run_cfg: Dict[str, Any]) -> str:
     if args.submit:
         return "submit"
     if args.local:

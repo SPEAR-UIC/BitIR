@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-from __future__ import annotations
 
 import argparse
 import os
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List, Tuple
 
 from pipeline_config import load_config, read_benches, resolve_mode, validate_machine
 from pipeline_shell import export_line, export_mapping, local_script, scheduler_script
@@ -39,16 +38,16 @@ def clean(value: Any) -> str:
     return str(value or "").strip()
 
 
-def machine_env(machine: dict[str, Any]) -> dict[str, Any]:
+def machine_env(machine: Dict[str, Any]) -> Dict[str, Any]:
     return {key: value for key, value in machine.items() if key not in {"jobs", "modules", "module_use", "submit_command"}}
 
 
-def hecbench_paths(repo_root: Path) -> tuple[Path, Path]:
+def hecbench_paths(repo_root: Path) -> Tuple[Path, Path]:
     root = repo_root / "HeCBench"
     return root, root / "src"
 
 
-def selected_benches(task: str, cfg: dict[str, Any], campaign: str, bench: str, benches_file: str) -> list[str]:
+def selected_benches(task: str, cfg: Dict[str, Any], campaign: str, bench: str, benches_file: str) -> List[str]:
     if bench:
         return [bench]
     if benches_file:
@@ -61,7 +60,7 @@ def selected_benches(task: str, cfg: dict[str, Any], campaign: str, bench: str, 
     return benches
 
 
-def text_compare_benches(cfg: dict[str, Any], benches: list[str]) -> list[str]:
+def text_compare_benches(cfg: Dict[str, Any], benches: List[str]) -> List[str]:
     return [
         str(bench)
         for bench in benches
@@ -69,7 +68,7 @@ def text_compare_benches(cfg: dict[str, Any], benches: list[str]) -> list[str]:
     ]
 
 
-def bench_exports(cfg: dict[str, Any], machine: dict[str, Any], bench: str, include_bench_only: bool) -> list[str]:
+def bench_exports(cfg: Dict[str, Any], machine: Dict[str, Any], bench: str, include_bench_only: bool) -> List[str]:
     bench_cfg = dict(cfg.get("benchmarks", {}).get(bench, {}))
     bench_env = {str(key): str(value) for key, value in bench_cfg.get("env", {}).items()}
     source_key = clean(machine.get("source_key")) or clean(machine.get("binary_subdir"))
@@ -91,7 +90,7 @@ def bench_exports(cfg: dict[str, Any], machine: dict[str, Any], bench: str, incl
     return exports
 
 
-def benchmark_switch(cfg: dict[str, Any], machine: dict[str, Any], benches: list[str]) -> str:
+def benchmark_switch(cfg: Dict[str, Any], machine: Dict[str, Any], benches: List[str]) -> str:
     if not benches:
         return ""
     unset_names = {
@@ -115,8 +114,8 @@ def benchmark_switch(cfg: dict[str, Any], machine: dict[str, Any], benches: list
     return "\n".join(lines)
 
 
-def fault_model_exports(fault_model_cfg: dict[str, Any]) -> list[str]:
-    exports: list[str] = []
+def fault_model_exports(fault_model_cfg: Dict[str, Any]) -> List[str]:
+    exports = []  # type: List[str]
     export_mapping(exports, "BITIR_FAULT_MODEL", fault_model_cfg)
     names = {
         "inject_target": "INJECT_TARGET",
@@ -150,8 +149,8 @@ def fault_model_exports(fault_model_cfg: dict[str, Any]) -> list[str]:
     return exports
 
 
-def local_controller_command(args: argparse.Namespace, config_path: Path, repo_root: Path, machine: str, campaign: str, bench: str, benches_file: str, site_id: Any, bit_index: Any, fault_model: str, account: str) -> list[str]:
-    command: list[Any] = [
+def local_controller_command(args: argparse.Namespace, config_path: Path, repo_root: Path, machine: str, campaign: str, bench: str, benches_file: str, site_id: Any, bit_index: Any, fault_model: str, account: str) -> List[str]:
+    command = [  # type: List[Any]
         "python3", str(Path(__file__).resolve()), args.task, str(config_path),
         "--repo-root", str(repo_root), "--machine", machine, "--local",
     ]
@@ -166,21 +165,21 @@ def local_controller_command(args: argparse.Namespace, config_path: Path, repo_r
 
 def local_exports(
     args: argparse.Namespace,
-    cfg: dict[str, Any],
-    method_cfg: dict[str, Any],
-    machine: dict[str, Any],
+    cfg: Dict[str, Any],
+    method_cfg: Dict[str, Any],
+    machine: Dict[str, Any],
     machine_name: str,
     benchmark_root: Path,
     benchmark_source_root: Path,
     repo_root: Path,
-    benches: list[str],
+    benches: List[str],
     benches_file: str,
     bench: str,
     fault_model: str,
-    fault_model_cfg: dict[str, Any],
+    fault_model_cfg: Dict[str, Any],
     site_id: Any,
     bit_index: Any,
-) -> list[str]:
+) -> List[str]:
     exports = [
         export_line("BITIR_WORKDIR", str(repo_root)),
         export_line("BITIR_ROOT", str(Path(__file__).resolve().parents[2])),
@@ -206,7 +205,7 @@ def local_exports(
     return exports
 
 
-def run_generated(mode: str, generated: list[tuple[str, Path, str]], submit_command: str, repo_root: Path) -> None:
+def run_generated(mode: str, generated: List[Tuple[str, Path, str]], submit_command: str, repo_root: Path) -> None:
     if mode == "print-script":
         for index, (bench, _, script) in enumerate(generated):
             if index:
@@ -293,7 +292,7 @@ def main() -> None:
     modules = [str(v) for v in machine.get("modules", [])]
     module_use = [str(v) for v in machine.get("module_use", [])]
     script_units = [(bench, [bench])] if args.task == "inject-one" else [("", benches)]
-    generated: list[tuple[str, Path, str]] = []
+    generated = []  # type: List[Tuple[str, Path, str]]
 
     command = local_controller_command(args, config_path, repo_root, machine_name, campaign, bench, benches_file, site_id, bit_index, fault_model, account)
 
