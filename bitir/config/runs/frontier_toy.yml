@@ -25,15 +25,15 @@ fault_models:
 campaigns:
   toy:
     benchmarks:
-    - assert
+    - colorwheel
 machines:
   frontier:
     build_dir: bitir/build/hip-frontier-toy
     golden_root: Frontier_HIP_Golden_Outputs_toy
     results_root: bitir/results/llvm17_inject_amd_toy
 benchmarks:
-  assert:
+  colorwheel:
     compare_mode: text
-    golden_file: assert.txt
+    golden_file: colorwheel.txt
     source_dirs:
-      hip: src/assert-hip
+      hip: src/colorwheel-hip

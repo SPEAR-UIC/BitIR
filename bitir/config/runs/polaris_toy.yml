@@ -33,7 +33,7 @@ fault_models:
 campaigns:
   toy:
     benchmarks:
-    - assert
+    - colorwheel
 machines:
   polaris:
     build_dir: bitir/build/cuda-polaris-toy
@@ -91,8 +91,8 @@ machines:
         - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
         - '#PBS -j oe'
 benchmarks:
-  assert:
+  colorwheel:
     compare_mode: text
-    golden_file: assert.txt
+    golden_file: colorwheel.txt
     source_dirs:
-      cuda: src/assert-cuda
+      cuda: src/colorwheel-cuda
