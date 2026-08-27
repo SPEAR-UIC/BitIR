@@ -16,14 +16,14 @@ machines:
     - ninja/1.12.1
     - oneapi/release/2025.2.0
     compiler_driver: icpx
-    clangxx: icpx
-    icpx: icpx
-    llvm_config: llvm-config
-    opt_bin: opt
-    clang_offload_bundler: clang-offload-bundler
-    sycl_post_link: sycl-post-link
-    llvm_spirv: llvm-spirv
-    clang_offload_wrapper: clang-offload-wrapper
+    clangxx: /opt/aurora/25.190.0/oneapi/compiler/latest/bin/icpx
+    icpx: /opt/aurora/25.190.0/oneapi/compiler/latest/bin/icpx
+    llvm_config: /opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/llvm-config
+    opt_bin: /opt/aurora/25.190.0/spack/unified/0.10.1/install/linux-sles15-x86_64/gcc-13.3.0/llvm-develop-git.5708851-4ulhk4d/bin/opt
+    clang_offload_bundler: /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler/clang-offload-bundler
+    sycl_post_link: /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler/sycl-post-link
+    llvm_spirv: /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler/llvm-spirv
+    clang_offload_wrapper: /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler/clang-offload-wrapper
     tool_search_roots:
     - /opt/aurora/25.190.0/oneapi/compiler/latest/bin
     - /opt/aurora/25.190.0/oneapi/compiler/latest/bin/compiler
@@ -57,7 +57,7 @@ machines:
         - '#PBS -A {ADD ACCOUNT HERE}'
         - '#PBS -q debug'
         - '#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb'
-        - '#PBS -l filesystems=home'
+        - '#PBS -l filesystems=home:flare'
         - '#PBS -l walltime=00:30:00'
         - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
         - '#PBS -j oe'
@@ -67,7 +67,7 @@ machines:
         - '#PBS -A {ADD ACCOUNT HERE}'
         - '#PBS -q debug'
         - '#PBS -l select=1:ncpus=8:ngpus=1:mem=32gb'
-        - '#PBS -l filesystems=home'
+        - '#PBS -l filesystems=home:flare'
         - '#PBS -l walltime=00:30:00'
         - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
         - '#PBS -j oe'
@@ -77,7 +77,7 @@ machines:
         - '#PBS -A {ADD ACCOUNT HERE}'
         - '#PBS -q debug'
         - '#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb'
-        - '#PBS -l filesystems=home'
+        - '#PBS -l filesystems=home:flare'
         - '#PBS -l walltime=01:00:00'
         - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
         - '#PBS -j oe'
@@ -87,7 +87,7 @@ machines:
         - '#PBS -A {ADD ACCOUNT HERE}'
         - '#PBS -q debug'
         - '#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb'
-        - '#PBS -l filesystems=home'
+        - '#PBS -l filesystems=home:flare'
         - '#PBS -l walltime=01:00:00'
         - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
         - '#PBS -j oe'
@@ -97,7 +97,7 @@ machines:
         - '#PBS -A {ADD ACCOUNT HERE}'
         - '#PBS -q debug'
         - '#PBS -l select=1:ncpus=12:ngpus=1:mem=32gb'
-        - '#PBS -l filesystems=home'
+        - '#PBS -l filesystems=home:flare'
         - '#PBS -l walltime=01:00:00'
         - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
         - '#PBS -j oe'
