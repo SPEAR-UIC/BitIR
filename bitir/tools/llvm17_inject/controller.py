@@ -216,14 +216,14 @@ def run_generated(mode: str, generated: List[Tuple[str, Path, str]], submit_comm
         return
     if mode == "local":
         for _, _, script in generated:
-            result = subprocess.run(["bash"], input=script, text=True, cwd=repo_root)
+            result = subprocess.run(["bash"], input=script, universal_newlines=True, cwd=str(repo_root))
             if result.returncode:
                 raise SystemExit(result.returncode)
         return
     if mode == "submit":
         failures = 0
         for bench, path, _ in generated:
-            result = subprocess.run([submit_command, str(path)], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = subprocess.run([submit_command, str(path)], universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             prefix = f"{bench}: " if bench else ""
             if result.stdout.strip():
                 print(f"{prefix}{result.stdout.strip()}")
