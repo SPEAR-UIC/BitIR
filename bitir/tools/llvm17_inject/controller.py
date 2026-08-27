@@ -27,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--bit-index", type=int)
     parser.add_argument("--fault-model")
     parser.add_argument("--account")
+    parser.add_argument("--walltime")
     parser.add_argument("--execution-mode")
     parser.add_argument("--submit", action="store_true")
     parser.add_argument("--local", action="store_true")
@@ -157,6 +158,7 @@ def local_controller_command(args: argparse.Namespace, config_path: Path, repo_r
     for flag, value in [
         ("--campaign", campaign), ("--bench", bench), ("--benches-file", str(Path(benches_file).resolve()) if benches_file else ""),
         ("--site-id", site_id), ("--bit-index", bit_index), ("--fault-model", fault_model), ("--account", account),
+        ("--walltime", args.walltime),
     ]:
         if value is not None and value != "":
             command.extend([flag, str(value)])
@@ -299,6 +301,7 @@ def main() -> None:
     for index, (bench_name, unit_benches) in enumerate(script_units):
         job_values = dict(job, bench=bench_name.replace("/", "_").replace(" ", "_") or "all", stamp=stamp, index=f"{index:02d}")
         job_values["account"] = account or clean(job_values.get("account")) or "{ADD ACCOUNT HERE}"
+        job_values["walltime"] = clean(args.walltime)
         ext = clean(machine.get("script_extension") or ".sh")
         ext = ext if ext.startswith(".") else f".{ext}"
         suffix = f"_{bench_name}" if bench_name else ""

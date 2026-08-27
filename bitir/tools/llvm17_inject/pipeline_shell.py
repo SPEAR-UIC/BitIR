@@ -26,6 +26,7 @@ def export_mapping(lines: List[str], prefix: str, value: Any) -> None:
 
 
 def script_header(machine_name: str, task: str, job: Dict[str, Any]) -> List[str]:
+    walltime = str(job.get("walltime", "")).strip()
     values = {
         "machine": machine_name,
         "task": task.replace("-", "_"),
@@ -33,6 +34,7 @@ def script_header(machine_name: str, task: str, job: Dict[str, Any]) -> List[str
         "stamp": str(job.get("stamp", "")).strip(),
         "index": str(job.get("index", "00")).strip() or "00",
         "account": str(job.get("account", "{ADD ACCOUNT HERE}")).strip() or "{ADD ACCOUNT HERE}",
+        "walltime": walltime,
     }
     header = ["#!/bin/bash"]
     for line in job.get("header", []):
@@ -40,6 +42,11 @@ def script_header(machine_name: str, task: str, job: Dict[str, Any]) -> List[str
         for key, value in values.items():
             rendered = rendered.replace("{" + key + "}", value)
         rendered = rendered.replace("{ADD ACCOUNT HERE}", values["account"])
+        stripped = rendered.strip()
+        if walltime and stripped.startswith("#PBS") and "walltime=" in stripped:
+            rendered = "#PBS -l walltime=" + walltime
+        elif walltime and stripped.startswith("#SBATCH") and "--time=" in stripped:
+            rendered = "#SBATCH --time=" + walltime
         header.append(rendered)
     return header
 
