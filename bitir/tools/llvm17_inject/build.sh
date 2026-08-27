@@ -96,6 +96,10 @@ CLANGXX="$(find_tool "${BITIR_MACHINE_CLANGXX:-${CLANGXX:-}}" clang++ \
   echo "clang++ not found" >&2
   exit 1
 }
+CLANG_GCC_INSTALL_ARGS=()
+if [[ -n "${BITIR_MACHINE_CLANG_GCC_INSTALL_DIR:-}" ]]; then
+  CLANG_GCC_INSTALL_ARGS=(--gcc-install-dir="${BITIR_MACHINE_CLANG_GCC_INSTALL_DIR}")
+fi
 
 PLUGIN_PATH="${OUT_DIR}/libfi_inject.so"
 LOCK_PATH="${OUT_DIR}/.libfi_inject.lock"
@@ -112,7 +116,7 @@ flock 9
 
 TMP_OUT="$(mktemp "${PLUGIN_PATH}.tmp.XXXXXX")"
 read -r -a LLVM_CXXFLAGS <<< "$(${LLVM_CONFIG} --cxxflags)"
-${CLANGXX} -std=c++17 -fPIC -shared \
+${CLANGXX} "${CLANG_GCC_INSTALL_ARGS[@]}" -std=c++17 -fPIC -shared \
   -I "${LLVM_INCLUDEDIR}" \
   "$SRC_DIR/fi_inject_pass.cpp" \
   "${LLVM_CXXFLAGS[@]}" \
