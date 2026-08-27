@@ -5,6 +5,7 @@
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Module.h"
+#include "llvm/Config/llvm-config.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
 #include "llvm/Support/CommandLine.h"
@@ -440,10 +441,18 @@ extern "C" LLVM_ATTRIBUTE_WEAK PassPluginLibraryInfo llvmGetPassPluginInfo() {
               }
               return false;
             });
+#if LLVM_VERSION_MAJOR >= 18
+        PB.registerOptimizerLastEPCallback(
+            [](ModulePassManager &MPM, OptimizationLevel, ThinOrFullLTOPhase) {
+              if (std::getenv("FI_SITE"))
+                MPM.addPass(FiInjectPass());
+            });
+#else
         PB.registerOptimizerLastEPCallback(
             [](ModulePassManager &MPM, OptimizationLevel) {
               if (std::getenv("FI_SITE"))
                 MPM.addPass(FiInjectPass());
             });
+#endif
       }};
 }
