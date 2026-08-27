@@ -98,5 +98,8 @@ benchmarks:
     - "1"
     compare_mode: text
     golden_file: colorwheel.txt
+    status:
+      pass_regex: "\\bPASS\\b"
+      fail_regex: "\\bFAIL\\b|Usage:"
     source_dirs:
       cuda: src/colorwheel-cuda
