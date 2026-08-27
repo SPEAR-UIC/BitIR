@@ -32,7 +32,7 @@ machines:
     sycl_target: spir64
     sycl_host_triple: x86_64-unknown-linux-gnu
     sycl_offload_target: sycl-spir64-unknown-unknown
-    build_configure: 'cmake -S "${BITIR_CMAKE_SOURCE_ROOT}" -B "${BUILD_DIR}" -G Ninja -DHECBENCH_ENABLE_CUDA=OFF -DHECBENCH_ENABLE_HIP=OFF -DHECBENCH_ENABLE_SYCL=ON -DHECBENCH_ENABLE_OPENMP=OFF
+    build_configure: 'cmake -S "${BITIR_CMAKE_SOURCE_ROOT}" -B "${BUILD_DIR}" -G Ninja -DHECBENCH_ENABLE_CUDA=OFF -DHECBENCH_ENABLE_HIP=OFF -DHECBENCH_ENABLE_SYCL=ON -DHECBENCH_ENABLE_OPENMP=OFF -DCMAKE_CXX_FLAGS=-DUSE_GPU
 
       '
     build_run_dump_env: HECBENCH_GPU_DEBUG=1 HECBENCH_LLFI_FORCE_DUMP=1
