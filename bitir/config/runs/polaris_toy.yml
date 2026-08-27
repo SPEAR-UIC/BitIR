@@ -33,8 +33,7 @@ fault_models:
 campaigns:
   toy:
     benchmarks:
-    - layout
-    - topk
+    - assert
 machines:
   polaris:
     build_dir: bitir/build/cuda-polaris-toy
@@ -92,23 +91,8 @@ machines:
         - '#PBS -o OUT_{machine}_{task}_{bench}_{stamp}_{index}.out'
         - '#PBS -j oe'
 benchmarks:
-  layout:
-    compare_mode: exact
-    golden_file: layout.bin
-    args:
-    - '{LAYOUT_REPEAT}'
-    env:
-      LAYOUT_REPEAT: '1'
+  assert:
+    compare_mode: text
+    golden_file: assert.txt
     source_dirs:
-      cuda: src/layout-cuda
-  topk:
-    compare_mode: exact
-    golden_file: topk.bin
-    args:
-    - '{TOPK_BATCH_SIZE}'
-    - '{TOPK_REPEAT}'
-    env:
-      TOPK_BATCH_SIZE: '1'
-      TOPK_REPEAT: '1'
-    source_dirs:
-      cuda: src/topk-cuda
+      cuda: src/assert-cuda

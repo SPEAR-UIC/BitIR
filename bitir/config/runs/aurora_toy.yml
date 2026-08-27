@@ -25,19 +25,15 @@ fault_models:
 campaigns:
   toy:
     benchmarks:
-    - layout
+    - assert
 machines:
   aurora:
     build_dir: bitir/build/sycl-aurora-toy
     golden_root: Aurora_Sycl_Golden_Outputs_toy
     results_root: bitir/results/llvm17_inject_toy
 benchmarks:
-  layout:
-    compare_mode: exact
-    golden_file: layout.bin
-    args:
-    - '{LAYOUT_REPEAT}'
-    env:
-      LAYOUT_REPEAT: '1'
+  assert:
+    compare_mode: text
+    golden_file: assert.txt
     source_dirs:
-      sycl: src/layout-sycl
+      sycl: src/assert-sycl
