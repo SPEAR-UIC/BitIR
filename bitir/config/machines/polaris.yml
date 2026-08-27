@@ -22,7 +22,7 @@ machines:
     cuda_arch_name: sm_80
     compiler_driver: nvcc
     clangxx: clang++
-    clang_gcc_install_dir: /usr/lib64/gcc/x86_64-suse-linux/14
+    clang_gcc_install_dir: /usr/lib64/gcc/x86_64-suse-linux/7
     llvm_as: llvm-as
     llvm_config: llvm-config
     opt_bin: opt
